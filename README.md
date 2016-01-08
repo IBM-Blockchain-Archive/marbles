@@ -60,7 +60,9 @@ This is a asset transfer and asset permission example.  Specifically for cars.
 - [ ] need multi var read in sdk! ie read(["car1", "car2"]); ... what if we do a lot here, like SQL syntax?
 - [ ] remember the name of all the saved vars in cc, and export this list so sdk can get it
 - [ ] check permissions of requesting user in cc
+- [ ] verify user identityf, ie public private key stuff
 - [ ] website to test cc, real basic
+- [ ] demo app website
 
 
 ###ChainCode Notes:
