@@ -1,0 +1,10 @@
+@media (max-width: 600px) {
+	/* Nav Links */
+	#headerPanel{padding:10px;}
+	#navWrap{width:100%; top:45px;}
+	.navOption{padding:15px;}
+	
+	/* Form Inputs */
+	.formHeader, .mainForm{width:inherit;}
+	.formInput, .formLabel{float:none; display:block; margin:auto !important;}
+}

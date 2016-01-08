@@ -1,0 +1,33 @@
+extends layout.jade
+-////////////////////////////////////////////////// Functions //////////////////////////////////////////////////		
+		
+-//////////////////////////////////////
+-//Header
+-//////////////////////////////////////
+block custom_header	
+	link(type="text/css" rel="stylesheet" href="/css/main.min.css")
+		
+	script(type='text/javascript').
+		var funk = !{JSON.stringify(funk)};					//throw jade json over to JS
+		////////////// On Load //////////////
+		$(document).ready(function(){
+			//console.log(profile);
+		});
+		
+-//////////////////////////////////////
+-//Body
+-//////////////////////////////////////
+block content
+	div#innerPanel
+		
+		div#itemsPanel(style="margin-right:50px; min-width:440px;")
+			h1 Error: #{bag.error.status}
+			center
+				h2 #{bag.error.msg}
+			
+		div#adPane
+			h1 Uh Oh
+			br
+			p Something went wrong...
+			
+	

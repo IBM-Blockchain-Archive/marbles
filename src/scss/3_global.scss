@@ -1,0 +1,57 @@
+@import 'color_theme';
+
+/*Main Layout*/
+#headerPanel {
+  position: relative;
+  top: 0;
+  left: 0;
+  padding: 5px;
+  height: 130px;
+  border-bottom: 1px #BCBCBC solid; }
+
+#logo {
+  position: absolute;
+  left: 10px;
+  top: 30px;
+  width: 56px;
+  height: 56px; }
+
+#name, #footName {
+  font-size: 36px;
+  position: absolute;
+  left: 80px;
+  top: 42px;
+  color: #000; }
+
+#name:hover {
+  color: #555;
+  text-decoration: none; }
+
+#footName {
+  color: #fff; }
+
+#loading {
+  width: 70px;
+  display: none; }
+
+#navPanel {
+  position: absolute;
+  right: 40px;
+  top: 42px; }
+
+.nav {
+  color: #BCBCBE;
+  float: left;
+  margin-left: 30px;
+  font-size: 14px; }
+
+#footerPanel {
+  position: relative;
+  height: 348px;
+  background: #0A0A0A;
+  color: #fff; }
+
+#mainPanel {
+  position: relative;
+  left: 0;
+  padding: 15px; }

@@ -1,0 +1,9 @@
+applications:
+  disk_quota: 1024M
+  host: blank
+  name: blank
+  command: node app.js
+  path: .
+  domain: mybluemix.net
+  instances: 1
+  memory: 128M

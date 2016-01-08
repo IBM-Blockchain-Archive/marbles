@@ -1,0 +1,36 @@
+-////////////////////////////////////////////////// Functions //////////////////////////////////////////////////
+-//Print Object Out Formatted
+mixin debug(variable)
+	br
+	br
+	pre #{JSON.stringify(variable, null, "\t")}
+
+-////////////////////////////////////////////////// HTML //////////////////////////////////////////////////
+-//Begin HTML
+doctype html
+html
+	//Built by: Me
+	//ETI Labs
+	//Copyright 2015  - IBM
+	head
+		title #{title}
+		link(rel="icon", type="image/png", href="/imgs/favicon.ico")
+		link(type="text/css" rel="stylesheet" href="/css/main.min.css")
+		script(src='/js/util/jquery-1.11.1.min.js')
+		script(src='/js/funk.js')
+		script(type='text/javascript').
+			var bag = !{JSON.stringify(bag)};						//throw jade json over to JS
+			console.log(bag);
+			$(document).ready(function(){
+				
+			});
+		block custom_header
+		
+		body
+			#mainPanel
+				//Main Content Panel
+				block content
+				
+			div(style="background:#fff; position:absolute; top:500px;")
+				//+debug(funk)
+			

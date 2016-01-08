@@ -1,0 +1,70 @@
+html{min-height:100%; position:relative;}
+body{margin:0; 
+	padding:0;
+	font-size:16px;
+	width:1175px;
+	text-align:left;
+	height:100%;
+	color:#555;
+	font-family: "Optima-Regular","Optima";
+	background:#fff;
+}
+h1{font-size:36px; font-weight:normal; margin:0;}
+h2{font-size:22px; font-weight:normal; margin:0; display:inline;}
+h3{font-size:20pt; font-weight:normal; margin:0;}
+h4{font-size:16pt; font-weight:normal; margin:0;}
+h5{font-size:14px; font-weight:normal; margin:0;}
+h6{font-size:12px; font-weight:normal; margin:0;}
+ul,li{margin:0; padding:0;}
+tr,td,th{border:0; padding:3px; text-align:left; border-right:1px #ccc solid;}
+table{border-spacing:0; border:0; border-collapse:collapse; text-align:center;}
+tr{border-bottom:1px #ccc solid;}
+tr:nth-child(even){background:#F6F5F7; border:0;}
+tr:hover{background:#ccc;}
+tr:nth-child(even):hover{background:#ccc; border:0;}
+td{padding:5px 15px 5px 15px;}
+th{padding:4px; font-weight:normal; background:#555; color:#fff; text-align:center;}
+p{margin:5px; padding:0;}
+hr{height:1px; border:none; background: #555;}
+pre{padding-left:15px;}
+input[type="submit"],input[type="button"], button{font-size:12px; cursor:pointer; padding:5px 10px; background:#2e6da4; color:#fff; border:2px #2e6da4 solid; transition:background-color 0.2s ease; border-radius:5px;}
+input[type="submit"]:hover,input[type="button"]:hover, button:hover{background:#fff; color:#2e6da4;}
+input[type="text"], input[type="password"], select{padding:5px 10px; margin:5px; color:#2e6da4;}
+small{font-size:10pt;}
+img{border:0; max-width:100%;}
+a, a:visited{color:#555;}
+a:hover{text-decoration:underline;}
+label{text-align:left;}
+.error{color:#cc0000 !important;}
+.valid{color:green !important;}
+.white{color:#fff !important;}
+.php_error{color:orange; font-weight:bold;}
+.floatFixer{width:100%; clear:both; height:1px;}
+
+/*Main Layout*/
+#headerPanel{position:relative; top:0; left:0; padding:5px;  height:130px; border-bottom:1px #BCBCBC solid;}
+#logo{position:absolute; left:10px; top:30px; width:56px; height:56px;}
+#name, #footName{font-size:36px; position:absolute; left:80px; top:42px; color:#000;}
+#name:hover{color:#555; text-decoration: none;}
+#footName{color:#fff;}
+#loading{width:70px; display:none;}
+
+#navPanel{position:absolute; right:40px; top:42px;}
+.nav{color:#BCBCBE; float:left; margin-left:30px; font-size:14px;}
+
+#footerPanel{position:relative; height:348px; background:#0A0A0A; color:#fff;}
+#mainPanel {position: relative;	left:0; padding:15px;}
+
+
+/*Mobile*/
+#mobileHeaderPanel{display:none;}
+
+/*Specific*/
+#bubble{width:59px; height:60px; margin-top:-25px;}
+	
+/*Generic*/
+.func{
+	font-size:20px;
+}
+
+/* Nav Menu Links */
