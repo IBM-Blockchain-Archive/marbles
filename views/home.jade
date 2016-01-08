@@ -5,14 +5,22 @@ block custom_header
 	script(type='text/javascript').
 		$(document).ready(function(){
 
-			
+			function in_array(name, array){
+				for(var i in array){
+					if(array[i] == name) return true
+				}
+				return false;	
+			}
 			buildThings(bag.cc);
 			function buildThings(cc){
+				var skip = ['write', 'read', 'delete', 'init'];
 				var html = '';
 				var field = '<input class="arginput" type="text" placeholder="array of strings"/>';
 				for(var i in cc.details.func){
-					html += '<div class="func">' + cc.details.func[i] + '([ ' + field + ']); </dic>'
-					html += '<button type="button" class="go" func="' + cc.details.func[i] + '"> Run </button>';
+					if(!in_array(cc.details.func[i].toLowerCase(), skip)){
+						html += '<div class="func">' + cc.details.func[i] + '([ ' + field + ']); </dic>'
+						html += '<button type="button" class="go" func="' + cc.details.func[i] + '"> Run </button>';
+					}
 				}
 				$("#ccWrap").append(html);
 			}
@@ -76,4 +84,17 @@ block content
 			input(type="text" name="write_val" placeholder="value")
 			span ); 
 			button(type="button")#query Run
+			
+		.func 
+			span Remove (
+			input(type="text" name="remove_name" placeholder="var name")
+			span ); 
+			button(type="button")#query Run
+		
+		.func 
+			span Init (
+			input(type="text" name="init_names" placeholder="array of strings")
+			span ); 
+			button(type="button")#query Run
+			
 		hr

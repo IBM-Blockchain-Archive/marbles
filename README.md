@@ -58,6 +58,7 @@ This is a asset transfer and asset permission example.  Specifically for cars.
 - [ ] get_permissions("vin #", "user id");
 - [ ] set_user_perms("vin #", "user id", "perm");
 - [ ] need multi var read! ie read(["car1", "car2"]); ... what if we do a lot here, like SQL syntax?
+- [ ] remember the name of all the saved vars, and export this list
 
 
 ###ChainCode Notes:

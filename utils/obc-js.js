@@ -55,7 +55,7 @@ var contract = 	{
 					cc: {
 						read: read,
 						write: write,
-						delete: remove,
+						remove: remove,
 						deploy: deploy,
 						details:{
 									host: "",
