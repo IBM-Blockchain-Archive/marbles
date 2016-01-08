@@ -155,7 +155,7 @@ module.exports.load = function(url, path, cb){
 			
 			// Step 1.
 			//fs.createReadStream(dest).pipe(unzip.Extract({ path: 'temp/unzip' }, fs.readdir(unzip_dest, cb_got_names)));function(){ fixURLbar(item); }
-			fs.createReadStream(dest).pipe(unzip.Extract({ path: 'temp/unzip' }, setTimeout(function(){ fs.readdir(unzip_dest, cb_got_names); }, 2000)));	//this sucks, dsh replace
+			fs.createReadStream(dest).pipe(unzip.Extract({ path: 'temp/unzip' }, setTimeout(function(){ fs.readdir(unzip_dest, cb_got_names); }, 5000)));	//this sucks, dsh replace
 		}
 	}
 	

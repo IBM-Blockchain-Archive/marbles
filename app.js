@@ -125,7 +125,7 @@ else console.log('Running using Developer settings');
 // ============================================================================================================================
 var obc = require('./utils/obc-js');
 obc.network('173.193.240.230', 5003, false);						//setup network connection for rest endpoint - (host, port, ssl)
-obc.load('https://hub.jazz.net/git/averyd/cc_ex02/archive?revstr=master', 'chaincode_dsh', cb_ready);			//parse/load chaincode
+obc.load('https://hub.jazz.net/git/averyd/cc_ex02/archive?revstr=master', 'chaincode_obc-js_demo', cb_ready);			//parse/load chaincode
 
 function cb_ready(err, contract){
 	contract.cc.details.name = {
