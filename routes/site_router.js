@@ -34,4 +34,19 @@ router.route("/").get(function(req, res){
 });
 
 
+// ============================================================================================================================
+// Chain Code Investigator
+// ============================================================================================================================
+router.route("/investigate").get(function(req, res){
+	var cc = {};
+	try{
+		cc = require('../temp/cc.json');
+	}
+	catch(e){
+		console.log('error loading cc.json', e);
+	};
+	res.render('investigate', {title: 'Investigator', bag: cc} );
+});
+
+
 module.exports = router;

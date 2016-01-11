@@ -20,9 +20,10 @@
 					init: function({args}, cb){},					//example
 					invoke: function({args}, cb){},					//example
 					cc:{
-						read: function(name, cb, lvl){},			//use the go code Query() function
-						write: function(name, val, cb){}			//use the go code Write() function
-						deploy: function(func, args, cb)			//if successful will also set cc.details.name, func & args are optional
+						read: function(name, cb, lvl),				//use the go code Query() function
+						write: function(name, val, cb),				//use the go code Write() function
+						deploy: function(func, args, cb),			//if successful will also set cc.details.name, func & args are optional
+						readNames: function(cb, lvl),				//read all variables in chaincode state space
 						details: {
 							host: "",								//peer to hit
 							port: "",
@@ -57,6 +58,7 @@ var contract = 	{
 						write: write,
 						remove: remove,
 						deploy: deploy,
+						readNames: readNames,
 						details:{
 									host: "",
 									port: 80,
@@ -166,16 +168,18 @@ module.exports.load = function(url, path, cb){
 		else{
 			for(var i in obj){
 				//console.log(i, obj[i]);
+				
+				//GO FILES
 				if(obj[i].indexOf('.go') >= 0){
 					if(keep_looking){
-						fs.readFile(unzip_dest + '/' + obj[i], 'utf8', cb_read_file);
+						fs.readFile(unzip_dest + '/' + obj[i], 'utf8', cb_read_go_file);
 					}
 				}
 			}
 		}
 	}
 	
-	function cb_read_file(err, str){
+	function cb_read_go_file(err, str){
 		if(err != null) console.log('[obc-js] Error', err);
 		else{
 			
@@ -201,7 +205,7 @@ module.exports.load = function(url, path, cb){
 						var pos = res[i].indexOf('.');
 						var temp = res[i].substring(pos + 1, res[i].length - 1);
 						console.log('[obc-js] Found func: ', temp);
-						populate_contract(temp);
+						populate_go_contract(temp);
 					}
 					
 					// Step 3.
@@ -380,6 +384,48 @@ function deploy(func, args, cb){
 	rest.post(options, '', body);
 }
 
+// ============================================================================================================================
+// readNames() - read all variable names in chaincode state
+// ============================================================================================================================
+function readNames(cb, lvl){						//lvl is for reading past state blocks, tbd exactly
+	var options = {
+		path: '/devops/invoke'
+	};
+	var body = {
+					"chaincodeSpec": {
+						"type": "GOLANG",
+						"chaincodeID": contract.cc.details.name,
+						"ctorMsg": {
+							"function": "readnames",
+							"args": []
+						}
+					}
+				};
+	/*
+	var body = {
+					chaincodeSpec: {
+						type: "GOLANG",
+						chaincodeID: {
+							name: contract.cc.details.name,
+						}
+						ctorMsg: {
+							function: "readnames",
+							args: []
+						}
+					}
+				};
+	*/
+	options.success = function(statusCode, data){
+		console.log("[obc-js] ReadNames - success:", data);
+		if(cb) cb(null, data.OK);
+	};
+	options.failure = function(statusCode, e){
+		console.log("[obc-js] ReadNames - failure:", statusCode);
+		if(cb) cb(eFmt('http error', statusCode, e), null);
+	};
+		rest.post(options, '', body);
+	
+}
 
 // ============================================================================================================================
 // 														Helper Functions() 
@@ -388,7 +434,7 @@ function deploy(func, args, cb){
 // ==================================================================
 // populate_contract() - create JS call for custom goLang function, store in contract!
 // ==================================================================
-function populate_contract(name){
+function populate_go_contract(name){
 	if(contract[name] != null){
 		console.log('[obc-js] \t skip, already exists');
 	}
