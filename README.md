@@ -52,6 +52,7 @@ This is a asset transfer and asset permission example.  Specifically for cars.
 
 ##ChainCode / SDK To Do:
 - [x] Write("name", "val", cb);
+- [ ] ReadNames(cb)
 - [ ] init_person("user id", "full name", "address", "pub key");
 - [ ] init_car("vin #", "year", "make", "model", "user id");
 - [ ] attach_license("vin #", "license #", "user id"); 									//-user id is person performing action
