@@ -1,4 +1,12 @@
 /* global $ */
+//if element is in array
+function in_array(name, array){
+	for(var i in array){
+		if(array[i] == name) return true
+	}
+	return false;	
+}
+			
 //make random string of set length
 function randStr(length){
 	var text = "";
@@ -18,22 +26,40 @@ function formatDate(date, fmt) {
         return (value.toString().length < 2) ? '0' + value : value;
     }
     return fmt.replace(/%([a-zA-Z])/g, function (_, fmtCode) {
-        switch (fmtCode) {
-        case 'Y':
-            return date.getUTCFullYear();
-        case 'M':
-            return pad(date.getUTCMonth() + 1);
-        case 'd':
-            return pad(date.getUTCDate());
-        case 'H':
-            return pad(date.getUTCHours());
-        case 'm':
-            return pad(date.getUTCMinutes());
-        case 's':
-            return pad(date.getUTCSeconds());
-        default:
-            throw new Error('Unsupported format code: ' + fmtCode);
-        }
+		var tmp;
+		switch (fmtCode) {
+		case 'Y':								//Year
+			return date.getUTCFullYear();
+		case 'M':								//Month 0 padded
+			return pad(date.getUTCMonth() + 1);
+		case 'd':								//Date 0 padded
+			return pad(date.getUTCDate());
+		case 'H':								//24 Hour 0 padded
+			return pad(date.getUTCHours());
+		case 'I':								//12 Hour 0 padded
+			tmp = date.getUTCHours();
+			if(tmp == 0) tmp = 12;				//00:00 should be seen as 12:00am
+			else if(tmp > 12) tmp -= 12;
+			return pad(tmp);
+		case 'p':								//am / pm
+			tmp = date.getUTCHours();
+			if(tmp >= 12) return 'pm';
+			return 'am';
+		case 'P':								//AM / PM
+			tmp = date.getUTCHours();
+			if(tmp >= 12) return 'PM';
+			return 'AM';
+		case 'm':								//Minutes 0 padded
+			return pad(date.getUTCMinutes());
+		case 's':								//Seconds 0 padded
+			return pad(date.getUTCSeconds());
+		case 'r':								//Milliseconds 0 padded
+			return pad(date.getUTCMilliseconds(), 3);
+		case 'q':								//UTC timestamp
+			return date.getTime();
+		default:
+			throw new Error('Unsupported format code: ' + fmtCode);
+		}
     });
 }
 
