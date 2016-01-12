@@ -64,6 +64,8 @@ This is a asset transfer and asset permission example.  Specifically for cars.
 - [ ] verify user identityf, ie public private key stuff
 - [ ] website to test cc, real basic
 - [ ] demo app website
+- [ ] make investigator use sdk code, which means auto generate rest api in sdk
+- [ ] make sdk proper npm module
 
 
 ###ChainCode Notes:

@@ -124,12 +124,12 @@ else console.log('Running using Developer settings');
 // 														Test Area
 // ============================================================================================================================
 var obc = require('./utils/obc-js');
-obc.network('173.193.240.230', 5003, false);						//setup network connection for rest endpoint - (host, port, ssl)
-obc.load('https://hub.jazz.net/git/averyd/cc_ex02/archive?revstr=master', 'chaincode_obc-js_demo', cb_ready);			//parse/load chaincode
+obc.network('169.53.72.250', 33032, false);						//setup network connection for rest endpoint - (host, port, ssl)
+obc.load('https://hub.jazz.net/git/averyd/cc_ex02/archive?revstr=master', 'chaincode_obc-js_demo2', cb_ready);			//parse/load chaincode
 
 function cb_ready(err, contract){
 	contract.cc.details.name = {
-									"url": "https://hub.jazz.net/git/averyd/cc_ex02/chaincode_dsh",
+									"url": "https://hub.jazz.net/git/averyd/cc_ex02/chaincode_obc-js_demo2",
 									"version": "0.0.1"
 								};
 	obc.save();
@@ -137,12 +137,12 @@ function cb_ready(err, contract){
 	//contract.init();
 	//contract.invoke(["a", "b", "5"]);
 	//contract.init();
-	contract.cc.read('a', cb_next);
+	//contract.cc.read('a', cb_next);
 	//contract.cc.deploy('init',  ["a", "101", "b", "202"], cb_next);
 	//contract.cc.read('a', cb_next);
 	function cb_next(e, value){
 		//contract.cc.read('a', cb_next2);
-		contract.cc.write('a', (value + 1), cb_next2);
+	contract.cc.write('a', (value + 1), cb_next2);
 		//contract.invoke(["a", "b", "5"], cb_next2);
 	}
 	function cb_next2(){
