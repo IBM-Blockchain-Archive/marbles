@@ -77,6 +77,7 @@ block custom_header
 		}
 		
 	script(type='text/javascript').
+		var ledger = [];
 		$(document).ready(function(){
 			var loading = '<div class="loadingdiv"><span></span> <span></span> <span></span> <span></span> <span></span><div></div></div>';
 			/////////////////////
@@ -91,6 +92,7 @@ block custom_header
 				$("#currentDate").html(formatDate(new Date(), '%I:%m:%s %p'));
 			}
 			
+			var nIntervId = setInterval(function(){rest_queryLedger(cb_got_ledger);}, 10000);
 			rest_queryLedger(cb_got_ledger);
 			function cb_got_ledger(e, resp){
 				if(e != null){
@@ -98,9 +100,16 @@ block custom_header
 				}
 				else{
 					buildLedger(resp);
+					if(!mouse_down) $('#leftWrap').scrollTop($('#leftWrap')[0].scrollHeight);
 				}
 			}
-			
+			var mouse_down = false;
+			$(document).on("mousedown", "#leftWrap", function(){
+				mouse_down = true;
+			});
+			$(document).on("mouseup", "#leftWrap", function(){
+				mouse_down = false;
+			});
 			
 			///////////////////////
 			//// jQuery Events ////
@@ -110,7 +119,6 @@ block custom_header
 				var port = $("input[name='port']").val();
 				var func = $(this).attr('func');
 				var args = $(this).prev().val();
-				console.log(host, args);
 				
 				var data = {
 								"chaincodeSpec": {
@@ -236,7 +244,7 @@ block custom_header
 					}
 				});*/
 			}
-		
+	
 			function rest_queryLedger(cb){
 				console.log("reading ledger");
 				var host = $("input[name='host']").val();
@@ -251,16 +259,16 @@ block custom_header
 									}
 								}
 							};
-				var resp = [];
-				for(var i=0; i < 10; i++){
+							
+				for(var i=0; i < 2; i++){
 					var temp = 	{
 									timestamp: Date.now() - 1000*(10-i)*60,
-									name: "foo()"
+									name: 'foo("' + randStr(2) + '")'
 								};
-					resp.push(temp);
+					ledger.push(temp);
 				}
 				
-				setTimeout(function(){ cb(null, resp); }, 1000);
+				setTimeout(function(){ cb(null, ledger); }, 1000);
 				/*$.ajax({
 					method: 'GET',
 					url: 'http://' + host + ':' + port + '/devops/query',
@@ -308,7 +316,6 @@ block custom_header
 			}
 			
 			function buildLedger(data){
-				console.log('?', data);
 				var html = "";
 				var current = 	'<div class="transEntry">';
 				current += 			'<div class="transDate" id="currentDate">' + formatDate(Date.now(), '%I:%m:%s %p') + '</div>';
