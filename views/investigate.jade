@@ -41,7 +41,7 @@ block custom_header
 			border:1px #fff solid;
 		}
 		.transBlock{
-			width:350px;
+			width:325px;
 			background:#5B9BD5;
 			color:#fff;
 			border:1px #41719C solid;
@@ -82,34 +82,38 @@ block custom_header
 			color: #2e6da4;
 		}
 		
-		
-		
 	script(type='text/javascript').
 		$(document).ready(function(){
-
-			function in_array(name, array){
-				for(var i in array){
-					if(array[i] == name) return true
-				}
-				return false;	
-			}
-			buildThings(bag.cc);
-			function buildThings(cc){
-				var skip = ['write', 'read', 'delete', 'init'];
-				var html = '';
-				var field = '<input class="arginput" type="text" placeholder="array of strings"/>';
-				for(var i in cc.details.func){
-					if(!in_array(cc.details.func[i].toLowerCase(), skip)){
-						html += '<div class="func">' + cc.details.func[i] + '([ ' + field + ']); </dic>'
-						html += '<button type="button" class="go" func="' + cc.details.func[i] + '"> Run </button>';
-					}
-				}
-				$("#ccWrap").append(html);
+			/////////////////////
+			//// on start up ////
+			/////////////////////
+			buildGoFunc(bag.cc);
+			$("input[name='host']").val(bag.cc.details.host);
+			$("input[name='port']").val(bag.cc.details.port);
+			setTime();
+			var nIntervId = setInterval(setTime, 1000);
+			function setTime(){
+				$("#currentDate").html(formatDate(new Date(), '%I:%m:%s %p'));
 			}
 			
+			rest_queryLedger(cb_got_ledger);
+			function cb_got_ledger(e, resp){
+				if(e != null){
+					
+				}
+				else{
+					buildLedger(resp);
+				}
+			}
+			
+			
+			///////////////////////
+			//// jQuery Events ////
+			///////////////////////
 			$(document).on("click", ".go", function(){
 				var host = $("input[name='host']").val();
 				var port = $("input[name='port']").val();
+				var func = $(this).attr('func');
 				var args = $(this).prev().val();
 				console.log(host, args);
 				
@@ -118,12 +122,12 @@ block custom_header
 									"type": "GOLANG",
 									"chaincodeID": bag.cc.details.name,
 									"ctorMsg": {
-										"function": "invoke",
+										"function": func,
 										"args": [args]
 									}
 								}
 							};
-				
+				console.log(data);
 				$.ajax({
 					method: 'GET',
 					url: 'http://' + host + ':' + port + '/devops/invoke',
@@ -139,17 +143,187 @@ block custom_header
 				
 			});
 			
-			$("input[name='host']").val(bag.cc.details.host);
-			$("input[name='port']").val(bag.cc.details.port);
-			
-			
-			//////////////////////////////// jQuery Nav ////////////////////////////
 			$(document).on("click", ".transBlock", function(){
 				var html = "";
 				html += $(this).prev().html();
 				html += " " + $(this).html();
 				$("#selectedLegend").html(html);
-			})
+				
+				rest_readNames(cb_got_names);
+				
+				function cb_got_names(e, names){
+					buildVarObjcts(names);
+				}
+			});
+			
+			$(document).on("click", ".refresh", function(){
+				var name = $(this).parent().attr("varName");
+				var me = this;
+				rest_read(name, null, cb_got_value);
+				
+				function cb_got_value(e, value){
+					console.log('got', e, value);
+					if(e != null){
+						$(me).prev("input").val('Error :(' );
+					}
+					else{
+						$(me).prev("input").val(value);
+					}
+				}
+			});
+			
+			
+			////////////////////////
+			//// HTTP Functions ////
+			////////////////////////
+			function rest_read(name, lvl, cb){
+				console.log("reading var", name);
+				var host = $("input[name='host']").val();
+				var port = $("input[name='port']").val();
+				var data = {
+								"chaincodeSpec": {
+									"type": "GOLANG",
+									"chaincodeID": bag.cc.details.name,
+									"ctorMsg": {
+										"function": "query",
+										"args": [name]
+									}
+								}
+							};
+				cb(null, "one");
+				/*$.ajax({
+					method: 'GET',
+					url: 'http://' + host + ':' + port + '/devops/query',
+					data: JSON.stringify(data),
+					contentType: 'application/json',
+					success: function(json){
+						console.log('Success', json);
+						if(cb) cb(null, json);
+					},
+					error: function(e){
+						console.log('Error', e);
+						if(cb) cb(e, null);
+					}
+				});*/
+			}
+			
+			function rest_readNames(cb){
+				console.log("reading all var names");
+				var host = $("input[name='host']").val();
+				var port = $("input[name='port']").val();
+				var data = {
+								"chaincodeSpec": {
+									"type": "GOLANG",
+									"chaincodeID": bag.cc.details.name,
+									"ctorMsg": {
+										"function": "query",
+										"args": [name]
+									}
+								}
+							};
+				cb(null, ["first", "second", "A", "B"]);
+				/*$.ajax({
+					method: 'GET',
+					url: 'http://' + host + ':' + port + '/devops/query',
+					data: JSON.stringify(data),
+					contentType: 'application/json',
+					success: function(json){
+						console.log('Success', json);
+						if(cb) cb(null, json);
+					},
+					error: function(e){
+						console.log('Error', e);
+						if(cb) cb(e, null);
+					}
+				});*/
+			}
+		
+			function rest_queryLedger(cb){
+				console.log("reading ledger");
+				var host = $("input[name='host']").val();
+				var port = $("input[name='port']").val();
+				var data = {
+								"chaincodeSpec": {
+									"type": "GOLANG",
+									"chaincodeID": bag.cc.details.name,
+									"ctorMsg": {
+										"function": "query",
+										"args": [name]
+									}
+								}
+							};
+				var resp = [];
+				for(var i=0; i < 10; i++){
+					var temp = 	{
+									timestamp: Date.now() - 1000*(10-i)*60,
+									name: "foo()"
+								};
+					resp.push(temp);
+				}
+				
+				setTimeout(function(){ cb(null, resp); }, 1000);
+				/*$.ajax({
+					method: 'GET',
+					url: 'http://' + host + ':' + port + '/devops/query',
+					data: JSON.stringify(data),
+					contentType: 'application/json',
+					success: function(json){
+						console.log('Success', json);
+						if(cb) cb(null, json);
+					},
+					error: function(e){
+						console.log('Error', e);
+						if(cb) cb(e, null);
+					}
+				});*/
+			}
+			
+			
+			////////////////////////////
+			///// Build UI Elements ////
+			////////////////////////////
+			function buildGoFunc(cc){
+				var skip = ['write', 'read', 'delete', 'init'];
+				var html = '';
+				var field = '<input class="arginput" type="text" placeholder="array of strings"/>';
+				for(var i in cc.details.func){
+					if(!in_array(cc.details.func[i].toLowerCase(), skip)){
+						html += '<div class="func">' + cc.details.func[i] + '([ ' + field + ']); </dic>'
+						html += '<button type="button" class="go" func="' + cc.details.func[i] + '"> Run </button>';
+					}
+				}
+				$("#ccWrap").append(html);
+			}
+			
+			function buildVarObjcts(names){
+				var html = "";
+				for(var i in names){
+					html += '<div varname="' + names[i] + '">' +
+								'<span> ' + names[i] + ' = </span>' +
+								'<input type="text" placeholder="???" name="var_' + names[i] + '"/>' +
+								'<span class="fa fa-refresh refresh"></span>' +
+								'<span class="fa fa-remove remove"></span>' +
+							'</div>';
+				}
+				$("#stateInnerWrap").html("").append(html);
+			}
+			
+			function buildLedger(data){
+				console.log('?', data);
+				var html = "";
+				var current = 	'<div class="transEntry">';
+				current += 			'<div class="transDate" id="currentDate">' + formatDate(Date.now(), '%I:%m:%s %p') + '</div>';
+				current += 			'<div class="transBlock selected">Current</div>';
+				current += 		'</div>';
+				for(var i in data){
+					html += '<div class="transEntry">';
+					html += 	'<div class="transDate">' + formatDate(data[i].timestamp, '%I:%m:%s %p') + '</div>';
+					html += 	'<div class="transBlock">' + data[i].name + '</div>';
+					html += '</div>';
+				}
+				html += current;
+				$("#leftWrap").html("").append(html);
+			}
 		});
 
 block content
@@ -166,100 +340,62 @@ block content
 		#innerWrap.borderMe
 			#leftWrap
 				.transEntry
-					.transDate 10:48am
+					.transDate 10:48:50 am
 					.transBlock deploy()
 				.transEntry
-					.transDate 10:48am
+					.transDate 10:48:50 am
 					.transBlock deploy()
 				.transEntry
-					.transDate 10:48am
+					.transDate 10:48:50 am
 					.transBlock deploy()
 				.transEntry
-					.transDate 10:48am
+					.transDate 10:48:50 am
 					.transBlock deploy()
 				.transEntry
-					.transDate 10:48am
+					.transDate 10:48:50 am
 					.transBlock deploy()
 				.transEntry
-					.transDate 10:48am
+					.transDate 10:48:50 am
 					.transBlock deploy()
 				.transEntry
-					.transDate 10:48am
+					.transDate 10:48:50 am
 					.transBlock deploy()
 				.transEntry
-					.transDate 10:48am
+					.transDate 10:48:50 am
 					.transBlock deploy()
 				.transEntry
-					.transDate 10:48am
+					.transDate 10:48:50 am
 					.transBlock deploy()
 				.transEntry
-					.transDate 10:48am
+					.transDate 10:48:50 am
 					.transBlock deploy()
 				.transEntry
-					.transDate 10:48am
+					.transDate 10:48:50 am
 					.transBlock deploy()
 				.transEntry
-					.transDate 10:48am
+					.transDate 10:48:50 am
 					.transBlock deploy()
 				.transEntry
-					.transDate 10:48am
+					.transDate 10:48:50 am
 					.transBlock deploy()
 				.transEntry
-					.transDate 10:48am
+					.transDate 10:48:50 am
 					.transBlock deploy()
 				.transEntry
-					.transDate 10:48am
+					.transDate 10:48:50 am
 					.transBlock deploy()
 				.transEntry
-					.transDate 10:48am
-					.transBlock deploy()
-				.transEntry
-					.transDate 10:48am
-					.transBlock deploy()
-				.transEntry
-					.transDate 10:48am
-					.transBlock deploy()
-				.transEntry
-					.transDate 10:48am
-					.transBlock deploy()
-				.transEntry
-					.transDate 10:48am
-					.transBlock deploy()
-				.transEntry
-					.transDate 10:49am
-					.transBlock deploy()
-				.transEntry
-					.transDate 10:50am
-					.transBlock deploy()
-				.transEntry
-					.transDate 10:55am
-					.transBlock deploy()
-				.transEntry
-					.transDate 10:58am
+					.transDate 10:48:50 am
 					.transBlock deploy()
 				.transEntry#current
-					.transDate 10:50am
+					.transDate#currentDate
 					.transBlock.selected Current
 					
 			#rightWrap
 				#stateWrap.borderMe
 					center
-						h2#selectedLegend 10:48: Current
-					.var
-						span A = 
-						input(type="text" placeholder="???" name="var_A")
-						.fa.fa-refresh.refresh
-						.fa.fa-remove.remove
-					.var
-						span B = 
-						input(type="text" placeholder="???" name="var_B")
-						.fa.fa-refresh.refresh
-						.fa.fa-remove.remove
-					.var
-						span C = 
-						input(type="text" placeholder="???" name="var_C")
-						.fa.fa-refresh.refresh
-						.fa.fa-remove.remove
+						h2#selectedLegend Select a Time
+					#stateInnerWrap
 	
 	br
 	
