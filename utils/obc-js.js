@@ -128,7 +128,7 @@ module.exports.load = function(url, dir, cb){
 	contract.cc.details.dir = dir;
 	
 	// Preflight checklist
-	fs.access('temp/unzip', cb_file_exists);								//does this shit exist yet?
+	fs.access('temp/unzip/' + dir, cb_file_exists);							//does this shit exist yet?
 	function cb_file_exists(e){
 		if(e != null){
 			download_it();													//nope

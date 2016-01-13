@@ -223,7 +223,7 @@ block custom_header
 									}
 								}
 							};
-				console.log(data);
+				//console.log(data);
 				
 				$.ajax({
 					method: 'POST',
@@ -373,7 +373,7 @@ block custom_header
 					contentType: 'application/json',
 					success: function(json){
 						console.log('Success - deploy (you should still wait for go)', json);
-						if(cb) setTimeout(function(){ $("input[name='cc_name']").val(json.message); cb(null, json); }, 30000);
+						if(cb) setTimeout(function(){ $("input[name='cc_name']").val(json.message); cb(null, json); }, 60000);
 					},
 					error: function(e){
 						console.log('Error - deploy', e);
@@ -388,7 +388,7 @@ block custom_header
 			///// Build UI Elements ////
 			////////////////////////////
 			function buildGoFunc(cc){
-				var skip = ['write', 'delete', 'init'];
+				var skip = ['write', 'read', 'delete', 'init'];
 				var html = '';
 				var field = '<input class="arginput" type="text" placeholder="array of strings"/>';
 				for(var i in bag.details.func){
