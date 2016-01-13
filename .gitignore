@@ -3,3 +3,4 @@
 **/.vscode
 **/temp
 **/public/logs/**
+.project
