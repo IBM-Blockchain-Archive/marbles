@@ -124,14 +124,14 @@ else console.log('Running using Developer settings');
 // 														Test Area
 // ============================================================================================================================
 var obc = require('./utils/obc-js');
-obc.network('169.53.72.250', 33032, false);						//setup network connection for rest endpoint - (host, port, ssl)
-obc.load('https://hub.jazz.net/git/averyd/cc_ex02/archive?revstr=master', 'chaincode_obc-js_demo2', cb_ready);			//parse/load chaincode
+obc.network('169.53.72.245', 33113, false);						//setup network connection for rest endpoint - (host, port, ssl)
+obc.load('https://hub.jazz.net/git/averyd/cc_ex02/archive?revstr=master', 'chaincode_obc-js_demo', cb_ready);			//parse/load chaincode
 
 function cb_ready(err, contract){
-	contract.cc.details.name = {
-									"url": "https://hub.jazz.net/git/averyd/cc_ex02/chaincode_obc-js_demo2",
-									"version": "0.0.1"
-								};
+	contract.cc.details.path = 'https://hub.jazz.net/git/averyd/cc_ex02/chaincode_obc-js_demo';
+	contract.cc.details.name = '484a65c0d87ceb7334c20b02fbc829fc1c5f910a5996ff8f65a81c5f947126dd23d68880192842a6350046404a59c1270414151b62852912828aeed289af61b3';
+	//contract.cc.details.name = "b62951cecff17590d5211082345638ec3cabbf4ca49baf3e3ee9ddb0cd4707714ddfb4306c3dbd633bee6158b92ca2dd82347eb5df12c94e3a45e7833fea007d";
+	//contract.cc.details.name = "c38ad7ee13e89382fcf39476204b0c583fc78ed28f36382f9eb5c363d737129c7ce919f969ebba04109a455a180301cfd7d20c77344c3e4cdfccdbb1c80b9502";
 	obc.save();
 	//console.log('contract details:', contract.cc.details);
 	//contract.init();

@@ -88,9 +88,10 @@ block custom_header
 			//// on start up ////
 			/////////////////////
 			buildGoFunc(bag.cc);
-			$("input[name='host']").val(bag.cc.details.host);
-			$("input[name='port']").val(bag.cc.details.port);
-			$("input[name='cc_name']").val(JSON.stringify(bag.cc.details.name));
+			$("input[name='host']").val(bag.details.host);
+			$("input[name='port']").val(bag.details.port);
+			$("input[name='cc_path']").val(bag.details.path);
+			if(bag.details.name && bag.details.name.length > 32) $("input[name='cc_name']").val(bag.details.name);
 			setTime();
 			var nIntervId = setInterval(setTime, 1000);
 			function setTime(){
@@ -122,17 +123,18 @@ block custom_header
 			$(document).on("click", ".go", function(){
 				var host = $("input[name='host']").val();
 				var port = $("input[name='port']").val();
-				var chaincodeID = JSON.parse($("input[name='cc_name']").val());
 				var func = $(this).attr('func');
 				var args = $(this).prev().val();
 				
 				var data = {
-								"chaincodeSpec": {
-									"type": "GOLANG",
-									"chaincodeID": chaincodeID,
-									"ctorMsg": {
-										"function": func,
-										"args": JSON.parse("[" + args + "]")
+								chaincodeSpec: {
+									type: "GOLANG",
+									chaincodeID: {
+										name: $("input[name='cc_path']").val(),
+									},
+									ctorMsg: {
+										function: func,
+										args: JSON.parse("[" + args + "]")
 									}
 								}
 							};
@@ -194,7 +196,12 @@ block custom_header
 			});
 			
 			$("#deploy").click(function(){
-				rest_deploy();
+				$("input[name='cc_name']").val('loading...');
+				rest_deploy(cb_wait);
+				
+				function cb_wait(e, json){
+					console.log('go - finished waiting for deploy', json);
+				}
 			});
 			
 			////////////////////////
@@ -204,18 +211,20 @@ block custom_header
 				console.log("reading var", name);
 				var host = $("input[name='host']").val();
 				var port = $("input[name='port']").val();
-				var chaincodeID = JSON.parse($("input[name='cc_name']").val());
 				var data = {
 								"chaincodeSpec": {
 									"type": "GOLANG",
-									"chaincodeID": chaincodeID,
+									"chaincodeID": {
+										name: $("input[name='cc_name']").val(),
+									},
 									"ctorMsg": {
 										"function": "query",
 										"args": [name]
 									}
 								}
 							};
-				//setTimeout(function(){ cb(null, "one"); }, 1000);
+				console.log(data);
+				
 				$.ajax({
 					method: 'POST',
 					url: 'http://' + host + ':' + port + '/devops/query',
@@ -233,14 +242,15 @@ block custom_header
 			}
 			
 			function rest_write(name, value, cb){
-				console.log("reading all var names");
+				console.log("writing var", name);
 				var host = $("input[name='host']").val();
 				var port = $("input[name='port']").val();
-				var chaincodeID = JSON.parse($("input[name='cc_name']").val());
 				var data = {
 								"chaincodeSpec": {
 									"type": "GOLANG",
-									"chaincodeID": chaincodeID,
+									"chaincodeID": {
+										name: $("input[name='cc_name']").val(),
+									},
 									"ctorMsg": {
 										"function": "write",
 										"args": [name, value]
@@ -268,11 +278,12 @@ block custom_header
 				console.log("reading all var names");
 				var host = $("input[name='host']").val();
 				var port = $("input[name='port']").val();
-				var chaincodeID = JSON.parse($("input[name='cc_name']").val());
 				var data = {
 								"chaincodeSpec": {
 									"type": "GOLANG",
-									"chaincodeID": chaincodeID,
+									"chaincodeID": {
+										name: $("input[name='cc_name']").val(),
+									},
 									"ctorMsg": {
 										"function": "readnames",
 										"args": []
@@ -300,11 +311,12 @@ block custom_header
 				console.log("reading ledger");
 				var host = $("input[name='host']").val();
 				var port = $("input[name='port']").val();
-				var chaincodeID = JSON.parse($("input[name='cc_name']").val());
 				var data = {
 								"chaincodeSpec": {
 									"type": "GOLANG",
-									"chaincodeID": chaincodeID,
+									"chaincodeID": {
+										name: $("input[name='cc_name']").val(),
+									},
 									"ctorMsg": {
 										"function": "query",
 										"args": [name]
@@ -341,27 +353,31 @@ block custom_header
 				console.log("deploying chaincode");
 				var host = $("input[name='host']").val();
 				var port = $("input[name='port']").val();
-				var chaincodeID = JSON.parse($("input[name='cc_name']").val());
-				var data = {
-								"type": "GOLANG",
-								"chaincodeID": chaincodeID,
-								"ctorMsg": {
-									"function": "init",
+				var data = 	{
+								type: "GOLANG",
+								chaincodeID: {
+									path: $("input[name='cc_path']").val()
+								},
+								ctorMsg: {
+									function: "init",
 									//"args": JSON.parse("[" + $("input[name='init_args']").val() + "]")
-									"args": ["a", "73", "b", "99"]
+									args: ["a", "72", "b", "999"]
 								}
 							};
+				console.log(data);
+				
 				$.ajax({
 					method: 'POST',
 					url: 'http://' + host + ':' + port + '/devops/deploy',
 					data: JSON.stringify(data),
 					contentType: 'application/json',
 					success: function(json){
-						console.log('Success - deploy', json);
-						if(cb) cb(null, json);
+						console.log('Success - deploy (you should still wait for go)', json);
+						if(cb) setTimeout(function(){ $("input[name='cc_name']").val(json.message); cb(null, json); }, 30000);
 					},
 					error: function(e){
 						console.log('Error - deploy', e);
+						$("input[name='cc_name']").val('error :(');
 						if(cb) cb(e, null);
 					}
 				});
@@ -375,10 +391,10 @@ block custom_header
 				var skip = ['write', 'delete', 'init'];
 				var html = '';
 				var field = '<input class="arginput" type="text" placeholder="array of strings"/>';
-				for(var i in cc.details.func){
-					if(!in_array(cc.details.func[i].toLowerCase(), skip)){
-						html += '<div class="func">' + cc.details.func[i] + '([ ' + field + ']); </dic>'
-						html += '<button type="button" class="go" func="' + cc.details.func[i] + '"> Run </button>';
+				for(var i in bag.details.func){
+					if(!in_array(bag.details.func[i].toLowerCase(), skip)){
+						html += '<div class="func">' + bag.details.func[i] + '([ ' + field + ']); </dic>'
+						html += '<button type="button" class="go" func="' + bag.details.func[i] + '"> Run </button>';
 					}
 				}
 				$("#ccWrap").append(html);
@@ -424,8 +440,9 @@ block content
 	#mainWrap
 		input(type="text" name="host" placeholder="Peer IP" style="margin-left:0;")
 		input(type="text" name="port" placeholder= "Peer Port")
-		input(type="text" name="cc_name" placeholder= "ChainCodeID" style="width:620px;")
+		input(type="text" name="cc_path" placeholder= "ChainCode Path" style="width:620px;")
 		button(type="button" style="float:none")#deploy Deploy()
+		input(type="text" name="cc_name" placeholder= "ChainCode Name" style="width:1025px; margin-left:0;")
 		
 		#innerWrap.borderMe
 			#leftWrap

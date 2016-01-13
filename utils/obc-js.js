@@ -29,8 +29,9 @@
 							host: "",								//peer to hit
 							port: "",
 							url:  "",								//direct link to .zip of chaincode
-							path: "",								//path to chaincode directory from zip
+							path: "",								//
 							name: "",								//hashed name of chaincode, deploy() will set it, else user sets it
+							dir: "",								//path to chaincode directory from zip
 							func: [],
 							vars: []
 						}
@@ -96,7 +97,7 @@ module.exports.network = function(host, port, ssl){
 // ============================================================================================================================
 module.exports.save = function(cb){
 	var dest = './temp/cc.json';
-	fs.writeFile(dest, JSON.stringify(contract), function(e){
+	fs.writeFile(dest, JSON.stringify(contract.cc), function(e){
 		if (e != null) {
 			console.log(e);
 			if(cb) cb(eFmt('fs write error', 500, e), null);
@@ -118,13 +119,13 @@ module.exports.save = function(cb){
 //		2c. Create JS function for golang function
 // 3. Call callback()
 // ============================================================================================================================
-module.exports.load = function(url, path, cb){
+module.exports.load = function(url, dir, cb){
 	var keep_looking = true;
 	var dest = './temp/file.zip';
-	var unzip_dest = './temp/unzip/' + path;
+	var unzip_dest = './temp/unzip/' + dir;
 	var https = require('https');
 	contract.cc.details.url = url;
-	contract.cc.details.path = path;
+	contract.cc.details.dir = dir;
 	
 	// Preflight checklist
 	fs.access('temp/unzip', cb_file_exists);								//does this shit exist yet?
@@ -154,7 +155,6 @@ module.exports.load = function(url, path, cb){
 		
 		function cb_downloaded(){
 			console.log('[obc-js] unzipping zip');
-			contract.cc.details.path = path;
 			
 			// Step 1.
 			//fs.createReadStream(dest).pipe(unzip.Extract({ path: 'temp/unzip' }, fs.readdir(unzip_dest, cb_got_names)));function(){ fixURLbar(item); }
@@ -226,29 +226,18 @@ function read(name, cb, lvl){						//lvl is for reading past state blocks, tbd e
 		path: '/devops/query'
 	};
 	var body = {
-					"chaincodeSpec": {
-						"type": "GOLANG",
-						"chaincodeID": contract.cc.details.name,
-						"ctorMsg": {
-							"function": "query",
-							"args": [name]
-						}
-					}
-				};
-	/*
-	var body = {
 					chaincodeSpec: {
 						type: "GOLANG",
 						chaincodeID: {
 							name: contract.cc.details.name,
-						}
+						},
 						ctorMsg: {
 							function: "query",
-							args: args
+							args: [name]
 						}
 					}
 				};
-	*/
+				
 	options.success = function(statusCode, data){
 		console.log("[obc-js] Read - success:", data);
 		if(cb) cb(null, data.OK);
@@ -269,29 +258,18 @@ function write(name, val, cb){
 		path: '/devops/invoke'
 	};
 	var body = {
-					"chaincodeSpec": {
-						"type": "GOLANG",
-						"chaincodeID": contract.cc.details.name,
-						"ctorMsg": {
-							"function": 'write',
-							"args": [name, String(val)]
-						}
-					}
-				};
-	/*
-	var body = {
 					chaincodeSpec: {
 						type: "GOLANG",
 						chaincodeID: {
 							name: contract.cc.details.name,
-						}
+						},
 						ctorMsg: {
 							function: 'write',
 							args: [name, val]
 						}
 					}
 				};
-	*/
+	
 	options.success = function(statusCode, data){
 		console.log("[obc-js] Write - success:", data);
 		if(cb) cb(null, data);
@@ -311,29 +289,18 @@ function remove(name, cb){
 		path: '/devops/invoke'
 	};
 	var body = {
-					"chaincodeSpec": {
-						"type": "GOLANG",
-						"chaincodeID": contract.cc.details.name,
-						"ctorMsg": {
-							"function": 'delete',
-							"args": [name]
-						}
-					}
-				};
-	/*
-	var body = {
 					chaincodeSpec: {
 						type: "GOLANG",
 						chaincodeID: {
 							name: contract.cc.details.name,
-						}
+						},
 						ctorMsg: {
 							function: 'delete',
 							args: [name]
 						}
 					}
 				};
-	*/
+
 	options.success = function(statusCode, data){
 		console.log("[obc-js] Remove - success:", data);
 		if(cb) cb(null, data);
@@ -349,23 +316,14 @@ function remove(name, cb){
 // deply() - deploy chaincode, optional function to run
 // ============================================================================================================================
 function deploy(func, args, cb){
-	contract.cc.details.name = {										//dsh - remove this
-									"url": "https://hub.jazz.net/git/averyd/cc_ex02/chaincode_example02",
-									"version": "0.0.6"
-								};
 	var options = {path: '/devops/deploy'};
-	var body = 	{
-					"type": "GOLANG",
-					"chaincodeID": contract.cc.details.name
-				};
-	/*
 	var body = 	{
 					type: "GOLANG",
 					chaincodeID: {
 							path: contract.cc.details.path
 						}
 				};
-	*/
+	
 	if(func) {																//if function given, run it
 		body.ctorMsg = 	{
 							"function": func,
@@ -374,8 +332,9 @@ function deploy(func, args, cb){
 	}
 	options.success = function(statusCode, data){
 		console.log("[obc-js] deploy - success:", data);
+		contract.cc.details.name = data.message;
 		if(cb){
-			setTimeout( cb(null, data), 4000);
+			setTimeout( cb(null, data), 5000);								//wait extra long, not always ready yet
 		}
 	};
 	options.failure = function(statusCode, e){
@@ -393,29 +352,18 @@ function readNames(cb, lvl){						//lvl is for reading past state blocks, tbd ex
 		path: '/devops/invoke'
 	};
 	var body = {
-					"chaincodeSpec": {
-						"type": "GOLANG",
-						"chaincodeID": contract.cc.details.name,
-						"ctorMsg": {
-							"function": "readnames",
-							"args": []
-						}
-					}
-				};
-	/*
-	var body = {
 					chaincodeSpec: {
 						type: "GOLANG",
 						chaincodeID: {
 							name: contract.cc.details.name,
-						}
+						},
 						ctorMsg: {
 							function: "readnames",
 							args: []
 						}
 					}
 				};
-	*/
+
 	options.success = function(statusCode, data){
 		console.log("[obc-js] ReadNames - success:", data);
 		if(cb) cb(null, data.OK);
@@ -444,29 +392,18 @@ function populate_go_contract(name){
 		contract[name] = function(args, cb){				//create the functions in contract obj
 			var options = {path: '/devops/invoke'};
 			var body = {
-							"chaincodeSpec": {
-								"type": "GOLANG",
-								"chaincodeID": contract.cc.details.name,
-								"ctorMsg": {
-									"function": name,
-									"args": args
-								}
-							}
-						};
-			/*
-			var body = {
 							chaincodeSpec: {
 								type: "GOLANG",
 								chaincodeID: {
 									name: contract.cc.details.name,
-								}
+								},
 								ctorMsg: {
 									function: name,
 									args: args
 								}
 							}
 						};
-			*/
+						
 			options.success = function(statusCode, data){
 				console.log("[obc-js]", name, " - success:", data);
 				if(cb) cb(null, data);
