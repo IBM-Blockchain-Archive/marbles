@@ -1,7 +1,7 @@
 {
-	"name": "iotsm-web",
+	"name": "obc-js-demo",
 	"version": "0.0.1",
-	"description": "STB",
+	"description": "A Node.js web application that demonstrates utilizing obc.js to call REST APIs on the blockchain.",
 	"main":"app.js",
 	"dependencies": {
 		"express": "4.0.0",
