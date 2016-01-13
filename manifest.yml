@@ -6,4 +6,6 @@ applications:
    path: .
    domain: stage1.mybluemix.net
    instances: 1
-   memory: 128M
+   memory: 1G
+   services:
+    - myblockchain
