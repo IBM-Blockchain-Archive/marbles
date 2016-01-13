@@ -35,7 +35,6 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 var host = (process.env.VCAP_APP_HOST || setup.SERVER.HOST);
 var port = (process.env.VCAP_APP_PORT || setup.SERVER.PORT);
 
-
 ////////  Pathing and Module Setup  ////////
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -122,6 +121,7 @@ else console.log('Running using Developer settings');
 // 														Test Area
 // ============================================================================================================================
 var obc = require('./utils/obc-js');
+
 var peers = [
     {
       "discovery_host": "169.53.72.250",
@@ -164,6 +164,14 @@ var peers = [
       "api_url": "http://169.53.72.250:33158"
     }
   ];
+
+if (process.env.VCAP_SERVICES){
+	console.log("We are running in Cloud Foundry!");
+	
+	var servicesObject = JSON.parse(process.env.VCAP_SERVICES);
+	var firstService = servicesObject['blockchain-create-staging'][0];
+	peers = firstService.credentials.peers;
+}
 obc.network(peers);																										//setup network connection for rest endpoint
 obc.load('https://hub.jazz.net/git/averyd/cc_ex02/archive?revstr=master', 'chaincode_obc-js_demo3c', cb_ready);			//parse/load chaincode
 
