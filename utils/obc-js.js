@@ -120,6 +120,23 @@ module.exports.save = function(cb){
 // ============================================================================================================================
 module.exports.load = function(url, path, cb){
 	var keep_looking = true;
+	try {
+	    // Query the entry
+	    stats = fs.lstatSync(__dirname + '/temp');
+
+	    // Is it a directory?
+	    if (stats.isDirectory()) {
+	    	console.log("The temporary directory exists.")
+	    }
+	    else
+	    {
+	    	console.log("It's a file... what?")
+	    }
+	}
+	catch (e) {
+	    console.log("Error when trying to use temp directory: " + e)
+	    fs.mkdirSync(__dirname + "/temp");
+	}
 	var dest = __dirname + '/temp/file.zip';
 	var unzip_dest = __dirname + '/temp/unzip/' + path;
 	var https = require('https');
@@ -127,7 +144,7 @@ module.exports.load = function(url, path, cb){
 	contract.cc.details.path = path;
 	
 	// Preflight checklist
-	fs.access('temp/unzip', cb_file_exists);								//does this shit exist yet?
+	fs.access(__dirname + '/temp/unzip', cb_file_exists);								//does this shit exist yet?
 	function cb_file_exists(e){
 		if(e != null){
 			download_it();													//nope
@@ -158,7 +175,7 @@ module.exports.load = function(url, path, cb){
 			
 			// Step 1.
 			//fs.createReadStream(dest).pipe(unzip.Extract({ path: 'temp/unzip' }, fs.readdir(unzip_dest, cb_got_names)));function(){ fixURLbar(item); }
-			fs.createReadStream(dest).pipe(unzip.Extract({ path: 'temp/unzip' }, setTimeout(function(){ fs.readdir(unzip_dest, cb_got_names); }, 5000)));	//this sucks, dsh replace
+			fs.createReadStream(dest).pipe(unzip.Extract({ path: __dirname + '/temp/unzip' }, setTimeout(function(){ fs.readdir(unzip_dest, cb_got_names); }, 5000)));	//this sucks, dsh replace
 		}
 	}
 	
