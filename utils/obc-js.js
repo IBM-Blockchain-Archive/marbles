@@ -95,7 +95,7 @@ module.exports.network = function(host, port, ssl){
 // EXTERNAL - save() - write contract details to a json file
 // ============================================================================================================================
 module.exports.save = function(cb){
-	var dest = './temp/cc.json';
+	var dest = __dirname + '/temp/cc.json';
 	fs.writeFile(dest, JSON.stringify(contract), function(e){
 		if (e != null) {
 			console.log(e);
@@ -120,8 +120,8 @@ module.exports.save = function(cb){
 // ============================================================================================================================
 module.exports.load = function(url, path, cb){
 	var keep_looking = true;
-	var dest = './temp/file.zip';
-	var unzip_dest = './temp/unzip/' + path;
+	var dest = __dirname + '/temp/file.zip';
+	var unzip_dest = __dirname + '/temp/unzip/' + path;
 	var https = require('https');
 	contract.cc.details.url = url;
 	contract.cc.details.path = path;
