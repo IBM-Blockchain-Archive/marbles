@@ -1,6 +1,6 @@
 ---
 applications:
-  disk_quota: 1024M
+- disk_quota: 1024M
   host: obc
   name: obc
   command: "node app.js"
