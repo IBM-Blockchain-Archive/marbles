@@ -1,3 +1,4 @@
+/* global __dirname */
 "use strict";
 /* global Buffer */
 /*******************************************************************************
@@ -96,8 +97,9 @@ module.exports.network = function(host, port, ssl){
 // EXTERNAL - save() - write contract details to a json file
 // ============================================================================================================================
 module.exports.save = function(cb){
-	var dest = './temp/cc.json';
+	var dest = __dirname + '/temp/cc.json';
 	fs.writeFile(dest, JSON.stringify(contract.cc), function(e){
+
 		if (e != null) {
 			console.log(e);
 			if(cb) cb(eFmt('fs write error', 500, e), null);
@@ -121,20 +123,24 @@ module.exports.save = function(cb){
 // ============================================================================================================================
 module.exports.load = function(url, dir, cb){
 	var keep_looking = true;
-	var dest = './temp/file.zip';
-	var unzip_dest = './temp/unzip/' + dir;
+	var temp_dest = __dirname + '/temp';										//	./temp
+	var dest = __dirname + '/temp/file.zip';									//	./temp/file.zip
+	var unzip_dest = temp_dest + '/unzip';										//	./temp/unzip
+	var unzip_cc_dest = unzip_dest + '/' + dir;									//	./temp/unzip/DIRECTORY
 	var https = require('https');
 	contract.cc.details.url = url;
 	contract.cc.details.dir = dir;
 	
 	// Preflight checklist
-	fs.access('temp/unzip/' + dir, cb_file_exists);							//does this shit exist yet?
+	try{fs.mkdirSync(temp_dest);}
+	catch(e){}
+	fs.access(unzip_cc_dest, cb_file_exists);									//does this shit exist yet?
 	function cb_file_exists(e){
 		if(e != null){
-			download_it();													//nope
+			download_it();														//nope
 		}
 		else{
-			fs.readdir(unzip_dest, cb_got_names);							//yeppers
+			fs.readdir(unzip_cc_dest, cb_got_names);							//yeppers
 		}
 	}
 
@@ -145,11 +151,11 @@ module.exports.load = function(url, dir, cb){
 		https.get(url, function(response) {
 			response.pipe(file);
 			file.on('finish', function() {
-				file.close(cb_downloaded);  								//close() is async
+				file.close(cb_downloaded);  									//close() is async
 			});
 		}).on('error', function(err) {
 			console.log('[obc-js] error');
-			fs.unlink(dest); 												//delete the file async
+			fs.unlink(dest); 													//delete the file async
 			if (cb) cb(eFmt('fs error', 500, err.message), contract);
 		});
 		
@@ -157,8 +163,8 @@ module.exports.load = function(url, dir, cb){
 			console.log('[obc-js] unzipping zip');
 			
 			// Step 1.
-			//fs.createReadStream(dest).pipe(unzip.Extract({ path: 'temp/unzip' }, fs.readdir(unzip_dest, cb_got_names)));function(){ fixURLbar(item); }
-			fs.createReadStream(dest).pipe(unzip.Extract({ path: 'temp/unzip' }, setTimeout(function(){ fs.readdir(unzip_dest, cb_got_names); }, 5000)));	//this sucks, dsh replace
+			//fs.createReadStream(dest).pipe(unzip.Extract({ path: 'temp/unzip' }, fs.readdir(unzip_cc_dest, cb_got_names)));function(){ fixURLbar(item); }
+			fs.createReadStream(dest).pipe(unzip.Extract({ path: unzip_dest }, setTimeout(function(){ fs.readdir(unzip_cc_dest, cb_got_names); }, 5000)));	//this sucks, dsh replace
 		}
 	}
 	
@@ -173,7 +179,7 @@ module.exports.load = function(url, dir, cb){
 				//GO FILES
 				if(obj[i].indexOf('.go') >= 0){
 					if(keep_looking){
-						fs.readFile(unzip_dest + '/' + obj[i], 'utf8', cb_read_go_file);
+						fs.readFile(unzip_cc_dest + '/' + obj[i], 'utf8', cb_read_go_file);
 					}
 				}
 			}
