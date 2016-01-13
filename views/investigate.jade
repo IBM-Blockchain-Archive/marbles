@@ -98,6 +98,12 @@ block custom_header
 				$("#currentDate").html(formatDate(new Date(), '%I:%m:%s %p'));
 			}
 			
+			var html = '<option value="home" selected="selected"> Select A Peer </option>';
+			for(var i in bag.details.peers){
+				html += '<option value="' + i +'">' + bag.details.peers[i].name + '</option>';
+			}
+			$("#peers").html(html);
+			
 			var nIntervId = setInterval(function(){rest_queryLedger(cb_got_ledger);}, 10000);
 			rest_queryLedger(cb_got_ledger);
 			function cb_got_ledger(e, resp){
@@ -202,6 +208,14 @@ block custom_header
 				function cb_wait(e, json){
 					console.log('go - finished waiting for deploy', json);
 				}
+			});
+			
+			$("#peers").change(function(){
+				var selected = $(this).val();
+				console.log('selected', selected);
+				$("input[name='host']").val(bag.details.peers[selected].api_host);
+				$("input[name='port']").val(bag.details.peers[selected].api_port);
+				$(this).val("home");
 			});
 			
 			////////////////////////
@@ -438,11 +452,12 @@ block content
 	
 	
 	#mainWrap
-		input(type="text" name="host" placeholder="Peer IP" style="margin-left:0;")
-		input(type="text" name="port" placeholder= "Peer Port")
+		select(style="margin-left:0;")#peers
+		input(type="text" name="host" placeholder="Peer IP" style="margin-left:0; width:100px;")
+		input(type="text" name="port" placeholder= "Peer Port" style="width:50px;")
 		input(type="text" name="cc_path" placeholder= "ChainCode Path" style="width:620px;")
 		button(type="button" style="float:none")#deploy Deploy()
-		input(type="text" name="cc_name" placeholder= "ChainCode Name" style="width:1025px; margin-left:0;")
+		input(type="text" name="cc_name" placeholder= "ChainCode Name" style="width:1035px; margin-left:0;")
 		
 		#innerWrap.borderMe
 			#leftWrap

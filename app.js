@@ -122,7 +122,49 @@ else console.log('Running using Developer settings');
 // 														Test Area
 // ============================================================================================================================
 var obc = require('./utils/obc-js');
-obc.network('169.53.72.245', 33171, false);						//setup network connection for rest endpoint - (host, port, ssl)
+var peers = [
+    {
+      "discovery_host": "169.53.72.250",
+      "discovery_port": "33153",
+      "api_host": "169.53.72.250",
+      "api_port": "33154",
+      "id": "f9c4f28a-6701-4ae2-9197-2650a8916abf_vp1",
+      "api_url": "http://169.53.72.250:33154"
+    },
+    {
+      "discovery_host": "169.53.72.245",
+      "discovery_port": "33170",
+      "api_host": "169.53.72.245",
+      "api_port": "33171",
+      "id": "f9c4f28a-6701-4ae2-9197-2650a8916abf_vp3",
+      "api_url": "http://169.53.72.245:33171"
+    },
+    {
+      "discovery_host": "169.53.72.245",
+      "discovery_port": "33168",
+      "api_host": "169.53.72.245",
+      "api_port": "33169",
+      "id": "f9c4f28a-6701-4ae2-9197-2650a8916abf_vp5",
+      "api_url": "http://169.53.72.245:33169"
+    },
+    {
+      "discovery_host": "169.53.72.250",
+      "discovery_port": "33155",
+      "api_host": "169.53.72.250",
+      "api_port": "33156",
+      "id": "f9c4f28a-6701-4ae2-9197-2650a8916abf_vp2",
+      "api_url": "http://169.53.72.250:33156"
+    },
+    {
+      "discovery_host": "169.53.72.250",
+      "discovery_port": "33157",
+      "api_host": "169.53.72.250",
+      "api_port": "33158",
+      "id": "f9c4f28a-6701-4ae2-9197-2650a8916abf_vp4",
+      "api_url": "http://169.53.72.250:33158"
+    }
+  ];
+obc.network(peers);																										//setup network connection for rest endpoint
 obc.load('https://hub.jazz.net/git/averyd/cc_ex02/archive?revstr=master', 'chaincode_obc-js_demo3c', cb_ready);			//parse/load chaincode
 
 function cb_ready(err, contract){
