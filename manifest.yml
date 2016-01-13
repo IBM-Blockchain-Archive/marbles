@@ -1,4 +1,12 @@
---- 
+---
+applications:
+  disk_quota: 1024M
+  host: obc
+  name: obc
   command: "node app.js"
-  name: obc2
-  buildpack: nodejs_buildpack
+  path: "."
+  domain: stage1.mybluemix.net
+  instances: 1
+  memory: 1024M
+  services:
+   - myblockchain
