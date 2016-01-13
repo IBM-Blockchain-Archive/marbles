@@ -1,9 +1,9 @@
 applications:
-  disk_quota: 1024M
-  host: blank
-  name: blank
-  command: node app.js
-  path: .
-  domain: mybluemix.net
-  instances: 1
-  memory: 128M
+-  disk_quota: 1024M
+   host: obc
+   name: obc
+   command: node app.js
+   path: .
+   domain: stage1.mybluemix.net
+   instances: 1
+   memory: 128M
