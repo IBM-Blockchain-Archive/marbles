@@ -1,5 +1,4 @@
 --- 
   command: "node app.js"
-  name: obc
-  services:
-   - myblockchain
+  name: obc2
+  buildpack: nodejs_buildpack
