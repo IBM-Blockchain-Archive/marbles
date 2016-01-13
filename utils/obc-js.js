@@ -1,3 +1,4 @@
+/* global __dirname */
 "use strict";
 /* global Buffer */
 /*******************************************************************************
@@ -29,8 +30,9 @@
 							host: "",								//peer to hit
 							port: "",
 							url:  "",								//direct link to .zip of chaincode
-							path: "",								//path to chaincode directory from zip
+							path: "",								//
 							name: "",								//hashed name of chaincode, deploy() will set it, else user sets it
+							dir: "",								//path to chaincode directory from zip
 							func: [],
 							vars: []
 						}
@@ -96,7 +98,8 @@ module.exports.network = function(host, port, ssl){
 // ============================================================================================================================
 module.exports.save = function(cb){
 	var dest = __dirname + '/temp/cc.json';
-	fs.writeFile(dest, JSON.stringify(contract), function(e){
+	fs.writeFile(dest, JSON.stringify(contract.cc), function(e){
+
 		if (e != null) {
 			console.log(e);
 			if(cb) cb(eFmt('fs write error', 500, e), null);
@@ -118,39 +121,26 @@ module.exports.save = function(cb){
 //		2c. Create JS function for golang function
 // 3. Call callback()
 // ============================================================================================================================
-module.exports.load = function(url, path, cb){
+module.exports.load = function(url, dir, cb){
 	var keep_looking = true;
-	try {
-	    // Query the entry
-	    stats = fs.lstatSync(__dirname + '/temp');
-
-	    // Is it a directory?
-	    if (stats.isDirectory()) {
-	    	console.log("The temporary directory exists.")
-	    }
-	    else
-	    {
-	    	console.log("It's a file... what?")
-	    }
-	}
-	catch (e) {
-	    console.log("Error when trying to use temp directory: " + e)
-	    fs.mkdirSync(__dirname + "/temp");
-	}
-	var dest = __dirname + '/temp/file.zip';
-	var unzip_dest = __dirname + '/temp/unzip/' + path;
+	var temp_dest = __dirname + '/temp';										//	./temp
+	var dest = __dirname + '/temp/file.zip';									//	./temp/file.zip
+	var unzip_dest = temp_dest + '/unzip';										//	./temp/unzip
+	var unzip_cc_dest = unzip_dest + '/' + dir;									//	./temp/unzip/DIRECTORY
 	var https = require('https');
 	contract.cc.details.url = url;
-	contract.cc.details.path = path;
+	contract.cc.details.dir = dir;
 	
 	// Preflight checklist
-	fs.access(__dirname + '/temp/unzip', cb_file_exists);								//does this shit exist yet?
+	try{fs.mkdirSync(temp_dest);}
+	catch(e){}
+	fs.access(unzip_cc_dest, cb_file_exists);									//does this shit exist yet?
 	function cb_file_exists(e){
 		if(e != null){
-			download_it();													//nope
+			download_it();														//nope
 		}
 		else{
-			fs.readdir(unzip_dest, cb_got_names);							//yeppers
+			fs.readdir(unzip_cc_dest, cb_got_names);							//yeppers
 		}
 	}
 
@@ -161,21 +151,20 @@ module.exports.load = function(url, path, cb){
 		https.get(url, function(response) {
 			response.pipe(file);
 			file.on('finish', function() {
-				file.close(cb_downloaded);  								//close() is async
+				file.close(cb_downloaded);  									//close() is async
 			});
 		}).on('error', function(err) {
 			console.log('[obc-js] error');
-			fs.unlink(dest); 												//delete the file async
+			fs.unlink(dest); 													//delete the file async
 			if (cb) cb(eFmt('fs error', 500, err.message), contract);
 		});
 		
 		function cb_downloaded(){
 			console.log('[obc-js] unzipping zip');
-			contract.cc.details.path = path;
 			
 			// Step 1.
-			//fs.createReadStream(dest).pipe(unzip.Extract({ path: 'temp/unzip' }, fs.readdir(unzip_dest, cb_got_names)));function(){ fixURLbar(item); }
-			fs.createReadStream(dest).pipe(unzip.Extract({ path: __dirname + '/temp/unzip' }, setTimeout(function(){ fs.readdir(unzip_dest, cb_got_names); }, 5000)));	//this sucks, dsh replace
+			//fs.createReadStream(dest).pipe(unzip.Extract({ path: 'temp/unzip' }, fs.readdir(unzip_cc_dest, cb_got_names)));function(){ fixURLbar(item); }
+			fs.createReadStream(dest).pipe(unzip.Extract({ path: unzip_dest }, setTimeout(function(){ fs.readdir(unzip_cc_dest, cb_got_names); }, 5000)));	//this sucks, dsh replace
 		}
 	}
 	
@@ -190,7 +179,7 @@ module.exports.load = function(url, path, cb){
 				//GO FILES
 				if(obj[i].indexOf('.go') >= 0){
 					if(keep_looking){
-						fs.readFile(unzip_dest + '/' + obj[i], 'utf8', cb_read_go_file);
+						fs.readFile(unzip_cc_dest + '/' + obj[i], 'utf8', cb_read_go_file);
 					}
 				}
 			}
@@ -243,29 +232,18 @@ function read(name, cb, lvl){						//lvl is for reading past state blocks, tbd e
 		path: '/devops/query'
 	};
 	var body = {
-					"chaincodeSpec": {
-						"type": "GOLANG",
-						"chaincodeID": contract.cc.details.name,
-						"ctorMsg": {
-							"function": "query",
-							"args": [name]
-						}
-					}
-				};
-	/*
-	var body = {
 					chaincodeSpec: {
 						type: "GOLANG",
 						chaincodeID: {
 							name: contract.cc.details.name,
-						}
+						},
 						ctorMsg: {
 							function: "query",
-							args: args
+							args: [name]
 						}
 					}
 				};
-	*/
+				
 	options.success = function(statusCode, data){
 		console.log("[obc-js] Read - success:", data);
 		if(cb) cb(null, data.OK);
@@ -286,29 +264,18 @@ function write(name, val, cb){
 		path: '/devops/invoke'
 	};
 	var body = {
-					"chaincodeSpec": {
-						"type": "GOLANG",
-						"chaincodeID": contract.cc.details.name,
-						"ctorMsg": {
-							"function": 'write',
-							"args": [name, String(val)]
-						}
-					}
-				};
-	/*
-	var body = {
 					chaincodeSpec: {
 						type: "GOLANG",
 						chaincodeID: {
 							name: contract.cc.details.name,
-						}
+						},
 						ctorMsg: {
 							function: 'write',
 							args: [name, val]
 						}
 					}
 				};
-	*/
+	
 	options.success = function(statusCode, data){
 		console.log("[obc-js] Write - success:", data);
 		if(cb) cb(null, data);
@@ -328,29 +295,18 @@ function remove(name, cb){
 		path: '/devops/invoke'
 	};
 	var body = {
-					"chaincodeSpec": {
-						"type": "GOLANG",
-						"chaincodeID": contract.cc.details.name,
-						"ctorMsg": {
-							"function": 'delete',
-							"args": [name]
-						}
-					}
-				};
-	/*
-	var body = {
 					chaincodeSpec: {
 						type: "GOLANG",
 						chaincodeID: {
 							name: contract.cc.details.name,
-						}
+						},
 						ctorMsg: {
 							function: 'delete',
 							args: [name]
 						}
 					}
 				};
-	*/
+
 	options.success = function(statusCode, data){
 		console.log("[obc-js] Remove - success:", data);
 		if(cb) cb(null, data);
@@ -366,23 +322,14 @@ function remove(name, cb){
 // deply() - deploy chaincode, optional function to run
 // ============================================================================================================================
 function deploy(func, args, cb){
-	contract.cc.details.name = {										//dsh - remove this
-									"url": "https://hub.jazz.net/git/averyd/cc_ex02/chaincode_example02",
-									"version": "0.0.6"
-								};
 	var options = {path: '/devops/deploy'};
-	var body = 	{
-					"type": "GOLANG",
-					"chaincodeID": contract.cc.details.name
-				};
-	/*
 	var body = 	{
 					type: "GOLANG",
 					chaincodeID: {
 							path: contract.cc.details.path
 						}
 				};
-	*/
+	
 	if(func) {																//if function given, run it
 		body.ctorMsg = 	{
 							"function": func,
@@ -391,8 +338,9 @@ function deploy(func, args, cb){
 	}
 	options.success = function(statusCode, data){
 		console.log("[obc-js] deploy - success:", data);
+		contract.cc.details.name = data.message;
 		if(cb){
-			setTimeout( cb(null, data), 4000);
+			setTimeout( cb(null, data), 5000);								//wait extra long, not always ready yet
 		}
 	};
 	options.failure = function(statusCode, e){
@@ -410,29 +358,18 @@ function readNames(cb, lvl){						//lvl is for reading past state blocks, tbd ex
 		path: '/devops/invoke'
 	};
 	var body = {
-					"chaincodeSpec": {
-						"type": "GOLANG",
-						"chaincodeID": contract.cc.details.name,
-						"ctorMsg": {
-							"function": "readnames",
-							"args": []
-						}
-					}
-				};
-	/*
-	var body = {
 					chaincodeSpec: {
 						type: "GOLANG",
 						chaincodeID: {
 							name: contract.cc.details.name,
-						}
+						},
 						ctorMsg: {
 							function: "readnames",
 							args: []
 						}
 					}
 				};
-	*/
+
 	options.success = function(statusCode, data){
 		console.log("[obc-js] ReadNames - success:", data);
 		if(cb) cb(null, data.OK);
@@ -461,29 +398,18 @@ function populate_go_contract(name){
 		contract[name] = function(args, cb){				//create the functions in contract obj
 			var options = {path: '/devops/invoke'};
 			var body = {
-							"chaincodeSpec": {
-								"type": "GOLANG",
-								"chaincodeID": contract.cc.details.name,
-								"ctorMsg": {
-									"function": name,
-									"args": args
-								}
-							}
-						};
-			/*
-			var body = {
 							chaincodeSpec: {
 								type: "GOLANG",
 								chaincodeID: {
 									name: contract.cc.details.name,
-								}
+								},
 								ctorMsg: {
 									function: name,
 									args: args
 								}
 							}
 						};
-			*/
+						
 			options.success = function(statusCode, data){
 				console.log("[obc-js]", name, " - success:", data);
 				if(cb) cb(null, data);

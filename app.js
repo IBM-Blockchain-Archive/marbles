@@ -103,8 +103,6 @@ if(process.env.PRODUCTION) console.log('Running using Production settings');
 else console.log('Running using Developer settings');
 
 
-console.log("Test simple change 2.")
-
 // ============================================================================================================================
 // ============================================================================================================================
 // ============================================================================================================================
@@ -124,14 +122,12 @@ console.log("Test simple change 2.")
 // 														Test Area
 // ============================================================================================================================
 var obc = require('./utils/obc-js');
-obc.network('169.53.72.250', 33032, false);						//setup network connection for rest endpoint - (host, port, ssl)
-obc.load('https://hub.jazz.net/git/averyd/cc_ex02/archive?revstr=master', 'chaincode_obc-js_demo2', cb_ready);			//parse/load chaincode
+obc.network('169.53.72.245', 33171, false);						//setup network connection for rest endpoint - (host, port, ssl)
+obc.load('https://hub.jazz.net/git/averyd/cc_ex02/archive?revstr=master', 'chaincode_obc-js_demo3c', cb_ready);			//parse/load chaincode
 
 function cb_ready(err, contract){
-	contract.cc.details.name = {
-									"url": "https://hub.jazz.net/git/averyd/cc_ex02/chaincode_obc-js_demo2",
-									"version": "0.0.1"
-								};
+	contract.cc.details.path = 'https://hub.jazz.net/git/averyd/cc_ex02/chaincode_obc-js_demo3c';
+	contract.cc.details.name = '4b8174e261b3710f03fd63604af076e3a4efb20c49d642270db9784abd86562b8a3fbcf754c64f89086abd86d1fc670b4831e2462e23ba8c16c824f550f05a69';
 	obc.save();
 	//console.log('contract details:', contract.cc.details);
 	//contract.init();
