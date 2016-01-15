@@ -168,7 +168,7 @@ block custom_header
 					obj = JSON.parse(str);
 				}
 				
-				if(name) obj.cc.names.push(name);
+				if(name && !in_array(name, obj.cc.names)) obj.cc.names.push(name);			//only add if it doesn't exist yet
 				window.localStorage.setItem(lsKey, JSON.stringify(obj));					//save new one
 				build_cc_options(obj.cc);
 			}
@@ -179,35 +179,54 @@ block custom_header
 			$(document).on("click", ".go", function(){
 				var host = $("input[name='host']").val();
 				var port = $("input[name='port']").val();
-				var func = $(this).attr('func');
+				var func = $(this).attr('func').toLowerCase();
 				var args = $(this).prev().val();
 				
 				var data = {
+								"chaincodeSpec": {
+									"type": "GOLANG",
+									"chaincodeID": {
+										name: $("input[name='cc_name']").val(),
+									},
+									"ctorMsg": {
+										"function": func,
+										"args": JSON.parse("[" + args + "]")
+									}
+								}
+							};
+				/*var data2 = {
 								chaincodeSpec: {
 									type: "GOLANG",
 									chaincodeID: {
-										name: $("input[name='cc_path']").val(),
+										name: $("input[name='cc_name']").val(),
 									},
 									ctorMsg: {
 										function: func,
 										args: JSON.parse("[" + args + "]")
 									}
 								}
-							};
-				console.log(data);
-				$.ajax({
-					method: 'POST',
-					url: 'http://' + host + ':' + port + '/devops/invoke',
-					data: JSON.stringify(data),
-					contentType: 'application/json',
-					success: function(json){
-						console.log('Success', json);
-					},
-					error: function(e){
-						console.log('Error', e);
-					}
-				});
-				
+							};*/
+				try{
+					console.log("invoking func", func);
+					//console.log("invoking func1", JSON.stringify(data);
+					//console.log("invoking func2", JSON.stringify(data2);
+					
+					$.ajax({
+						method: 'POST',
+						url: 'http://' + host + ':' + port + '/devops/invoke',
+						data: JSON.stringify(data),
+						contentType: 'application/json',
+						success: function(json){
+							console.log('Success', json);
+						},
+						error: function(e){
+							console.log('Error', e);
+						}
+					});
+				}
+				catch(e){
+					console.log('ERROR you done messed up - body was not vaild json');
+				}
 			});
 			
 			$(document).on("click", ".transBlock", function(){
@@ -349,7 +368,19 @@ block custom_header
 									}
 								}
 							};
-
+				
+				/*var data = {
+								"chaincodeSpec": {
+									"type": "GOLANG",
+									"chaincodeID": {
+										name: $("input[name='cc_name']").val(),
+									},
+									"ctorMsg": {
+										"function": "test",
+										"args": [name, value]
+									}
+								}
+							};*/
 				$.ajax({
 					method: 'POST',
 					url: 'http://' + host + ':' + port + '/devops/invoke',
