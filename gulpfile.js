@@ -39,7 +39,7 @@ gulp.task('watch-jade', ['build-jade'], function () {
 });
 gulp.task('watch-server', ['server'], function () {
 	gulp.watch('./routes/**/*.js', ['server']);
-	gulp.watch(['./utils/**/*.js', '!./utils/temp/**'], ['server']);
+	gulp.watch(['./utils/**/*.js', '!./.obc-cache/**'], ['server']);
 	gulp.watch('./setup.js', ['server']);
 	gulp.watch('./app.js', ['server']);
 });
