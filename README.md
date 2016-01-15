@@ -76,4 +76,5 @@ This is a asset transfer and asset permission example.  Specifically for cars.
 
 
 ###Junk NOtes:
-npm install git+ssh://git@github.ibm.com:openblockchain/obc-js.git 
+npm install git+ssh://git@github.ibm.com:openblockchain/obc-js.git
+http://obchain.com:3000/api/peer/#network_id_peer_id/chaincode/#cc_name/logs
