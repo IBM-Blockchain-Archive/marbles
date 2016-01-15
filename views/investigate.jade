@@ -98,12 +98,26 @@ block custom_header
 				$("#currentDate").html(formatDate(new Date(), '%I:%m:%s %p'));
 			}
 			
+			//build peer options
 			var html = '<option value="home" selected="selected"> Select A Peer </option>';
 			for(var i in bag.details.peers){
 				html += '<option value="' + i +'">' + bag.details.peers[i].name + '</option>';
 			}
 			$("#peers").html(html);
 			
+			//build cc options
+			var test = [];
+			test.push('4b8174e261b3710f03fd63604af076e3a4efb20c49d642270db9784abd86562b8a3fbcf754c64f89086abd86d1fc670b4831e2462e23ba8c16c824f550f05a69');
+			test.push('c38ad7ee13e89382fcf39476204b0c583fc78ed28f36382f9eb5c363d737129c7ce919f969ebba04109a455a180301cfd7d20c77344c3e4cdfccdbb1c80b9502');
+			var html = '<option value="nope" selected="selected"> Select A ChainCode </option>';
+			for(var i in test){
+				var len = 8;
+				var cc_name = test[i].substring(0, len) + '...' + test[i].substring(test[i].length-len);
+				html += '<option value="' + test[i] +'">' + cc_name + '</option>';
+			}
+			$("#chaincodes").html(html);
+			
+			/*1/14/2016 - removed b/c in the way for now
 			var nIntervId = setInterval(function(){rest_queryLedger(cb_got_ledger);}, 10000);
 			rest_queryLedger(cb_got_ledger);
 			function cb_got_ledger(e, resp){
@@ -122,6 +136,7 @@ block custom_header
 			$(document).on("mouseup", "#leftWrap", function(){
 				mouse_down = false;
 			});
+			*/
 			
 			///////////////////////
 			//// jQuery Events ////
@@ -197,6 +212,10 @@ block custom_header
 				rest_read($("input[name='read_name']").val());
 			});
 			
+			$("#readall").click(function(){
+				rest_read_all_peers($("input[name='read_name']").val());
+			});
+			
 			$("#write").click(function(){
 				rest_write($("input[name='write_name']").val(), $("input[name='write_val']").val());
 			});
@@ -215,7 +234,13 @@ block custom_header
 				console.log('selected', selected);
 				$("input[name='host']").val(bag.details.peers[selected].api_host);
 				$("input[name='port']").val(bag.details.peers[selected].api_port);
-				$(this).val("home");
+				//$(this).val("home");
+			});
+			
+			$("#chaincodes").change(function(){
+				var selected = $(this).val();
+				console.log('selected', selected);
+				$("input[name='cc_name']").val(selected);
 			});
 			
 			////////////////////////
@@ -278,11 +303,11 @@ block custom_header
 					data: JSON.stringify(data),
 					contentType: 'application/json',
 					success: function(json){
-						console.log('Success - readNames', json);
+						console.log('Success - write', json);
 						if(cb) cb(null, json);
 					},
 					error: function(e){
-						console.log('Error - readNames', e);
+						console.log('Error - write', e);
 						if(cb) cb(e, null);
 					}
 				});
@@ -397,6 +422,43 @@ block custom_header
 				});
 			}
 			
+			function rest_read_all_peers(name, lvl, cb){
+				console.log("reading var", name);
+				var host = $("input[name='host']").val();
+				var port = $("input[name='port']").val();
+				var data = {
+								"chaincodeSpec": {
+									"type": "GOLANG",
+									"chaincodeID": {
+										name: $("input[name='cc_name']").val(),
+									},
+									"ctorMsg": {
+										"function": "query",
+										"args": [name]
+									}
+								}
+							};
+				//console.log(data);
+				
+				for(var i in bag.details.peers){
+					$.ajax({
+						method: 'POST',
+						url: 'http://' + bag.details.peers[i].api_host + ':' + bag.details.peers[i].api_port + '/devops/query',
+						data: JSON.stringify(data),
+						peer_name: bag.details.peers[i].name,
+						contentType: 'application/json',
+						success: function(json){
+							console.log('Success - read all', this.peer_name, json);
+							if(cb) cb(null, json);
+						},
+						error: function(e){
+							console.log('Error - read all', this.peer_name, e);
+							if(cb) cb(e, null);
+						}
+					});
+				}
+			}
+			
 			
 			////////////////////////////
 			///// Build UI Elements ////
@@ -408,7 +470,8 @@ block custom_header
 				for(var i in bag.details.func){
 					if(!in_array(bag.details.func[i].toLowerCase(), skip)){
 						html += '<div class="func">' + bag.details.func[i] + '([ ' + field + ']); </dic>'
-						html += '<button type="button" class="go" func="' + bag.details.func[i] + '"> Run </button>';
+						//html += '<button type="button" class="goall" func="' + bag.details.func[i] + '"> Run All </button>';
+						html += '<button type="button" class="go" func="' + bag.details.func[i] + '"> Run </button>&nbsp;&nbsp;';
 					}
 				}
 				$("#ccWrap").append(html);
@@ -457,9 +520,11 @@ block content
 		input(type="text" name="port" placeholder= "Peer Port" style="width:50px;")
 		input(type="text" name="cc_path" placeholder= "ChainCode Path" style="width:620px;")
 		button(type="button" style="float:none")#deploy Deploy()
-		input(type="text" name="cc_name" placeholder= "ChainCode Name" style="width:1035px; margin-left:0;")
 		
-		#innerWrap.borderMe
+		select(style="margin-left:0;")#chaincodes
+		input(type="text" name="cc_name" placeholder= "ChainCode Name" style="width:900px; margin-left:0;")
+		
+		#innerWrap.borderMe(style="display:none;")
 			#leftWrap
 				center.
 					<div class="loadingdiv">
@@ -489,6 +554,7 @@ block content
 				input(type="text" name="read_name" placeholder="var name")
 				span ); 
 				button(type="button")#read Run
+				button(type="button" style="margin-right:10px;")#readall Run All
 			
 			.func 
 				span Write (
