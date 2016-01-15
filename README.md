@@ -1,7 +1,6 @@
 #OBC - Javascript Demo
 
-- this is a whole node project atm.  obc-js can be found in /utils/obc-js.js
-- examples using it in app.js near bottom
+- examples of using sdk are in app.js near bottom
 
 Run:
 
@@ -52,20 +51,20 @@ This is a asset transfer and asset permission example.  Specifically for cars.
 
 ##ChainCode / SDK To Do:
 - [x] Write("name", "val", cb);
-- [ ] ReadNames(cb)
-- [ ] init_person("user id", "full name", "address", "pub key");
-- [ ] init_car("vin #", "year", "make", "model", "user id");
-- [ ] attach_license("vin #", "license #", "user id"); 									//-user id is person performing action
-- [ ] get_permissions("vin #", "user id");
-- [ ] set_user_perms("vin #", "user id", "perm");
+- [?] ReadNames(cb)
+- [?] init_person("user id", "full name", "address", "pub key");
+- [?] init_car("vin #", "year", "make", "model", "user id");
+- [?] attach_license("vin #", "license #", "user id"); 									//-user id is person performing action
+- [?] get_permissions("vin #", "user id");
+- [?] set_user_perms("vin #", "user id", "perm");
 - [ ] need multi var read in sdk! ie read(["car1", "car2"]); ... what if we do a lot here, like SQL syntax?
-- [ ] remember the name of all the saved vars in cc, and export this list so sdk can get it
+- [?] remember the name of all the saved vars in cc, and export this list so sdk can get it
 - [ ] check permissions of requesting user in cc
 - [ ] verify user identityf, ie public private key stuff
-- [ ] website to test cc, real basic
+- [x] website to test cc, real basic
 - [ ] demo app website
-- [ ] make investigator use sdk code, which means auto generate rest api in sdk
-- [ ] make sdk proper npm module
+- [x] make sdk proper npm module
+- [ ] change downloading zip to git clone
 
 
 ###ChainCode Notes:
