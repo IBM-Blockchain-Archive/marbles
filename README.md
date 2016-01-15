@@ -72,3 +72,9 @@ This is a asset transfer and asset permission example.  Specifically for cars.
 1. Due to performance issues, we probably want resuable chaincode contracts.  ie 1 chaincode describe/constrains multiple people assets. ie ie many people and cars exist in 1 chaincode
 1. Any functionality that parties need to agree on should be in the chaincode.  ie do not move it to the application b/c this then the moving parts beomce unenforceable.
 1. Chaincode should keep track of all key's that get their state saved.  Have init clear these
+
+
+
+
+###Junk NOtes:
+npm install git+ssh://git@github.ibm.com:openblockchain/obc-js.git 
