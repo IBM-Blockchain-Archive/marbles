@@ -25,7 +25,7 @@ var b64     = require("../utils/b64.js");
 router.route("/old").get(function(req, res){
 	var cc = {};
 	try{
-		cc = require('../utils/temp/cc.json');
+		cc = require('../node_modules/obc-js/temp/cc.json');
 	}
 	catch(e){
 		console.log('error loading cc.json', e);
@@ -40,7 +40,7 @@ router.route("/old").get(function(req, res){
 router.route("/").get(function(req, res){
 	var cc = {};
 	try{
-		cc = require('../utils/temp/cc.json');
+		cc = require('../node_modules/obc-js/temp/cc.json');
 	}
 	catch(e){
 		console.log('error loading cc.json', e);
