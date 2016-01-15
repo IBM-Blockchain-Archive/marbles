@@ -80,6 +80,11 @@ block custom_header
 			padding:5px;
 		}
 		
+		#delccname{
+			cursor:pointer;
+			padding:6px;
+		}
+		
 	script(type='text/javascript').
 		var ledger = [];
 		$(document).ready(function(){
@@ -105,17 +110,7 @@ block custom_header
 			}
 			$("#peers").html(html);
 			
-			//build cc options
-			var test = [];
-			test.push('4b8174e261b3710f03fd63604af076e3a4efb20c49d642270db9784abd86562b8a3fbcf754c64f89086abd86d1fc670b4831e2462e23ba8c16c824f550f05a69');
-			test.push('c38ad7ee13e89382fcf39476204b0c583fc78ed28f36382f9eb5c363d737129c7ce919f969ebba04109a455a180301cfd7d20c77344c3e4cdfccdbb1c80b9502');
-			var html = '<option value="nope" selected="selected"> Select A ChainCode </option>';
-			for(var i in test){
-				var len = 8;
-				var cc_name = test[i].substring(0, len) + '...' + test[i].substring(test[i].length-len);
-				html += '<option value="' + test[i] +'">' + cc_name + '</option>';
-			}
-			$("#chaincodes").html(html);
+			
 			
 			/*1/14/2016 - removed b/c in the way for now
 			var nIntervId = setInterval(function(){rest_queryLedger(cb_got_ledger);}, 10000);
@@ -137,6 +132,46 @@ block custom_header
 				mouse_down = false;
 			});
 			*/
+
+			//localStorage.clear();
+			var lsKey = 'cc_investigator';
+			var obj = load_ls();
+			if(obj.cc && obj.cc.names){
+				build_cc_options(obj.cc);
+			}
+			
+			function load_ls(){
+				if(window.localStorage) {
+					var str = window.localStorage.getItem(lsKey);
+					var obj = {};
+					if(!str){
+						//obj.cc = {names: []};
+						//obj.cc.names.push('4b8174e261b3710f03fd63604af076e3a4efb20c49d642270db9784abd86562b8a3fbcf754c64f89086abd86d1fc670b4831e2462e23ba8c16c824f550f05a69');
+						//obj.cc.names.push('c38ad7ee13e89382fcf39476204b0c583fc78ed28f36382f9eb5c363d737129c7ce919f969ebba04109a455a180301cfd7d20c77344c3e4cdfccdbb1c80b9502');
+						//window.localStorage.setItem(lsKey, JSON.stringify(obj));					//save new one
+					}
+					else{
+						obj = JSON.parse(str);
+						console.log('local storage', obj);
+						return obj;
+					}
+				}
+			}
+			
+			function store_cc_name(name){
+				var str = window.localStorage.getItem(lsKey);
+				var obj = {};
+				if(!str){
+					obj.cc = {names: []};
+				}
+				else{
+					obj = JSON.parse(str);
+				}
+				
+				if(name) obj.cc.names.push(name);
+				window.localStorage.setItem(lsKey, JSON.stringify(obj));					//save new one
+				build_cc_options(obj.cc);
+			}
 			
 			///////////////////////
 			//// jQuery Events ////
@@ -241,6 +276,24 @@ block custom_header
 				var selected = $(this).val();
 				console.log('selected', selected);
 				$("input[name='cc_name']").val(selected);
+			});
+			
+			$("#delccname").click(function(){
+				var obj = load_ls();
+				var name = $("input[name='cc_name']").val();
+				if(name && name.length > 1){
+					for(var i in obj.cc.names){
+						if(obj.cc.names[i] == name){
+							console.log('removing', name);
+							obj.cc.names.splice(i, 1);
+							window.localStorage.setItem(lsKey, JSON.stringify(obj));
+							
+							build_cc_options(obj.cc);
+							$("input[name='cc_name']").val("");
+							break;
+						}
+					}
+				}
 			});
 			
 			////////////////////////
@@ -412,6 +465,7 @@ block custom_header
 					contentType: 'application/json',
 					success: function(json){
 						console.log('Success - deploy (you should still wait for go)', json);
+						store_cc_name(json.message);
 						if(cb) setTimeout(function(){ $("input[name='cc_name']").val(json.message); cb(null, json); }, 60000);
 					},
 					error: function(e){
@@ -505,6 +559,17 @@ block custom_header
 				html += current;
 				$("#leftWrap").html("").append(html);
 			}
+			
+			function build_cc_options(data){
+				//build cc options
+				var html = '<option value="nope" selected="selected"> Select A ChainCode </option>';
+				for(var i in data.names){
+					var len = 8;
+					var cc_name = data.names[i].substring(0, len) + '...' + data.names[i].substring(data.names[i].length-len);
+					html += '<option value="' + data.names[i] +'">' + cc_name + '</option>';
+				}
+				$("#chaincodes").html(html);
+			}
 		});
 
 block content
@@ -523,6 +588,7 @@ block content
 		
 		select(style="margin-left:0;")#chaincodes
 		input(type="text" name="cc_name" placeholder= "ChainCode Name" style="width:900px; margin-left:0;")
+		span.fa.fa-remove#delccname
 		
 		#innerWrap.borderMe(style="display:none;")
 			#leftWrap
