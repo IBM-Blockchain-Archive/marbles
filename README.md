@@ -1,5 +1,6 @@
-#OBC - Javascript Demo
+#Velocity <div style="font-size:12px;">an NBM Company</div>
 
+##OBC - Javascript Demo
 - examples of using sdk are in app.js near bottom
 
 Run:
@@ -13,6 +14,10 @@ Alternative Run:
 	> npm install
 	> node app.js
 	
+##Projects Contents
+1. sdk, obc-js.js
+1. chaincode investigator
+1. obc demo
 	
 ##Demo Description
 This is a asset transfer and asset permission example.  Specifically for cars.
@@ -67,6 +72,11 @@ This is a asset transfer and asset permission example.  Specifically for cars.
 - [ ] change downloading zip to git clone
 
 
+###NC Car Transfer Notes:
+1. need proof of insurance
+1. form of id
+1. money
+
 ###ChainCode Notes:
 1. Due to performance issues, we probably want resuable chaincode contracts.  ie 1 chaincode describe/constrains multiple people assets. ie ie many people and cars exist in 1 chaincode
 1. Any functionality that parties need to agree on should be in the chaincode.  ie do not move it to the application b/c this then the moving parts beomce unenforceable.
@@ -75,6 +85,7 @@ This is a asset transfer and asset permission example.  Specifically for cars.
 
 
 
-###Junk NOtes:
-npm install git+ssh://git@github.ibm.com:openblockchain/obc-js.git
-http://obchain.com:3000/api/peer/#network_id_peer_id/chaincode/#cc_name/logs
+###Junk Notes:
+- npm install git+ssh://git@github.ibm.com:openblockchain/obc-js.git
+- http://obchain.com:3000/api/peer/#network_id_peer_id/chaincode/#cc_name/logs
+- National Business Merchandise
