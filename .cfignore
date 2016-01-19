@@ -1,6 +1,6 @@
 **/launchConfigurations
 **/node_modules
-!node_modules/obc-js
+!**/node_modules/obc-js
 **/.vscode
 **/public/logs/**
 **/temp
