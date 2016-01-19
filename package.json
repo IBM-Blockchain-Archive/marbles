@@ -22,8 +22,6 @@
 		"hashids": "1.0.2",
 		"nano":"6.1.3",
 		"unzip2":"0.2.5",
-		"obc-js": "git+ssh://git@github.ibm.com:openblockchain/obc-js.git"
-
 	},
 	"engines": {
 		"node": "0.12.0"
