@@ -1,0 +1,1 @@
+cmd_Release/obj.target/vendor/http_parser/http_parser.a := rm -f Release/obj.target/vendor/http_parser/http_parser.a && ar crs Release/obj.target/vendor/http_parser/http_parser.a Release/obj.target/http_parser/vendor/http_parser/http_parser.o
