@@ -59,9 +59,9 @@ var tempDirectory = path.join(__dirname, "./temp");								//	./temp
 // ============================================================================================================================
 obc.prototype.load = function(options, cb) {	
 	var keep_looking = true;
-	var dest = path.join(tempDirectory,  '/file.zip');							//	./temp/file.zip
+	var zip_dest = path.join(tempDirectory,  '/file.zip');							//	./temp/file.zip
 	var unzip_dest = path.join(tempDirectory,  '/unzip');						//	./temp/unzip
-	var unzip_cc_dest = path.join(unzip_dest, '/', options.dir);						//	./temp/unzip/DIRECTORY
+	var unzip_cc_dest = path.join(unzip_dest, '/', options.dir);				//	./temp/unzip/DIRECTORY
 	contract.cc.details.url = options.zip_url;
 	contract.cc.details.dir = options.dir;
 	contract.cc.details.path = options.git_url;
@@ -82,7 +82,7 @@ obc.prototype.load = function(options, cb) {
 	// Step 0.
 	function download_it(){
 		console.log('[obc-js] downloading zip');
-		var file = fs.createWriteStream(dest);
+		var file = fs.createWriteStream(zip_dest);
 		https.get(options.zip_url, function(response) {
 			response.pipe(file);
 			file.on('finish', function() {
@@ -90,7 +90,7 @@ obc.prototype.load = function(options, cb) {
 			});
 		}).on('error', function(err) {
 			console.log('[obc-js] error');
-			fs.unlink(dest); 													//delete the file async
+			fs.unlink(zip_dest); 													//delete the file async
 			if (cb) cb(eFmt('fs error', 500, err.message), contract);
 		});
 	}
@@ -99,7 +99,7 @@ obc.prototype.load = function(options, cb) {
 	function cb_downloaded(){
 		console.log('[obc-js] unzipping zip');
 		new Decompress({mode: '755'})
-			.src(dest)
+			.src(zip_dest)
 			.dest(unzip_dest)
 			.use(Decompress.zip())
 			.run(cb_unzipped);
@@ -107,7 +107,8 @@ obc.prototype.load = function(options, cb) {
 	
 	function cb_unzipped(err, files){
 		console.log('[obc-js] unzip done');
-		fs.readdir(unzip_cc_dest, cb_got_names); 
+		fs.readdir(unzip_cc_dest, cb_got_names);
+		fs.unlink(zip_dest, function(err) {});									//remove zip file, never used again
 	}
 	
 	// Step 2.

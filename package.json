@@ -18,7 +18,8 @@
 		"debug": "0.7.4",
 		"cors":"2.5.3",
 		"async": "0.9.0",
-		"obc-js": "*"
+		"obc-js": "*",
+		"decompress": "3.0.0"
 	},
 	"engines": {
 		"node": "0.12.0"

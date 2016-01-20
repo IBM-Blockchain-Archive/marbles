@@ -24,7 +24,6 @@ var http = require('http');
 var app = express();
 var url = require('url');
 var async = require('async');
-var google = require('googleapis');
 var setup = require('./setup');
 var cors = require("cors");
 var fs = require("fs");

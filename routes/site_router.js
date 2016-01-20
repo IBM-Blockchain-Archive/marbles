@@ -10,7 +10,6 @@
  *******************************************************************************/
 var express = require('express');
 var router = express.Router();
-var base64  = require('base64-js');
 var fs = require("fs");
 
 // Load our modules.
