@@ -96,6 +96,7 @@ block custom_header
 			// ================================================================================================================
 			on_start();
 			function on_start(){
+				if(!bag || !bag.cc || !bag.cc.details) return;							//there is no hope
 				buildGoFunc(bag.cc.details);											//populate custom go functions panel
 				build_peer_options(bag.cc.details.peers);								//populate drop down peer select box
 				$("#jsonarea").html(JSON.stringify(bag.cc, null, 4));
@@ -133,7 +134,7 @@ block custom_header
 
 				//localStorage.clear();
 				var obj = load_ls();
-				if(obj.cc && obj.cc.names){
+				if(obj && obj.cc && obj.cc.names){
 					build_cc_options(obj.cc);
 				}
 			}
@@ -266,7 +267,6 @@ block custom_header
 				console.log('selected', selected);
 				$("input[name='host']").val(bag.cc.details.peers[selected].api_host);
 				$("input[name='port']").val(bag.cc.details.peers[selected].api_port);
-				//$(this).val("home");
 			});
 			
 			$("#chaincodes").change(function(){

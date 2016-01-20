@@ -7,12 +7,15 @@ Run:
 
 	> npm install
 	> gulp
+	> open browser to localhost:3000
 	
 	
 Alternative Run:
 
 	> npm install
 	> node app.js
+	> open browser to localhost:3000
+	
 	
 ##Projects Contents
 1. sdk, obc-js.js
@@ -70,9 +73,10 @@ This is a asset transfer and asset permission example.  Specifically for cars.
 - [ ] demo app website
 - [x] make sdk proper npm module
 - [ ] change downloading zip to git clone
-- [ ] custom custom function on UI
-- [ ] load json in UI
+- [x] custom custom function on UI
+- [x] load json in UI
 - [ ] mocha test for sdk
+- [ ] browsify sdk and tie cci into it
 
 
 ###NC Car Transfer Notes:
@@ -84,9 +88,6 @@ This is a asset transfer and asset permission example.  Specifically for cars.
 1. Due to performance issues, we probably want resuable chaincode contracts.  ie 1 chaincode describe/constrains multiple people assets. ie ie many people and cars exist in 1 chaincode
 1. Any functionality that parties need to agree on should be in the chaincode.  ie do not move it to the application b/c this then the moving parts beomce unenforceable.
 1. Chaincode should keep track of all key's that get their state saved.  Have init clear these
-
-
-
 
 ###Junk Notes:
 - npm install git+ssh://git@github.ibm.com:openblockchain/obc-js.git
