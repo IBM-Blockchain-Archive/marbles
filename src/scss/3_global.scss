@@ -56,6 +56,15 @@
   left: 0;
   padding: 15px; }
   
-  .borderMe{
-			border: 1px #41719C solid;
-		}
+.borderMe{
+		border: 1px #41719C solid;
+	}
+		
+#chaincodeDetailsWrap{
+	display:none;
+}
+#jsonarea{
+	width:1050px;
+	padding:5px;
+	height:100px;
+}

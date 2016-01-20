@@ -32,7 +32,7 @@ input[type="submit"]:hover,input[type="button"]:hover, button:hover{background:#
 input[type="text"], input[type="password"], select{padding:5px 10px; margin:5px; color:#2e6da4;}
 small{font-size:10pt;}
 img{border:0; max-width:100%;}
-a, a:visited{color:#555;}
+a, a:visited{color:#2e6da4; cursor:pointer;}
 a:hover{text-decoration:underline;}
 label{text-align:left;}
 .error{color:#cc0000 !important;}

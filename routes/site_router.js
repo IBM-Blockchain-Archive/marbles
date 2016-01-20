@@ -30,15 +30,16 @@ router.route("/").get(function(req, res){
 // ============================================================================================================================
 // Chain Code Investigator
 // ============================================================================================================================
-router.route("/cc").get(function(req, res){
+router.route("/cci").get(function(req, res){
 	var cc = {};
 	try{
-		cc = require('../.obc-cache/cc.json');
+		cc = require('../chaincode.json');
 	}
 	catch(e){
 		console.log('error loading cc.json', e);
 	};
-	res.render('investigate', {title: 'Investigator', bag: cc} );
+	console.log('cc', cc);
+	res.render('investigate', {title: 'Investigator', bag: {cc: cc}} );
 });
 
 

@@ -179,7 +179,8 @@ obc.load('https://hub.jazz.net/git/averyd/cc_ex02/archive?revstr=master', 'chain
 function cb_ready(err, contract){
 	contract.cc.details.path = 'https://hub.jazz.net/git/averyd/cc_ex02/chaincode_example02';
 	//contract.cc.details.name = '4b8174e261b3710f03fd63604af076e3a4efb20c49d642270db9784abd86562b8a3fbcf754c64f89086abd86d1fc670b4831e2462e23ba8c16c824f550f05a69';
-	obc.save();
+	obc.save('./');
+	//obc.clear();
 	//console.log('contract details:', contract.cc.details);
 	//contract.init();
 	//contract.invoke(["a", "b", "5"]);

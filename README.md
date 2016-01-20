@@ -70,6 +70,9 @@ This is a asset transfer and asset permission example.  Specifically for cars.
 - [ ] demo app website
 - [x] make sdk proper npm module
 - [ ] change downloading zip to git clone
+- [ ] custom custom function on UI
+- [ ] load json in UI
+- [ ] mocha test for sdk
 
 
 ###NC Car Transfer Notes:
