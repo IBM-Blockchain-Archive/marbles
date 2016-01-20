@@ -122,15 +122,47 @@ else console.log('Running using Developer settings');
 // ============================================================================================================================
 var Obc1 = require('obc-js');
 var obc = new Obc1();
-var peers =    [
-	{
-"discovery_host": "158.85.255.239",
-      "discovery_port": "32816",
-      "api_host": "158.85.255.239",
-      "api_port": "32817",
-	"id": "12345_vp1",
-	"api_url": "http://"
-	}
+var peers =   [
+      {
+        "discovery_host": "169.53.72.245",
+        "discovery_port": "33282",
+        "api_host": "169.53.72.245",
+        "api_port": "33283",
+        "id": "2c0a7d22-e3cb-4ba4-8c05-61863d8bc976_vp1",
+        "api_url": "http://169.53.72.245:33283"
+      },
+      {
+        "discovery_host": "169.53.72.245",
+        "discovery_port": "33284",
+        "api_host": "169.53.72.245",
+        "api_port": "33285",
+        "id": "2c0a7d22-e3cb-4ba4-8c05-61863d8bc976_vp2",
+        "api_url": "http://169.53.72.245:33285"
+      },
+      {
+        "discovery_host": "169.53.72.245",
+        "discovery_port": "33286",
+        "api_host": "169.53.72.245",
+        "api_port": "33287",
+        "id": "2c0a7d22-e3cb-4ba4-8c05-61863d8bc976_vp5",
+        "api_url": "http://169.53.72.245:33287"
+      },
+      {
+        "discovery_host": "169.53.72.250",
+        "discovery_port": "33279",
+        "api_host": "169.53.72.250",
+        "api_port": "33280",
+        "id": "2c0a7d22-e3cb-4ba4-8c05-61863d8bc976_vp3",
+        "api_url": "http://169.53.72.250:33280"
+      },
+      {
+        "discovery_host": "169.53.72.250",
+        "discovery_port": "33281",
+        "api_host": "169.53.72.250",
+        "api_port": "33282",
+        "id": "2c0a7d22-e3cb-4ba4-8c05-61863d8bc976_vp4",
+        "api_url": "http://169.53.72.250:33282"
+      }
     ];
 
 
@@ -142,10 +174,10 @@ if (process.env.VCAP_SERVICES){
 	peers = firstService.credentials.peers;
 }
 obc.network(peers);																										//setup network connection for rest endpoint
-obc.load('https://hub.jazz.net/git/averyd/cc_ex02/archive?revstr=master', 'chaincode_obc-js_demo3c', cb_ready);			//parse/load chaincode
+obc.load('https://hub.jazz.net/git/averyd/cc_ex02/archive?revstr=master', 'chaincode_example02', cb_ready);			//parse/load chaincode
 
 function cb_ready(err, contract){
-	contract.cc.details.path = 'https://hub.jazz.net/git/averyd/cc_ex02/chaincode_obc-js_demo3c';
+	contract.cc.details.path = 'https://hub.jazz.net/git/averyd/cc_ex02/chaincode_example02';
 	//contract.cc.details.name = '4b8174e261b3710f03fd63604af076e3a4efb20c49d642270db9784abd86562b8a3fbcf754c64f89086abd86d1fc670b4831e2462e23ba8c16c824f550f05a69';
 	obc.save();
 	//console.log('contract details:', contract.cc.details);

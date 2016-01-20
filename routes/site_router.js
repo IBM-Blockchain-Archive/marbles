@@ -22,22 +22,15 @@ var b64     = require("../utils/b64.js");
 // ============================================================================================================================
 // Home
 // ============================================================================================================================
-router.route("/old").get(function(req, res){
-	var cc = {};
-	try{
-		cc = require('../.obc-cache/cc.json');
-	}
-	catch(e){
-		console.log('error loading cc.json', e);
-	};
-	res.render('home', {title: 'Home', bag: cc} );
+router.route("/").get(function(req, res){
+	res.render('home', {title: 'Home', bag: {}} );
 });
 
 
 // ============================================================================================================================
 // Chain Code Investigator
 // ============================================================================================================================
-router.route("/").get(function(req, res){
+router.route("/cc").get(function(req, res){
 	var cc = {};
 	try{
 		cc = require('../.obc-cache/cc.json');

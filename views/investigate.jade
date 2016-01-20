@@ -497,7 +497,7 @@ block custom_header
 					success: function(json){
 						console.log('Success - deploy (you should still wait for go)', json);
 						store_cc_name(json.message);
-						if(cb) setTimeout(function(){ $("input[name='cc_name']").val(json.message); cb(null, json); }, 60000);
+						if(cb) setTimeout(function(){ $("input[name='cc_name']").val(json.message); cb(null, json); }, 45000);
 					},
 					error: function(e){
 						console.log('Error - deploy', e);

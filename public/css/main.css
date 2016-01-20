@@ -331,6 +331,9 @@ button {
   left: 0;
   padding: 15px; }
 
+.borderMe {
+  border: 1px #41719C solid; }
+
 
 /* Example
 <div class="loadingdiv">

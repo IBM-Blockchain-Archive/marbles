@@ -4,97 +4,25 @@ extends ./template/layout.jade
 block custom_header
 	script(type='text/javascript').
 		$(document).ready(function(){
-
-			function in_array(name, array){
-				for(var i in array){
-					if(array[i] == name) return true
-				}
-				return false;	
-			}
-			buildThings(bag.cc);
-			function buildThings(cc){
-				var skip = ['write', 'read', 'delete', 'init'];
-				var html = '';
-				var field = '<input class="arginput" type="text" placeholder="array of strings"/>';
-				for(var i in cc.details.func){
-					if(!in_array(cc.details.func[i].toLowerCase(), skip)){
-						html += '<div class="func">' + cc.details.func[i] + '([ ' + field + ']); </dic>'
-						html += '<button type="button" class="go" func="' + cc.details.func[i] + '"> Run </button>';
-					}
-				}
-				$("#ccWrap").append(html);
-			}
-			
 			$(document).on("click", ".go", function(){
-				var host = $("input[name='host']").val();
-				var port = $("input[name='port']").val();
-				var args = $(this).prev().val();
-				console.log(host, args);
-				
-				var data = {
-								"chaincodeSpec": {
-									"type": "GOLANG",
-									"chaincodeID": bag.cc.details.name,
-									"ctorMsg": {
-										"function": "invoke",
-										"args": [args]
-									}
-								}
-							};
-				
-				$.ajax({
-					method: 'GET',
-					url: 'http://' + host + ':' + port + '/devops/invoke',
-					data: JSON.stringify(data),
-					contentType: 'application/json',
-					success: function(json){
-						console.log('Success', json);
-					},
-					error: function(e){
-						console.log('Error', e);
-					}
-				});
-				
-			});
 			
-			$("input[name='host']").val(bag.cc.details.host);
-			$("input[name='port']").val(bag.cc.details.port);
+			});
 		});
 
 block content
-	h1 ChainCode Test
-	p Test your chaincode
+	h1 Velocity
+	p An NBM Company
 	
 	hr
 	
-	form#ccWrap
-		h2 Configure:
-		input(type="text" name="host" placeholder="Peer IP" value="")
-		input(type="text" name="port" placeholder="Peer Port" value="")
-		hr
-		.func 
-			span Read (
-			input(type="text" name="read_name" placeholder="var name")
-			span ); 
-			button(type="button")#query Run
-		
-		.func 
-			span Write (
-			input(type="text" name="write_name" placeholder="var name")
-			input(type="text" name="write_val" placeholder="value")
-			span ); 
-			button(type="button")#query Run
-			
-		.func 
-			span Remove (
-			input(type="text" name="remove_name" placeholder="var name")
-			span ); 
-			button(type="button")#query Run
-		
-		.func 
-			span Init (
-			input(type="text" name="init_names" placeholder="array of strings")
-			span ); 
-			button(type="button")#query Run
-			
-		hr
+	#carIconWrap.borderMe cars icons go here
+	
+	#carDetailsWrap.borderMe 
+		span car details go here
+		button(type="button") Transfer ->
+	
+	
+	
+	
+	
+	
