@@ -1,0 +1,36 @@
+{
+  "name": "obc-js",
+  "version": "0.0.1",
+  "description": "A set of libraries for easily interacting with Open Block Chain.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.ibm.com:openblockchain/obc-js.git"
+  },
+  "keywords": [
+    "blockchain",
+    "obc",
+    "open",
+    "peer",
+    "node",
+    "transaction"
+  ],
+  "dependencies": {
+    "decompress": "3.0.0",
+	"async": "1.5.2"
+  },
+  "author": {
+    "name": "David Huffman and Ben Smith"
+  },
+  "license": "IPL-1.0",
+  "gitHead": "1f2981d2fda9d3bb2ab9a25209938bd4a79619cc",
+  "readme": "obc.js\r\n=========\r\n\r\nA set of libraries for easily interacting with Open Block Chain.\r\n\r\n*Version*: 0.0.1\r\n*Updated*: 01/15/2016\r\n\r\n## Installation\r\n\r\n  npm install obc-js --save\r\n\r\n\r\n## Usage\r\n\r\n```\r\n  var obc = require('obc-js')\r\n  \r\n  console.log(obc.hello());\r\n\r\n  npm test\r\n```\r\n\r\n\r\n## Examples\r\n\r\n\t-----------------------------------------------------------------\r\n\tUse:\tvar obc = require('./obc-js');\r\n\t\t\tdsh - to do, fill this out\r\n\t\t\t\r\n\t-----------------------------------------------------------------\r\n\tExample:\r\n\tcontract = {\r\n\t\t\t\t\tinit: function({args}, cb){},\t\t\t\t\t//example\r\n\t\t\t\t\tinvoke: function({args}, cb){},\t\t\t\t\t//example\r\n\t\t\t\t\tcc:{\r\n\t\t\t\t\t\tread: function(name, cb, lvl),\t\t\t\t//use the go code Query() function\r\n\t\t\t\t\t\twrite: function(name, val, cb),\t\t\t\t//use the go code Write() function\r\n\t\t\t\t\t\tdeploy: function(func, args, cb),\t\t\t//if successful will also set cc.details.name, func & args are optional\r\n\t\t\t\t\t\treadNames: function(cb, lvl),\t\t\t\t//read all variables in chaincode state space\r\n\t\t\t\t\t\tdetails: {\r\n\t\t\t\t\t\t\thost: \"\",\t\t\t\t\t\t\t\t//peer to hit\r\n\t\t\t\t\t\t\tport: \"\",\r\n\t\t\t\t\t\t\turl:  \"\",\t\t\t\t\t\t\t\t//direct link to .zip of chaincode\r\n\t\t\t\t\t\t\tpath: \"\",\t\t\t\t\t\t\t\t//\r\n\t\t\t\t\t\t\tname: \"\",\t\t\t\t\t\t\t\t//hashed name of chaincode, deploy() will set it, else user sets it\r\n\t\t\t\t\t\t\tdir: \"\",\t\t\t\t\t\t\t\t//path to chaincode directory from zip\r\n\t\t\t\t\t\t\tfunc: [],\r\n\t\t\t\t\t\t\tvars: []\r\n\t\t\t\t\t\t}\u000b\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t\t\r\n\tError Format:\r\n\t{\r\n\t\tname: \"short name of error\" \r\n\t\tcode: http status code as integer\r\n\t\tdetails: \"long description OR user friendly error OR error obj\"\r\n\t}\r\n\r\n## Release History\r\n\r\n* 0.0.1 Internal Dev Version",
+  "readmeFilename": "README.md",
+  "_id": "obc-js@0.0.1",
+  "_shasum": "6a841d5eb0fa47b8537673194eb8b970bb0a9747",
+  "_from": "..\\..\\..\\..\\..\\IBM_AD~1\\AppData\\Local\\Temp\\npm-2252-d0aa2ad0\\git-cache-e5051cb56ee3\\1f2981d2fda9d3bb2ab9a25209938bd4a79619cc",
+  "_resolved": "git+ssh://git@github.ibm.com:openblockchain/obc-js.git#1f2981d2fda9d3bb2ab9a25209938bd4a79619cc"
+}

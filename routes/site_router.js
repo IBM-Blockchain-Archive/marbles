@@ -16,7 +16,6 @@ var fs = require("fs");
 // Load our modules.
 var aux     = require("./site_aux.js");
 var rest    = require("../utils/rest.js");
-var b64     = require("../utils/b64.js");
 
 
 // ============================================================================================================================
