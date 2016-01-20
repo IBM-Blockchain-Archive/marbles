@@ -173,28 +173,29 @@ if (process.env.VCAP_SERVICES){
 	var firstService = servicesObject['blockchain-create-staging'][0];
 	peers = firstService.credentials.peers;
 }
-obc.network(peers);																										//setup network connection for rest endpoint
-obc.load('https://hub.jazz.net/git/averyd/cc_ex02/archive?revstr=master', 'chaincode_example02', cb_ready);			//parse/load chaincode
+obc.network(peers);																									//setup network connection for rest endpoint
+var options = 	{
+					zip_url: 'https://hub.jazz.net/git/averyd/cc_ex02/archive?revstr=master',
+					dir: 'chaincode_example02',
+					git_url: 'https://hub.jazz.net/git/averyd/cc_ex02/chaincode_example02',
+				};
+obc.load(options, cb_ready);				//parse/load chaincode
 
 function cb_ready(err, contract){
-	contract.cc.details.path = 'https://hub.jazz.net/git/averyd/cc_ex02/chaincode_example02';
-	//contract.cc.details.name = '4b8174e261b3710f03fd63604af076e3a4efb20c49d642270db9784abd86562b8a3fbcf754c64f89086abd86d1fc670b4831e2462e23ba8c16c824f550f05a69';
 	obc.save('./');
 	//obc.clear();
-	//console.log('contract details:', contract.cc.details);
-	//contract.init();
-	//contract.invoke(["a", "b", "5"]);
-	//contract.init();
 	//contract.cc.read('a', cb_next);
 	//contract.cc.deploy('init',  ["a", "101", "b", "202"], cb_next);
 	//contract.cc.read('a', cb_next);
+	/*
 	function cb_next(e, value){
-		//contract.cc.read('a', cb_next2);
+		contract.cc.read('a', cb_next2);
 	contract.cc.write('a', (value + 1), cb_next2);
-		//contract.invoke(["a", "b", "5"], cb_next2);
+		contract.invoke(["a", "b", "5"], cb_next2);
 	}
 	function cb_next2(){
 		contract.cc.read('a');
 		contract.cc.read('b');
 	}
+	*/
 }
