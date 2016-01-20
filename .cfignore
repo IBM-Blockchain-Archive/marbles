@@ -2,4 +2,5 @@
 **/.vscode
 **/public/logs/**
 **/temp
+**/node_modules
 .project

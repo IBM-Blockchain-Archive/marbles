@@ -18,7 +18,8 @@ var path = require('path');
 var https = require('https');
 var async = require('async');
 var rest = require(__dirname + "/lib/rest");
-var Decompress = require('decompress');
+var AdmZip = require('adm-zip');
+
 
 
 //PRIVATE!
@@ -89,7 +90,7 @@ obc.prototype.load = function(options, cb) {
 				file.close(cb_downloaded);  									//close() is async
 			});
 		}).on('error', function(err) {
-			console.log('[obc-js] error');
+			console.log('[obc-js] download error');
 			fs.unlink(zip_dest); 													//delete the file async
 			if (cb) cb(eFmt('fs error', 500, err.message), contract);
 		});
@@ -98,23 +99,17 @@ obc.prototype.load = function(options, cb) {
 	// Step 1.
 	function cb_downloaded(){
 		console.log('[obc-js] unzipping zip');
-		new Decompress({mode: '755'})
-			.src(zip_dest)
-			.dest(unzip_dest)
-			.use(Decompress.zip())
-			.run(cb_unzipped);
-	}
-	
-	function cb_unzipped(err, files){
+		var zip = new AdmZip(zip_dest);
+		zip.extractAllTo(unzip_dest, /*overwrite*/true);
 		console.log('[obc-js] unzip done');
 		fs.readdir(unzip_cc_dest, cb_got_names);
 		fs.unlink(zip_dest, function(err) {});									//remove zip file, never used again
 	}
-	
+
 	// Step 2.
 	function cb_got_names(err, obj){
 		console.log('[obc-js] scanning files');
-		if(err != null) console.log('[obc-js] Error', err);
+		if(err != null) console.log('[obc-js] fs readdir Error', err);
 		else{
 			for(var i in obj){
 				//console.log(i, obj[i]);
@@ -122,7 +117,7 @@ obc.prototype.load = function(options, cb) {
 				//GO FILES
 				if(obj[i].indexOf('.go') >= 0){
 					if(keep_looking){
-						fs.readFile(unzip_cc_dest + '/' + obj[i], 'utf8', cb_read_go_file);
+						fs.readFile(path.join(unzip_cc_dest, obj[i]), 'utf8', cb_read_go_file);
 					}
 				}
 			}
@@ -130,7 +125,7 @@ obc.prototype.load = function(options, cb) {
 	}
 	
 	function cb_read_go_file(err, str){
-		if(err != null) console.log('[obc-js] Error', err);
+		if(err != null) console.log('[obc-js] fs readfile Error', err);
 		else{
 			
 			// Step 2a.

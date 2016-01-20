@@ -20,15 +20,16 @@ var rest    = require("../utils/rest.js");
 // ============================================================================================================================
 // Home
 // ============================================================================================================================
+/*
 router.route("/").get(function(req, res){
 	res.render('home', {title: 'Home', bag: {}} );
 });
-
+*/
 
 // ============================================================================================================================
 // Chain Code Investigator
 // ============================================================================================================================
-router.route("/cci").get(function(req, res){
+router.route("/").get(function(req, res){
 	var cc = {};
 	try{
 		cc = require('../chaincode.json');
@@ -36,7 +37,6 @@ router.route("/cci").get(function(req, res){
 	catch(e){
 		console.log('error loading cc.json', e);
 	};
-	console.log('cc', cc);
 	res.render('investigate', {title: 'Investigator', bag: {cc: cc}} );
 });
 
