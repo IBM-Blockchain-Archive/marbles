@@ -335,14 +335,6 @@ button {
 .borderMe {
   border: 1px #41719C solid; }
 
-#chaincodeDetailsWrap {
-  display: none; }
-
-#jsonarea {
-  width: 1050px;
-  padding: 5px;
-  height: 100px; }
-
 
 /* Example
 <div class="loadingdiv">

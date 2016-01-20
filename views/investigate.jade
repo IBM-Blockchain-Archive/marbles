@@ -60,9 +60,7 @@ block custom_header
 			min-height: 400px;
 			padding:10px;
 		}
-		.borderMe{
-			border: 1px #41719C solid;
-		}
+		
 		.selected{
 			font-weight:900;
 			background: #555;
@@ -76,13 +74,23 @@ block custom_header
 			cursor:pointer;
 		}
 		.fa{
-			color: #2e6da4;
-			padding:5px;
+			color: inherit;
+			margin:0 5px;
 		}
 		
 		#delccname{
 			cursor:pointer;
 			padding:6px;
+		}
+		
+		#chaincodeDetailsWrap{
+			display:none;
+		}
+		#jsonarea{
+			width: 1050px;
+			max-width:1050px;
+			padding:5px;
+			height:100px;
 		}
 		
 	script(type='text/javascript').
@@ -306,7 +314,12 @@ block custom_header
 			
 			$("#changecclink").click(function(){
 				console.log('hi');
-				$("#chaincodeDetailsWrap").fadeIn();
+				if($("#chaincodeDetailsWrap").is(":visible")){
+					$("#chaincodeDetailsWrap").fadeOut();
+				}
+				else{
+					$("#chaincodeDetailsWrap").fadeIn();
+				}
 			});
 			
 			$("#barebones").click(function(){
@@ -570,7 +583,7 @@ block custom_header
 				for(var i in cc.func){
 					if(!in_array(cc.func[i].toLowerCase(), skip)){
 						html += '<div class="func">' + cc.func[i] + '([ ' + field + ']); </dic>'
-						html += '<button type="button" class="go" func="' + cc.func[i] + '"> Run </button>&nbsp;&nbsp;';
+						html += '<button type="button" class="go" func="' + cc.func[i] + '"> Run <span class="fa fa-fire"></span> </button>&nbsp;&nbsp;';
 					}
 				}
 				$("#customgowrap").html(html);
@@ -634,7 +647,7 @@ block content
 	p Examine/test your chaincode
 	p
 		a#changecclink
-			span.fa.fa-plus
+			span.fa.fa-plus(style="font-size:12px;")
 			span Change Chaincode JSON Details
 	#chaincodeDetailsWrap
 		textarea#jsonarea stuff
@@ -646,8 +659,10 @@ block content
 		select(style="margin-left:0;")#peers
 		input(type="text" name="host" placeholder="Peer IP" style="margin-left:0; width:100px;")
 		input(type="text" name="port" placeholder= "Peer Port" style="width:50px;")
-		input(type="text" name="cc_path" placeholder= "ChainCode Path" style="width:620px;")
-		button(type="button" style="float:none")#deploy Deploy()
+		input(type="text" name="cc_path" placeholder= "ChainCode Path" style="width:610px;")
+		button(type="button" style="float:none")#deploy
+			span Deploy
+			span.fa.fa-chevron-right
 		
 		select(style="margin-left:0;")#chaincodes
 		input(type="text" name="cc_name" placeholder= "ChainCode Name" style="width:900px; margin-left:0;")
@@ -682,27 +697,37 @@ block content
 				span Read (
 				input(type="text" name="read_name" placeholder="var name")
 				span ); 
-				button(type="button")#read Run
-				button(type="button" style="margin-right:10px;")#readall Run All
+				button(type="button")#read 
+					span Run
+					span.fa.fa-fire
+				button(type="button" style="margin-right:10px;")#readall
+					span Run All
+					span.fa.fa-th
 			
 			.func 
 				span Write (
 				input(type="text" name="write_name" placeholder="var name")
 				input(type="text" name="write_val" placeholder="value")
 				span ); 
-				button(type="button")#write Run
+				button(type="button")#write
+					span Run
+					span.fa.fa-fire
 				
 			.func 
 				span Remove (
 				input(type="text" name="remove_name" placeholder="var name")
 				span ); 
-				button(type="button")#remove Run
+				button(type="button")#remove
+					span Run
+					span.fa.fa-fire
 			
 			.func 
 				span Init (
 				input(type="text" name="init_args" placeholder="array of strings")
 				span ); 
-				button(type="button")#init Run
+				button(type="button")#init
+					span Run
+					span.fa.fa-fire
 			br
 			
 			h2 Custom Chaincode:
@@ -717,5 +742,7 @@ block content
 				span (
 				input(type="text" name="func_val" placeholder="argument")
 				span ); 
-				button(type="button")#barebones Run
+				button(type="button")#barebones
+					span Run
+					span.fa.fa-fire
 		
