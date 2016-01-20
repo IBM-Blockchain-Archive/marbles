@@ -173,6 +173,19 @@ if (process.env.VCAP_SERVICES){
 	peers = firstService.credentials.peers;
 }
 obc.network(peers);																									//setup network connection for rest endpoint
+
+/*
+obc.clear(cb_cleaned);
+function cb_cleaned(){
+	var options = 	{
+						zip_url: 'https://hub.jazz.net/git/averyd/cc_ex02/archive?revstr=master',
+						dir: 'chaincode_example02',
+						git_url: 'https://hub.jazz.net/git/averyd/cc_ex02/chaincode_example02',
+					};
+	//obc.load(options, cb_ready);				//parse/load chaincode
+}
+*/
+
 var options = 	{
 					zip_url: 'https://hub.jazz.net/git/averyd/cc_ex02/archive?revstr=master',
 					dir: 'chaincode_example02',

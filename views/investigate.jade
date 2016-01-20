@@ -91,9 +91,9 @@ block custom_header
 			var loading = '<div class="loadingdiv"><span></span> <span></span> <span></span> <span></span> <span></span><div></div></div>';
 			var lsKey = 'cc_investigator';
 			
-			/////////////////////
-			//// on start up ////
-			/////////////////////
+			// ===============================================================================================================
+			// 												On Start Up
+			// ================================================================================================================
 			on_start();
 			function on_start(){
 				buildGoFunc(bag.cc.details);											//populate custom go functions panel
@@ -142,15 +142,9 @@ block custom_header
 				if(window.localStorage) {
 					var str = window.localStorage.getItem(lsKey);
 					var obj = {};
-					if(!str){
-						//obj.cc = {names: []};
-						//obj.cc.names.push('4b8174e261b3710f03fd63604af076e3a4efb20c49d642270db9784abd86562b8a3fbcf754c64f89086abd86d1fc670b4831e2462e23ba8c16c824f550f05a69');
-						//obj.cc.names.push('c38ad7ee13e89382fcf39476204b0c583fc78ed28f36382f9eb5c363d737129c7ce919f969ebba04109a455a180301cfd7d20c77344c3e4cdfccdbb1c80b9502');
-						//window.localStorage.setItem(lsKey, JSON.stringify(obj));					//save new one
-					}
-					else{
+					if(str){
 						obj = JSON.parse(str);
-						console.log('local storage', obj);
+						//console.log('local storage', obj);
 						return obj;
 					}
 				}
@@ -171,9 +165,9 @@ block custom_header
 				build_cc_options(obj.cc);
 			}
 			
-			///////////////////////
-			//// jQuery Events ////
-			///////////////////////
+			// ===============================================================================================================
+			// 												jQuery Events
+			// ================================================================================================================
 			$(document).on("click", ".go", function(){
 				var host = $("input[name='host']").val();
 				var port = $("input[name='port']").val();
@@ -263,7 +257,7 @@ block custom_header
 				rest_deploy(cb_wait);
 				
 				function cb_wait(e, json){
-					console.log('go - finished waiting for deploy', json);
+					console.log('go - deploy timer finished', json);
 				}
 			});
 			
@@ -319,9 +313,9 @@ block custom_header
 				rest_barebones();
 			});
 			
-			////////////////////////
-			//// HTTP Functions ////
-			////////////////////////
+			// ===============================================================================================================
+			// 												HTTP Functions
+			// ================================================================================================================
 			function rest_read(name, lvl, cb){
 				console.log("reading var", name);
 				var host = $("input[name='host']").val();
@@ -372,19 +366,6 @@ block custom_header
 									}
 								}
 							};
-				
-				/*var data = {
-								"chaincodeSpec": {
-									"type": "GOLANG",
-									"chaincodeID": {
-										name: $("input[name='cc_name']").val(),
-									},
-									"ctorMsg": {
-										"function": "test",
-										"args": [name, value]
-									}
-								}
-							};*/
 				$.ajax({
 					method: 'POST',
 					url: 'http://' + host + ':' + port + '/devops/invoke',
@@ -563,7 +544,7 @@ block custom_header
 									}
 								}
 							};
-				console.log('sending', data);/*
+
 				$.ajax({
 					method: 'POST',
 					url: 'http://' + host + ':' + port + '/devops/invoke',
@@ -575,13 +556,13 @@ block custom_header
 					error: function(e){
 						console.log('Error', e);
 					}
-				});*/
+				});
 			}
 			
 			
-			////////////////////////////
-			///// Build UI Elements ////
-			////////////////////////////
+			// ===============================================================================================================
+			// 												Build UI Fun
+			// ================================================================================================================
 			function buildGoFunc(cc){
 				var skip = ['write', 'read', 'delete', 'init'];
 				var html = '';

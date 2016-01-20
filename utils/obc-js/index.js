@@ -229,9 +229,10 @@ obc.prototype.clear =  function(cb){
 };
 
 function removeThing(dir, cb){
+	//console.log('!', dir);
 	fs.readdir(dir, function (err, files) {
 		async.each(files, function (file, cb) {						//over each thing
-			file = dir + '/' + file;
+			file = path.join(dir, file);
 			fs.stat(file, function(err, stat) {
 				if (err) {
 					if(cb) cb(err);
@@ -241,11 +242,14 @@ function removeThing(dir, cb){
 					removeThing(file, cb);							//keep going
 				}
 				else {
+					//console.log('!', dir);
 					fs.unlink(file, function(err) {
 						if (err) {
+							//console.log('error', err);			//dsh - need to rethink this??/ does not always work - to do
 							if(cb) cb(err);
 							return;
 						}
+						console.log('good', dir);
 						if(cb) cb();
 						return;
 					});
