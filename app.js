@@ -172,7 +172,7 @@ if (process.env.VCAP_SERVICES){
 	console.log("We are running in Cloud Foundry!");
 	
 	var servicesObject = JSON.parse(process.env.VCAP_SERVICES);
-	var firstService = servicesObject['blockchain-create-staging'][0];
+	var firstService = servicesObject['blockchain-staging'][0];
 	peers = firstService.credentials.peers;
 }
 obc.network(peers);																										//setup network connection for rest endpoint
