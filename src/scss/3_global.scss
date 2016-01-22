@@ -2,60 +2,141 @@
 
 /*Main Layout*/
 #headerPanel {
-  position: relative;
-  top: 0;
-  left: 0;
-  padding: 5px;
-  height: 130px;
-  border-bottom: 1px #BCBCBC solid; }
+  background:#fff;
+  margin-top:10px;
+}
 
-#logo {
-  position: absolute;
-  left: 10px;
-  top: 30px;
-  width: 56px;
-  height: 56px; }
+#contentPanel {
+	min-height:500px;
+	color:#fff;
+	position: relative;
+}
 
-#name, #footName {
-  font-size: 36px;
-  position: absolute;
-  left: 80px;
-  top: 42px;
-  color: #000; }
+.adminview{
+	background: $main_bg;
+}
 
-#name:hover {
-  color: #555;
-  text-decoration: none; }
+.createview{
+	padding:0 20px;
+	background: orange;
+}
 
-#footName {
-  color: #fff; }
 
-#loading {
-  width: 70px;
-  display: none; }
+
+
 
 #navPanel {
-  position: absolute;
-  right: 40px;
-  top: 42px; }
-
+	display:inline-block;
+}
 .nav {
-  color: #BCBCBE;
-  float: left;
-  margin-left: 30px;
-  font-size: 14px; }
-
-#footerPanel {
-  position: relative;
-  height: 348px;
-  background: #0A0A0A;
-  color: #fff; }
-
-#mainPanel {
-  position: relative;
-  left: 0;
-  padding: 15px; }
-  
-.borderMe{
-		border: 1px #41719C solid;
+	background: #fff;
+	color:#fff;
+	padding: 15px 40px;
+	display:inline-block;
 	}
+.nav:hover{
+	text-decoration: underline;
+	cursor: pointer;
+}
+.selectednav{
+	background: $main_bg
+}
+
+
+
+#logo{
+	color: $acc_color;
+	float:right;
+}
+#appName{
+	font-size: 24px;
+	padding-bottom:4px; 
+	font-weight:900;
+	display:inline-block;
+}
+#owner{
+	font-size:12px;
+	font-weight: 500;
+	position: absolute;
+	margin-left:88px;
+	color:#222;
+}
+
+
+.personWrap{
+	width:42%;
+	display:inline-block;
+	text-align: left;
+	color:#fff;
+	margin-left:2%;
+}
+.legend{
+	font-size:100px;
+	border-bottom: 1px #fff solid;
+	padding-bottom:5px;
+}
+
+
+#transferright, #transferleft{
+	cursor:pointer;
+}
+
+#transferright:hover, #transferleft:hover{
+	color:#222;
+}
+
+.ball{
+	display:inline-block;
+	margin:1px;
+	border:1px $main_bg solid;
+	padding:0 3px;
+}
+.ball:hover{
+	cursor: pointer;
+	border-bottom:1px #fff solid;
+}
+.selectedball{
+	border:1px #fff solid;
+}
+
+.createball{
+	font-size:175px;
+	float:left;
+	margin-left:100px;
+}
+
+.borderMe{
+	border: 1px #41719C solid;
+}
+	
+#transferWrap{
+	position: absolute;
+	width:100%;
+	text-align: center;
+	top:20px;
+}
+
+#createform{
+	float:left;
+	margin-top:10px;
+	margin-left:10px;
+}
+
+#blockcounter{
+	position: absolute;
+	bottom:10px;
+	left:10px;
+}
+
+#blockdate{
+	position: absolute;
+	bottom:10px;
+	right:10px;
+}
+
+#description{
+	position: absolute;
+	bottom:75px;
+	width:100%;
+	text-align: center;
+}

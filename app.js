@@ -121,14 +121,46 @@ else console.log('Running using Developer settings');
 // ============================================================================================================================
 var Obc1 = require('./utils/obc-js/index');
 var obc = new Obc1();
-var peers =   [
+var peers =  [
       {
-         "discovery_host": "158.85.255.228",
-      "discovery_port": "32938",
-      "api_host": "158.85.255.228",
-      "api_port": "32939",
-        "id": "569f64a0-398e-4c61-8396-fb8d574b8991_vp1",
-        "api_url": "http://158.85.255.239:32867"
+        "discovery_host": "169.53.72.245",
+        "discovery_port": "33394",
+        "api_host": "169.53.72.245",
+        "api_port": "33395",
+        "id": "56b2a31c-2cfe-46a2-a237-0ea0226bdd5b_vp1",
+        "api_url": "http://169.53.72.245:33395"
+      },
+      {
+        "discovery_host": "158.85.255.239",
+        "discovery_port": "32938",
+        "api_host": "158.85.255.239",
+        "api_port": "32939",
+        "id": "56b2a31c-2cfe-46a2-a237-0ea0226bdd5b_vp3",
+        "api_url": "http://158.85.255.239:32939"
+      },
+      {
+        "discovery_host": "158.85.255.228",
+        "discovery_port": "32958",
+        "api_host": "158.85.255.228",
+        "api_port": "32959",
+        "id": "56b2a31c-2cfe-46a2-a237-0ea0226bdd5b_vp4",
+        "api_url": "http://158.85.255.228:32959"
+      },
+      {
+        "discovery_host": "169.53.72.250",
+        "discovery_port": "33397",
+        "api_host": "169.53.72.250",
+        "api_port": "33398",
+        "id": "56b2a31c-2cfe-46a2-a237-0ea0226bdd5b_vp5",
+        "api_url": "http://169.53.72.250:33398"
+      },
+      {
+        "discovery_host": "158.85.255.230",
+        "discovery_port": "32924",
+        "api_host": "158.85.255.230",
+        "api_port": "32925",
+        "id": "56b2a31c-2cfe-46a2-a237-0ea0226bdd5b_vp2",
+        "api_url": "http://158.85.255.230:32925"
       }
     ];
 

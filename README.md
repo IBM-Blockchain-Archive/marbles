@@ -33,13 +33,12 @@ This is a simple asset transfer and asset permission example.
 
 ##Goals Phase 2
 1. ^^
-1. Multiple users can own/share a ball
-1. User's rent balls for timeperiod, auto lose ownership
+1. Can trade multiple balls at once
+1. User's loan balls for timeperiod, auto lose ownership
 
 ##Goals Phase 3
 1. ^^
-1. User's can advertise to rent out their balls
-1. Other users can rent the balls
+1. User's can advertise to trade their balls
 
 ###Permissions:
 1. Owner – can add/remove all permissions to the ball
