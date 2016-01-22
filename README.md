@@ -25,18 +25,30 @@ Alternative Run:
 ##Demo Description
 This is a simple asset transfer and asset permission example.
 
-##Demo Goals
-1. User can create a thing and store it in the chaincode state
-1. User can read all things in the chaincode state
-1. User can transfer thing to another user
-1. User can see the owner of a thing
+##Goals Phase 1
+1. User can create a ball and store it in the chaincode state
+1. User can read all balls in the chaincode state
+1. User can transfer ball to another user
+1. User can see the owner of a ball
+
+##Goals Phase 2
+1. ^^
+1. Multiple users can own/share a ball
+1. User's rent balls for timeperiod, auto lose ownership
+
+##Goals Phase 3
+1. ^^
+1. User's can advertise to rent out their balls
+1. Other users can rent the balls
 
 ###Permissions:
-1. Owner – can add/remove all permissions to the thing
+1. Owner – can add/remove all permissions to the ball
 
-###Attributes of a thing:
-1. id
-1. the rest is optional
+###Attributes of a ball:
+1. name
+1. color
+1. size
+1. user
 
 ---
 
@@ -57,6 +69,11 @@ This is a simple asset transfer and asset permission example.
 - [x] load json in UI
 - [ ] mocha test for sdk
 - [ ] browsify sdk and tie cci into it
+- [ ] follow redirect on zip download...
+- [ ] unzip may have project name as root... need to go down 1 lvl
+- [ ] check inputs on load if they  dne, error
+- [ ] poll after chain deploy for cc up in peer
+- [ ] add block event to sdk
 
 
 ###ChainCode Notes:
@@ -66,5 +83,5 @@ This is a simple asset transfer and asset permission example.
 
 ###Junk Notes:
 - npm install git+ssh://git@github.ibm.com:openblockchain/obc-js.git
-- http://obchain.com:3000/api/peer/#network_id_peer_id/chaincode/#cc_name/logs
+- https://broker.obchain.com/api/peer/#network_id_peer_id/chaincode/#cc_name/logs
 - National Business Merchandise

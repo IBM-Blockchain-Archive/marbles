@@ -123,44 +123,12 @@ var Obc1 = require('./utils/obc-js/index');
 var obc = new Obc1();
 var peers =   [
       {
-        "discovery_host": "158.85.255.239",
-        "discovery_port": "32866",
-        "api_host": "158.85.255.239",
-        "api_port": "32867",
+         "discovery_host": "158.85.255.228",
+      "discovery_port": "32938",
+      "api_host": "158.85.255.228",
+      "api_port": "32939",
         "id": "569f64a0-398e-4c61-8396-fb8d574b8991_vp1",
         "api_url": "http://158.85.255.239:32867"
-      },
-      {
-        "discovery_host": "158.85.255.230",
-        "discovery_port": "32854",
-        "api_host": "158.85.255.230",
-        "api_port": "32855",
-        "id": "569f64a0-398e-4c61-8396-fb8d574b8991_vp3",
-        "api_url": "http://158.85.255.230:32855"
-      },
-      {
-        "discovery_host": "158.85.255.228",
-        "discovery_port": "32876",
-        "api_host": "158.85.255.228",
-        "api_port": "32877",
-        "id": "569f64a0-398e-4c61-8396-fb8d574b8991_vp5",
-        "api_url": "http://158.85.255.228:32877"
-      },
-      {
-        "discovery_host": "169.53.72.250",
-        "discovery_port": "33301",
-        "api_host": "169.53.72.250",
-        "api_port": "33302",
-        "id": "569f64a0-398e-4c61-8396-fb8d574b8991_vp2",
-        "api_url": "http://169.53.72.250:33302"
-      },
-      {
-        "discovery_host": "169.53.72.245",
-        "discovery_port": "33308",
-        "api_host": "169.53.72.245",
-        "api_port": "33309",
-        "id": "569f64a0-398e-4c61-8396-fb8d574b8991_vp4",
-        "api_url": "http://169.53.72.245:33309"
       }
     ];
 
@@ -188,10 +156,17 @@ function cb_cleaned(){
 }
 */
 
+/*
 var options = 	{
 					zip_url: 'https://hub.jazz.net/git/averyd/cc_ex02/archive?revstr=master',
 					dir: 'chaincode_example02',
 					git_url: 'https://hub.jazz.net/git/averyd/cc_ex02/chaincode_example02',
+				};
+*/
+var options = 	{
+					zip_url: 'https://codeload.github.com/dshuffma-ibm/simplestuff/zip/master',
+					dir: 'simplestuff-master',
+					git_url: 'https://github.com/dshuffma-ibm/simplestuff'
 				};
 obc.load(options, cb_ready);				//parse/load chaincode
 

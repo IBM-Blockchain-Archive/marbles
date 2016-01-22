@@ -61,8 +61,8 @@ var tempDirectory = path.join(__dirname, "./temp");								//	./temp
 obc.prototype.load = function(options, cb) {	
 	var keep_looking = true;
 	var zip_dest = path.join(tempDirectory,  '/file.zip');							//	./temp/file.zip
-	var unzip_dest = path.join(tempDirectory,  '/unzip');						//	./temp/unzip
-	var unzip_cc_dest = path.join(unzip_dest, '/', options.dir);				//	./temp/unzip/DIRECTORY
+	var unzip_dest = path.join(tempDirectory,  '/unzip');							//	./temp/unzip
+	var unzip_cc_dest = path.join(unzip_dest, '/', options.dir);					//	./temp/unzip/DIRECTORY
 	contract.cc.details.url = options.zip_url;
 	contract.cc.details.dir = options.dir;
 	contract.cc.details.path = options.git_url;
@@ -108,7 +108,7 @@ obc.prototype.load = function(options, cb) {
 
 	// Step 2.
 	function cb_got_names(err, obj){
-		console.log('[obc-js] scanning files');
+		console.log('[obc-js] scanning files', obj);
 		if(err != null) console.log('[obc-js] fs readdir Error', err);
 		else{
 			for(var i in obj){
