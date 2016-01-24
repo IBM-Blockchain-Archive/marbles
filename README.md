@@ -30,15 +30,13 @@ This is a simple asset transfer and asset permission example.
 1. User can read all balls in the chaincode state
 1. User can transfer ball to another user
 1. User can see the owner of a ball
+1. See live block updates
 
 ##Goals Phase 2
 1. ^^
 1. Can trade multiple balls at once
-1. User's loan balls for timeperiod, auto lose ownership
+1. User's can advertise to trade their balls (ie willing to trade large red for large blue/yellow/green)
 
-##Goals Phase 3
-1. ^^
-1. User's can advertise to trade their balls
 
 ###Permissions:
 1. Owner – can add/remove all permissions to the ball
