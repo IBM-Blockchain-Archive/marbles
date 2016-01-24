@@ -43,7 +43,8 @@ app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
-app.use( serve_static(path.join(__dirname, 'public'), {maxAge: '1d', setHeaders: setCustomCC}) );							//1 day cache
+//app.use( serve_static(path.join(__dirname, 'public'), {maxAge: '1d', setHeaders: setCustomCC}) );							//1 day cache
+app.use( serve_static(path.join(__dirname, 'public')) );							//1 day cache
 app.use(session({secret:'Somethignsomething1234!test', resave:true, saveUninitialized:true}));
 function setCustomCC(res, path) {
 	if (serve_static.mime.lookup(path) === 'image/jpeg')  res.setHeader('Cache-Control', 'public, max-age=2592000');		//30 days cache
@@ -101,6 +102,31 @@ if(process.env.PRODUCTION) console.log('Running using Production settings');
 else console.log('Running using Developer settings');
 
 
+var WebSocketServer = require('ws').Server, wss = new WebSocketServer({ port: 3001 });
+
+wss.on('connection', function connection(ws) {
+	ws.on('message', function incoming(message) {
+		console.log('received: %s', message);
+	});
+
+	contract.cc.read('ballIndex', cb_got_index);
+	//ws.send(JSON.stringify({msg: 'hey there client'}));
+	
+	function cb_got_index(e, index){
+		var json = JSON.parse(index);
+		for(var i in json){
+			console.log('!', i, json[i]);
+			contract.cc.read(json[i], cb_got_ball);
+		}
+		//ws.send(JSON.stringify({msg: 'hey there client', e: e, a: a}));
+	}
+	function cb_got_ball(e, ball){
+		ws.send(JSON.stringify({msg: 'balls', e: e, ball: ball}));
+	}
+});
+
+
+
 // ============================================================================================================================
 // ============================================================================================================================
 // ============================================================================================================================
@@ -121,49 +147,49 @@ else console.log('Running using Developer settings');
 // ============================================================================================================================
 var Obc1 = require('./utils/obc-js/index');
 var obc = new Obc1();
-var peers =  [
+var contract = {};
+var peers =[
+      {
+        "discovery_host": "158.85.255.228",
+        "discovery_port": "32968",
+        "api_host": "158.85.255.228",
+        "api_port": "32969",
+        "id": "83c11879-567d-4516-9824-aed14b6f8cf9_vp1",
+        "api_url": "http://158.85.255.228:32969"
+      },
       {
         "discovery_host": "169.53.72.245",
-        "discovery_port": "33394",
+        "discovery_port": "33414",
         "api_host": "169.53.72.245",
-        "api_port": "33395",
-        "id": "56b2a31c-2cfe-46a2-a237-0ea0226bdd5b_vp1",
-        "api_url": "http://169.53.72.245:33395"
+        "api_port": "33415",
+        "id": "83c11879-567d-4516-9824-aed14b6f8cf9_vp5",
+        "api_url": "http://169.53.72.245:33415"
       },
       {
         "discovery_host": "158.85.255.239",
-        "discovery_port": "32938",
+        "discovery_port": "32944",
         "api_host": "158.85.255.239",
-        "api_port": "32939",
-        "id": "56b2a31c-2cfe-46a2-a237-0ea0226bdd5b_vp3",
-        "api_url": "http://158.85.255.239:32939"
+        "api_port": "32945",
+        "id": "83c11879-567d-4516-9824-aed14b6f8cf9_vp2",
+        "api_url": "http://158.85.255.239:32945"
       },
       {
-        "discovery_host": "158.85.255.228",
-        "discovery_port": "32958",
-        "api_host": "158.85.255.228",
-        "api_port": "32959",
-        "id": "56b2a31c-2cfe-46a2-a237-0ea0226bdd5b_vp4",
-        "api_url": "http://158.85.255.228:32959"
-      },
-      {
-        "discovery_host": "169.53.72.250",
-        "discovery_port": "33397",
-        "api_host": "169.53.72.250",
-        "api_port": "33398",
-        "id": "56b2a31c-2cfe-46a2-a237-0ea0226bdd5b_vp5",
-        "api_url": "http://169.53.72.250:33398"
+        "discovery_host": "158.85.255.239",
+        "discovery_port": "32942",
+        "api_host": "158.85.255.239",
+        "api_port": "32943",
+        "id": "83c11879-567d-4516-9824-aed14b6f8cf9_vp4",
+        "api_url": "http://158.85.255.239:32943"
       },
       {
         "discovery_host": "158.85.255.230",
-        "discovery_port": "32924",
+        "discovery_port": "32934",
         "api_host": "158.85.255.230",
-        "api_port": "32925",
-        "id": "56b2a31c-2cfe-46a2-a237-0ea0226bdd5b_vp2",
-        "api_url": "http://158.85.255.230:32925"
+        "api_port": "32935",
+        "id": "83c11879-567d-4516-9824-aed14b6f8cf9_vp3",
+        "api_url": "http://158.85.255.230:32935"
       }
     ];
-
 
 if (process.env.VCAP_SERVICES){
 	console.log("We are running in Cloud Foundry!");
@@ -198,12 +224,14 @@ var options = 	{
 var options = 	{
 					zip_url: 'https://codeload.github.com/dshuffma-ibm/simplestuff/zip/master',
 					dir: 'simplestuff-master',
-					git_url: 'https://github.com/dshuffma-ibm/simplestuff'
+					git_url: 'https://github.com/dshuffma-ibm/simplestuff',
+					name: 'ba0c1e910af1b479c606e5295050499f3d558ebb78a49a489af437f17ea59025c56e990a1652893437f578a9aca449974e70d54e0fd2d1b942f46b4a81a55425'
 				};
 obc.load(options, cb_ready);				//parse/load chaincode
 
-function cb_ready(err, contract){
-	obc.save('./');
+function cb_ready(err, cc){
+	//obc.save('./');
+	contract = cc;
 	//obc.clear();
 	//contract.cc.read('a', cb_next);
 	//contract.cc.deploy('init',  ["a", "101", "b", "202"], cb_next);

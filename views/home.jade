@@ -47,9 +47,8 @@ block content
 			.nav(style="background:orange;")#createLink Create
 		#logo
 			#appName SimpleStuff App1
-			span 
-				&nbsp;&nbsp;
-				span(style="font-size:20px;").fa.fa-flag
+			span &nbsp;&nbsp;
+			span(style="font-size:20px;").fa.fa-flag
 			#owner(title="National Business Merchandise") An NBM Company
 	
 	#contentPanel.adminview
@@ -90,7 +89,7 @@ block content
 
 			span.fa.fa-circle.fa-5x.createball
 			
-			form(action="#" method="POST")#createform
+			form(action="/create" method="POST")#createform
 				input(type="text" name="name" placeholder="Ball Nickname")
 				br
 				select(name="color")

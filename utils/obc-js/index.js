@@ -20,31 +20,26 @@ var async = require('async');
 var rest = require(__dirname + "/lib/rest");
 var AdmZip = require('adm-zip');
 
+var contract = {
+					cc: {
+						read: null,
+						write: null,
+						remove: null,
+						deploy: null,
+						readNames: null,
+						details:{
+									host: "",
+									port: 80,
+									path: "",
+									url: "",
+									name: "",
+									func: [],
+									vars: []
+						}
+					}
+				};
 
-
-//PRIVATE!
-var contract = null;
-
-function obc() {
-  contract = {
-		cc: {
-			read: null,
-			write: null,
-			remove: null,
-			deploy: null,
-			readNames: null,
-			details:{
-						host: "",
-						port: 80,
-						path: "",
-						url: "",
-						name: {},
-						func: [],
-						vars: []
-			}
-		}
-	};
-}
+function obc() {}
 
 var tempDirectory = path.join(__dirname, "./temp");								//	./temp
 
@@ -66,6 +61,7 @@ obc.prototype.load = function(options, cb) {
 	contract.cc.details.url = options.zip_url;
 	contract.cc.details.dir = options.dir;
 	contract.cc.details.path = options.git_url;
+	if(options.name) contract.cc.details.name = options.name;
 	
 	// Preflight checklist
 	try{fs.mkdirSync(tempDirectory);}
@@ -203,6 +199,7 @@ obc.prototype.network = function(arrayPeers){
 // ============================================================================================================================
 obc.prototype.save =  function(dir, cb){
 	var dest = path.join(dir, '/chaincode.json');
+	console.log('name is', contract.cc.details.name);
 	fs.writeFile(dest, JSON.stringify({details: contract.cc.details}), function(e){
 		if(e != null){
 			console.log(e);
@@ -283,7 +280,7 @@ function read(name, cb, lvl){						//lvl is for reading past state blocks, tbd e
 						}
 					}
 				};
-				
+	//console.log('body', body);
 	options.success = function(statusCode, data){
 		console.log("[obc-js] Read - success:", data);
 		if(cb) cb(null, data.OK);
