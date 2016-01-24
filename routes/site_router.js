@@ -56,7 +56,7 @@ router.route("/cci").get(function(req, res){
 // ============================================================================================================================
 // Create
 // ============================================================================================================================
-router.route("/create").post(function(req, res){
+/*router.route("/create").post(function(req, res){
 	//console.log('!', req.body);
 	var errors = [];
 	
@@ -71,18 +71,11 @@ router.route("/create").post(function(req, res){
 	else{
 		contract.init_ball([req.body.name, req.body.color, req.body.size, req.body.user], cb_invoke);
 		
-		/*
-		contract.cc.read('a', cb_got_it);
-		function cb_got_it(e, a){
-			console.log('?', e, a);
-			res.render('home', {title: 'Home', bag: {body: req.body}} );
-		}
-		*/
 	}
 	function cb_invoke(e, a){
 		console.log('?', e, a);
 		res.render('home', {title: 'Home', bag: {body: req.body}} );
 	}
 });
-
+*/
 module.exports = router;

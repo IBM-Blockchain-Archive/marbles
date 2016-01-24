@@ -1,10 +1,95 @@
 /* global $ */
+var ws = {};
 
 // =================================================================================
 // On Load
 // =================================================================================
 $(document).on('ready', function() {
 	connect_to_server();
+	
+	var d = new Date();
+	var e = formatDate(d);
+	$("#blockdate").html(e);
+	
+	// =================================================================================
+	// jQuery UI Events
+	// =================================================================================
+	$("#submit").click(function(){
+		var obj = 	{
+						type: "create",
+						name: $("input[name='name']").val(),
+						color: $("select[name='color']").val(),
+						size: $("select[name='size']").val(),
+						user: $("select[name='user']").val()
+					};
+		ws.send(JSON.stringify(obj));
+		return false;
+	});
+	
+	$(document).on("click", ".ball", function(){
+		if($(this).hasClass("selectedball")){
+			$(this).removeClass("selectedball");
+		}
+		else{
+			$(".selectedball").removeClass("selectedball");
+			$(this).addClass("selectedball");
+		}
+	});
+	
+	$("#adminLink").click(function(){
+		$("#contentPanel").removeClass("createview").addClass("adminview");
+		$("#adminView").fadeIn();
+		$("#createView").hide();
+		//$("#leroyswrap").html("");
+		//$("#bobswrap").html("");
+		console.log('getting new balls');
+		ws.send(JSON.stringify({type: "get"}));
+	});
+	$("#createLink").click(function(){
+		$("#contentPanel").removeClass("adminview").addClass("createview");
+		$("#createView").fadeIn();
+		$("#adminView").hide();
+	});
+	
+	$("#transferright").click(function(){
+		var id = $(".selectedball").attr("id");
+		console.log('transfering', id);
+		var obj = 	{
+						type: "transfer",
+						name: id,
+						user: 'leroy'
+					};
+		ws.send(JSON.stringify(obj));
+		$(".selectedball").removeClass("selectedball");
+	});
+	
+	$("#transferleft").click(function(){
+		var id = $(".selectedball").attr("id");
+		console.log('transfering', id);
+		var obj = 	{
+						type: "transfer",
+						name: id,
+						user: 'bob'
+					};
+		ws.send(JSON.stringify(obj));
+		$(".selectedball").removeClass("selectedball");
+	});
+	
+	
+	// =================================================================================
+	// Helpers
+	// =================================================================================
+	function formatDate(date) {
+		var hours = date.getHours();
+		var minutes = date.getMinutes();
+		var ampm = hours >= 12 ? 'pm' : 'am';
+		hours = hours % 12;
+		hours = hours ? hours : 12; // the hour '0' should be '12'
+		minutes = minutes < 10 ? '0'+minutes : minutes;
+		var strTime = hours + ':' + minutes + ' ' + ampm;
+		return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear() + "  " + strTime;
+	}
+
 });
 
 
@@ -14,7 +99,6 @@ $(document).on('ready', function() {
 function connect_to_server(){
 
 	connect();
-	var ws = {};
 	function connect(){
 		var wsUri = "ws://localhost:3001";
 		//var wsUri = "wss://broker.obchain.com/network/" + name;
@@ -40,7 +124,8 @@ function connect_to_server(){
 	function onMessage(msg){
 		try{
 			var data = JSON.parse(msg.data);
-			console.log('got', data);
+			console.log('rec', data.ball);
+			build_ball(data.ball);
 			//ws.close();
 		}
 		catch(e){
@@ -58,4 +143,31 @@ function connect_to_server(){
 		console.log("SENT: " + message);
 		ws.send(message);
 	}
+}
+
+
+// =================================================================================
+//	UI Building
+// =================================================================================
+function build_ball(data){
+	var html = '';
+	var style = '';
+	
+	if(!$("#" + data.name).length){								//only populate if it doesn't exists
+		//if($("#" + data.name).attr("user").toLowerCase() == data.user.toLowerCase()){		//ball has moved! redraw
+		//	$("#" + data.name).remove();
+		//}
+	//}
+	
+	if(data.color) style = "color:" + data.color.toLowerCase();
+	
+	html += '<span id="' + data.name +'" class=" fa fa-circle fa-5x ball" title="' + data.name +'" style="' + style +'" user="' + data.user + '"></span>';
+	if((data.user && data.user.toLowerCase() == 'bob') || (data.owner && data.owner.toLowerCase() == 'bob')){
+		$("#bobswrap").append(html);
+	}
+	else{
+		$("#leroyswrap").append(html);
+	}
+	}
+	return html;
 }

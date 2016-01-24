@@ -106,22 +106,57 @@ var WebSocketServer = require('ws').Server, wss = new WebSocketServer({ port: 30
 
 wss.on('connection', function connection(ws) {
 	ws.on('message', function incoming(message) {
-		console.log('received: %s', message);
+		console.log('received ws msg:', message);
+		var data = JSON.parse(message);
+		
+		//// messages ////
+		if(data.type == 'create'){
+			console.log('its a create!');
+			contract.init_ball([data.name, data.color, data.size, data.user], cb_invoked);				//create a new ball
+		}
+		else if(data.type == 'get'){
+			get_balls();
+		}
+		else if(data.type == 'transfer'){
+			console.log('transfering');
+			contract.set_user([data.name, data.user]);
+		}
 	});
-
-	contract.cc.read('ballIndex', cb_got_index);
-	//ws.send(JSON.stringify({msg: 'hey there client'}));
+	
+	get_balls();
+	function get_balls(){
+		console.log('fetching all ball data');
+		contract.cc.read('ballIndex', cb_got_index);
+		//ws.send(JSON.stringify({msg: 'hey there client'}));
+	}
+	
 	
 	function cb_got_index(e, index){
-		var json = JSON.parse(index);
-		for(var i in json){
-			console.log('!', i, json[i]);
-			contract.cc.read(json[i], cb_got_ball);
+		if(e != null) console.log('error:', e);
+		else{
+			var json = JSON.parse(index);
+			for(var i in json){
+				console.log('!', i, json[i]);
+				contract.cc.read(json[i], cb_got_ball);
+			}
 		}
-		//ws.send(JSON.stringify({msg: 'hey there client', e: e, a: a}));
 	}
 	function cb_got_ball(e, ball){
-		ws.send(JSON.stringify({msg: 'balls', e: e, ball: ball}));
+		if(e != null) console.log('error:', e);
+		else {
+			for(var i in ball) {						//set it to lowercase!
+				var temp = ball[i];
+				delete ball[i];
+				if(temp != null){
+					ball[i.toLowerCase()] = temp;
+				}
+			}
+			ws.send(JSON.stringify({msg: 'balls', e: e, ball: ball}));
+		}
+	}
+	
+	function cb_invoked(e, a){
+		console.log('response: ', e, a);
 	}
 });
 

@@ -4,40 +4,7 @@ extends ./template/layout.jade
 block custom_header
 	script(type='text/javascript').
 		$(document).ready(function(){
-			$(document).on("click", ".ball", function(){
-				if($(this).hasClass("selectedball")){
-					$(this).removeClass("selectedball");
-				}
-				else{
-					$(this).addClass("selectedball");
-				}
-			});
 			
-			$("#adminLink").click(function(){
-				$("#contentPanel").removeClass("createview").addClass("adminview");
-				$("#adminView").fadeIn();
-				$("#createView").hide();
-			});
-			$("#createLink").click(function(){
-				$("#contentPanel").removeClass("adminview").addClass("createview");
-				$("#createView").fadeIn();
-				$("#adminView").hide();
-			});
-			
-			function formatDate(date) {
-				var hours = date.getHours();
-				var minutes = date.getMinutes();
-				var ampm = hours >= 12 ? 'pm' : 'am';
-				hours = hours % 12;
-				hours = hours ? hours : 12; // the hour '0' should be '12'
-				minutes = minutes < 10 ? '0'+minutes : minutes;
-				var strTime = hours + ':' + minutes + ' ' + ampm;
-				return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear() + "  " + strTime;
-			}
-
-			var d = new Date();
-			var e = formatDate(d);
-			$("#blockdate").html(e);
 		});
 
 block content
@@ -58,25 +25,27 @@ block content
 		// --------------- Admin View -------------- //
 		#adminView
 			#description (Click a ball then the arrow to transfer it)
-			.personWrap 
-				.legend Bob			
-				span.fa.fa-circle.fa-5x.ball
-				span.fa.fa-circle.fa-5x.ball
-				span.fa.fa-circle.fa-5x.ball
-				span.fa.fa-circle.fa-5x.ball
-				span.fa.fa-circle.fa-5x.ball
-				span.fa.fa-circle.fa-5x.ball
-				span.fa.fa-circle.fa-5x.ball
-				span.fa.fa-circle.fa-5x.ball
-				span.fa.fa-circle.fa-5x.ball
-				span.fa.fa-circle.fa-5x.ball
-				span.fa.fa-circle.fa-5x.ball
+			.personWrap
+				.legend Bob
+				#bobswrap
+					//span.fa.fa-circle.fa-5x.ball
+						span.fa.fa-circle.fa-5x.ball
+						span.fa.fa-circle.fa-5x.ball
+						span.fa.fa-circle.fa-5x.ball
+						span.fa.fa-circle.fa-5x.ball
+						span.fa.fa-circle.fa-5x.ball
+						span.fa.fa-circle.fa-5x.ball
+						span.fa.fa-circle.fa-5x.ball
+						span.fa.fa-circle.fa-5x.ball
+						span.fa.fa-circle.fa-5x.ball
+						span.fa.fa-circle.fa-5x.ball
 			
-			.personWrap(style="float:right;") 
+			.personWrap(style="float:right;")
 				.legend Leroy
-				span.fa.fa-circle.fa-5x.ball
-				span.fa.fa-circle.fa-5x.ball
-				span.fa.fa-circle.fa-5x.ball
+				#leroyswrap
+					//span.fa.fa-circle.fa-5x.ball
+						span.fa.fa-circle.fa-5x.ball
+						span.fa.fa-circle.fa-5x.ball
 			
 			#transferWrap
 				span.fa.fa-chevron-left.fa-5x#transferleft
@@ -107,4 +76,4 @@ block content
 				select(name="user")
 					option Bob
 					option Leroy
-				button(type="submit") +
+				button(type="button")#submit +
