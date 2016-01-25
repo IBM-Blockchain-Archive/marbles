@@ -41,7 +41,7 @@ app.engine('.html', require('jade').__express);
 app.use(compression());
 app.use(morgan('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded()); 
 app.use(cookieParser());
 //app.use( serve_static(path.join(__dirname, 'public'), {maxAge: '1d', setHeaders: setCustomCC}) );							//1 day cache
 app.use( serve_static(path.join(__dirname, 'public')) );							//1 day cache
