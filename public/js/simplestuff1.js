@@ -124,8 +124,8 @@ function connect_to_server(){
 	function onMessage(msg){
 		try{
 			var data = JSON.parse(msg.data);
-			console.log('rec', data.ball);
-			build_ball(data.ball);
+			console.log('rec', data.marble);
+			build_ball(data.marble);
 			//ws.close();
 		}
 		catch(e){

@@ -183,46 +183,46 @@ wss.on('connection', function connection(ws) {
 var Obc1 = require('./utils/obc-js/index');
 var obc = new Obc1();
 var contract = {};
-var peers =[
+var peers = [
       {
-        "discovery_host": "158.85.255.239",
-        "discovery_port": "32956",
-        "api_host": "158.85.255.239",
-        "api_port": "32957",
-        "id": "7702ea43-5b50-4404-972b-62cf1c3254e4_vp1",
-        "api_url": "http://158.85.255.239:32957"
+        "discovery_host": "169.53.72.250",
+        "discovery_port": "33435",
+        "api_host": "169.53.72.250",
+        "api_port": "33436",
+        "id": "193fbb75-f538-4beb-9c27-b6fb28062a72_vp1",
+        "api_url": "http://169.53.72.250:33436"
+      },
+      {
+        "discovery_host": "158.85.255.228",
+        "discovery_port": "33002",
+        "api_host": "158.85.255.228",
+        "api_port": "33003",
+        "id": "193fbb75-f538-4beb-9c27-b6fb28062a72_vp2",
+        "api_url": "http://158.85.255.228:33003"
       },
       {
         "discovery_host": "158.85.255.239",
-        "discovery_port": "32958",
+        "discovery_port": "32984",
         "api_host": "158.85.255.239",
-        "api_port": "32959",
-        "id": "7702ea43-5b50-4404-972b-62cf1c3254e4_vp5",
-        "api_url": "http://158.85.255.239:32959"
+        "api_port": "32985",
+        "id": "193fbb75-f538-4beb-9c27-b6fb28062a72_vp4",
+        "api_url": "http://158.85.255.239:32985"
       },
       {
-        "discovery_host": "169.53.72.245",
-        "discovery_port": "33422",
-        "api_host": "169.53.72.245",
-        "api_port": "33423",
-        "id": "7702ea43-5b50-4404-972b-62cf1c3254e4_vp4",
-        "api_url": "http://169.53.72.245:33423"
-      },
-      {
-        "discovery_host": "169.53.72.245",
-        "discovery_port": "33424",
-        "api_host": "169.53.72.245",
-        "api_port": "33425",
-        "id": "7702ea43-5b50-4404-972b-62cf1c3254e4_vp3",
-        "api_url": "http://169.53.72.245:33425"
+        "discovery_host": "158.85.255.239",
+        "discovery_port": "32982",
+        "api_host": "158.85.255.239",
+        "api_port": "32983",
+        "id": "193fbb75-f538-4beb-9c27-b6fb28062a72_vp3",
+        "api_url": "http://158.85.255.239:32983"
       },
       {
         "discovery_host": "158.85.255.230",
-        "discovery_port": "32950",
+        "discovery_port": "32976",
         "api_host": "158.85.255.230",
-        "api_port": "32951",
-        "id": "7702ea43-5b50-4404-972b-62cf1c3254e4_vp2",
-        "api_url": "http://158.85.255.230:32951"
+        "api_port": "32977",
+        "id": "193fbb75-f538-4beb-9c27-b6fb28062a72_vp5",
+        "api_url": "http://158.85.255.230:32977"
       }
     ];
 
@@ -260,7 +260,7 @@ var options = 	{
 					zip_url: 'https://codeload.github.com/dshuffma-ibm/simplestuff/zip/master',
 					dir: 'simplestuff-master',
 					git_url: 'https://github.com/dshuffma-ibm/simplestuff',
-					name: 'ba0c1e910af1b479c606e5295050499f3d558ebb78a49a489af437f17ea59025c56e990a1652893437f578a9aca449974e70d54e0fd2d1b942f46b4a81a55425'
+					name: 'b9ba36640ed4b3c3ef1536389b3925b890ada438cf9a3a66be246362b8fcf7d4f400e1885329b959f94b7136ef3067f61cff6dcc9f29a01fee4eb06e59eaa214'
 				};
 obc.load(options, cb_ready);				//parse/load chaincode
 
