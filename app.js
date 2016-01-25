@@ -185,44 +185,44 @@ var obc = new Obc1();
 var contract = {};
 var peers =[
       {
-        "discovery_host": "158.85.255.228",
-        "discovery_port": "32968",
-        "api_host": "158.85.255.228",
-        "api_port": "32969",
-        "id": "83c11879-567d-4516-9824-aed14b6f8cf9_vp1",
-        "api_url": "http://158.85.255.228:32969"
+        "discovery_host": "158.85.255.239",
+        "discovery_port": "32956",
+        "api_host": "158.85.255.239",
+        "api_port": "32957",
+        "id": "7702ea43-5b50-4404-972b-62cf1c3254e4_vp1",
+        "api_url": "http://158.85.255.239:32957"
+      },
+      {
+        "discovery_host": "158.85.255.239",
+        "discovery_port": "32958",
+        "api_host": "158.85.255.239",
+        "api_port": "32959",
+        "id": "7702ea43-5b50-4404-972b-62cf1c3254e4_vp5",
+        "api_url": "http://158.85.255.239:32959"
       },
       {
         "discovery_host": "169.53.72.245",
-        "discovery_port": "33414",
+        "discovery_port": "33422",
         "api_host": "169.53.72.245",
-        "api_port": "33415",
-        "id": "83c11879-567d-4516-9824-aed14b6f8cf9_vp5",
-        "api_url": "http://169.53.72.245:33415"
+        "api_port": "33423",
+        "id": "7702ea43-5b50-4404-972b-62cf1c3254e4_vp4",
+        "api_url": "http://169.53.72.245:33423"
       },
       {
-        "discovery_host": "158.85.255.239",
-        "discovery_port": "32944",
-        "api_host": "158.85.255.239",
-        "api_port": "32945",
-        "id": "83c11879-567d-4516-9824-aed14b6f8cf9_vp2",
-        "api_url": "http://158.85.255.239:32945"
-      },
-      {
-        "discovery_host": "158.85.255.239",
-        "discovery_port": "32942",
-        "api_host": "158.85.255.239",
-        "api_port": "32943",
-        "id": "83c11879-567d-4516-9824-aed14b6f8cf9_vp4",
-        "api_url": "http://158.85.255.239:32943"
+        "discovery_host": "169.53.72.245",
+        "discovery_port": "33424",
+        "api_host": "169.53.72.245",
+        "api_port": "33425",
+        "id": "7702ea43-5b50-4404-972b-62cf1c3254e4_vp3",
+        "api_url": "http://169.53.72.245:33425"
       },
       {
         "discovery_host": "158.85.255.230",
-        "discovery_port": "32934",
+        "discovery_port": "32950",
         "api_host": "158.85.255.230",
-        "api_port": "32935",
-        "id": "83c11879-567d-4516-9824-aed14b6f8cf9_vp3",
-        "api_url": "http://158.85.255.230:32935"
+        "api_port": "32951",
+        "id": "7702ea43-5b50-4404-972b-62cf1c3254e4_vp2",
+        "api_url": "http://158.85.255.230:32951"
       }
     ];
 
@@ -265,7 +265,7 @@ var options = 	{
 obc.load(options, cb_ready);				//parse/load chaincode
 
 function cb_ready(err, cc){
-	//obc.save('./');
+	obc.save('./');
 	contract = cc;
 	//obc.clear();
 	//contract.cc.read('a', cb_next);

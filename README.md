@@ -36,6 +36,7 @@ This is a simple asset transfer and asset permission example.
 1. ^^
 1. Can trade multiple balls at once
 1. User's can advertise to trade their balls (ie willing to trade large red for large blue/yellow/green)
+1. User identity and autentication
 
 
 ###Permissions:
