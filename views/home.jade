@@ -24,7 +24,7 @@ block content
 		
 		// --------------- Admin View -------------- //
 		#adminView
-			#description (Click a ball then the arrow to transfer it)
+			#description (Click a marble then the arrow to transfer it)
 			.personWrap
 				.legend Bob
 				#bobswrap
@@ -54,12 +54,12 @@ block content
 		
 		// --------------- Create View -------------- //
 		#createView(hidden)
-			.legend Create
+			.legend Create Marble
 
 			span.fa.fa-circle.fa-5x.createball
 			
 			form(action="/create" method="POST")#createform
-				input(type="text" name="name" placeholder="Ball Nickname")
+				input(type="text" name="name" placeholder="Name")
 				br
 				select(name="color")
 					option White
@@ -76,4 +76,4 @@ block content
 				select(name="user")
 					option Bob
 					option Leroy
-				button(type="button")#submit +
+				button(type="button")#submit Create

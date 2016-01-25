@@ -112,10 +112,10 @@ wss.on('connection', function connection(ws) {
 		//// messages ////
 		if(data.type == 'create'){
 			console.log('its a create!');
-			contract.init_ball([data.name, data.color, data.size, data.user], cb_invoked);				//create a new ball
+			contract.init_marble([data.name, data.color, data.size, data.user], cb_invoked);				//create a new marble
 		}
 		else if(data.type == 'get'){
-			get_balls();
+			get_marbles();
 		}
 		else if(data.type == 'transfer'){
 			console.log('transfering');
@@ -123,10 +123,10 @@ wss.on('connection', function connection(ws) {
 		}
 	});
 	
-	get_balls();
-	function get_balls(){
-		console.log('fetching all ball data');
-		contract.cc.read('ballIndex', cb_got_index);
+	get_marbles();
+	function get_marbles(){
+		console.log('fetching all marble data');
+		contract.cc.read('marbleIndex', cb_got_index);
 		//ws.send(JSON.stringify({msg: 'hey there client'}));
 	}
 	
@@ -137,21 +137,21 @@ wss.on('connection', function connection(ws) {
 			var json = JSON.parse(index);
 			for(var i in json){
 				console.log('!', i, json[i]);
-				contract.cc.read(json[i], cb_got_ball);
+				contract.cc.read(json[i], cb_got_marble);
 			}
 		}
 	}
-	function cb_got_ball(e, ball){
+	function cb_got_marble(e, marble){
 		if(e != null) console.log('error:', e);
 		else {
-			for(var i in ball) {						//set it to lowercase!
-				var temp = ball[i];
-				delete ball[i];
+			for(var i in marble) {						//set it to lowercase!
+				var temp = marble[i];
+				delete marble[i];
 				if(temp != null){
-					ball[i.toLowerCase()] = temp;
+					marble[i.toLowerCase()] = temp;
 				}
 			}
-			ws.send(JSON.stringify({msg: 'balls', e: e, ball: ball}));
+			ws.send(JSON.stringify({msg: 'marbles', e: e, marble: marble}));
 		}
 	}
 	

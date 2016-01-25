@@ -26,23 +26,23 @@ Alternative Run:
 This is a simple asset transfer and asset permission example.
 
 ##Goals Phase 1
-1. User can create a ball and store it in the chaincode state
-1. User can read all balls in the chaincode state
-1. User can transfer ball to another user
-1. User can see the owner of a ball
+1. User can create a marble and store it in the chaincode state
+1. User can read all marbles in the chaincode state
+1. User can transfer marble to another user
+1. User can see the owner of a marble
 1. See live block updates
 
 ##Goals Phase 2
 1. ^^
-1. Can trade multiple balls at once
-1. User's can advertise to trade their balls (ie willing to trade large red for large blue/yellow/green)
+1. Can trade multiple marbles at once
+1. User's can advertise to trade their marbles (ie willing to trade large red for large blue/yellow/green)
 1. User identity and autentication
 
 
 ###Permissions:
-1. Owner – can add/remove all permissions to the ball
+1. Owner – can add/remove all permissions to the marble
 
-###Attributes of a ball:
+###Attributes of a marble:
 1. name
 1. color
 1. size
@@ -53,14 +53,14 @@ This is a simple asset transfer and asset permission example.
 ##ChainCode / SDK To Do:
 - [x] Write("name", "val", cb);
 - [?] ReadNames(cb)
-- [ ] init_thing(json);
+- [x] init_thing(json);
 - [ ] edit_thing(json);
 - [ ] need multi var read in sdk! ie read(["car1", "car2"]); ... what if we do a lot here, like SQL syntax?
 - [?] remember the name of all the saved vars in cc, and export this list so sdk can get it
 - [ ] check permissions of requesting user in cc
 - [ ] verify user identityf, ie public private key stuff
 - [x] website to test cc, real basic
-- [ ] demo app website
+- [x] demo app website
 - [x] make sdk proper npm module
 - [ ] change downloading zip to git clone
 - [x] custom custom function on UI
@@ -69,7 +69,7 @@ This is a simple asset transfer and asset permission example.
 - [ ] browsify sdk and tie cci into it
 - [ ] follow redirect on zip download...
 - [ ] unzip may have project name as root... need to go down 1 lvl
-- [ ] check inputs on load if they  dne, error
+- [ ] sdk, check inputs on load if they  dne, error
 - [ ] poll after chain deploy for cc up in peer
 - [ ] add block event to sdk
 
