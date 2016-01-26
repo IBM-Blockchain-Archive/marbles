@@ -122,6 +122,9 @@ wss.on('connection', function connection(ws) {
 			console.log('transfering');
 			contract.set_user([data.name, data.user]);
 		}
+		else if(data.type == 'remove'){
+			contract.cc.remove(data.name);
+		}
 	});
 	
 	get_marbles();
@@ -183,46 +186,14 @@ wss.on('connection', function connection(ws) {
 var Obc1 = require('./utils/obc-js/index');
 var obc = new Obc1();
 var contract = {};
-var peers =  [
+var peers =    [
       {
         "discovery_host": "169.53.72.250",
-        "discovery_port": "33435",
+        "discovery_port": "33521",
         "api_host": "169.53.72.250",
-        "api_port": "33436",
-        "id": "193fbb75-f538-4beb-9c27-b6fb28062a72_vp1",
-        "api_url": "http://169.53.72.250:33436"
-      },
-      {
-        "discovery_host": "158.85.255.228",
-        "discovery_port": "33002",
-        "api_host": "158.85.255.228",
-        "api_port": "33003",
-        "id": "193fbb75-f538-4beb-9c27-b6fb28062a72_vp2",
-        "api_url": "http://158.85.255.228:33003"
-      },
-      {
-        "discovery_host": "158.85.255.239",
-        "discovery_port": "32984",
-        "api_host": "158.85.255.239",
-        "api_port": "32985",
-        "id": "193fbb75-f538-4beb-9c27-b6fb28062a72_vp4",
-        "api_url": "http://158.85.255.239:32985"
-      },
-      {
-        "discovery_host": "158.85.255.239",
-        "discovery_port": "32982",
-        "api_host": "158.85.255.239",
-        "api_port": "32983",
-        "id": "193fbb75-f538-4beb-9c27-b6fb28062a72_vp3",
-        "api_url": "http://158.85.255.239:32983"
-      },
-      {
-        "discovery_host": "158.85.255.230",
-        "discovery_port": "32976",
-        "api_host": "158.85.255.230",
-        "api_port": "32977",
-        "id": "193fbb75-f538-4beb-9c27-b6fb28062a72_vp5",
-        "api_url": "http://158.85.255.230:32977"
+        "api_port": "33522",
+        "id": "fc5afff6-7498-4422-b692-440372017285_vp5",
+        "api_url": "http://169.53.72.250:33522"
       }
     ];
 
@@ -260,7 +231,7 @@ var options = 	{
 					zip_url: 'https://codeload.github.com/dshuffma-ibm/simplestuff/zip/master',
 					dir: 'simplestuff-master',
 					git_url: 'https://github.com/dshuffma-ibm/simplestuff',
-					name: 'b9ba36640ed4b3c3ef1536389b3925b890ada438cf9a3a66be246362b8fcf7d4f400e1885329b959f94b7136ef3067f61cff6dcc9f29a01fee4eb06e59eaa214'
+					name: '460d0c215e0a9cb807244b5bd1648c535b262b0796c86e9dfc025913dba038048c08dbf1841782643baae2f4c49b40f65298dabb228abc27b8b47e8cc6aea27b'
 				};
 obc.load(options, cb_ready);				//parse/load chaincode
 

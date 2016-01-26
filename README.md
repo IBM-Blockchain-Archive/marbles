@@ -72,6 +72,7 @@ This is a simple asset transfer and asset permission example.
 - [ ] sdk, check inputs on load if they  dne, error
 - [ ] poll after chain deploy for cc up in peer
 - [ ] add block event to sdk
+- [ ] key name and value should come back in read(), not just value 
 
 
 ###ChainCode Notes:

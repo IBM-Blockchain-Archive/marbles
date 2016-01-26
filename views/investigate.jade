@@ -330,6 +330,10 @@ block custom_header
 				rest_remove();
 			});
 			
+			$("#init").click(function(){
+				rest_init();
+			});
+			
 			// ===============================================================================================================
 			// 												HTTP Functions
 			// ================================================================================================================
@@ -486,7 +490,7 @@ block custom_header
 								ctorMsg: {
 									function: "init",
 									//"args": JSON.parse("[" + $("input[name='init_args']").val() + "]")
-									args: ["a", "72", "b", "999"]
+									args: ["72"]
 								}
 							};
 				console.log(data);
@@ -547,6 +551,7 @@ block custom_header
 			}
 			
 			function rest_remove(){
+				console.log("removing");
 				var host = $("input[name='host']").val();
 				var port = $("input[name='port']").val();				
 				var data = {
@@ -572,6 +577,37 @@ block custom_header
 					},
 					error: function(e){
 						console.log('Error - remove', e);
+					}
+				});
+			}
+			
+			function rest_init(){
+				console.log("init");
+				var host = $("input[name='host']").val();
+				var port = $("input[name='port']").val();
+				var data = {
+								"chaincodeSpec": {
+									"type": "GOLANG",
+									"chaincodeID": {
+										name: $("input[name='cc_name']").val(),
+									},
+									"ctorMsg": {
+										"function": "init",
+										"args": [name]
+									}
+								}
+							};
+				
+				$.ajax({
+					method: 'POST',
+					url: 'http://' + host + ':' + port + '/devops/invoke',
+					data: JSON.stringify(data),
+					contentType: 'application/json',
+					success: function(json){
+						console.log('Success - init', json);
+					},
+					error: function(e){
+						console.log('Error - init', e);
 					}
 				});
 			}

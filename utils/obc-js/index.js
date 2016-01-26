@@ -391,32 +391,7 @@ function deploy(func, args, cb){
 //readNames() - read all variable names in chaincode state
 //============================================================================================================================
 function readNames(cb, lvl){						//lvl is for reading past state blocks, tbd exactly
-	var options = {
-		path: '/devops/invoke'
-	};
-	var body = {
-					chaincodeSpec: {
-						type: "GOLANG",
-						chaincodeID: {
-							name: contract.cc.details.name,
-						},
-						ctorMsg: {
-							function: "readnames",
-							args: []
-						}
-					}
-				};
-
-	options.success = function(statusCode, data){
-		console.log("[obc-js] ReadNames - success:", data);
-		if(cb) cb(null, data.OK);
-	};
-	options.failure = function(statusCode, e){
-		console.log("[obc-js] ReadNames - failure:", statusCode);
-		if(cb) cb(eFmt('http error', statusCode, e), null);
-	};
-		rest.post(options, '', body);
-	
+	read('_all', cb, lvl);
 }
 
 
