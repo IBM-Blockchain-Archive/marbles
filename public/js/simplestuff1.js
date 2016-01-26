@@ -1,3 +1,4 @@
+/* global bag */
 /* global $ */
 var ws = {};
 
@@ -100,8 +101,10 @@ function connect_to_server(){
 
 	connect();
 	function connect(){
-		var wsUri = "ws://localhost:3001";
-		//var wsUri = "wss://broker.obchain.com/network/" + name;
+		//var wsUri = "ws://localhost:3000";
+		//var wsUri = "ws://marbles.stage1.mybluemix.net";
+		var wsUri = "ws://" + bag.setup.SERVER.EXTURI;
+		
 		ws = new WebSocket(wsUri);
 		ws.onopen = function(evt) { onOpen(evt); };
 		ws.onclose = function(evt) { onClose(evt); };

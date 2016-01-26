@@ -94,7 +94,7 @@ app.use(function(err, req, res, next) {		// = development error handler, print s
 });
 
 ////////////// Launch //////////////
-var server = app.listen(port, host);								//gogo application
+var server = http.createServer(app).listen(port, function() {});
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 server.timeout = 240000;																							// Ta-da.
 console.log('info', '------------------------------------------ Server Up - ' + host + ':' + port + ' ------------------------------------------');
@@ -102,8 +102,9 @@ if(process.env.PRODUCTION) console.log('Running using Production settings');
 else console.log('Running using Developer settings');
 
 
-var WebSocketServer = require('ws').Server, wss = new WebSocketServer({ port: 3001 });
-
+var ws = require('ws');
+var wss = new ws.Server({server: server});
+	
 wss.on('connection', function connection(ws) {
 	ws.on('message', function incoming(message) {
 		console.log('received ws msg:', message);
@@ -127,7 +128,6 @@ wss.on('connection', function connection(ws) {
 	function get_marbles(){
 		console.log('fetching all marble data');
 		contract.cc.read('marbleIndex', cb_got_index);
-		//ws.send(JSON.stringify({msg: 'hey there client'}));
 	}
 	
 	
@@ -183,7 +183,7 @@ wss.on('connection', function connection(ws) {
 var Obc1 = require('./utils/obc-js/index');
 var obc = new Obc1();
 var contract = {};
-var peers = [
+var peers =  [
       {
         "discovery_host": "169.53.72.250",
         "discovery_port": "33435",
@@ -267,19 +267,4 @@ obc.load(options, cb_ready);				//parse/load chaincode
 function cb_ready(err, cc){
 	obc.save('./');
 	contract = cc;
-	//obc.clear();
-	//contract.cc.read('a', cb_next);
-	//contract.cc.deploy('init',  ["a", "101", "b", "202"], cb_next);
-	//contract.cc.read('a', cb_next);
-	/*
-	function cb_next(e, value){
-		contract.cc.read('a', cb_next2);
-	contract.cc.write('a', (value + 1), cb_next2);
-		contract.invoke(["a", "b", "5"], cb_next2);
-	}
-	function cb_next2(){
-		contract.cc.read('a');
-		contract.cc.read('b');
-	}
-	*/
 }

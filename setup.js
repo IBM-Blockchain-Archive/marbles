@@ -11,7 +11,11 @@
 // 	1 - Bluemix Production
 // 	2 - Bluemix Development
 // 	3 - Localhost Development
- 
+
+var vcap_app = {application_uris: ['']};						//default blank
+if(process.env.VCAP_APPLICATION){
+	vcap_app = JSON.parse(process.env.VCAP_APPLICATION);
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////    1. Bluemix Production    ////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,8 +23,9 @@ if(process.env.VCAP_APP_HOST && process.env.PRODUCTION){
 	exports.SERVER = 	{	
 							HOST: process.env.VCAP_APP_HOST,
 							PORT: process.env.VCAP_APP_PORT,
-							DESCRIPTION: 'Bluemix - Production'
-							};
+							DESCRIPTION: 'Bluemix - Production',
+							EXTURI: vcap_app.application_uris[0],
+						};
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,7 +35,8 @@ else if(process.env.VCAP_APP_HOST){
 		exports.SERVER = 	{	
 								HOST: process.env.VCAP_APP_HOST,
 								PORT: process.env.VCAP_APP_PORT,
-								DESCRIPTION: 'Bluemix - Development'
+								DESCRIPTION: 'Bluemix - Development',
+								EXTURI: vcap_app.application_uris[0],
 							 };
 }
 
@@ -41,10 +47,14 @@ else{
 	exports.SERVER = 	{
 							HOST:'localhost',
 							PORT: 3000,
-							DESCRIPTION: 'Localhost'
+							DESCRIPTION: 'Localhost',
+							EXTURI: 'localhost:3000',
 						 };
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////     Common     ////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
+console.log('env', process.env);
+
+exports.DEBUG = vcap_app;
