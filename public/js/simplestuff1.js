@@ -54,26 +54,43 @@ $(document).on('ready', function() {
 	
 	$("#transferright").click(function(){
 		var id = $(".selectedball").attr("id");
-		console.log('transfering', id);
-		var obj = 	{
-						type: "transfer",
-						name: id,
-						user: 'leroy'
-					};
-		ws.send(JSON.stringify(obj));
-		$(".selectedball").removeClass("selectedball");
+		if(id){
+			console.log('transfering', id);
+			var obj = 	{
+							type: "transfer",
+							name: id,
+							user: 'leroy'
+						};
+			ws.send(JSON.stringify(obj));
+			$(".selectedball").removeClass("selectedball");
+		}
 	});
 	
 	$("#transferleft").click(function(){
 		var id = $(".selectedball").attr("id");
-		console.log('transfering', id);
-		var obj = 	{
-						type: "transfer",
-						name: id,
-						user: 'bob'
-					};
-		ws.send(JSON.stringify(obj));
-		$(".selectedball").removeClass("selectedball");
+		if(id){
+			console.log('transfering', id);
+			var obj = 	{
+							type: "transfer",
+							name: id,
+							user: 'bob'
+						};
+			ws.send(JSON.stringify(obj));
+			$(".selectedball").removeClass("selectedball");
+		}
+	});
+	
+	$("#removemarble").click(function(){
+		var id = $(".selectedball").attr("id");
+		if(id){
+			console.log('removing', id);
+			var obj = 	{
+							type: "remove",
+							name: id
+						};
+			ws.send(JSON.stringify(obj));
+			$(".selectedball").removeClass("selectedball");
+		}
 	});
 	
 	

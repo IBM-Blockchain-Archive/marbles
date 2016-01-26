@@ -76,13 +76,9 @@
 	padding-bottom:5px;
 }
 
-
-#transferright, #transferleft{
-	cursor:pointer;
-}
-
-#transferright:hover, #transferleft:hover{
-	color:#222;
+#transferright:hover, #transferleft:hover, #removemarble:hover{
+	cursor: pointer;
+	color:orange;
 }
 
 .ball{

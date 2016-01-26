@@ -326,6 +326,10 @@ block custom_header
 				rest_barebones();
 			});
 			
+			$("#remove").click(function(){
+				rest_remove();
+			});
+			
 			// ===============================================================================================================
 			// 												HTTP Functions
 			// ================================================================================================================
@@ -540,6 +544,36 @@ block custom_header
 						}
 					});
 				}
+			}
+			
+			function rest_remove(){
+				var host = $("input[name='host']").val();
+				var port = $("input[name='port']").val();				
+				var data = {
+								"chaincodeSpec": {
+									"type": "GOLANG",
+									"chaincodeID": {
+										name: $("input[name='cc_name']").val(),
+									},
+									"ctorMsg": {
+										"function": 'delete',
+										"args": [$("input[name='remove_name']").val()]
+									}
+								}
+							};
+
+				$.ajax({
+					method: 'POST',
+					url: 'http://' + host + ':' + port + '/devops/invoke',
+					data: JSON.stringify(data),
+					contentType: 'application/json',
+					success: function(json){
+						console.log('Success - remove', json);
+					},
+					error: function(e){
+						console.log('Error - remove', e);
+					}
+				});
 			}
 			
 			function rest_barebones(){

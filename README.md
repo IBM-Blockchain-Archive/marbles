@@ -26,17 +26,17 @@ Alternative Run:
 This is a simple asset transfer and asset permission example.
 
 ##Goals Phase 1
-1. User can create a marble and store it in the chaincode state
-1. User can read all marbles in the chaincode state
-1. User can transfer marble to another user
-1. User can see the owner of a marble
-1. See live block updates
+- [x] User can create a marble and store it in the chaincode state
+- [x] User can read all marbles in the chaincode state
+- [x] User can transfer marble to another user
+- [ ] See live block updates
+- [ ] User can delete a marble
 
 ##Goals Phase 2
-1. ^^
-1. Can trade multiple marbles at once
-1. User's can advertise to trade their marbles (ie willing to trade large red for large blue/yellow/green)
-1. User identity and autentication
+- [ ] ^^
+- [ ] Can trade multiple marbles at once
+- [ ] User's can advertise to trade their marbles (ie willing to trade large red for large blue/yellow/green)
+- [ ] User identity and autentication
 
 
 ###Permissions:
