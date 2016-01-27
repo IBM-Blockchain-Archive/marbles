@@ -43,54 +43,20 @@ $(document).on('ready', function() {
 	$("#adminLink").click(function(){
 		showAdminPanel();
 	});
-	function showAdminPanel(reset){
-		$("#contentPanel").removeClass("createview").addClass("adminview");
-		$("#adminView").fadeIn();
-		$("#createView").hide();
-		if(reset === true){
-			$("#bobswrap").html('');
-			$("#leroyswrap").html('');
-		}
-		console.log('getting new balls');
-		setTimeout(function(){
-			ws.send(JSON.stringify({type: "get"}));						//need to wait a bit - dsh to do, tap into new block event
-		}, 200);
-	}
+
 	$("#createLink").click(function(){
 		$("#contentPanel").removeClass("adminview").addClass("createview");
-		$("#createView").fadeIn();
+		$("#createView").fadeIn(300);
 		$("#adminView").hide();
 		$("input[name='name']").val('r' + randStr(6));
 	});
 	
 	$("#transferright").click(function(){
-		var id = $(".selectedball").attr("id");
-		if(id){
-			console.log('transfering', id);
-			var obj = 	{
-							type: "transfer",
-							name: id,
-							user: 'leroy'
-						};
-			ws.send(JSON.stringify(obj));
-			//$(".selectedball").removeClass("selectedball");
-			showAdminPanel(true);
-		}
+		transfer('leroy');
 	});
 	
 	$("#transferleft").click(function(){
-		var id = $(".selectedball").attr("id");
-		if(id){
-			console.log('transfering', id);
-			var obj = 	{
-							type: "transfer",
-							name: id,
-							user: 'bob'
-						};
-			ws.send(JSON.stringify(obj));
-			//$(".selectedball").removeClass("selectedball");
-			showAdminPanel(true);
-		}
+		transfer('bob');
 	});
 	
 	$("#removemarble").click(function(){
@@ -109,8 +75,39 @@ $(document).on('ready', function() {
 	
 	
 	// =================================================================================
-	// Helpers
-	// =================================================================================
+	// Helper Fun
+	// ================================================================================
+	//show admin panel page
+	function showAdminPanel(reset){
+		$("#contentPanel").removeClass("createview").addClass("adminview");
+		$("#adminView").fadeIn(300);
+		$("#createView").hide();
+		if(reset === true){
+			$("#bobswrap").html('');
+			$("#leroyswrap").html('');
+		}
+		console.log('getting new balls');
+		setTimeout(function(){
+			ws.send(JSON.stringify({type: "get"}));						//need to wait a bit - dsh to do, tap into new block event
+		}, 200);
+	}
+	
+	//transfer selected ball to user
+	function transfer(user){
+		var marbleName = $(".selectedball").attr("id");
+		if(marbleName){
+			console.log('transfering', marbleName);
+			var obj = 	{
+							type: "transfer",
+							name: marbleName,
+							user: user
+						};
+			ws.send(JSON.stringify(obj));
+			showAdminPanel(true);
+		}
+	}
+	
+	//format datetime
 	function formatDate(date) {
 		var hours = date.getHours();
 		var minutes = date.getMinutes();
@@ -121,7 +118,6 @@ $(document).on('ready', function() {
 		var strTime = hours + ':' + minutes + ' ' + ampm;
 		return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear() + "  " + strTime;
 	}
-
 });
 
 
@@ -129,13 +125,9 @@ $(document).on('ready', function() {
 // Socket Stuff
 // =================================================================================
 function connect_to_server(){
-
 	connect();
 	function connect(){
-		//var wsUri = "ws://localhost:3000";
-		//var wsUri = "ws://marbles.stage1.mybluemix.net";
 		var wsUri = "ws://" + bag.setup.SERVER.EXTURI;
-		
 		ws = new WebSocket(wsUri);
 		ws.onopen = function(evt) { onOpen(evt); };
 		ws.onclose = function(evt) { onClose(evt); };
@@ -145,14 +137,11 @@ function connect_to_server(){
 	
 	function onOpen(evt){
 		console.log("WS CONNECTED");
-		//appendLog('all', 'WEBSOCKET CONNECTED');
 	}
 
 	function onClose(evt){
 		console.log("WS DISCONNECTED", evt);
-		//appendLog('all', 'WEBSOCKET DISCONNECTED');
-		//connect();
-		ws.close();
+		setTimeout(function(){ connect(); }, 5000);					//try again one more time, server restarts are quick
 	}
 
 	function onMessage(msg){
@@ -160,11 +149,9 @@ function connect_to_server(){
 			var data = JSON.parse(msg.data);
 			console.log('rec', data.marble);
 			build_ball(data.marble);
-			//ws.close();
 		}
 		catch(e){
 			console.log('ERROR', e);
-			//console.log('this was not json', msg.data);
 			//ws.close();
 		}
 	}
@@ -188,20 +175,15 @@ function build_ball(data){
 	var style = '';
 	
 	if(!$("#" + data.name).length){								//only populate if it doesn't exists
-		//if($("#" + data.name).attr("user").toLowerCase() == data.user.toLowerCase()){		//ball has moved! redraw
-		//	$("#" + data.name).remove();
-		//}
-	//}
-	
-	if(data.color) style = "color:" + data.color.toLowerCase();
-	
-	html += '<span id="' + data.name +'" class=" fa fa-circle fa-5x ball" title="' + data.name +'" style="' + style +'" user="' + data.user + '"></span>';
-	if((data.user && data.user.toLowerCase() == 'bob') || (data.owner && data.owner.toLowerCase() == 'bob')){
-		$("#bobswrap").append(html);
-	}
-	else{
-		$("#leroyswrap").append(html);
-	}
+		if(data.color) style = "color:" + data.color.toLowerCase();
+		
+		html += '<span id="' + data.name +'" class=" fa fa-circle fa-5x ball" title="' + data.name +'" style="' + style +'" user="' + data.user + '"></span>';
+		if((data.user && data.user.toLowerCase() == 'bob') || (data.owner && data.owner.toLowerCase() == 'bob')){
+			$("#bobswrap").append(html);
+		}
+		else{
+			$("#leroyswrap").append(html);
+		}
 	}
 	return html;
 }
