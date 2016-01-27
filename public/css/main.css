@@ -198,16 +198,6 @@ label {
   clear: both;
   height: 1px; }
 
-/*Generic*/
-.func {
-  font-size: 20px; }
-
-#ccWrap {
-  width: 50%; }
-
-button {
-  float: right; }
-
 /*Main Layout*/
 #headerPanel {
   background: #fff;
@@ -299,12 +289,12 @@ button {
   position: absolute;
   width: 100%;
   text-align: center;
-  top: 20px; }
+  top: 30px; }
 
 #createform {
   float: left;
   margin-top: 10px;
-  margin-left: 10px; }
+  margin-left: 20px; }
 
 #blockcounter {
   position: absolute;
@@ -321,6 +311,18 @@ button {
   bottom: 75px;
   width: 100%;
   text-align: center; }
+
+.createLegend {
+  width: 45px;
+  display: inline-block; }
+
+#ccWrap {
+  width: 50%; }
+
+#submit {
+  text-align: center;
+  width: 200px;
+  margin-top: 20px; }
 
 
 /* Example

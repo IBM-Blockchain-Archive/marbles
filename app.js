@@ -159,13 +159,6 @@ wss.on('connection', function connection(ws) {
 	function cb_got_marble(e, marble){
 		if(e != null) console.log('error:', e);
 		else {
-			for(var i in marble) {																			//set it to lowercase!
-				var temp = marble[i];
-				delete marble[i];
-				if(temp != null){
-					marble[i.toLowerCase()] = temp;
-				}
-			}
 			ws.send(JSON.stringify({msg: 'marbles', e: e, marble: marble}));
 		}
 	}
@@ -201,56 +194,62 @@ var contract = {};
 // ==================================
 // load peers manually or from VCAP
 // ==================================
-var peers =    [
+var peers =     [
       {
-        "discovery_host": "169.53.72.250",
-        "discovery_port": "33527",
-        "api_host": "169.53.72.250",
-        "api_port": "33528",
-        "id": "df6cdd6a-4a23-4954-a527-9947d3a936da_vp1",
-        "api_url": "http://169.53.72.250:33528"
+        "discovery_host": "169.53.72.245",
+        "discovery_port": "33490",
+        "api_host": "169.53.72.245",
+        "api_port": "33491",
+        "id": "b6631eb8-9108-4d53-8202-8492d1d33a45_vp1",
+        "api_url": "http://169.53.72.245:33491"
       },
       {
         "discovery_host": "158.85.255.239",
-        "discovery_port": "33058",
+        "discovery_port": "33096",
         "api_host": "158.85.255.239",
-        "api_port": "33059",
-        "id": "df6cdd6a-4a23-4954-a527-9947d3a936da_vp2",
-        "api_url": "http://158.85.255.239:33059"
+        "api_port": "33097",
+        "id": "b6631eb8-9108-4d53-8202-8492d1d33a45_vp5",
+        "api_url": "http://158.85.255.239:33097"
       },
       {
         "discovery_host": "158.85.255.228",
-        "discovery_port": "33044",
+        "discovery_port": "33070",
         "api_host": "158.85.255.228",
-        "api_port": "33045",
-        "id": "df6cdd6a-4a23-4954-a527-9947d3a936da_vp5",
-        "api_url": "http://158.85.255.228:33045"
+        "api_port": "33071",
+        "id": "b6631eb8-9108-4d53-8202-8492d1d33a45_vp3",
+        "api_url": "http://158.85.255.228:33071"
       },
       {
         "discovery_host": "169.53.72.245",
-        "discovery_port": "33474",
+        "discovery_port": "33492",
         "api_host": "169.53.72.245",
-        "api_port": "33475",
-        "id": "df6cdd6a-4a23-4954-a527-9947d3a936da_vp4",
-        "api_url": "http://169.53.72.245:33475"
+        "api_port": "33493",
+        "id": "b6631eb8-9108-4d53-8202-8492d1d33a45_vp2",
+        "api_url": "http://169.53.72.245:33493"
       },
       {
         "discovery_host": "158.85.255.230",
-        "discovery_port": "33060",
+        "discovery_port": "33084",
         "api_host": "158.85.255.230",
-        "api_port": "33061",
-        "id": "df6cdd6a-4a23-4954-a527-9947d3a936da_vp3",
-        "api_url": "http://158.85.255.230:33061"
+        "api_port": "33085",
+        "id": "b6631eb8-9108-4d53-8202-8492d1d33a45_vp4",
+        "api_url": "http://158.85.255.230:33085"
       }
     ];
 
 if (process.env.VCAP_SERVICES){
 	console.log("We are running in Cloud Foundry!");
-	
 	var servicesObject = JSON.parse(process.env.VCAP_SERVICES);
+	
+	//old
 	if(servicesObject && servicesObject['blockchain-staging'] && servicesObject['blockchain-staging'][0] && servicesObject['blockchain-staging'][0].credentials){
-		console.log('loading peers from env');
+		console.log('loading peers from env: blockchain-staging');
 		peers = servicesObject['blockchain-staging'][0].credentials.peers;
+	}
+	//new
+	else if(servicesObject && servicesObject['ibm-blockchain-3-staging'] && servicesObject['ibm-blockchain-3-staging'][0] && servicesObject['ibm-blockchain-3-staging'][0].credentials){
+		console.log('loading peers from env: ibm-blockchain-3-staging');
+		peers = servicesObject['ibm-blockchain-3-staging'][0].credentials.peers;
 	}
 }
 obc.network(peers);																		//setup network connection for rest endpoint
@@ -263,8 +262,8 @@ var options = 	{
 					git_dir: 'simplestuff-master',																		//subdirectroy name of chaincode after unzipped
 					git_url: 'https://github.com/dshuffma-ibm/simplestuff',												//git clone http url
 					
-					//hashed cc name from prev deploy
-					deployed_name: '5af0102048dbdb5b1b1b50a5143c47e49f500ad0f02b818a237c3ac81202bbeda1ba5ccfcc7eecfc086abbc468a16d5e427425dbdebd6356926e27b447ab668c'
+					//hashed cc name from prev deploy [IF YOU COMMENT LINE BELOW OUT IT WILL DEPLOY]
+					deployed_name: '25d1bc4539131897292b4a6b805acb10b547f819735044eff93ffb59c241d9377473cfabff366366b27d1351d0c527563c4d29464fab81a4aefe24b7cce284bc'
 				};
 obc.load(options, cb_ready);															//parse/load chaincode
 

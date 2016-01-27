@@ -1,3 +1,4 @@
+/* global randStr */
 /* global bag */
 /* global $ */
 var ws = {};
@@ -16,6 +17,7 @@ $(document).on('ready', function() {
 	// jQuery UI Events
 	// =================================================================================
 	$("#submit").click(function(){
+		console.log('creating marble');
 		var obj = 	{
 						type: "create",
 						name: $("input[name='name']").val(),
@@ -24,6 +26,7 @@ $(document).on('ready', function() {
 						user: $("select[name='user']").val()
 					};
 		ws.send(JSON.stringify(obj));
+		showAdminPanel();
 		return false;
 	});
 	
@@ -38,18 +41,24 @@ $(document).on('ready', function() {
 	});
 	
 	$("#adminLink").click(function(){
+		showAdminPanel();
+	});
+	function showAdminPanel(reset){
 		$("#contentPanel").removeClass("createview").addClass("adminview");
 		$("#adminView").fadeIn();
 		$("#createView").hide();
-		//$("#leroyswrap").html("");
-		//$("#bobswrap").html("");
+		if(reset === true){
+			$("#bobswrap").html('');
+			$("#leroyswrap").html('');
+		}
 		console.log('getting new balls');
 		ws.send(JSON.stringify({type: "get"}));
-	});
+	}
 	$("#createLink").click(function(){
 		$("#contentPanel").removeClass("adminview").addClass("createview");
 		$("#createView").fadeIn();
 		$("#adminView").hide();
+		$("input[name='name']").val('r' + randStr(6));
 	});
 	
 	$("#transferright").click(function(){
@@ -62,7 +71,8 @@ $(document).on('ready', function() {
 							user: 'leroy'
 						};
 			ws.send(JSON.stringify(obj));
-			$(".selectedball").removeClass("selectedball");
+			//$(".selectedball").removeClass("selectedball");
+			showAdminPanel(true);
 		}
 	});
 	
@@ -76,7 +86,8 @@ $(document).on('ready', function() {
 							user: 'bob'
 						};
 			ws.send(JSON.stringify(obj));
-			$(".selectedball").removeClass("selectedball");
+			//$(".selectedball").removeClass("selectedball");
+			showAdminPanel(true);
 		}
 	});
 	
@@ -89,7 +100,8 @@ $(document).on('ready', function() {
 							name: id
 						};
 			ws.send(JSON.stringify(obj));
-			$(".selectedball").removeClass("selectedball");
+			//$(".selectedball").removeClass("selectedball");
+			showAdminPanel(true);
 		}
 	});
 	

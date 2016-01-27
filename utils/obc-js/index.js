@@ -369,7 +369,7 @@ function deploy(func, args, save_path, cb){
 					}
 				};
 	options.success = function(statusCode, data){
-		console.log("[obc-js] deploy - success [but you should wait 1 minute, callback is delayed a bit]:", data);
+		console.log("[obc-js] deploy - success [but you should wait 1 minute, callback is delayed a bit] \n", data);
 		contract.cc.details.deployed_name = data.message;
 		obc.prototype.save(tempDirectory);									//save it so we remember we have deployed
 		if(save_path != null) obc.prototype.save(save_path);				//user wants the updated file somewhere
