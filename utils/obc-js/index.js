@@ -374,7 +374,7 @@ function deploy(func, args, save_path, cb){
 		obc.prototype.save(tempDirectory);									//save it so we remember we have deployed
 		if(save_path != null) obc.prototype.save(save_path);				//user wants the updated file somewhere
 		if(cb){
-			setTimeout( cb(null, data), 60000);								//wait extra long, not always ready yet
+			setTimeout(function(){ cb(null, data);}, 60000);				//wait extra long, not always ready yet
 		}
 	};
 	options.failure = function(statusCode, e){
