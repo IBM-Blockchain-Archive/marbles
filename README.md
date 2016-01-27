@@ -1,62 +1,40 @@
-#SimpleStuff <div style="font-size:12px;">an NBM Company</div>
+#OBC - Node.js "SimpleStuff" Demo
+- examples of using the sdk are in app.js near the bottom
 
-##OBC - Javascript Demo
-- examples of using sdk are in app.js near bottom
+##Doc Links
+- David's Notes Readme - [here](./README.md)
+- SDK Doc - [utils/obc-js](./utils/obc-js/README.md)
+- Tutorial for SimpleStuff App 1 - [here](./simplestuff1_tutorial.md)
+- Tutorial for SimpleStuff App 2 - coming
 
-Run:
+***
 
-	> npm install
-	> gulp
-	> open browser to localhost:3000
-	
-	
-Alternative Run:
-
-	> npm install
-	> node app.js
-	> open browser to localhost:3000
-	
-	
 ##Projects Contents
 1. sdk, obc-js.js
-1. chaincode investigator
-1. obc demo aka SimpelStuff
-	
-##Demo Description
-This is a simple asset transfer and asset permission example.
+1. chaincode investigator			http://localhost:3000/cci
+1. obc demo aka SimpelStuff App1	http://localhost:3000
 
-##Goals Phase 1
+***
+
+##Phase 1 Goals
 - [x] User can create a marble and store it in the chaincode state
 - [x] User can read all marbles in the chaincode state
 - [x] User can transfer marble to another user
 - [ ] See live block updates
-- [ ] User can delete a marble
+- [x] User can delete a marble
 
-##Goals Phase 2
+##Phase 2 Goals
 - [ ] ^^
 - [ ] Can trade multiple marbles at once
 - [ ] User's can advertise to trade their marbles (ie willing to trade large red for large blue/yellow/green)
 - [ ] User identity and autentication
 
-
-###Permissions:
-1. Owner – can add/remove all permissions to the marble
-
-###Attributes of a marble:
-1. name
-1. color
-1. size
-1. user
-
 ---
 
 ##ChainCode / SDK To Do:
 - [x] Write("name", "val", cb);
-- [?] ReadNames(cb)
-- [x] init_thing(json);
-- [ ] edit_thing(json);
-- [ ] need multi var read in sdk! ie read(["car1", "car2"]); ... what if we do a lot here, like SQL syntax?
-- [?] remember the name of all the saved vars in cc, and export this list so sdk can get it
+- [x] ReadNames(cb)
+- [x] init_marble(json);
 - [ ] check permissions of requesting user in cc
 - [ ] verify user identityf, ie public private key stuff
 - [x] website to test cc, real basic
@@ -65,15 +43,17 @@ This is a simple asset transfer and asset permission example.
 - [ ] change downloading zip to git clone
 - [x] custom custom function on UI
 - [x] load json in UI
+- [x] structured error reponse
 - [ ] mocha test for sdk
-- [ ] browsify sdk and tie cci into it
+- [ ] browsify sdk and tie cci into it (not sure if i want to)
 - [ ] follow redirect on zip download...
+- [x] auto deploy, correctly!
+- [x] get delete to update marbleIndex
 - [ ] unzip may have project name as root... need to go down 1 lvl
 - [ ] sdk, check inputs on load if they  dne, error
 - [ ] poll after chain deploy for cc up in peer
 - [ ] add block event to sdk
-- [ ] key name and value should come back in read(), not just value 
-- [ ] when you remove a marble the marbeleIndex is not updated
+- [ ] write tutorial on phase 1
 
 
 ###ChainCode Notes:
