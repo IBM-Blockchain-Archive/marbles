@@ -102,6 +102,10 @@ if(process.env.PRODUCTION) console.log('Running using Production settings');
 else console.log('Running using Developer settings');
 
 
+
+// ============================================================================================================================
+// 												WebSocket Communication Madness
+// ============================================================================================================================
 var ws = require('ws');
 var wss = new ws.Server({server: server});
 	
@@ -110,7 +114,9 @@ wss.on('connection', function connection(ws) {
 		console.log('received ws msg:', message);
 		var data = JSON.parse(message);
 		
-		//// messages ////
+		// ==================================
+		// incoming messages, look for type
+		// ==================================
 		if(data.type == 'create'){
 			console.log('its a create!');
 			contract.init_marble([data.name, data.color, data.size, data.user], cb_invoked);				//create a new marble
@@ -127,27 +133,33 @@ wss.on('connection', function connection(ws) {
 		}
 	});
 	
-	get_marbles();
+	get_marbles();																							//on start fetch the marble index var
 	function get_marbles(){
 		console.log('fetching all marble data');
 		contract.cc.read('marbleIndex', cb_got_index);
-	}
 	
+	}
 	
 	function cb_got_index(e, index){
 		if(e != null) console.log('error:', e);
 		else{
-			var json = JSON.parse(index);
-			for(var i in json){
-				console.log('!', i, json[i]);
-				contract.cc.read(json[i], cb_got_marble);
+			try{
+				var json = JSON.parse(index);
+				for(var i in json){
+					console.log('!', i, json[i]);
+					contract.cc.read(json[i], cb_got_marble);												//iter over each, read their values
+				}
+			}
+			catch(e){
+				console.log('error:', e);
 			}
 		}
 	}
+	
 	function cb_got_marble(e, marble){
 		if(e != null) console.log('error:', e);
 		else {
-			for(var i in marble) {						//set it to lowercase!
+			for(var i in marble) {																			//set it to lowercase!
 				var temp = marble[i];
 				delete marble[i];
 				if(temp != null){
@@ -162,7 +174,6 @@ wss.on('connection', function connection(ws) {
 		console.log('response: ', e, a);
 	}
 });
-
 
 
 // ============================================================================================================================
@@ -186,6 +197,10 @@ wss.on('connection', function connection(ws) {
 var Obc1 = require('./utils/obc-js/index');
 var obc = new Obc1();
 var contract = {};
+
+// ==================================
+// load peers manually or from VCAP
+// ==================================
 var peers =    [
       {
         "discovery_host": "169.53.72.250",
@@ -238,36 +253,32 @@ if (process.env.VCAP_SERVICES){
 		peers = servicesObject['blockchain-staging'][0].credentials.peers;
 	}
 }
-obc.network(peers);																									//setup network connection for rest endpoint
+obc.network(peers);																		//setup network connection for rest endpoint
 
-/*
-obc.clear(cb_cleaned);
-function cb_cleaned(){
-	var options = 	{
-						zip_url: 'https://hub.jazz.net/git/averyd/cc_ex02/archive?revstr=master',
-						dir: 'chaincode_example02',
-						git_url: 'https://hub.jazz.net/git/averyd/cc_ex02/chaincode_example02',
-					};
-	//obc.load(options, cb_ready);				//parse/load chaincode
+// ==================================
+// configure obc-js sdk
+// ==================================
+var options = 	{
+					zip_url: 'https://codeload.github.com/dshuffma-ibm/simplestuff/zip/master',							//make sure this does not have any redirects - dsh to do fix
+					git_dir: 'simplestuff-master',																		//subdirectroy name of chaincode after unzipped
+					git_url: 'https://github.com/dshuffma-ibm/simplestuff',												//git clone http url
+					
+					//hashed cc name from prev deploy
+					deployed_name: '5af0102048dbdb5b1b1b50a5143c47e49f500ad0f02b818a237c3ac81202bbeda1ba5ccfcc7eecfc086abbc468a16d5e427425dbdebd6356926e27b447ab668c'
+				};
+obc.load(options, cb_ready);															//parse/load chaincode
+
+function cb_ready(err, cc){																//response has chaincode functions
+	contract = cc;																		//copy to higher scope
+	if(contract.cc.details.deployed_name === ""){										//decide if i need to deploy
+		contract.cc.deploy('init', ['99'], './', cb_deployed);
+	}
+	else{
+		obc.save('./');
+		console.log('chaincode details indicates chaincode has been previously deployed');
+	}
 }
-*/
 
-/*
-var options = 	{
-					zip_url: 'https://hub.jazz.net/git/averyd/cc_ex02/archive?revstr=master',
-					dir: 'chaincode_example02',
-					git_url: 'https://hub.jazz.net/git/averyd/cc_ex02/chaincode_example02',
-				};
-*/
-var options = 	{
-					zip_url: 'https://codeload.github.com/dshuffma-ibm/simplestuff/zip/master',
-					git_dir: 'simplestuff-master',
-					git_url: 'https://github.com/dshuffma-ibm/simplestuff',
-					deployed_name: '1571afb0f210ef5fd6538f4849bcf8cea74f07569e57f7c8bb177237d001bb0f14a7bce9652d001aa684307d31a596a356f58066b74ef33725813244e3468afa'
-				};
-obc.load(options, cb_ready);				//parse/load chaincode
-
-function cb_ready(err, cc){
-	obc.save('./');
-	contract = cc;
+function cb_deployed(){
+	console.log('sdk has deployed code and waited');
 }

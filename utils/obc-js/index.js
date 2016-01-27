@@ -197,7 +197,6 @@ obc.prototype.network = function(arrayPeers){
 // ============================================================================================================================
 obc.prototype.save =  function(dir, cb){
 	var dest = path.join(dir, '/chaincode.json');
-	console.log('name is', contract.cc.details.name);
 	fs.writeFile(dest, JSON.stringify({details: contract.cc.details}), function(e){
 		if(e != null){
 			console.log(e);
@@ -354,28 +353,28 @@ function remove(name, cb){
 }
 
 //============================================================================================================================
-//deply() - deploy chaincode, optional function to run
+//deploy() - deploy chaincode and call a cc function
 //============================================================================================================================
-function deploy(func, args, cb){
+function deploy(func, args, save_path, cb){
+	console.log("[obc-js] Deploying chaincode");
 	var options = {path: '/devops/deploy'};
 	var body = 	{
 					type: "GOLANG",
 					chaincodeID: {
 							path: contract.cc.details.git_url
-						}
-				};
-	
-	if(func) {																//if function given, run it
-		body.ctorMsg = 	{
+						},
+					ctorMsg:{
 							"function": func,
 							"args": args
-						};
-	}
+					}
+				};
 	options.success = function(statusCode, data){
-		console.log("[obc-js] deploy - success:", data);
+		console.log("[obc-js] deploy - success [but you should wait 1 minute, callback is delayed a bit]:", data);
 		contract.cc.details.deployed_name = data.message;
+		obc.prototype.save(tempDirectory);									//save it so we remember we have deployed
+		if(save_path != null) obc.prototype.save(save_path);				//user wants the updated file somewhere
 		if(cb){
-			setTimeout( cb(null, data), 5000);								//wait extra long, not always ready yet
+			setTimeout( cb(null, data), 60000);								//wait extra long, not always ready yet
 		}
 	};
 	options.failure = function(statusCode, e){

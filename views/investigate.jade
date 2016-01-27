@@ -112,33 +112,6 @@ block custom_header
 				$("input[name='port']").val(bag.cc.details.peers[0].api_port);
 				$("input[name='deployed_name']").val(bag.cc.details.git_url);
 				if(bag.cc.details.deployed_name && bag.cc.details.deployed_name.length > 32) $("input[name='cc_name']").val(bag.cc.details.deployed_name);
-				
-				/*1/14/2016 - removed b/c in the way for now
-				setTime();
-				var nIntervId = setInterval(setTime, 1000);
-				function setTime(){
-					$("#currentDate").html(formatDate(new Date(), '%I:%m:%s %p'));
-				}
-				
-				var nIntervId = setInterval(function(){rest_queryLedger(cb_got_ledger);}, 10000);
-				rest_queryLedger(cb_got_ledger);
-				function cb_got_ledger(e, resp){
-					if(e != null){
-						
-					}
-					else{
-						buildLedger(resp);
-						if(!mouse_down) $('#leftWrap').scrollTop($('#leftWrap')[0].scrollHeight);
-					}
-				}
-				var mouse_down = false;
-				$(document).on("mousedown", "#leftWrap", function(){
-					mouse_down = true;
-				});
-				$(document).on("mouseup", "#leftWrap", function(){
-					mouse_down = false;
-				});
-				*/
 
 				//localStorage.clear();
 				var obj = load_ls();
@@ -361,7 +334,7 @@ block custom_header
 					data: JSON.stringify(data),
 					contentType: 'application/json',
 					success: function(json){
-						console.log('Success - read', json);
+						console.log('Success - read', JSON.stringify(json));
 						if(cb) cb(null, json);
 					},
 					error: function(e){
@@ -435,48 +408,6 @@ block custom_header
 					}
 				});*/
 			}
-	
-			function rest_queryLedger(cb){
-				console.log("reading ledger");
-				var host = $("input[name='host']").val();
-				var port = $("input[name='port']").val();
-				var data = {
-								"chaincodeSpec": {
-									"type": "GOLANG",
-									"chaincodeID": {
-										name: $("input[name='cc_name']").val(),
-									},
-									"ctorMsg": {
-										"function": "query",
-										"args": [name]
-									}
-								}
-							};
-							
-				for(var i=0; i < 2; i++){
-					var temp = 	{
-									timestamp: Date.now() - 1000*(10-i)*60,
-									name: 'foo("' + randStr(2) + '")'
-								};
-					ledger.push(temp);
-				}
-				
-				setTimeout(function(){ cb(null, ledger); }, 1000);
-				/*$.ajax({
-					method: 'POST',
-					url: 'http://' + host + ':' + port + '/devops/query',
-					data: JSON.stringify(data),
-					contentType: 'application/json',
-					success: function(json){
-						console.log('Success - queryLedger', json);
-						if(cb) cb(null, json);
-					},
-					error: function(e){
-						console.log('Error - queryLedger', e);
-						if(cb) cb(e, null);
-					}
-				});*/
-			}
 			
 			function rest_deploy(cb){
 				console.log("deploying chaincode");
@@ -539,7 +470,7 @@ block custom_header
 						peer_name: bag.cc.details.peers[i].name,
 						contentType: 'application/json',
 						success: function(json){
-							console.log('Success - read all', this.peer_name, json);
+							console.log('Success - read all', this.peer_name, JSON.stringify(json));
 							if(cb) cb(null, json);
 						},
 						error: function(e){
