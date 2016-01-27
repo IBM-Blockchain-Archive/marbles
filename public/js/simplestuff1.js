@@ -52,7 +52,9 @@ $(document).on('ready', function() {
 			$("#leroyswrap").html('');
 		}
 		console.log('getting new balls');
-		ws.send(JSON.stringify({type: "get"}));
+		setTimeout(function(){
+			ws.send(JSON.stringify({type: "get"}));						//need to wait a bit - dsh to do, tap into new block event
+		}, 200);
 	}
 	$("#createLink").click(function(){
 		$("#contentPanel").removeClass("adminview").addClass("createview");
