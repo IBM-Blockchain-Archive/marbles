@@ -73,6 +73,7 @@ This is a simple asset transfer and asset permission example.
 - [ ] poll after chain deploy for cc up in peer
 - [ ] add block event to sdk
 - [ ] key name and value should come back in read(), not just value 
+- [ ] when you remove a marble the marbeleIndex is not updated
 
 
 ###ChainCode Notes:

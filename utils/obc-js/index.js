@@ -28,13 +28,13 @@ var contract = {
 						deploy: null,
 						readNames: null,
 						details:{
-									host: "",
-									port: 80,
-									path: "",
-									url: "",
-									name: "",
+									deployed_name: '',
 									func: [],
-									vars: []
+									git_dir: '',
+									git_url: '',
+									peers: [],
+									vars: [],
+									zip_url: '',
 						}
 					}
 				};
@@ -57,22 +57,22 @@ obc.prototype.load = function(options, cb) {
 	var keep_looking = true;
 	var zip_dest = path.join(tempDirectory,  '/file.zip');							//	./temp/file.zip
 	var unzip_dest = path.join(tempDirectory,  '/unzip');							//	./temp/unzip
-	var unzip_cc_dest = path.join(unzip_dest, '/', options.dir);					//	./temp/unzip/DIRECTORY
-	contract.cc.details.url = options.zip_url;
-	contract.cc.details.dir = options.dir;
-	contract.cc.details.path = options.git_url;
-	if(options.name) contract.cc.details.name = options.name;
+	var unzip_cc_dest = path.join(unzip_dest, '/', options.git_dir);				//	./temp/unzip/DIRECTORY
+	contract.cc.details.zip_url = options.zip_url;
+	contract.cc.details.git_dir = options.git_dir;
+	contract.cc.details.git_url = options.git_url;
+	if(options.deployed_name) contract.cc.details.deployed_name = options.deployed_name;
 	
 	// Preflight checklist
 	try{fs.mkdirSync(tempDirectory);}
 	catch(e){ }
-	fs.access(unzip_cc_dest, cb_file_exists);									//check if files exist yet
+	fs.access(unzip_cc_dest, cb_file_exists);										//check if files exist yet
 	function cb_file_exists(e){
 		if(e != null){
-			download_it();														//nope
+			download_it();															//nope
 		}
 		else{
-			fs.readdir(unzip_cc_dest, cb_got_names);							//yeppers
+			fs.readdir(unzip_cc_dest, cb_got_names);								//yeppers
 		}
 	}
 
@@ -83,7 +83,7 @@ obc.prototype.load = function(options, cb) {
 		https.get(options.zip_url, function(response) {
 			response.pipe(file);
 			file.on('finish', function() {
-				file.close(cb_downloaded);  									//close() is async
+				file.close(cb_downloaded);  										//close() is async
 			});
 		}).on('error', function(err) {
 			console.log('[obc-js] download error');
@@ -176,14 +176,12 @@ obc.prototype.network = function(arrayPeers){
 			console.log(arrayPeers[i].name);
 		}
 		var ssl = true;
-		contract.cc.details.host = arrayPeers[0].api_host;
-		contract.cc.details.port = arrayPeers[0].api_port;
 		contract.cc.details.peers = arrayPeers;
 		if(arrayPeers[0].api_url.indexOf('https') == -1) ssl = false;				//not https, no tls
 		
 		rest.init({																	//load default values for rest call to peer
-					host: contract.cc.details.host,
-					port: contract.cc.details.port,
+					host: contract.cc.details.peers[0].api_host,
+					port: contract.cc.details.peers[0].api_port,
 					headers: {
 								"Content-Type": "application/json",
 								"Accept": "application/json",
@@ -272,7 +270,7 @@ function read(name, cb, lvl){						//lvl is for reading past state blocks, tbd e
 					chaincodeSpec: {
 						type: "GOLANG",
 						chaincodeID: {
-							name: contract.cc.details.name,
+							name: contract.cc.details.deployed_name,
 						},
 						ctorMsg: {
 							function: "query",
@@ -304,7 +302,7 @@ function write(name, val, cb){
 					chaincodeSpec: {
 						type: "GOLANG",
 						chaincodeID: {
-							name: contract.cc.details.name,
+							name: contract.cc.details.deployed_name,
 						},
 						ctorMsg: {
 							function: 'write',
@@ -335,7 +333,7 @@ function remove(name, cb){
 					chaincodeSpec: {
 						type: "GOLANG",
 						chaincodeID: {
-							name: contract.cc.details.name,
+							name: contract.cc.details.deployed_name,
 						},
 						ctorMsg: {
 							function: 'delete',
@@ -363,7 +361,7 @@ function deploy(func, args, cb){
 	var body = 	{
 					type: "GOLANG",
 					chaincodeID: {
-							path: contract.cc.details.path
+							path: contract.cc.details.git_url
 						}
 				};
 	
@@ -375,7 +373,7 @@ function deploy(func, args, cb){
 	}
 	options.success = function(statusCode, data){
 		console.log("[obc-js] deploy - success:", data);
-		contract.cc.details.name = data.message;
+		contract.cc.details.deployed_name = data.message;
 		if(cb){
 			setTimeout( cb(null, data), 5000);								//wait extra long, not always ready yet
 		}
@@ -414,7 +412,7 @@ function populate_go_contract(name){
 					chaincodeSpec: {
 						type: "GOLANG",
 						chaincodeID: {
-							name: contract.cc.details.name,
+							name: contract.cc.details.deployed_name,
 						},
 						ctorMsg: {
 							function: name,

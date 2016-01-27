@@ -108,10 +108,10 @@ block custom_header
 				buildGoFunc(bag.cc.details);											//populate custom go functions panel
 				build_peer_options(bag.cc.details.peers);								//populate drop down peer select box
 				$("#jsonarea").html(JSON.stringify(bag.cc, null, 4));
-				$("input[name='host']").val(bag.cc.details.host);
-				$("input[name='port']").val(bag.cc.details.port);
-				$("input[name='cc_path']").val(bag.cc.details.path);
-				if(bag.cc.details.name && bag.cc.details.name.length > 32) $("input[name='cc_name']").val(bag.cc.details.name);
+				$("input[name='host']").val(bag.cc.details.peers[0].api_host);
+				$("input[name='port']").val(bag.cc.details.peers[0].api_port);
+				$("input[name='deployed_name']").val(bag.cc.details.git_url);
+				if(bag.cc.details.deployed_name && bag.cc.details.deployed_name.length > 32) $("input[name='cc_name']").val(bag.cc.details.deployed_name);
 				
 				/*1/14/2016 - removed b/c in the way for now
 				setTime();
@@ -485,7 +485,7 @@ block custom_header
 				var data = 	{
 								type: "GOLANG",
 								chaincodeID: {
-									path: $("input[name='cc_path']").val()
+									path: $("input[name='deployed_name']").val()
 								},
 								ctorMsg: {
 									function: "init",
@@ -729,7 +729,7 @@ block content
 		select(style="margin-left:0;")#peers
 		input(type="text" name="host" placeholder="Peer IP" style="margin-left:0; width:100px;")
 		input(type="text" name="port" placeholder= "Peer Port" style="width:50px;")
-		input(type="text" name="cc_path" placeholder= "ChainCode Path" style="width:610px;")
+		input(type="text" name="deployed_name" placeholder= "ChainCode Git URL" style="width:610px;")
 		button(type="button" style="float:none")#deploy
 			span Deploy
 			span.fa.fa-chevron-right

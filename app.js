@@ -189,11 +189,43 @@ var contract = {};
 var peers =    [
       {
         "discovery_host": "169.53.72.250",
-        "discovery_port": "33521",
+        "discovery_port": "33527",
         "api_host": "169.53.72.250",
-        "api_port": "33522",
-        "id": "fc5afff6-7498-4422-b692-440372017285_vp5",
-        "api_url": "http://169.53.72.250:33522"
+        "api_port": "33528",
+        "id": "df6cdd6a-4a23-4954-a527-9947d3a936da_vp1",
+        "api_url": "http://169.53.72.250:33528"
+      },
+      {
+        "discovery_host": "158.85.255.239",
+        "discovery_port": "33058",
+        "api_host": "158.85.255.239",
+        "api_port": "33059",
+        "id": "df6cdd6a-4a23-4954-a527-9947d3a936da_vp2",
+        "api_url": "http://158.85.255.239:33059"
+      },
+      {
+        "discovery_host": "158.85.255.228",
+        "discovery_port": "33044",
+        "api_host": "158.85.255.228",
+        "api_port": "33045",
+        "id": "df6cdd6a-4a23-4954-a527-9947d3a936da_vp5",
+        "api_url": "http://158.85.255.228:33045"
+      },
+      {
+        "discovery_host": "169.53.72.245",
+        "discovery_port": "33474",
+        "api_host": "169.53.72.245",
+        "api_port": "33475",
+        "id": "df6cdd6a-4a23-4954-a527-9947d3a936da_vp4",
+        "api_url": "http://169.53.72.245:33475"
+      },
+      {
+        "discovery_host": "158.85.255.230",
+        "discovery_port": "33060",
+        "api_host": "158.85.255.230",
+        "api_port": "33061",
+        "id": "df6cdd6a-4a23-4954-a527-9947d3a936da_vp3",
+        "api_url": "http://158.85.255.230:33061"
       }
     ];
 
@@ -229,9 +261,9 @@ var options = 	{
 */
 var options = 	{
 					zip_url: 'https://codeload.github.com/dshuffma-ibm/simplestuff/zip/master',
-					dir: 'simplestuff-master',
+					git_dir: 'simplestuff-master',
 					git_url: 'https://github.com/dshuffma-ibm/simplestuff',
-					name: '460d0c215e0a9cb807244b5bd1648c535b262b0796c86e9dfc025913dba038048c08dbf1841782643baae2f4c49b40f65298dabb228abc27b8b47e8cc6aea27b'
+					deployed_name: '1571afb0f210ef5fd6538f4849bcf8cea74f07569e57f7c8bb177237d001bb0f14a7bce9652d001aa684307d31a596a356f58066b74ef33725813244e3468afa'
 				};
 obc.load(options, cb_ready);				//parse/load chaincode
 
