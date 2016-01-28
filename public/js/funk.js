@@ -2,9 +2,9 @@
 //if element is in array
 function in_array(name, array){
 	for(var i in array){
-		if(array[i] == name) return true
+		if(array[i] == name) return true;
 	}
-	return false;	
+	return false;
 }
 			
 //make random string of set length
@@ -21,7 +21,7 @@ function toTitleCase(str){
 }
 
 function formatDate(date, fmt) {
-	var date = new Date(date);
+	date = new Date(date);
     function pad(value) {
         return (value.toString().length < 2) ? '0' + value : value;
     }
@@ -64,9 +64,10 @@ function formatDate(date, fmt) {
 }
 
 function formatTimer(seconds){
-	hr = '00';
-	min = '00';
-	sec = '00';
+	var hr = 0;
+	var min = 0;
+	var sec = 0;
+	var str = '';
 	seconds = eval(seconds);
 	if(seconds >= 60*60){
 		hr = Math.floor(seconds / (60*60));
@@ -86,27 +87,9 @@ function formatTimer(seconds){
 	return str;
 }
 
-function nDig(n, digits){						//zero pad to number of digits, up to 4
+function nDig(n, digits){								//zero left pad to number of digits
 	var ret = n;
-	if(digits == 2) ret = (n > 9) ? "" + n: "0" + n;
-	else if(digits == 3) ret = (n > 99) ? "" + n: "0" + n;
-	else if(digits == 4) ret = (n > 999) ? "" + n: "0" + n;
-	if(ret.toString().length > digits){
-		ret = ret.substring(ret.toString().length-digits, digits+1); 	//i don't think this is right yet...
-	}
+	for(var i=0; i < digits; i++) ret = '0' + ret;		//add  up to max i would need
+	ret = ret.substring(ret.length - digits);			//cut off what you don't need
 	return ret;
 }
-
-var API_URL = "";
-var API_VER = "";
-$(document).ready(function(){
-	API_URL = "https://" + $("#api_url").val();
-	API_VER = $("#api_ver").val();
-	//console.log(API_URL + API_VER);
-	
-	/*$(".formatDate").each(function(){
-		var tmp = $(this).html();
-		console.log(tmp);
-		$(this).html(formatDate(eval(tmp), "%M/%d/%Y %H:%m:%s"));
-	});*/
-});

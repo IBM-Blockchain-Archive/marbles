@@ -122,18 +122,25 @@ wss.on('connection', function connection(ws) {
 			contract.init_marble([data.name, data.color, data.size, data.user], cb_invoked);				//create a new marble
 		}
 		else if(data.type == 'get'){
+			console.log('get marbles msg');
 			get_marbles();
 		}
 		else if(data.type == 'transfer'){
-			console.log('transfering');
+			console.log('transfering msg');
 			contract.set_user([data.name, data.user]);
 		}
 		else if(data.type == 'remove'){
+			console.log('removing msg');
 			contract.cc.remove(data.name);
+		}
+		else if(data.type == 'chainstats'){
+			console.log('chainstats msg');
+			obc.chain_stats(cb_chainstats);
 		}
 	});
 	
 	get_marbles();																							//on start fetch the marble index var
+	obc.chain_stats(cb_chainstats);
 	function get_marbles(){
 		console.log('fetching all marble data');
 		contract.cc.read('marbleIndex', cb_got_index);
@@ -166,6 +173,18 @@ wss.on('connection', function connection(ws) {
 	function cb_invoked(e, a){
 		console.log('response: ', e, a);
 	}
+	
+	var chain_stats = {};
+	function cb_chainstats(e, stats){
+		console.log('stats', stats.height);
+		chain_stats = stats;
+		obc.block_stats(stats.height - 1, cb_blockstats);
+	}
+	
+	function cb_blockstats(e, stats){
+		console.log('replying', stats);
+		ws.send(JSON.stringify({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats}));
+	}
 });
 
 
@@ -194,16 +213,47 @@ var contract = {};
 // ==================================
 // load peers manually or from VCAP
 // ==================================
-var peers =     [
+var peers =    [
       {
         "discovery_host": "158.85.255.239",
-        "discovery_port": "33096",
+        "discovery_port": "33130",
         "api_host": "158.85.255.239",
-        "api_port": "33097",
-        "id": "b6631eb8-9108-4d53-8202-8492d1d33a45_vp5",
-        "api_url": "http://158.85.255.239:33097"
+        "api_port": "33131",
+        "id": "689332ba-ef64-414c-9e10-61b3dfd538e2_vp1",
+        "api_url": "http://158.85.255.239:33131"
+      },
+      {
+        "discovery_host": "158.85.255.228",
+        "discovery_port": "33126",
+        "api_host": "158.85.255.228",
+        "api_port": "33127",
+        "id": "689332ba-ef64-414c-9e10-61b3dfd538e2_vp4",
+        "api_url": "http://158.85.255.228:33127"
+      },
+      {
+        "discovery_host": "169.53.72.250",
+        "discovery_port": "33541",
+        "api_host": "169.53.72.250",
+        "api_port": "33542",
+        "id": "689332ba-ef64-414c-9e10-61b3dfd538e2_vp2",
+        "api_url": "http://169.53.72.250:33542"
+      },
+      {
+        "discovery_host": "158.85.255.230",
+        "discovery_port": "33132",
+        "api_host": "158.85.255.230",
+        "api_port": "33133",
+        "id": "689332ba-ef64-414c-9e10-61b3dfd538e2_vp5",
+        "api_url": "http://158.85.255.230:33133"
+      },
+      {
+        "discovery_host": "158.85.255.230",
+        "discovery_port": "33134",
+        "api_host": "158.85.255.230",
+        "api_port": "33135",
+        "id": "689332ba-ef64-414c-9e10-61b3dfd538e2_vp3",
+        "api_url": "http://158.85.255.230:33135"
       }
-      
     ];
 
 if (process.env.VCAP_SERVICES){
@@ -232,7 +282,7 @@ var options = 	{
 					git_url: 'https://github.com/dshuffma-ibm/simplestuff',												//git clone http url
 					
 					//hashed cc name from prev deploy [IF YOU COMMENT LINE BELOW OUT IT WILL DEPLOY]
-					deployed_name: '31bfa10d161e6b10a460335f90787d305f5ae775d83cf20a49f6b187e5e1e253585d6e377cc5386977260ba6144f75e2e334a23dc2a32ab867122a548c3e57c4'
+					deployed_name: '5e34bf5b51c51fbc8e1af98da8ad840c69ac9c9a8885e3e4d0e63b3b8074ee66669ac903588315a6c8d88683f563418e330747feafe7ef20a1cd54ff7685da19'
 				};
 obc.load(options, cb_ready);															//parse/load chaincode
 
@@ -249,4 +299,8 @@ function cb_ready(err, cc){																//response has chaincode functions
 
 function cb_deployed(){
 	console.log('sdk has deployed code and waited');
+}
+
+function cb_stats(e, data){
+	console.log('got', data.currentBlockHash);
 }

@@ -8,11 +8,7 @@ var ws = {};
 // =================================================================================
 $(document).on('ready', function() {
 	connect_to_server();
-	
-	var d = new Date();
-	var e = formatDate(d);
-	$("#blockdate").html(e);
-	
+
 	// =================================================================================
 	// jQuery UI Events
 	// =================================================================================
@@ -89,6 +85,7 @@ $(document).on('ready', function() {
 		console.log('getting new balls');
 		setTimeout(function(){
 			ws.send(JSON.stringify({type: "get"}));						//need to wait a bit - dsh to do, tap into new block event
+			ws.send(JSON.stringify({type: "chainstats"}));
 		}, 200);
 	}
 	
@@ -147,8 +144,15 @@ function connect_to_server(){
 	function onMessage(msg){
 		try{
 			var data = JSON.parse(msg.data);
-			console.log('rec', data.marble);
-			build_ball(data.marble);
+			console.log('rec', data);
+			if(data.marble){
+				build_ball(data.marble);
+			}
+			else if(data.msg === 'chainstats'){
+				$("#blockcounter").html(nDig((data.chainstats.height - 1), 3));
+				var e = formatDate(data.blockstats.transactions[0].timestamp.seconds * 1000, '%M-%d-%Y %I:%m%p');
+				$("#blockdate").html(e + ' UTC');
+			}
 		}
 		catch(e){
 			console.log('ERROR', e);

@@ -259,6 +259,41 @@ function removeThing(dir, cb){
 module.exports = obc;
 
 //============================================================================================================================
+// EXTERNAL chain_stats() - get blockchain stats
+//============================================================================================================================
+obc.prototype.chain_stats =  function(cb){
+	var options = {path: '/chain'};
+
+	options.success = function(statusCode, data){
+		console.log("[obc-js] Chain Stats - success:", data);
+		if(cb) cb(null, data);
+	};
+	options.failure = function(statusCode, e){
+		console.log("[obc-js] Chain Stats - failure:", statusCode);
+		if(cb) cb(eFmt('http error', statusCode, e), null);
+	};
+	rest.get(options, '');
+};
+
+//============================================================================================================================
+// EXTERNAL block_stats() - get block meta data
+//============================================================================================================================
+obc.prototype.block_stats =  function(id, cb){
+	var options = {path: '/chain/blocks/' + id};					//i think block IDs start at 0, height starts at 1, fyi
+	console.log('sending', options);
+	options.success = function(statusCode, data){
+		console.log("[obc-js] Block Stats - success:", data);
+		if(cb) cb(null, data);
+	};
+	options.failure = function(statusCode, e){
+		console.log("[obc-js] Block Stats - failure:", statusCode);
+		if(cb) cb(eFmt('http error', statusCode, e), null);
+	};
+	rest.get(options, '');
+};
+
+
+//============================================================================================================================
 //read() - read generic variable from chaincode state
 //============================================================================================================================
 function read(name, cb, lvl){						//lvl is for reading past state blocks, tbd exactly
@@ -286,8 +321,7 @@ function read(name, cb, lvl){						//lvl is for reading past state blocks, tbd e
 		console.log("[obc-js] Read - failure:", statusCode);
 		if(cb) cb(eFmt('http error', statusCode, e), null);
 	};
-		rest.post(options, '', body);
-	
+	rest.post(options, '', body);
 }
 
 //============================================================================================================================
