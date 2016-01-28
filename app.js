@@ -115,7 +115,7 @@ wss.on('connection', function connection(ws) {
 		var data = JSON.parse(message);
 		
 		// ==================================
-		// incoming messages, look for type
+		// APP 1 - incoming messages, look for type
 		// ==================================
 		if(data.type == 'create'){
 			console.log('its a create!');
@@ -176,13 +176,13 @@ wss.on('connection', function connection(ws) {
 	
 	var chain_stats = {};
 	function cb_chainstats(e, stats){
-		console.log('stats', stats.height);
+		//console.log('stats', stats.height);
 		chain_stats = stats;
 		obc.block_stats(stats.height - 1, cb_blockstats);
 	}
 	
 	function cb_blockstats(e, stats){
-		console.log('replying', stats);
+		//console.log('replying', stats);
 		ws.send(JSON.stringify({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats}));
 	}
 });

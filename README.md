@@ -58,6 +58,7 @@
 - [o] poll after chain deploy for cc up in peer [can't, future auth will prevent]
 - [ ] add block event to sdk
 - [ ] write tutorial on phase 1
+- [ ] move to socket.io
 
 
 ###ChainCode Notes:

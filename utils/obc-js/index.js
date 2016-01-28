@@ -287,7 +287,7 @@ obc.prototype.chain_stats =  function(cb){
 	var options = {path: '/chain'};
 
 	options.success = function(statusCode, data){
-		console.log("[obc-js] Chain Stats - success:", data);
+		console.log("[obc-js] Chain Stats - success");
 		if(cb) cb(null, data);
 	};
 	options.failure = function(statusCode, e){
@@ -304,7 +304,7 @@ obc.prototype.block_stats =  function(id, cb){
 	var options = {path: '/chain/blocks/' + id};					//i think block IDs start at 0, height starts at 1, fyi
 	console.log('sending', options);
 	options.success = function(statusCode, data){
-		console.log("[obc-js] Block Stats - success:", data);
+		console.log("[obc-js] Block Stats - success");
 		if(cb) cb(null, data);
 	};
 	options.failure = function(statusCode, e){
