@@ -20,14 +20,18 @@
 - [x] User can create a marble and store it in the chaincode state
 - [x] User can read all marbles in the chaincode state
 - [x] User can transfer marble to another user
-- [ ] See live block updates
+- [x] See block stats
 - [x] User can delete a marble
 
 ##Phase 2 Goals
-- [ ] ^^
+- [ ] New block events trigger a marble page update
 - [ ] Can trade multiple marbles at once
 - [ ] User's can advertise to trade their marbles (ie willing to trade large red for large blue/yellow/green)
-- [ ] User identity and autentication
+
+##Phase 3 Goals
+- [ ] User identity and autentication (crypto signing of transactions)
+- [ ] Transacation privacy
+
 
 ---
 
@@ -51,7 +55,7 @@
 - [x] get delete to update marbleIndex
 - [ ] unzip may have project name as root... need to go down 1 lvl
 - [ ] sdk, check inputs on load if they  dne, error
-- [ ] poll after chain deploy for cc up in peer
+- [o] poll after chain deploy for cc up in peer [can't, future auth will prevent]
 - [ ] add block event to sdk
 - [ ] write tutorial on phase 1
 
