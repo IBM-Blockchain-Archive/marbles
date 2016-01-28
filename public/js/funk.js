@@ -22,10 +22,10 @@ function toTitleCase(str){
 
 function formatDate(date, fmt) {
 	date = new Date(date);
-    function pad(value) {
-        return (value.toString().length < 2) ? '0' + value : value;
-    }
-    return fmt.replace(/%([a-zA-Z])/g, function (_, fmtCode) {
+	function pad(value) {
+		return (value.toString().length < 2) ? '0' + value : value;
+	}
+	return fmt.replace(/%([a-zA-Z])/g, function (_, fmtCode) {
 		var tmp;
 		switch (fmtCode) {
 		case 'Y':								//Year
@@ -60,7 +60,7 @@ function formatDate(date, fmt) {
 		default:
 			throw new Error('Unsupported format code: ' + fmtCode);
 		}
-    });
+	});
 }
 
 function formatTimer(seconds){
@@ -83,7 +83,6 @@ function formatTimer(seconds){
 	//console.log('seconds left: ' + seconds);
 
 	str = nDig(hr, 2) + ':' + nDig(min, 2) + ':' + nDig(sec, 2);
-	//console.log("str: " + str);
 	return str;
 }
 
