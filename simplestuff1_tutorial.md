@@ -9,7 +9,7 @@
 ##BEFORE YOU RUN
 - The expectations of this application are to test the JS SDK and help guide its development.  It will also double as an example to get developers familiar with our SDK + chaincode.
 - This is a very simple asset transfer demonstration.  Two users can create and exchange marbles with each other.
-- Only phase 1 is complete (well close) 1/27/2016
+- There will be multiple phases, only phase 1 is complete  [1/28/2016]
 - The chaincode is not included, it can be found here: [https://github.com/dshuffma-ibm/simplestuff](https://github.com/dshuffma-ibm/simplestuff)
 - As a "tutorial" this doc is incomplete.  As a "how do I run your marble thing" it should be sufficient.
 
@@ -26,8 +26,8 @@
 
 #Prereq:
 1. Bluemix ID https://console.ng.bluemix.net/ (needed to create your OBC network)
-1. Node JS 12+ (needed for this application)
-1. GoLang (needed to build your own chaincode, you can tutorial's cc for now)
+1. Node JS 0.12+ (needed for this application)
+1. GoLang Environment (only needed to build your own chaincode, not needed if you just run the marbles app as is)
 1. You are at least partially aware of the term 'chaincode', 'ledger', and 'peer' in a blockchain context. [Blockchain Docs](https://github.com/openblockchain/obc-docs), [Term Help](https://github.com/openblockchain/obc-docs/blob/master/glossary.md)
 
 
@@ -45,6 +45,7 @@ We are going to create a Web UI that can set these values and pass them to the c
 
 #Application Communication Flow
 [flow diagram here]
+
 1. The user will interact with our Node.js application.
 1. This client side JS code will open a websocket to the backend Node.js application.
 1. The backend Node.js will send HTTP requests (via the SDK) to a OBC Peer (any peer in our network).
@@ -91,6 +92,7 @@ It will then give you a dot notation to use them in your Node.js application. ie
 #Network
 So the cc is great and all but first things first are we need a network.
 We have a Bluemix tile that can create you your own personal network at the push of a button.
+
 1. First login to Bluemix [Bluexmix - stage1](https://console.stage1.ng.bluemix.net)
 1. Click "Catalog" or click [here](https://console.stage1.ng.bluemix.net/catalog)
 1. Scroll to the bottom and click the experimental link or click [here](https://console.stage1.ng.bluemix.net/catalog/labs/)
@@ -116,7 +118,7 @@ Now we are ready to work on the application!
 		> gulp
 1. If all goes well you should see this message in the console:
 	
-		info ------------------------------------------ Server Up - localhost:3000 ------------------------------------------
+		--------------------------------------- Server Up - localhost:3000 ---------------------------------------
 1. The app is already coded to auto deploy the chaincode.  You should see further message about it deploying. [IMPORTANT] You will need to wait about 90 seconds for the application to fully deploy our cc.
 1. Make sure you wait for the all clear message. 
 		

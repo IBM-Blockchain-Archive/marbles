@@ -14,6 +14,7 @@ A JS library for easier interaction with Open Blockchain chaincode
 
 ## Usage Steps!
 (example code in next section below should be glanced at as you read these instructions)
+
 1. Load the module
 2. Pass the blockchain network JSON to obj.network() as an array of objects
 3. Pass chaincode parameters to obc.load()
