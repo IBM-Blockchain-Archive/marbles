@@ -25,7 +25,7 @@
 
 ##Phase 2 Goals
 - [ ] New block events trigger a marble page update
-- [ ] Can trade multiple marbles at once
+- [ ] Can trade/delete multiple marbles at once
 - [ ] User's can advertise to trade their marbles (ie willing to trade large red for large blue/yellow/green)
 
 ##Phase 3 Goals
