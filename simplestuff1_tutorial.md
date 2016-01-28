@@ -140,6 +140,17 @@ Now we are ready to work on the application!
 	- If not refresh the page
 
 
+#Run Marbles w/Bluemix
+1. This app is already ready to run on bluemix
+1. Create a new network from the Bluemix tile, and name it "myblockchain"
+1. Edit manifes.yml if you don't want it to auto bind to the service or if you want to change the app name/route
+1. Push the application by opening a command prompt and browsing to this directory
+	
+	> cf login  
+	> cf push marbles
+1. The application will bind to the service "myblockchain" and grab the peer data from VCAP_SERVICES. Code for this is in app.js line 259ish
+
+
 #Trouble Shooting
 1. peers in the network appear to get stuck - known issue. create a new network and start over =(
 1. peer drops requests (timeout) - known issue. try submitting the query/invoke again
