@@ -54,7 +54,7 @@
 - [x] auto deploy, correctly!
 - [x] get delete to update marbleIndex
 - [ ] unzip may have project name as root... need to go down 1 lvl
-- [ ] sdk, check inputs on load if they  dne, error
+- [x] sdk, check inputs on load if they  dne, error
 - [o] poll after chain deploy for cc up in peer [can't, future auth will prevent]
 - [ ] add block event to sdk
 - [ ] write tutorial on phase 1

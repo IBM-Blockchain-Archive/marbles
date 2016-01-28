@@ -53,7 +53,17 @@ var tempDirectory = path.join(__dirname, "./temp");								//	./temp
 //		2c. Create JS function for golang function
 // 3. Call callback()
 // ============================================================================================================================
-obc.prototype.load = function(options, cb) {	
+obc.prototype.load = function(options, cb) {
+	var errors = [];
+	if(!options.zip_url) errors.push("the option 'zip_url' is required");
+	if(!options.git_dir) errors.push("the option 'git_dir' is required");
+	if(!options.git_url) errors.push("the option 'git_url' is required");
+	if(errors.length > 0){															//check for input errors
+		console.log('[obc-js] Input Error - obc.load()', errors);
+		if(cb) cb(eFmt('input error', 400, errors));
+		return;																		//get out of dodge
+	}
+	
 	var keep_looking = true;
 	var zip_dest = path.join(tempDirectory,  '/file.zip');							//	./temp/file.zip
 	var unzip_dest = path.join(tempDirectory,  '/unzip');							//	./temp/unzip
@@ -75,6 +85,7 @@ obc.prototype.load = function(options, cb) {
 			fs.readdir(unzip_cc_dest, cb_got_names);								//yeppers
 		}
 	}
+	
 
 	// Step 0.
 	function download_it(){
@@ -166,8 +177,11 @@ obc.prototype.load = function(options, cb) {
 // EXTERNAL - network() - setup network configuration to hit a rest peer
 // ============================================================================================================================
 obc.prototype.network = function(arrayPeers){
-	if(arrayPeers.constructor !== Array){
-		console.log('[obc-js] Error - network arg should be array of peer objects');
+	var errors = [];
+	if(!arrayPeers) errors.push("network input arg should be array of peer objects");
+	else if(arrayPeers.constructor !== Array) errors.push("network input arg should be array of peer objects");
+	if(errors.length > 0){															//check for input errors
+		console.log('[obc-js] Input Error - obc.network()', errors);
 	}
 	else{
 		for(var i in arrayPeers){
@@ -196,17 +210,25 @@ obc.prototype.network = function(arrayPeers){
 // EXTERNAL - save() - write contract details to a json file
 // ============================================================================================================================
 obc.prototype.save =  function(dir, cb){
-	var dest = path.join(dir, '/chaincode.json');
-	fs.writeFile(dest, JSON.stringify({details: contract.cc.details}), function(e){
-		if(e != null){
-			console.log(e);
-			if(cb) cb(eFmt('fs write error', 500, e), null);
-		}
-		else {
-			console.log('\t- saved ', dest);
-			if(cb) cb(null, null);
-		}
-	});
+	var errors = [];
+	if(!dir) errors.push("the option 'dir' is required");
+	if(errors.length > 0){																//check for input errors
+		console.log('[obc-js] Input Error - obc.save()', errors);
+		if(cb) cb(eFmt('input error', 400, errors));
+	}
+	else{
+		var dest = path.join(dir, '/chaincode.json');
+		fs.writeFile(dest, JSON.stringify({details: contract.cc.details}), function(e){
+			if(e != null){
+				console.log(e);
+				if(cb) cb(eFmt('fs write error', 500, e), null);
+			}
+			else {
+				console.log('\t- saved ', dest);
+				if(cb) cb(null, null);
+			}
+		});
+	}
 };
 
 // ============================================================================================================================
