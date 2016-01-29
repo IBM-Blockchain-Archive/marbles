@@ -40,7 +40,7 @@
 - [x] ReadNames(cb)
 - [x] init_marble(json);
 - [ ] check permissions of requesting user in cc
-- [ ] verify user identityf, ie public private key stuff
+- [ ] verify user identity, ie public private key stuff
 - [x] website to test cc, real basic
 - [x] demo app website
 - [x] make sdk proper npm module
@@ -51,12 +51,11 @@
 - [ ] browsify sdk and tie cci into it (not sure if i want to)
 - [ ] change downloading zip to git clone
 - [x] follow redirect on zip download
-- [ ] unzip may have project name as root... need to go down 1 lvl
 - [x] auto deploy, correctly!
 - [x] get delete to update marbleIndex
 - [x] sdk, check inputs on load if they  dne, error
 - [o] poll after chain deploy for cc up in peer [can't, future auth will prevent]
-- [ ] add block event to sdk
+- [x] add block stats to sdk
 - [x] write tutorial on phase 1
 - [ ] move to socket.io (unsure, postpone)
 

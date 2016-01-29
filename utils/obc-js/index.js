@@ -39,7 +39,7 @@ var chaincode = {
 
 function obc() {}
 
-var tempDirectory = path.join(__dirname, "./temp");								//	./temp
+var tempDirectory = path.join(__dirname, "./temp");									//	./temp
 
 // ============================================================================================================================
 // EXTERNAL - load() - load the chaincode and parssssssssse
@@ -95,7 +95,7 @@ obc.prototype.load = function(options, cb) {
 			file.on('finish', function() {
 				if(response.headers.status === '302 Found'){
 					console.log('redirect...', response.headers.location);
-					file.close();  
+					file.close();
 					download_it(response.headers.location);
 				}
 				else{
@@ -116,7 +116,7 @@ obc.prototype.load = function(options, cb) {
 		zip.extractAllTo(unzip_dest, /*overwrite*/true);
 		console.log('[obc-js] unzip done');
 		fs.readdir(unzip_cc_dest, cb_got_names);
-		fs.unlink(zip_dest, function(err) {});									//remove zip file, never used again
+		fs.unlink(zip_dest, function(err) {});										//remove zip file, never used again
 	}
 
 	// Step 2.
@@ -192,8 +192,8 @@ obc.prototype.network = function(arrayPeers){
 	else{
 		for(var i in arrayPeers){
 			var pos = arrayPeers[i].id.indexOf('_') + 1;
-			arrayPeers[i].name = arrayPeers[i].id.substring(pos) + '-' + arrayPeers[i].api_host + ':' + arrayPeers[i].api_port;
-			console.log(arrayPeers[i].name);
+			arrayPeers[i].name = arrayPeers[i].id.substring(pos) + '-' + arrayPeers[i].api_host + ':' + arrayPeers[i].api_port;	//build friendly name
+			console.log('[obc-js] Peer: ', arrayPeers[i].name);
 		}
 		var ssl = true;
 		chaincode.details.peers = arrayPeers;
@@ -324,7 +324,7 @@ obc.prototype.block_stats =  function(id, cb){
 //============================================================================================================================
 //read() - read generic variable from chaincode state
 //============================================================================================================================
-function read(name, cb, lvl){						//lvl is for reading past state blocks, tbd exactly
+function read(name, cb, lvl){										//lvl is for reading past state blocks, tbd exactly
 	var options = {
 		path: '/devops/query'
 	};
@@ -449,7 +449,7 @@ function deploy(func, args, save_path, cb){
 //============================================================================================================================
 //readNames() - read all variable names in chaincode state
 //============================================================================================================================
-function readNames(cb, lvl){						//lvl is for reading past state blocks, tbd exactly
+function readNames(cb, lvl){								//lvl is for reading past state blocks, tbd exactly
 	read('_all', cb, lvl);
 }
 
