@@ -230,7 +230,7 @@ obc.prototype.save =  function(dir, cb){
 				if(cb) cb(eFmt('fs write error', 500, e), null);
 			}
 			else {
-				console.log('\t- saved ', dest);
+				//console.log(' - saved ', dest);
 				if(cb) cb(null, null);
 			}
 		});
@@ -418,7 +418,8 @@ function remove(name, cb){
 //deploy() - deploy chaincode and call a cc function
 //============================================================================================================================
 function deploy(func, args, save_path, cb){
-	console.log("[obc-js] Deploying chaincode");
+	console.log("[obc-js] Deploying Chaincode - Start");
+	console.log("\n\n\t Waiting...");										//this can take awhile
 	var options = {path: '/devops/deploy'};
 	var body = 	{
 					type: "GOLANG",
@@ -431,12 +432,15 @@ function deploy(func, args, save_path, cb){
 					}
 				};
 	options.success = function(statusCode, data){
-		console.log("[obc-js] deploy - success [but you should wait 1 minute, callback is delayed a bit] \n", data);
+		console.log("\n\n\t deploy success [wait 1 more minute]");
 		chaincode.details.deployed_name = data.message;
 		obc.prototype.save(tempDirectory);									//save it so we remember we have deployed
 		if(save_path != null) obc.prototype.save(save_path);				//user wants the updated file somewhere
 		if(cb){
-			setTimeout(function(){ cb(null, data);}, 60000);				//wait extra long, not always ready yet
+			setTimeout(function(){
+				console.log("[obc-js] Deploying Chaincode - Complete");
+				cb(null, data);
+			}, 60000);														//wait extra long, not always ready yet
 		}
 	};
 	options.failure = function(statusCode, e){
@@ -449,7 +453,7 @@ function deploy(func, args, save_path, cb){
 //============================================================================================================================
 //readNames() - read all variable names in chaincode state
 //============================================================================================================================
-function readNames(cb, lvl){								//lvl is for reading past state blocks, tbd exactly
+function readNames(cb, lvl){												//lvl is for reading past state blocks, tbd exactly
 	read('_all', cb, lvl);
 }
 
