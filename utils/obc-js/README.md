@@ -23,8 +23,8 @@ A JS library for easier interaction with Open Blockchain chaincode
 	- git_dir = [string] name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
 	- git_url = [string] git https clone URL. should contain the desired chaincode
 	- deployed_name = [string] [optional] this is the hashed name of a deployed chaincode.  if you want to run with chaincode that is already deployed set it now, else it will be set when you deploy with the sdk
-4. receive contract obj from callback to obc.load()
-	###Callback Arguments: - cb(e, contract){}:
+4. receive chaincode obj from callback to obc.load()
+	###Callback Arguments: - cb(e, chaincode){}:
 	
 		- e = 	
 		
@@ -33,35 +33,33 @@ A JS library for easier interaction with Open Blockchain chaincode
 					code: integer,
 					details: obj
 				};
-		- contract = 
+		- chaincode = 
 				{
 					CUSTOM_FUNCTION_NAME1: function(args, cb){etc...};		//call chaincode function and pass it args
 					CUSTOM_FUNCTION_NAME2: function(args, cb){etc...};
 					CUSTOM_FUNCTION_NAME3: function(args, cb){etc...};
 					^^ etc...
-					cc: {
-						read: function(name, cb, lvl),						//read variable
-						write: function(name, value, cb),					//write/create variable
-						remove: function(name, cb),							//delete variable
-						deploy: function(func, arg, path, cb),				//deploy loaded chaincode
-						readNames: function(cb, lvl),						//read all known variable names from state
-						details:{
-									deployed_name: '',
-									func: [],
-									git_dir: '',
-									git_url: '',
-									peers: [],
-									vars: [],
-									zip_url: '',
-						}
+					read: function(name, cb, lvl),						//read variable
+					write: function(name, value, cb),					//write/create variable
+					remove: function(name, cb),							//delete variable
+					deploy: function(func, arg, path, cb),				//deploy loaded chaincode
+					readNames: function(cb, lvl),						//read all known variable names from state
+					details:{
+								deployed_name: '',
+								func: [],
+								git_dir: '',
+								git_url: '',
+								peers: [],
+								vars: [],
+								zip_url: '',
 					}
 				};
-5. use dot notation on contract to call any of your chaincode functions ie:
+5. use dot notation on chaincode to call any of your chaincode functions ie:
 
-		contract.cc.read('a', cb);						//will read variable "a" from current chaincode state
-		contract.cc.write('a', "test", cb)				//will write to vairable "a"
-		contract.cc.remove('a', cb)						//will delete variable "a"
-		contract.init_marbles(ARGS, cb);				//calls my custom chaincode function init_marbles() and passes it ARGS
+		chaincode.read('a', cb);						//will read variable "a" from current chaincode state
+		chaincode.write('a', "test", cb)				//will write to vairable "a"
+		chaincode.remove('a', cb)						//will delete variable "a"
+		chaincode.init_marbles(ARGS, cb);				//calls my custom chaincode function init_marbles() and passes it ARGS
 		
 ***
 
@@ -70,7 +68,7 @@ A JS library for easier interaction with Open Blockchain chaincode
 	// Step 1 ==================================
 	var Obc1 = require('./utils/obc-js/index');
 	var obc = new Obc1();
-	var contract = {};
+	var chaincode = {};
 
 	// ==================================
 	// load peers manually or from VCAP
@@ -121,9 +119,9 @@ A JS library for easier interaction with Open Blockchain chaincode
 
 	// Step 4 ==================================
 	function cb_ready(err, cc){																//response has chaincode functions
-		contract = cc;																		//copy to higher scope
-		if(contract.cc.details.deployed_name === ""){										//decide if i need to deploy
-			contract.cc.deploy('init', ['99'], './', cb_deployed);
+		chaincode = cc;																		//copy to higher scope
+		if(chaincode.details.deployed_name === ""){										//decide if i need to deploy
+			chaincode.deploy('init', ['99'], './', cb_deployed);
 		}
 		else{
 			obc.save('./');
@@ -134,11 +132,78 @@ A JS library for easier interaction with Open Blockchain chaincode
 	// Step 5 ==================================
 	function cb_deployed(){
 		console.log('sdk has deployed code and waited');
-		contract.cc.read('a');
+		chaincode.read('a');
 	}
 
-##Documentation
-- dsh to do, make real documentation for all functions in cc and in obc
+##OBC Functions
+### obc.load(options, [callback])
+Load the chaincode you want to use. 
+It wil be downloaded and parsed. 
+The callback will receive (e, obj) where e is the error format and obj is the chaincode object.
+The chaincode object will have dot notation to the functions in the chaincode.
+
+### obc.network(arrayPeers)
+Set the information about the peers in the network.
+This should be an array of peer objects.
+Example:
+
+		[
+			{
+				"discovery_host": "xxx.xxx.xxx.xxx",
+				"discovery_port": "xxxxx",
+				"api_host": "xxx.xxx.xxx.xxx",
+				"api_port": "xxxxx",
+				"id": "xxxxxx-xxxx-xxx-xxx-xxxxxxxxxxxx_vpx",
+				"api_url": "http://xxx.xxx.xxx.xxx:xxxxx"
+			}
+		]
+
+### obc.save(path [callback])
+Save the chaincode summary json file to a path.
+
+### obc.clear([callback])
+Clear any loaded chaincode files.
+Includes the downloaded chaincode repo, and chaincode summary json file.
+
+### obc.chain_stats([callback])
+Get statistics on the network's chain.
+Example:
+
+	{
+		"height": 10,
+		"currentBlockHash": "n7uMlNMiOSUM8s02cslTRzZQQlVfm8wKT9FtL54o0ywy6BkvPMwSzN5R1tpquvqOwFFHyLSoW44n6rkFyvAsBw==",
+		"previousBlockHash": "OESGPzacJO2Xc+5PB2zpmYVM8XlrwnEky0L2Ghok9oK1Lr/DWoxuBo2WwBca5zzJGq0fOeRQ7aOHgCjMupfL+Q=="
+	}
+
+### obc.block_stats(id, [callback])
+Get statsitics on a particular block in the chain.
+Example:
+
+	{
+		"transactions": [
+			{
+				"type": 3,
+				"chaincodeID": "EoABNWUzNGJmNWI1MWM1MWZiYzhlMWFmOThkYThhZDg0MGM2OWFjOWM5YTg4ODVlM2U0ZDBlNjNiM2I4MDc0ZWU2NjY2OWFjOTAzNTg4MzE1YTZjOGQ4ODY4M2Y1NjM0MThlMzMwNzQ3ZmVhZmU3ZWYyMGExY2Q1NGZmNzY4NWRhMTk=",
+				"payload": "CrABCAESgwESgAE1ZTM0YmY1YjUxYzUxZmJjOGUxYWY5OGRhOGFkODQwYzY5YWM5YzlhODg4NWUzZTRkMGU2M2IzYjgwNzRlZTY2NjY5YWM5MDM1ODgzMTVhNmM4ZDg4NjgzZjU2MzQxOGUzMzA3NDdmZWFmZTdlZjIwYTFjZDU0ZmY3Njg1ZGExORomCgtpbml0X21hcmJsZRIHcng2YXRzcBIFZ3JlZW4SAjM1EgNCb2I=",
+				"uuid": "b3da1d08-19b8-4d8c-a116-b46defb07a7c",
+				"timestamp": {
+					"seconds": 1453997627,
+					"nanos": 856894462
+				}
+			}
+		],
+		"stateHash": "81ci8IAOeDh0ZwFM6hE/b3SfXt4tnZFemib7sI95cOsNcYMmtRxBWRBA7qnjPOCGU6snBRsFVnAliZXUigQ03w==",
+		"previousBlockHash": "tpjUh4sgbaUQFO8wm8S8nrm7yCrBa4rphIiujfaYAlEVfzI8IZ0mjYMf+GiOZ6CZRNWPmf+5bekmGIfr0H6zdw==",
+		"nonHashData": {
+			"localLedgerCommitTimestamp": {
+			"seconds": 1453997627,
+			"nanos": 868868790
+			}
+		}
+	}
+
+##Chaincode Functions
+### 
 
 
 ## SDK To Do:

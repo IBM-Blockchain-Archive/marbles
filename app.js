@@ -119,7 +119,7 @@ wss.on('connection', function connection(ws) {
 		// ==================================
 		if(data.type == 'create'){
 			console.log('its a create!');
-			contract.init_marble([data.name, data.color, data.size, data.user], cb_invoked);				//create a new marble
+			chaincode.init_marble([data.name, data.color, data.size, data.user], cb_invoked);				//create a new marble
 		}
 		else if(data.type == 'get'){
 			console.log('get marbles msg');
@@ -127,11 +127,11 @@ wss.on('connection', function connection(ws) {
 		}
 		else if(data.type == 'transfer'){
 			console.log('transfering msg');
-			contract.set_user([data.name, data.user]);
+			chaincode.set_user([data.name, data.user]);
 		}
 		else if(data.type == 'remove'){
 			console.log('removing msg');
-			contract.cc.remove(data.name);
+			chaincode.remove(data.name);
 		}
 		else if(data.type == 'chainstats'){
 			console.log('chainstats msg');
@@ -143,7 +143,7 @@ wss.on('connection', function connection(ws) {
 	obc.chain_stats(cb_chainstats);
 	function get_marbles(){
 		console.log('fetching all marble data');
-		contract.cc.read('marbleIndex', cb_got_index);
+		chaincode.read('marbleIndex', cb_got_index);
 	
 	}
 	
@@ -154,7 +154,7 @@ wss.on('connection', function connection(ws) {
 				var json = JSON.parse(index);
 				for(var i in json){
 					console.log('!', i, json[i]);
-					contract.cc.read(json[i], cb_got_marble);												//iter over each, read their values
+					chaincode.read(json[i], cb_got_marble);												//iter over each, read their values
 				}
 			}
 			catch(e){
@@ -208,7 +208,7 @@ wss.on('connection', function connection(ws) {
 // ============================================================================================================================
 var Obc1 = require('./utils/obc-js/index');
 var obc = new Obc1();
-var contract = {};
+var chaincode = {};
 
 // ==================================
 // load peers manually or from VCAP
@@ -287,9 +287,9 @@ var options = 	{
 obc.load(options, cb_ready);															//parse/load chaincode
 
 function cb_ready(err, cc){																//response has chaincode functions
-	contract = cc;																		//copy to higher scope
-	if(contract.cc.details.deployed_name === ""){										//decide if i need to deploy
-		contract.cc.deploy('init', ['99'], './', cb_deployed);
+	chaincode = cc;																		//copy to higher scope
+	if(chaincode.details.deployed_name === ""){										//decide if i need to deploy
+		chaincode.deploy('init', ['99'], './', cb_deployed);
 	}
 	else{
 		obc.save('./');

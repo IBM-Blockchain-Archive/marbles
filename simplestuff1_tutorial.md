@@ -86,8 +86,8 @@ Looking at the example code it should be clear that we can invoke our GoLang fun
 The SDK we have built will be able to find the names of the functions listed in Run(). 
 It will then give you a dot notation to use them in your Node.js application. ie:
 	
-	contract.cc.read("abc")				//this will call the Query() function which will read the value of "abc" from the cc state
-	contract.rule_the_world("tomrrow")	//this would invoke the chaincode function "rule_the_world" (assuming it exists)
+	chaincode.read("abc")				//this will call the Query() function which will read the value of "abc" from the cc state
+	chaincode.rule_the_world("tomrrow")	//this would invoke the chaincode function "rule_the_world" (assuming it exists)
 
 #Network
 So the cc is great and all but first things first are we need a network.

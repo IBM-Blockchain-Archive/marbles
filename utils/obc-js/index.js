@@ -20,22 +20,20 @@ var async = require('async');
 var rest = require(__dirname + "/lib/rest");
 var AdmZip = require('adm-zip');
 
-var contract = {
-					cc: {
-						read: null,
-						write: null,
-						remove: null,
-						deploy: null,
-						readNames: null,
-						details:{
-									deployed_name: '',
-									func: [],
-									git_dir: '',
-									git_url: '',
-									peers: [],
-									vars: [],
-									zip_url: '',
-						}
+var chaincode = {
+					read: null,
+					write: null,
+					remove: null,
+					deploy: null,
+					readNames: null,
+					details:{
+								deployed_name: '',
+								func: [],
+								git_dir: '',
+								git_url: '',
+								peers: [],
+								vars: [],
+								zip_url: '',
 					}
 				};
 
@@ -68,10 +66,10 @@ obc.prototype.load = function(options, cb) {
 	var zip_dest = path.join(tempDirectory,  '/file.zip');							//	./temp/file.zip
 	var unzip_dest = path.join(tempDirectory,  '/unzip');							//	./temp/unzip
 	var unzip_cc_dest = path.join(unzip_dest, '/', options.git_dir);				//	./temp/unzip/DIRECTORY
-	contract.cc.details.zip_url = options.zip_url;
-	contract.cc.details.git_dir = options.git_dir;
-	contract.cc.details.git_url = options.git_url;
-	if(options.deployed_name) contract.cc.details.deployed_name = options.deployed_name;
+	chaincode.details.zip_url = options.zip_url;
+	chaincode.details.git_dir = options.git_dir;
+	chaincode.details.git_url = options.git_url;
+	if(options.deployed_name) chaincode.details.deployed_name = options.deployed_name;
 	
 	// Preflight checklist
 	try{fs.mkdirSync(tempDirectory);}
@@ -99,7 +97,7 @@ obc.prototype.load = function(options, cb) {
 		}).on('error', function(err) {
 			console.log('[obc-js] download error');
 			fs.unlink(zip_dest); 													//delete the file async
-			if (cb) cb(eFmt('fs error', 500, err.message), contract);
+			if (cb) cb(eFmt('fs error', 500, err.message), chaincode);
 		});
 	}
 	
@@ -157,16 +155,16 @@ obc.prototype.load = function(options, cb) {
 						var pos = res[i].indexOf('.');
 						var temp = res[i].substring(pos + 1, res[i].length - 1);
 						console.log('[obc-js] Found func: ', temp);
-						populate_go_contract(temp);
+						populate_go_chaincode(temp);
 					}
 					
 					// Step 3.
 					obc.prototype.save(tempDirectory);
-					contract.cc.read = read;
-					contract.cc.write = write;
-					contract.cc.remove = remove;
-					contract.cc.deploy = deploy;
-					if(cb) cb(null, contract);
+					chaincode.read = read;
+					chaincode.write = write;
+					chaincode.remove = remove;
+					chaincode.deploy = deploy;
+					if(cb) cb(null, chaincode);
 				}
 			}
 		}
@@ -190,12 +188,12 @@ obc.prototype.network = function(arrayPeers){
 			console.log(arrayPeers[i].name);
 		}
 		var ssl = true;
-		contract.cc.details.peers = arrayPeers;
+		chaincode.details.peers = arrayPeers;
 		if(arrayPeers[0].api_url.indexOf('https') == -1) ssl = false;				//not https, no tls
 		
 		rest.init({																	//load default values for rest call to peer
-					host: contract.cc.details.peers[0].api_host,
-					port: contract.cc.details.peers[0].api_port,
+					host: chaincode.details.peers[0].api_host,
+					port: chaincode.details.peers[0].api_port,
 					headers: {
 								"Content-Type": "application/json",
 								"Accept": "application/json",
@@ -207,7 +205,7 @@ obc.prototype.network = function(arrayPeers){
 };
 
 // ============================================================================================================================
-// EXTERNAL - save() - write contract details to a json file
+// EXTERNAL - save() - write chaincode details to a json file
 // ============================================================================================================================
 obc.prototype.save =  function(dir, cb){
 	var errors = [];
@@ -218,7 +216,7 @@ obc.prototype.save =  function(dir, cb){
 	}
 	else{
 		var dest = path.join(dir, '/chaincode.json');
-		fs.writeFile(dest, JSON.stringify({details: contract.cc.details}), function(e){
+		fs.writeFile(dest, JSON.stringify({details: chaincode.details}), function(e){
 			if(e != null){
 				console.log(e);
 				if(cb) cb(eFmt('fs write error', 500, e), null);
@@ -326,7 +324,7 @@ function read(name, cb, lvl){						//lvl is for reading past state blocks, tbd e
 					chaincodeSpec: {
 						type: "GOLANG",
 						chaincodeID: {
-							name: contract.cc.details.deployed_name,
+							name: chaincode.details.deployed_name,
 						},
 						ctorMsg: {
 							function: "query",
@@ -357,7 +355,7 @@ function write(name, val, cb){
 					chaincodeSpec: {
 						type: "GOLANG",
 						chaincodeID: {
-							name: contract.cc.details.deployed_name,
+							name: chaincode.details.deployed_name,
 						},
 						ctorMsg: {
 							function: 'write',
@@ -388,7 +386,7 @@ function remove(name, cb){
 					chaincodeSpec: {
 						type: "GOLANG",
 						chaincodeID: {
-							name: contract.cc.details.deployed_name,
+							name: chaincode.details.deployed_name,
 						},
 						ctorMsg: {
 							function: 'delete',
@@ -417,7 +415,7 @@ function deploy(func, args, save_path, cb){
 	var body = 	{
 					type: "GOLANG",
 					chaincodeID: {
-							path: contract.cc.details.git_url
+							path: chaincode.details.git_url
 						},
 					ctorMsg:{
 							"function": func,
@@ -426,7 +424,7 @@ function deploy(func, args, save_path, cb){
 				};
 	options.success = function(statusCode, data){
 		console.log("[obc-js] deploy - success [but you should wait 1 minute, callback is delayed a bit] \n", data);
-		contract.cc.details.deployed_name = data.message;
+		chaincode.details.deployed_name = data.message;
 		obc.prototype.save(tempDirectory);									//save it so we remember we have deployed
 		if(save_path != null) obc.prototype.save(save_path);				//user wants the updated file somewhere
 		if(cb){
@@ -453,21 +451,21 @@ function readNames(cb, lvl){						//lvl is for reading past state blocks, tbd ex
 //============================================================================================================================
 
 //==================================================================
-//populate_contract() - create JS call for custom goLang function, store in contract!
+//populate_chaincode() - create JS call for custom goLang function, store in chaincode!
 //==================================================================
-function populate_go_contract(name){
-	if(contract[name] != null){
+function populate_go_chaincode(name){
+	if(chaincode[name] != null){
 		console.log('[obc-js] \t skip, already exists');
 	}
 	else {
-		contract.cc.details.func.push(name);
-		contract[name] = function(args, cb){				//create the functions in contract obj
+		chaincode.details.func.push(name);
+		chaincode[name] = function(args, cb){				//create the functions in chaincode obj
 			var options = {path: '/devops/invoke'};
 			var body = {
 					chaincodeSpec: {
 						type: "GOLANG",
 						chaincodeID: {
-							name: contract.cc.details.deployed_name,
+							name: chaincode.details.deployed_name,
 						},
 						ctorMsg: {
 							function: name,
