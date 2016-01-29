@@ -1,40 +1,40 @@
-#SimpleStuff Demo Notes
-- examples of using the sdk are in app.js near the bottom
+# SimpleStuff Demo Notes
 
-##Doc Links
-- SDK Doc - [utils/obc-js](./utils/obc-js/README.md)
+## Doc Links
+- obc.js SDK Doc - [utils/obc-js](./utils/obc-js/README.md)
 - Tutorial for SimpleStuff App 1 - [here](./simplestuff1_tutorial.md) (start here)
 - Tutorial for SimpleStuff App 2 - coming
 
 ***
 
-##Projects Contents
-1. sdk, obc-js.js
-1. chaincode investigator			http://localhost:3000/cci
-1. obc demo aka SimpelStuff App1	http://localhost:3000
+## Projects Contents
+1. **JS sdk** - `./utils/obc-js`
+1. **SimpelStuff App1** (marbles demo)	-	http://localhost:3000
+1. **Chaincode Investigator** (tool)	-	http://localhost:3000/cci
 
 ***
 
-##Phase 1 Goals
+## Demo Phase 1 Goals
 - [x] User can create a marble and store it in the chaincode state
 - [x] User can read all marbles in the chaincode state
 - [x] User can transfer marble to another user
 - [x] See block stats
 - [x] User can delete a marble
+- [x] Deployable on bluemix
 
-##Phase 2 Goals
+## Demo Phase 2 Goals
 - [ ] New block events trigger a marble page update
 - [ ] Can transfer/delete multiple marbles at once
 - [ ] User's can advertise to trade their marbles (ie willing to trade large red for large blue/yellow/green)
 
-##Phase 3 Goals
+## Demo Phase 3 Goals
 - [ ] User identity and autentication (crypto signing of transactions)
 - [ ] User registration
 - [ ] Transacation privacy
 
 ***
 
-##ChainCode / SDK ToDo:
+## ChainCode / SDK ToDo:
 - [x] Write("name", "val", cb);
 - [x] ReadNames(cb)
 - [x] init_marble(json);
@@ -61,10 +61,10 @@
 - [ ] make advanced link in cci and hide ip/port fields, hide all things under tool like categories
 
 
-###ChainCode Notes:
+### ChainCode Notes:
 1. Due to performance issues, we probably want resuable chaincode contracts.  ie 1 chaincode describe/constrains multiple people assets. ie ie many people and cars exist in 1 chaincode
 1. Any functionality that parties need to agree on should be in the chaincode.  ie do not move it to the application b/c this then the moving parts become unenforceable.
 1. Chaincode should keep track of all key's that get their state saved.  Have init clear these
 
-###Junk Notes:
+### Junk Notes:
 - npm install git+ssh://git@github.ibm.com:openblockchain/obc-js.git
