@@ -117,7 +117,7 @@ The network is all setup.  Now we need to copy the peer data and pass it to our 
 
 1. Click the "myblockchain" tile in you Bluemix Dashboard
 1. Click the "Service Credentials" link on the left
-1. Copy the value of the peer field to app.js at line 216ish. We only need the "peer" array data.
+1. Copy the value of the peer field to app.js at line 131ish. We only need the "peer" array data.
 
 #Setup Node.js
 Now we are ready to work on the application!
@@ -165,7 +165,7 @@ Now we are ready to work on the application!
 	> cf login  
 	> cf push marbles
 	
-1. The application will bind to the service "myblockchain" and grab the peer data from VCAP_SERVICES. Code for this is in app.js line 259ish
+1. The application will bind to the service "myblockchain" and grab the peer data from VCAP_SERVICES. Code for this is in app.js line 141ish
 
 
 #Trouble Shooting
