@@ -124,10 +124,10 @@ The chaincode object will have dot notation to the functions in the chaincode.
 
 ### obc.network(arrayPeers)
 Set the information about the peers in the network.
-This should be an array of peer objects.
+This should be an array of peer objects.  
 Example:
 
-		[
+		var peers = [
 			{
 				"discovery_host": "xxx.xxx.xxx.xxx",
 				"discovery_port": "xxxxx",
@@ -137,17 +137,17 @@ Example:
 				"api_url": "http://xxx.xxx.xxx.xxx:xxxxx"
 			}
 		]
+		obc.network(peers);
 
 ### obc.save(path [callback])
-Save the chaincode summary json file to a path.
+Save the [Chaincode Summary File](#ccsf) to a path.
 
 ### obc.clear([callback])
-Clear any loaded chaincode files.
-Includes the downloaded chaincode repo, and chaincode summary json file.
+Clear any loaded chaincode files including the downloaded chaincode repo, and [Chaincode Summary File](#ccsf).
 
 ### obc.chain_stats([callback])
-Get statistics on the network's chain.
-Example:
+Get statistics on the network's chain.  
+Example Response:
 
 	{
 		"height": 10,
@@ -156,8 +156,8 @@ Example:
 	}
 
 ### obc.block_stats(id, [callback])
-Get statsitics on a particular block in the chain.
-Example:
+Get statsitics on a particular block in the chain.  
+Example Response:
 
 	{
 		"transactions": [
@@ -182,9 +182,11 @@ Example:
 		}
 	}
 
+***
+
 ##Chaincode Functions
-! Chaincode functions are dependent on actually be found inside your Go chaincode !  
-! My advise is to build your chaincode off of the Marble Application one.  This way you get basic CRUD functions!
+- Chaincode functions are dependent on actually be found inside your Go chaincode
+- My advise is to build your chaincode off of the Marble Application one.  This way you get the basic CRUD functions below:
 
 ### chaincode.read(name [callback])
 Read variable named 'name' from chaincode state
@@ -198,13 +200,15 @@ Delete variable named 'name'
 ### chaincode.deploy(func, args, [save_path], [callback])
 Deploy the chaincode. 
 Call GoLang function named 'func' and feed it 'args'.
-Optionally save chaincode summary json file to 'save_path'.
+Optionally save [Chaincode Summary File](#ccsf) to 'save_path'.
 
 ### chaincode.readNames([callback])
 Return list of all known variables names in chaincode state
 
 ### chaincode.CUSTOM_FUNCTION_NAME(arg, [callback])
-Will invoke your Go function and pass it 'arg'
+Will invoke your Go function CUSTOM_FUNCTION_NAME and pass it 'arg'
+
+***
 
 ##Formats
 ### Chaincode Object
@@ -239,7 +243,10 @@ Will invoke your Go function and pass it 'arg'
 		details: {msg: "did not provide git_url"}
 	};
 
-### Chaincode Summary File
+### Chaincode Summary File <a name="ccsf"></a>
+This file is used internally. 
+It is created in obc.load() and updated with chaincode.deploy().
+A copy can be saved elsewhere with obc.save(path)
 
 	{
 		"details": {
