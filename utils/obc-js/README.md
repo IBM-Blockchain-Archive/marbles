@@ -1,4 +1,4 @@
-obc-js.js
+# obc-js.js
 =========
 (dsh to do - terrible name, change to obc.js)
 
@@ -270,7 +270,7 @@ A copy can be saved elsewhere with obc.save(path)
 	}
 
 
-## SDK To Do:
+## SDK ToDo:
 - [ ] need multi var read in sdk! ie read(["car1", "car2"]); ... what if we do a lot here, like SQL syntax?
 - [x] remember the name of all the saved vars in cc
 - [ ] ^^ and export this list so sdk can get it (needed?)
@@ -278,8 +278,6 @@ A copy can be saved elsewhere with obc.save(path)
 - [ ] change downloading zip to git clone
 - [ ] mocha test for sdk
 - [x] follow redirect on zip download...
-- [ ] unzip may have project name as root... need to go down 1 lvl
-- [ ] sdk, check inputs on load if they  dne, error
-- [ ] poll after chain deploy for cc up in peer
-- [ ] add block event sub to sdk
+- [x] sdk, check inputs on load if they  dne, error
+- [x] add block stats to sdk
 - [ ] rethink chaincode in general to make more structured, template form?, pick and choose base functions? forced base inheritance?

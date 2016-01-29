@@ -1,7 +1,7 @@
 #OBC - Node.js "SimpleStuff App 1" Demo
 
 ##Doc Links
-- David's Notes Readme - [here](./README.md)
+- David's Main Readme Notes - [here](./README.md)
 - SDK Doc - [utils/obc-js](./utils/obc-js/README.md)
 - Tutorial for SimpleStuff App 1 - [here](./simplestuff1_tutorial.md)
 - Tutorial for SimpleStuff App 2 - coming
@@ -157,7 +157,9 @@ Now we are ready to work on the application!
 #Run Marbles w/Bluemix
 1. This app is already ready to run on bluemix
 1. Create a new network from the Bluemix tile, and name it "myblockchain"
-1. Edit manifes.yml if you don't want it to auto bind to the service or if you want to change the app name/route
+1. Edit manifest.yml 
+	- change the sevice name to match your network's name, or remove the line if you don't want the app to bind to the service
+	- change the app name and host name
 1. Push the application by opening a command prompt and browsing to this directory
 	
 	> cf login  
@@ -167,10 +169,11 @@ Now we are ready to work on the application!
 
 
 #Trouble Shooting
-1. peers in the network appear to get stuck - known issue. create a new network and start over =(
-1. peer drops requests (timeout) - known issue. try submitting the query/invoke again
+1. peers in the network appear to get stuck - known fabric issue. create a new network and start over =(
+1. peer drops requests (timeout) - known fabric issue. try submitting the query/invoke again, or having less marbles...
+1. post other issues to slack. org: bluechain, channel: ??? (dsh todo - make a channel)
 
 ***
-dsh to do - make images for things in this tutorial  
-dsh to do - add code walk throughs  
-dsh to to - a video would be better than this  
+dsh todo - make images for things in this tutorial  
+dsh todo - add code walk throughs  
+dsh toto - a video would be better than this  

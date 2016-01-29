@@ -1,10 +1,9 @@
-#OBC - Node.js "SimpleStuff" Demo
+#SimpleStuff Demo Notes
 - examples of using the sdk are in app.js near the bottom
 
 ##Doc Links
-- David's Notes Readme - [here](./README.md)
 - SDK Doc - [utils/obc-js](./utils/obc-js/README.md)
-- Tutorial for SimpleStuff App 1 - [here](./simplestuff1_tutorial.md)
+- Tutorial for SimpleStuff App 1 - [here](./simplestuff1_tutorial.md) (start here)
 - Tutorial for SimpleStuff App 2 - coming
 
 ***
@@ -35,7 +34,7 @@
 
 ***
 
-##ChainCode / SDK To Do:
+##ChainCode / SDK ToDo:
 - [x] Write("name", "val", cb);
 - [x] ReadNames(cb)
 - [x] init_marble(json);
@@ -64,10 +63,8 @@
 
 ###ChainCode Notes:
 1. Due to performance issues, we probably want resuable chaincode contracts.  ie 1 chaincode describe/constrains multiple people assets. ie ie many people and cars exist in 1 chaincode
-1. Any functionality that parties need to agree on should be in the chaincode.  ie do not move it to the application b/c this then the moving parts beomce unenforceable.
+1. Any functionality that parties need to agree on should be in the chaincode.  ie do not move it to the application b/c this then the moving parts become unenforceable.
 1. Chaincode should keep track of all key's that get their state saved.  Have init clear these
 
 ###Junk Notes:
 - npm install git+ssh://git@github.ibm.com:openblockchain/obc-js.git
-- https://broker.obchain.com/api/peer/#network_id_peer_id/chaincode/#cc_name/logs
-- National Business Merchandise
