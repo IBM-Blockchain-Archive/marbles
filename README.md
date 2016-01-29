@@ -30,10 +30,10 @@
 
 ##Phase 3 Goals
 - [ ] User identity and autentication (crypto signing of transactions)
+- [ ] User registration
 - [ ] Transacation privacy
 
-
----
+***
 
 ##ChainCode / SDK To Do:
 - [x] Write("name", "val", cb);
@@ -44,21 +44,21 @@
 - [x] website to test cc, real basic
 - [x] demo app website
 - [x] make sdk proper npm module
-- [ ] change downloading zip to git clone
 - [x] custom custom function on UI
 - [x] load json in UI
 - [x] structured error reponse
 - [ ] mocha test for sdk
 - [ ] browsify sdk and tie cci into it (not sure if i want to)
+- [ ] change downloading zip to git clone
 - [ ] follow redirect on zip download...
+- [ ] unzip may have project name as root... need to go down 1 lvl
 - [x] auto deploy, correctly!
 - [x] get delete to update marbleIndex
-- [ ] unzip may have project name as root... need to go down 1 lvl
 - [x] sdk, check inputs on load if they  dne, error
 - [o] poll after chain deploy for cc up in peer [can't, future auth will prevent]
 - [ ] add block event to sdk
-- [ ] write tutorial on phase 1
-- [ ] move to socket.io
+- [x] write tutorial on phase 1
+- [ ] move to socket.io (unsure, postpone)
 
 
 ###ChainCode Notes:
