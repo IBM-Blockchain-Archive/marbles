@@ -28,11 +28,9 @@ var setup = require('./setup');
 var cors = require("cors");
 var fs = require("fs");
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-
 //// Set Server Parameters ////
-var host = (process.env.VCAP_APP_HOST || setup.SERVER.HOST);
-var port = (process.env.VCAP_APP_PORT || setup.SERVER.PORT);
+var host = setup.SERVER.HOST;
+var port = setup.SERVER.PORT;
 
 ////////  Pathing and Module Setup  ////////
 app.set('views', path.join(__dirname, 'views'));
@@ -102,92 +100,6 @@ if(process.env.PRODUCTION) console.log('Running using Production settings');
 else console.log('Running using Developer settings');
 
 
-
-// ============================================================================================================================
-// 												WebSocket Communication Madness
-// ============================================================================================================================
-var ws = require('ws');
-var wss = new ws.Server({server: server});
-	
-wss.on('connection', function connection(ws) {
-	ws.on('message', function incoming(message) {
-		console.log('received ws msg:', message);
-		var data = JSON.parse(message);
-		
-		// ==================================
-		// APP 1 - incoming messages, look for type
-		// ==================================
-		if(data.type == 'create'){
-			console.log('its a create!');
-			chaincode.init_marble([data.name, data.color, data.size, data.user], cb_invoked);				//create a new marble
-		}
-		else if(data.type == 'get'){
-			console.log('get marbles msg');
-			get_marbles();
-		}
-		else if(data.type == 'transfer'){
-			console.log('transfering msg');
-			chaincode.set_user([data.name, data.user]);
-		}
-		else if(data.type == 'remove'){
-			console.log('removing msg');
-			chaincode.remove(data.name);
-		}
-		else if(data.type == 'chainstats'){
-			console.log('chainstats msg');
-			obc.chain_stats(cb_chainstats);
-		}
-	});
-	
-	get_marbles();																							//on start fetch the marble index var
-	obc.chain_stats(cb_chainstats);
-	function get_marbles(){
-		console.log('fetching all marble data');
-		chaincode.read('marbleIndex', cb_got_index);
-	
-	}
-	
-	function cb_got_index(e, index){
-		if(e != null) console.log('error:', e);
-		else{
-			try{
-				var json = JSON.parse(index);
-				for(var i in json){
-					console.log('!', i, json[i]);
-					chaincode.read(json[i], cb_got_marble);												//iter over each, read their values
-				}
-			}
-			catch(e){
-				console.log('error:', e);
-			}
-		}
-	}
-	
-	function cb_got_marble(e, marble){
-		if(e != null) console.log('error:', e);
-		else {
-			ws.send(JSON.stringify({msg: 'marbles', e: e, marble: marble}));
-		}
-	}
-	
-	function cb_invoked(e, a){
-		console.log('response: ', e, a);
-	}
-	
-	var chain_stats = {};
-	function cb_chainstats(e, stats){
-		//console.log('stats', stats.height);
-		chain_stats = stats;
-		obc.block_stats(stats.height - 1, cb_blockstats);
-	}
-	
-	function cb_blockstats(e, stats){
-		//console.log('replying', stats);
-		ws.send(JSON.stringify({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats}));
-	}
-});
-
-
 // ============================================================================================================================
 // ============================================================================================================================
 // ============================================================================================================================
@@ -206,53 +118,55 @@ wss.on('connection', function connection(ws) {
 // ============================================================================================================================
 // 														Test Area
 // ============================================================================================================================
+var app1 = require('./utils/ws_app1');
+var ws = require('ws');
+var wss = {};
 var Obc1 = require('./utils/obc-js/index');
 var obc = new Obc1();
-var chaincode = {};
 
 // ==================================
 // load peers manually or from VCAP
 // ==================================
 var peers =    [
       {
-        "discovery_host": "158.85.255.239",
-        "discovery_port": "33130",
-        "api_host": "158.85.255.239",
-        "api_port": "33131",
-        "id": "689332ba-ef64-414c-9e10-61b3dfd538e2_vp1",
-        "api_url": "http://158.85.255.239:33131"
+        "discovery_host": "169.53.72.245",
+        "discovery_port": "33542",
+        "api_host": "169.53.72.245",
+        "api_port": "33543",
+        "id": "78829be5-de46-40eb-beef-ef566f97b3b2_vp1",
+        "api_url": "http://169.53.72.245:33543"
       },
       {
         "discovery_host": "158.85.255.228",
-        "discovery_port": "33126",
+        "discovery_port": "33186",
         "api_host": "158.85.255.228",
-        "api_port": "33127",
-        "id": "689332ba-ef64-414c-9e10-61b3dfd538e2_vp4",
-        "api_url": "http://158.85.255.228:33127"
+        "api_port": "33187",
+        "id": "78829be5-de46-40eb-beef-ef566f97b3b2_vp5",
+        "api_url": "http://158.85.255.228:33187"
       },
       {
         "discovery_host": "169.53.72.250",
-        "discovery_port": "33541",
+        "discovery_port": "33559",
         "api_host": "169.53.72.250",
-        "api_port": "33542",
-        "id": "689332ba-ef64-414c-9e10-61b3dfd538e2_vp2",
-        "api_url": "http://169.53.72.250:33542"
+        "api_port": "33560",
+        "id": "78829be5-de46-40eb-beef-ef566f97b3b2_vp4",
+        "api_url": "http://169.53.72.250:33560"
       },
       {
         "discovery_host": "158.85.255.230",
-        "discovery_port": "33132",
+        "discovery_port": "33192",
         "api_host": "158.85.255.230",
-        "api_port": "33133",
-        "id": "689332ba-ef64-414c-9e10-61b3dfd538e2_vp5",
-        "api_url": "http://158.85.255.230:33133"
+        "api_port": "33193",
+        "id": "78829be5-de46-40eb-beef-ef566f97b3b2_vp3",
+        "api_url": "http://158.85.255.230:33193"
       },
       {
-        "discovery_host": "158.85.255.230",
-        "discovery_port": "33134",
-        "api_host": "158.85.255.230",
-        "api_port": "33135",
-        "id": "689332ba-ef64-414c-9e10-61b3dfd538e2_vp3",
-        "api_url": "http://158.85.255.230:33135"
+        "discovery_host": "169.53.72.250",
+        "discovery_port": "33561",
+        "api_host": "169.53.72.250",
+        "api_port": "33562",
+        "id": "78829be5-de46-40eb-beef-ef566f97b3b2_vp2",
+        "api_url": "http://169.53.72.250:33562"
       }
     ];
 
@@ -282,25 +196,33 @@ var options = 	{
 					git_url: 'https://github.com/dshuffma-ibm/simplestuff',												//git clone http url
 					
 					//hashed cc name from prev deploy [IF YOU COMMENT LINE BELOW OUT IT WILL DEPLOY]
-					deployed_name: '5e34bf5b51c51fbc8e1af98da8ad840c69ac9c9a8885e3e4d0e63b3b8074ee66669ac903588315a6c8d88683f563418e330747feafe7ef20a1cd54ff7685da19'
+					//deployed_name: '5e34bf5b51c51fbc8e1af98da8ad840c69ac9c9a8885e3e4d0e63b3b8074ee66669ac903588315a6c8d88683f563418e330747feafe7ef20a1cd54ff7685da19'
 				};
 obc.load(options, cb_ready);															//parse/load chaincode
 
 function cb_ready(err, cc){																//response has chaincode functions
-	chaincode = cc;																		//copy to higher scope
-	if(chaincode.details.deployed_name === ""){										//decide if i need to deploy
-		chaincode.deploy('init', ['99'], './', cb_deployed);
+	app1.setup(obc, cc);
+	if(cc.details.deployed_name === ""){												//decide if i need to deploy
+		cc.deploy('init', ['99'], './', cb_deployed);
 	}
 	else{
 		obc.save('./');
-		console.log('chaincode details indicates chaincode has been previously deployed');
+		console.log('chaincode summary file indicates chaincode has been previously deployed');
+		cb_deployed();
 	}
 }
 
+// ============================================================================================================================
+// 												WebSocket Communication Madness
+// ============================================================================================================================
 function cb_deployed(){
-	console.log('sdk has deployed code and waited');
-}
-
-function cb_stats(e, data){
-	console.log('got', data.currentBlockHash);
+	console.log('starting websocket');
+	wss = new ws.Server({server: server});												//start the websocket now
+	wss.on('connection', function connection(ws) {
+		ws.on('message', function incoming(message) {
+			console.log('received ws msg:', message);
+			var data = JSON.parse(message);
+			app1.process_msg(ws, data);
+		});
+	});
 }
