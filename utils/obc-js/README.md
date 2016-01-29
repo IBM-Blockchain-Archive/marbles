@@ -23,37 +23,7 @@ A JS library for easier interaction with Open Blockchain chaincode
 	- git_dir = [string] name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
 	- git_url = [string] git https clone URL. should contain the desired chaincode
 	- deployed_name = [string] [optional] this is the hashed name of a deployed chaincode.  if you want to run with chaincode that is already deployed set it now, else it will be set when you deploy with the sdk
-4. receive chaincode obj from callback to obc.load()
-	###Callback Arguments: - cb(e, chaincode){}:
-	
-		- e = 	
-		
-				{
-					name: string,
-					code: integer,
-					details: obj
-				};
-		- chaincode = 
-				{
-					CUSTOM_FUNCTION_NAME1: function(args, cb){etc...};		//call chaincode function and pass it args
-					CUSTOM_FUNCTION_NAME2: function(args, cb){etc...};
-					CUSTOM_FUNCTION_NAME3: function(args, cb){etc...};
-					^^ etc...
-					read: function(name, cb, lvl),						//read variable
-					write: function(name, value, cb),					//write/create variable
-					remove: function(name, cb),							//delete variable
-					deploy: function(func, arg, path, cb),				//deploy loaded chaincode
-					readNames: function(cb, lvl),						//read all known variable names from state
-					details:{
-								deployed_name: '',
-								func: [],
-								git_dir: '',
-								git_url: '',
-								peers: [],
-								vars: [],
-								zip_url: '',
-					}
-				};
+4. receive chaincode obj from callback to obc.load(). ie: your_cb(e, chaincode)
 5. use dot notation on chaincode to call any of your chaincode functions ie:
 
 		chaincode.read('a', cb);						//will read variable "a" from current chaincode state
@@ -107,13 +77,13 @@ A JS library for easier interaction with Open Blockchain chaincode
 	// configure obc-js sdk
 	// ==================================
 	var options = 	{
-						zip_url: 'https://codeload.github.com/dshuffma-ibm/simplestuff/zip/master',							//make sure this does not have any redirects - dsh to do fix
-						git_dir: 'simplestuff-master',																		//subdirectroy name of chaincode after unzipped
-						git_url: 'https://github.com/dshuffma-ibm/simplestuff',												//git clone http url
-						
-						//hashed cc name from prev deploy [IF YOU COMMENT LINE BELOW OUT IT WILL DEPLOY]
-						deployed_name: '31bfa10d161e6b10a460335f90787d305f5ae775d83cf20a49f6b187e5e1e253585d6e377cc5386977260ba6144f75e2e334a23dc2a32ab867122a548c3e57c4'
-					};
+		zip_url: 'https://codeload.github.com/dshuffma-ibm/simplestuff/zip/master',							//make sure this does not have any redirects - dsh to do fix
+		git_dir: 'simplestuff-master',																		//subdirectroy name of chaincode after unzipped
+		git_url: 'https://github.com/dshuffma-ibm/simplestuff',												//git clone http url
+		
+		//hashed cc name from prev deploy [IF YOU COMMENT LINE BELOW OUT IT WILL DEPLOY]
+		deployed_name: '31bfa10d161e6b10a460335f90787d305f5ae775d83cf20a49f6b187e5e1e253585d6e377cc5386977260ba6144f75e2e334a23dc2a32ab867122a548c3e57c4'
+	};
 	// Step 3 ==================================
 	obc.load(options, cb_ready);															//parse/load chaincode
 
@@ -141,6 +111,16 @@ Load the chaincode you want to use.
 It wil be downloaded and parsed. 
 The callback will receive (e, obj) where e is the error format and obj is the chaincode object.
 The chaincode object will have dot notation to the functions in the chaincode.
+
+	var options = 	{
+		zip_url: 'https://codeload.github.com/dshuffma-ibm/simplestuff/zip/master',							//make sure this does not have any redirects - dsh to do fix
+		git_dir: 'simplestuff-master',																		//subdirectroy name of chaincode after unzipped
+		git_url: 'https://github.com/dshuffma-ibm/simplestuff',												//git clone http url
+		
+		//hashed cc name from prev deploy [IF YOU COMMENT LINE BELOW OUT IT WILL DEPLOY]
+		deployed_name: '5e34bf5b51c51fbc8e1af98da8ad840c69ac9c9a8885e3e4d0e63b3b8074ee66669ac903588315a6c8d88683f563418e330747feafe7ef20a1cd54ff7685da19'
+	};
+	obc.load(options, cb_ready);
 
 ### obc.network(arrayPeers)
 Set the information about the peers in the network.
@@ -203,7 +183,84 @@ Example:
 	}
 
 ##Chaincode Functions
-### 
+! Chaincode functions are dependent on actually be found inside your Go chaincode !  
+! My advise is to build your chaincode off of the Marble Application one.  This way you get basic CRUD functions!
+
+### chaincode.read(name [callback])
+Read variable named 'name' from chaincode state
+
+### chaincode.write(name, val, [callback])
+Write 'val' to variable named 'name'
+
+### chaincode.remove(name, [callback])
+Delete variable named 'name'
+
+### chaincode.deploy(func, args, [save_path], [callback])
+Deploy the chaincode. 
+Call GoLang function named 'func' and feed it 'args'.
+Optionally save chaincode summary json file to 'save_path'.
+
+### chaincode.readNames([callback])
+Return list of all known variables names in chaincode state
+
+### chaincode.CUSTOM_FUNCTION_NAME(arg, [callback])
+Will invoke your Go function and pass it 'arg'
+
+##Formats
+### Chaincode Object
+
+	chaincode = 
+		{
+			CUSTOM_FUNCTION_NAME1: function(args, cb){etc...};		//call chaincode function and pass it args
+			CUSTOM_FUNCTION_NAME2: function(args, cb){etc...};
+			CUSTOM_FUNCTION_NAME3: function(args, cb){etc...};
+			^^ etc...
+			read: function(name, cb, lvl),						//read variable
+			write: function(name, value, cb),					//write/create variable
+			remove: function(name, cb),							//delete variable
+			deploy: function(func, arg, path, cb),				//deploy loaded chaincode
+			readNames: function(cb, lvl),						//read all known variable names from state
+			details:{
+						deployed_name: '',
+						func: [],
+						git_dir: '',
+						git_url: '',
+						peers: [],
+						vars: [],
+						zip_url: '',
+			}
+		};
+		
+### errors
+
+	{
+		name: "input error",
+		code: 400,
+		details: {msg: "did not provide git_url"}
+	};
+
+### Chaincode Summary File
+
+	{
+		"details": {
+			"deployed_name": "5e34bf5b51c51fbc8e1af98da8ad840c69ac9c9a8885e3e4d0e63b3b8074ee66669ac903588315a6c8d88683f563418e330747feafe7ef20a1cd54ff7685da19",
+			"func": ["init", "Delete", "Write", "ReadNames", "init_marble", "set_user", "remember_me"],
+			"git_dir": "simplestuff-master",
+			"git_url": "https://github.com/dshuffma-ibm/simplestuff",
+			"peers": [
+				{
+					"discovery_host": "xxx.xxx.xxx.xxx",
+					"discovery_port": "xxxxx",
+					"api_host": "xxx.xxx.xxx.xxx",
+					"api_port": "xxxxx",
+					"id": "xxxxxx-xxxx-xxx-xxx-xxxxxxxxxxxx_vpx",
+					"api_url": "http://xxx.xxx.xxx.xxx:xxxxx"
+				}
+			]
+			"vars": [],
+			"zip_url": "https://codeload.github.com/dshuffma-ibm/simplestuff/zip/master"
+		}
+	}
 
 
 ## SDK To Do:
