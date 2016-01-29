@@ -32,16 +32,25 @@
 
 
 #Application Background
-Our fancy pants application is going to blow minds by creating and transferring marbles between two users.
-We are going to do this in Node.JS and a little bit of GoLang.  The backend of this application will be the GoLang code running in our Open Blockchain Peer network.  From here on out the GoLang code will be referred to as 'Chaincode' or 'cc'. The chaincode itself will create a marble by storing it to the chaincode state. The chaincode itself is able to store data as a string in a key/value pair setup.  Thus we will stringify JSON objects to store more complex structures.
+Our fancy pants application is going to blow minds by creating and transferring marbles between two users. 
+We are going to do this in Node.JS and a little bit of GoLang. 
+The backend of this application will be the GoLang code running in our Open Blockchain Peer network. 
+From here on out the GoLang code will be referred to as 'Chaincode' or 'cc'. 
+The chaincode itself will create a marble by storing it to the chaincode state. 
+The chaincode itself is able to store data as a string in a key/value pair setup. 
+Thus we will stringify JSON objects to store more complex structures. 
 
 Attributes of a marble:
-	1. name (unique string, marble name will be used as key)
-	1. color (w/e is stock css names)
-	1. size (large/small)
+
+	1. name (unique string, will be used as key)
+	1. color (string, css color names)
+	1. size (int, size in mm)
 	1. user (string)
 	
 We are going to create a Web UI that can set these values and pass them to the chaincode. 
+Interacting with the cc is done with a HTTP REST call to a peer on the network. 
+The obc.js SDK will abstract the details of the REST calls away.
+This allow us to use dot notation to call our GoLang functions (such as `chaincode.init_marble(args)`).
 
 #Application Communication Flow
 [flow diagram here]
@@ -59,7 +68,7 @@ The first interesting place to look is the Run() function.
 This is our entry point into chaincode. 
 IE the peer will call this function for any type of "invocation". 
 "Invoking" a function simply means we are attempting to run a cc function and that this event will be recorded to the blockchain ledger.
-A counter example to a invoke operation would be a query operation.  Query events do not get recorded to the ledger.
+A counter example to an invoke operation would be a query operation.  Query events do not get recorded to the ledger.
 
 Looking at the example code it should be clear that we can invoke our GoLang functions by detecting the desired function name and passing to that function the argument 'args'.
 	
@@ -86,11 +95,11 @@ Looking at the example code it should be clear that we can invoke our GoLang fun
 The SDK we have built will be able to find the names of the functions listed in Run(). 
 It will then give you a dot notation to use them in your Node.js application. ie:
 	
-	chaincode.read("abc")				//this will call the Query() function which will read the value of "abc" from the cc state
-	chaincode.rule_the_world("tomrrow")	//this would invoke the chaincode function "rule_the_world" (assuming it exists)
+	chaincode.read("abc")				//calls the Query() function which will read the value of "abc" from the cc state
+	chaincode.rule_the_world("tomrrow")	//invokes the chaincode function "rule_the_world" (assuming it exists)
 
 #Network
-So the cc is great and all but first things first are we need a network.
+So the cc is great and all but first we need a blockchain network.
 We have a Bluemix tile that can create you your own personal network at the push of a button.
 
 1. First login to Bluemix [Bluexmix - stage1](https://console.stage1.ng.bluemix.net)
@@ -105,12 +114,14 @@ We have a Bluemix tile that can create you your own personal network at the push
 
 
 The network is all setup.  Now we need to copy the peer data and pass it to our application.
+
 1. Click the "myblockchain" tile in you Bluemix Dashboard
 1. Click the "Service Credentials" link on the left
 1. Copy the value of the peer field to app.js at line 216ish. We only need the "peer" array data.
 
 #Setup Node.js
 Now we are ready to work on the application!
+
 1. First up we need to install our dependencies. Open a command prompt/terminal and browse to the root of this project.
 1. In the command prompt type:
 	
@@ -119,10 +130,12 @@ Now we are ready to work on the application!
 1. If all goes well you should see this message in the console:
 	
 		--------------------------------------- Server Up - localhost:3000 ---------------------------------------
+		
 1. The app is already coded to auto deploy the chaincode.  You should see further message about it deploying. [IMPORTANT] You will need to wait about 90 seconds for the application to fully deploy our cc.
 1. Make sure you wait for the all clear message. 
 		
-		sdk has deployed code and waited
+		[obc-js] Deploying Chaincode - Complete
+		
 1. Open up your browser and browse to [http://localhost:3000/cci](http://localhost:3000/cci)
 1. This is a little tool to check on our chaincode. It will print important messages to the JavaScript console.  Open the console by right clicking anywhere in the page and selecting "Inspect" or "Inspect Element". Then open the console tab in the panel that appeared.
 1. We need to make sure the network is responsive before trying the marble application.
@@ -135,9 +148,10 @@ Now we are ready to work on the application!
 1. Fill out any fields you want, then click the "Create" button
 1. You should have auto flipped back to the "Admin" tab and see that a new marble has been created!
 	- If not click the "Admin" tab again
-	- If its still not populating go back to chaincode investigator and check if your network is responsive (go to the last section, step 6)
+	- If its stuck go back to chaincode investigator and check if your network is responsive (go to the last section, step 6)
 1. Next lets trade a marble.  Click one then click the corresponding arrow to transfer it to the other user. It should auto reload the marbles. 
 	- If not refresh the page
+	- If its stuck go back to chaincode investigator and check if your network is responsive (go to the last section, step 6)
 
 
 #Run Marbles w/Bluemix
@@ -148,6 +162,7 @@ Now we are ready to work on the application!
 	
 	> cf login  
 	> cf push marbles
+	
 1. The application will bind to the service "myblockchain" and grab the peer data from VCAP_SERVICES. Code for this is in app.js line 259ish
 
 

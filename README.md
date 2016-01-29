@@ -25,7 +25,7 @@
 
 ##Phase 2 Goals
 - [ ] New block events trigger a marble page update
-- [ ] Can trade/delete multiple marbles at once
+- [ ] Can transfer/delete multiple marbles at once
 - [ ] User's can advertise to trade their marbles (ie willing to trade large red for large blue/yellow/green)
 
 ##Phase 3 Goals
@@ -58,6 +58,8 @@
 - [x] add block stats to sdk
 - [x] write tutorial on phase 1
 - [ ] move to socket.io (unsure, postpone)
+- [ ] change test var "a" to "test" in cc
+- [ ] make advanced link in cci and hide ip/port fields, hide all things under tool like categories
 
 
 ###ChainCode Notes:
