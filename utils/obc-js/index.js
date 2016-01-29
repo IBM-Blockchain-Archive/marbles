@@ -162,7 +162,7 @@ obc.prototype.load = function(options, cb) {
 					for(var i in res){
 						var pos = res[i].indexOf('.');
 						var temp = res[i].substring(pos + 1, res[i].length - 1);
-						console.log('[obc-js] Found func: ', temp);
+						console.log('[obc-js] Found cc function: ', temp);
 						populate_go_chaincode(temp);
 					}
 					
@@ -471,7 +471,7 @@ function populate_go_chaincode(name){
 	}
 	else {
 		chaincode.details.func.push(name);
-		chaincode[name] = function(args, cb){				//create the functions in chaincode obj
+		chaincode[name] = function(args, cb){								//create the functions in chaincode obj
 			var options = {path: '/devops/invoke'};
 			var body = {
 					chaincodeSpec: {

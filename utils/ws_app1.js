@@ -68,7 +68,7 @@ module.exports.process_msg = function(ws, data){
 	function cb_chainstats(e, stats){
 		//console.log('stats', stats.height);
 		chain_stats = stats;
-		obc.block_stats(stats.height - 1, cb_blockstats);
+		if(stats && stats.height) obc.block_stats(stats.height - 1, cb_blockstats);
 	}
 	
 	function cb_blockstats(e, stats){
