@@ -50,7 +50,7 @@
 - [ ] mocha test for sdk
 - [ ] browsify sdk and tie cci into it (not sure if i want to)
 - [ ] change downloading zip to git clone
-- [ ] follow redirect on zip download...
+- [x] follow redirect on zip download
 - [ ] unzip may have project name as root... need to go down 1 lvl
 - [x] auto deploy, correctly!
 - [x] get delete to update marbleIndex

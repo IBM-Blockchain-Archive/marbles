@@ -77,22 +77,30 @@ obc.prototype.load = function(options, cb) {
 	fs.access(unzip_cc_dest, cb_file_exists);										//check if files exist yet
 	function cb_file_exists(e){
 		if(e != null){
-			download_it();															//nope
+			download_it(options.zip_url);											//nope
 		}
 		else{
+			console.log('[obc-js] found chaincode in local file system');
 			fs.readdir(unzip_cc_dest, cb_got_names);								//yeppers
 		}
 	}
 	
 
 	// Step 0.
-	function download_it(){
+	function download_it(download_url){
 		console.log('[obc-js] downloading zip');
 		var file = fs.createWriteStream(zip_dest);
-		https.get(options.zip_url, function(response) {
+		https.get(download_url, function(response) {
 			response.pipe(file);
 			file.on('finish', function() {
-				file.close(cb_downloaded);  										//close() is async
+				if(response.headers.status === '302 Found'){
+					console.log('redirect...', response.headers.location);
+					file.close();  
+					download_it(response.headers.location);
+				}
+				else{
+					file.close(cb_downloaded);  									//close() is async
+				}
 			});
 		}).on('error', function(err) {
 			console.log('[obc-js] download error');

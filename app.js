@@ -277,7 +277,7 @@ obc.network(peers);																		//setup network connection for rest endpoin
 // configure obc-js sdk
 // ==================================
 var options = 	{
-					zip_url: 'https://codeload.github.com/dshuffma-ibm/simplestuff/zip/master',							//make sure this does not have any redirects - dsh to do fix
+					zip_url: 'https://github.com/dshuffma-ibm/simplestuff/archive/master.zip',
 					git_dir: 'simplestuff-master',																		//subdirectroy name of chaincode after unzipped
 					git_url: 'https://github.com/dshuffma-ibm/simplestuff',												//git clone http url
 					

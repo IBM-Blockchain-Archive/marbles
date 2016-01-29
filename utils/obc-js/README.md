@@ -19,7 +19,7 @@ A JS library for easier interaction with Open Blockchain chaincode
 2. Pass the blockchain network JSON to obj.network() as an array of objects
 3. Pass chaincode parameters to obc.load()
 	###Option Fields: - obc.load(options, cb)
-	- zip_url = [string] http/https of a DIRECT link to download zip (to do, change from zip download to git clone). Note redirects will not work
+	- zip_url = [string] http/https of a link to download zip (to do, change from zip download to git clone)
 	- git_dir = [string] name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
 	- git_url = [string] git https clone URL. should contain the desired chaincode
 	- deployed_name = [string] [optional] this is the hashed name of a deployed chaincode.  if you want to run with chaincode that is already deployed set it now, else it will be set when you deploy with the sdk
@@ -77,7 +77,7 @@ A JS library for easier interaction with Open Blockchain chaincode
 	// configure obc-js sdk
 	// ==================================
 	var options = 	{
-		zip_url: 'https://codeload.github.com/dshuffma-ibm/simplestuff/zip/master',							//make sure this does not have any redirects - dsh to do fix
+		zip_url: 'https://codeload.github.com/dshuffma-ibm/simplestuff/zip/master',
 		git_dir: 'simplestuff-master',																		//subdirectroy name of chaincode after unzipped
 		git_url: 'https://github.com/dshuffma-ibm/simplestuff',												//git clone http url
 		
@@ -113,7 +113,7 @@ The callback will receive (e, obj) where e is the error format and obj is the ch
 The chaincode object will have dot notation to the functions in the chaincode.
 
 	var options = 	{
-		zip_url: 'https://codeload.github.com/dshuffma-ibm/simplestuff/zip/master',							//make sure this does not have any redirects - dsh to do fix
+		zip_url: 'https://codeload.github.com/dshuffma-ibm/simplestuff/zip/master',
 		git_dir: 'simplestuff-master',																		//subdirectroy name of chaincode after unzipped
 		git_url: 'https://github.com/dshuffma-ibm/simplestuff',												//git clone http url
 		
@@ -242,8 +242,8 @@ Will invoke your Go function CUSTOM_FUNCTION_NAME and pass it 'arg'
 		code: 400,
 		details: {msg: "did not provide git_url"}
 	};
-
-### Chaincode Summary File <a name="ccsf"></a>
+	
+### <a name="ccsf"></a>Chaincode Summary File
 This file is used internally. 
 It is created in obc.load() and updated with chaincode.deploy().
 A copy can be saved elsewhere with obc.save(path)
@@ -277,7 +277,7 @@ A copy can be saved elsewhere with obc.save(path)
 - [x] make sdk proper npm module
 - [ ] change downloading zip to git clone
 - [ ] mocha test for sdk
-- [ ] follow redirect on zip download...
+- [x] follow redirect on zip download...
 - [ ] unzip may have project name as root... need to go down 1 lvl
 - [ ] sdk, check inputs on load if they  dne, error
 - [ ] poll after chain deploy for cc up in peer
