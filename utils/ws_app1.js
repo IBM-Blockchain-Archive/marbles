@@ -56,7 +56,7 @@ module.exports.process_msg = function(ws, data){
 	function cb_got_marble(e, marble){
 		if(e != null) console.log('error:', e);
 		else {
-			ws.send(JSON.stringify({msg: 'marbles', e: e, marble: marble}));
+			sendMsg({msg: 'marbles', e: e, marble: marble});
 		}
 	}
 	
@@ -73,6 +73,17 @@ module.exports.process_msg = function(ws, data){
 	
 	function cb_blockstats(e, stats){
 		//console.log('replying', stats);
-		ws.send(JSON.stringify({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats}));
+		sendMsg({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
+	}
+	
+	
+	
+	function sendMsg(json){
+		try{
+			ws.send(JSON.stringify(json));
+		}
+		catch(e){
+			console.log('error ws', e);
+		}
 	}
 };

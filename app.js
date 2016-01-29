@@ -196,7 +196,7 @@ var options = 	{
 					git_url: 'https://github.com/dshuffma-ibm/simplestuff',												//git clone http url
 					
 					//hashed cc name from prev deploy [IF YOU COMMENT LINE BELOW OUT IT WILL DEPLOY]
-					//deployed_name: '5e34bf5b51c51fbc8e1af98da8ad840c69ac9c9a8885e3e4d0e63b3b8074ee66669ac903588315a6c8d88683f563418e330747feafe7ef20a1cd54ff7685da19'
+					deployed_name: '5e34bf5b51c51fbc8e1af98da8ad840c69ac9c9a8885e3e4d0e63b3b8074ee66669ac903588315a6c8d88683f563418e330747feafe7ef20a1cd54ff7685da19'
 				};
 obc.load(options, cb_ready);															//parse/load chaincode
 
