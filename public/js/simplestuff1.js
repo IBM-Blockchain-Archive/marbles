@@ -1,3 +1,5 @@
+/* global formatDate */
+/* global nDig */
 /* global randStr */
 /* global bag */
 /* global $ */
@@ -8,7 +10,7 @@ var ws = {};
 // =================================================================================
 $(document).on('ready', function() {
 	connect_to_server();
-
+	
 	// =================================================================================
 	// jQuery UI Events
 	// =================================================================================
@@ -134,6 +136,8 @@ function connect_to_server(){
 	
 	function onOpen(evt){
 		console.log("WS CONNECTED");
+		ws.send(JSON.stringify({type: "get"}));
+		ws.send(JSON.stringify({type: "chainstats"}));
 	}
 
 	function onClose(evt){
