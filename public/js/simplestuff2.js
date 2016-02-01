@@ -1,14 +1,17 @@
+/* global formatDate */
+/* global nDig */
 /* global randStr */
 /* global bag */
 /* global $ */
 var ws = {};
+var user = {username: 'bob'};
 
 // =================================================================================
 // On Load
 // =================================================================================
 $(document).on('ready', function() {
 	connect_to_server();
-
+	
 	// =================================================================================
 	// jQuery UI Events
 	// =================================================================================
@@ -18,7 +21,7 @@ $(document).on('ready', function() {
 						type: "create",
 						name: $("input[name='name']").val(),
 						color: $("select[name='color']").val(),
-						size: $("select[name='size']").val(),
+						size: Number($("select[name='size']").val()),
 						user: $("select[name='user']").val()
 					};
 		ws.send(JSON.stringify(obj));
@@ -41,10 +44,18 @@ $(document).on('ready', function() {
 	});
 
 	$("#createLink").click(function(){
-		$("#contentPanel").removeClass("adminview").addClass("createview");
+		$("#contentPanel").removeClass("adminview").removeClass("tradeview").addClass("createview");
 		$("#createView").fadeIn(300);
 		$("#adminView").hide();
+		$("#tradeView").hide();
 		$("input[name='name']").val('r' + randStr(6));
+	});
+	
+	$("#tradeLink").click(function(){
+		$("#contentPanel").removeClass("adminview").removeClass("createview").addClass("tradeview");
+		$("#tradeView").fadeIn(300);
+		$("#adminView").hide();
+		$("#createView").hide();
 	});
 	
 	$("#transferright").click(function(){
@@ -69,15 +80,42 @@ $(document).on('ready', function() {
 		}
 	});
 	
+	$("#logIn").click(function(){										//drop down for login
+		if($("#userSelect").is(":visible")){
+			$("#userSelect").fadeOut();
+		}
+		else{
+			$("#userSelect").fadeIn();
+		}
+	});
+	
+	$(".username").click(function(){									//log in as someone else
+		var name = $(this).html();
+		user.username = name.charAt(0).toUpperCase() + name.slice(1);
+		$("#loggedInName").html("Hi, " + user.username);
+		$("#userSelect").fadeOut(300);
+	});
+	
+	$("#setupTradeButton").click(function(){
+		$("#openTrades").fadeOut();
+		$("#createTrade").fadeIn();
+	});
+	
+	$("#viewTradeButton").click(function(){
+		$("#openTrades").fadeIn();
+		$("#createTrade").fadeOut();
+	});
+	
 	
 	// =================================================================================
 	// Helper Fun
 	// ================================================================================
 	//show admin panel page
 	function showAdminPanel(reset){
-		$("#contentPanel").removeClass("createview").addClass("adminview");
+		$("#contentPanel").removeClass("createview").removeClass("tradeview").addClass("adminview");
 		$("#adminView").fadeIn(300);
 		$("#createView").hide();
+		$("#tradeView").hide();
 		if(reset === true){
 			$("#bobswrap").html('');
 			$("#leroyswrap").html('');
@@ -134,6 +172,8 @@ function connect_to_server(){
 	
 	function onOpen(evt){
 		console.log("WS CONNECTED");
+		ws.send(JSON.stringify({type: "get"}));
+		ws.send(JSON.stringify({type: "chainstats"}));
 	}
 
 	function onClose(evt){

@@ -21,6 +21,10 @@
 	background: orange;
 }
 
+.tradeview{
+	padding:0 20px;
+	background: yellowgreen;
+}
 
 
 
@@ -149,4 +153,48 @@
 	text-align: center;
 	width:200px;
 	margin-top:20px;
+}
+
+
+
+// --------- app2 ---------
+#ownedMarbles{
+	width:100%;
+	text-align: center;
+	margin-top:90px;
+	min-height:200px;
+}
+.tradeTitle{
+	display:inline;
+	font-size:28px;
+}
+#tradeForm{
+	text-align: center;
+	width:100%;
+}
+#marbleBox{
+	border: 1px #fff solid;
+	width: 80%;
+	margin:5px auto;
+	padding: 15px 5px;
+	margin-top:15px;
+}
+#userSelect{
+	position: absolute;
+	top:45px;
+	z-index:2;
+	text-align: right;
+	margin-left:-40px;
+	padding-right:10px;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	padding-bottom:5px;
+}
+.username:hover{
+	text-decoration: underline;
+}
+
+#userWrap, #userSelect{
+	width:120px;
+	background:#fff;
 }

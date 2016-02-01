@@ -26,9 +26,10 @@
 - [ ] New block events trigger a marble page update
 - [ ] Can transfer/delete multiple marbles at once
 - [ ] User's can advertise to trade their marbles (ie willing to trade large red for large blue/yellow/green)
+- [x] User identity (fake login as bob or leroy)
 
 ## Demo Phase 3 Goals
-- [ ] User identity and autentication (crypto signing of transactions)
+- [ ] User autentication (crypto signing of transactions)
 - [ ] User registration
 - [ ] Transacation privacy
 
