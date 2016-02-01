@@ -10,10 +10,11 @@ module.exports.setup = function(sdk, cc){
 };
 
 module.exports.process_msg = function(ws, data){
-	if(data.v == 1){
+	if(data.v === 2){
 		if(data.type == 'create'){
 			console.log('its a create!');
 			chaincode.init_marble([data.name, data.color, data.size, data.user], cb_invoked);				//create a new marble
+			ledger_edit();
 		}
 		else if(data.type == 'get'){
 			console.log('get marbles msg');
@@ -22,10 +23,12 @@ module.exports.process_msg = function(ws, data){
 		else if(data.type == 'transfer'){
 			console.log('transfering msg');
 			chaincode.set_user([data.name, data.user]);
+			ledger_edit();
 		}
 		else if(data.type == 'remove'){
 			console.log('removing msg');
 			chaincode.remove(data.name);
+			ledger_edit();
 		}
 		else if(data.type == 'chainstats'){
 			console.log('chainstats msg');
@@ -33,10 +36,16 @@ module.exports.process_msg = function(ws, data){
 		}
 	}
 	
+	function ledger_edit(){																				//there was a ledger edit action, lets refresh all the things
+		setTimeout(function(){
+			obc.chain_stats(cb_chainstats);
+			get_marbles();
+		}, 250);																						//wait long enough for it to take effect
+	}
+	
 	function get_marbles(){
 		console.log('fetching all marble data');
 		chaincode.read('marbleIndex', cb_got_index);
-	
 	}
 	
 	function cb_got_index(e, index){

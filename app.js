@@ -119,6 +119,7 @@ else console.log('Running using Developer settings');
 // 														Test Area
 // ============================================================================================================================
 var app1 = require('./utils/ws_app1');
+var app2 = require('./utils/ws_app2');
 var ws = require('ws');
 var wss = {};
 var Obc1 = require('./utils/obc-js/index');
@@ -170,6 +171,7 @@ obc.load(options, cb_ready);															//parse/load chaincode
 
 function cb_ready(err, cc){																//response has chaincode functions
 	app1.setup(obc, cc);
+	app2.setup(obc, cc);
 	if(cc.details.deployed_name === ""){												//decide if i need to deploy
 		cc.deploy('init', ['99'], './', cb_deployed);
 	}
@@ -187,10 +189,26 @@ function cb_deployed(){
 	console.log('starting websocket');
 	wss = new ws.Server({server: server});												//start the websocket now
 	wss.on('connection', function connection(ws) {
+		//ws_cons.push(ws);
 		ws.on('message', function incoming(message) {
 			console.log('received ws msg:', message);
 			var data = JSON.parse(message);
 			app1.process_msg(ws, data);
+			app2.process_msg(ws, data);
+			//broadcast({test:"test"});
 		});
 	});
 }
+/*
+var ws_cons = [];
+function broadcast(data){
+	for(var i in ws_cons){
+		try{
+			console.log('sending', i);//, ws);
+			ws_cons[i].send(JSON.stringify(data));
+		}
+		catch(e){
+			console.log('error ws', e);
+		}
+	}
+}*/

@@ -21,7 +21,8 @@ $(document).on('ready', function() {
 						name: $("input[name='name']").val(),
 						color: $("select[name='color']").val(),
 						size: Number($("select[name='size']").val()),
-						user: $("select[name='user']").val()
+						user: $("select[name='user']").val(),
+						v: 1
 					};
 		ws.send(JSON.stringify(obj));
 		showAdminPanel();
@@ -63,7 +64,8 @@ $(document).on('ready', function() {
 			console.log('removing', id);
 			var obj = 	{
 							type: "remove",
-							name: id
+							name: id,
+							v: 1
 						};
 			ws.send(JSON.stringify(obj));
 			//$(".selectedball").removeClass("selectedball");
@@ -86,8 +88,8 @@ $(document).on('ready', function() {
 		}
 		console.log('getting new balls');
 		setTimeout(function(){
-			ws.send(JSON.stringify({type: "get"}));						//need to wait a bit - dsh to do, tap into new block event
-			ws.send(JSON.stringify({type: "chainstats"}));
+			ws.send(JSON.stringify({type: "get", v: 1}));						//need to wait a bit - dsh to do, tap into new block event
+			ws.send(JSON.stringify({type: "chainstats", v: 1}));
 		}, 200);
 	}
 	
@@ -99,7 +101,8 @@ $(document).on('ready', function() {
 			var obj = 	{
 							type: "transfer",
 							name: marbleName,
-							user: user
+							user: user,
+							v: 1
 						};
 			ws.send(JSON.stringify(obj));
 			showAdminPanel(true);
@@ -136,8 +139,8 @@ function connect_to_server(){
 	
 	function onOpen(evt){
 		console.log("WS CONNECTED");
-		ws.send(JSON.stringify({type: "get"}));
-		ws.send(JSON.stringify({type: "chainstats"}));
+		ws.send(JSON.stringify({type: "get", v:1}));
+		ws.send(JSON.stringify({type: "chainstats", v:1}));
 	}
 
 	function onClose(evt){
