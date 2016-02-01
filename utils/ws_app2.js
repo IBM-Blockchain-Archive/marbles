@@ -37,6 +37,7 @@ module.exports.process_msg = function(ws, data){
 	}
 	
 	function ledger_edit(){																				//there was a ledger edit action, lets refresh all the things
+		sendMsg({msg: 'reset'});																		//msg to clear the page
 		setTimeout(function(){
 			obc.chain_stats(cb_chainstats);
 			get_marbles();

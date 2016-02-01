@@ -78,7 +78,7 @@ $(document).on('ready', function() {
 						};
 			ws.send(JSON.stringify(obj));
 			//$(".selectedball").removeClass("selectedball");
-			showAdminPanel(true);
+			showAdminPanel();
 		}
 	});
 	
@@ -113,20 +113,11 @@ $(document).on('ready', function() {
 	// Helper Fun
 	// ================================================================================
 	//show admin panel page
-	function showAdminPanel(reset){
+	function showAdminPanel(){
 		$("#contentPanel").removeClass("createview").removeClass("tradeview").addClass("adminview");
 		$("#adminView").fadeIn(300);
 		$("#createView").hide();
 		$("#tradeView").hide();
-		if(reset === true){
-			$("#bobswrap").html('');
-			$("#leroyswrap").html('');
-		}
-		console.log('getting new balls');
-		setTimeout(function(){
-			ws.send(JSON.stringify({type: "get", v: 2}));						//need to wait a bit - dsh to do, tap into new block event
-			ws.send(JSON.stringify({type: "chainstats", v: 2}));
-		}, 200);
 	}
 	
 	//transfer selected ball to user
@@ -141,7 +132,7 @@ $(document).on('ready', function() {
 							v: 2
 						};
 			ws.send(JSON.stringify(obj));
-			showAdminPanel(true);
+			showAdminPanel();
 		}
 	}
 	
@@ -195,6 +186,10 @@ function connect_to_server(){
 				$("#blockcounter").html(nDig((data.chainstats.height - 1), 3));
 				var e = formatDate(data.blockstats.transactions[0].timestamp.seconds * 1000, '%M-%d-%Y %I:%m%p');
 				$("#blockdate").html(e + ' UTC');
+			}
+			else if(data.msg === 'reset'){							//clear marble knowledge, prepare of incoming marble states
+				$("#leroyswrap").html('');
+				$("#bobswrap").html('');
 			}
 		}
 		catch(e){
