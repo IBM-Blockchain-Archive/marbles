@@ -140,5 +140,34 @@ block content
 			#openTrades(hidden)
 				h1 Open Trades:
 				br
-				p#openTradesWrap =(
+				p#openTradesWrap
+					
+					.openTrades
+						span 2/1/ 11:17am - 
+						span.txt WTT
+						span.fa.fa-circle.fa-5x 
+						span.txt for either
+						span.large [
+						span.fa.fa-circle.fa-5x(style="color:red")
+						span.large ,
+						span.fa.fa-circle.fa-5x(style="color:green")
+						span.large ]
+						span.fa.fa-exchange.takeTradeButton
+						
+					.openTrades
+						span 2/1/ 11:16am - 
+						span.txt WTT
+						span.fa.fa-circle.fa-5x(style="color:blue")
+						span.txt for either
+						span.large [
+						span.fa.fa-circle.fa-5x(style="color:black")
+						span.large ,
+						span.fa.fa-circle.fa-5x(style="color:white")
+						span.large ,
+						span.fa.fa-circle.fa-5x(style="color:yellow")
+						span.large ]
+						span.fa.fa-exchange.takeTradeButton
+					
+				p#closedTradesWrap
+					.closedTrades
 				

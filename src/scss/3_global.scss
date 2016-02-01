@@ -198,3 +198,20 @@
 	width:120px;
 	background:#fff;
 }
+.openTrades{
+	margin-bottom:10px;
+}
+.openTrades span{
+	vertical-align: middle;
+	margin-right:8px;
+}
+.txt{font-size:20px;} 			//open trade text
+.large{font-size:80px;}
+.takeTradeButton{
+	position: relative;
+	font-size:30px;
+}
+.takeTradeButton:hover{
+	color:#555;
+	cursor: pointer;
+}
