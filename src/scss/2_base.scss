@@ -1,3 +1,4 @@
+@import 'color_theme';
 html{min-height:100%; position:relative;}
 body{margin:0 auto; 
 	padding:0;
@@ -25,10 +26,10 @@ tr:nth-child(even):hover{background:#ccc; border:0;}
 td{padding:5px 15px 5px 15px;}
 th{padding:4px; font-weight:normal; background:#555; color:#fff; text-align:center;}
 p{margin:5px; padding:0;}
-hr{height:1px; border:none; background: #555;}
+hr{height:1px; border:none; background: #fff;}
 pre{padding-left:15px;}
-input[type="submit"],input[type="button"], button{font-size:12px; cursor:pointer; padding:5px 10px; background:#2e6da4; color:#fff; border:2px #2e6da4 solid; transition:background-color 0.2s ease; border-radius:5px;}
-input[type="submit"]:hover,input[type="button"]:hover, button:hover{background:#fff; color:#2e6da4;}
+input[type="submit"],input[type="button"], button{font-size:18px; cursor:pointer; padding:5px 10px; background:$main_bg; color:#fff; border:2px #fff solid; transition:background-color 0.2s ease; border-radius:5px;}
+input[type="submit"]:hover,input[type="button"]:hover, button:hover{background:#fff; color:$main_bg;}
 input[type="text"], input[type="password"], select{padding:5px 10px; margin:5px; color:#2e6da4;}
 small{font-size:10pt;}
 img{border:0; max-width:100%;}

@@ -1,14 +1,17 @@
+/* global formatDate */
+/* global nDig */
 /* global randStr */
 /* global bag */
 /* global $ */
 var ws = {};
+var user = {username: 'bob'};
 
 // =================================================================================
 // On Load
 // =================================================================================
 $(document).on('ready', function() {
 	connect_to_server();
-
+	
 	// =================================================================================
 	// jQuery UI Events
 	// =================================================================================
@@ -19,7 +22,8 @@ $(document).on('ready', function() {
 						name: $("input[name='name']").val(),
 						color: $("select[name='color']").val(),
 						size: $("select[name='size']").val(),
-						user: $("select[name='user']").val()
+						user: $("select[name='user']").val(),
+						v: 2
 					};
 		ws.send(JSON.stringify(obj));
 		showAdminPanel();
@@ -41,10 +45,18 @@ $(document).on('ready', function() {
 	});
 
 	$("#createLink").click(function(){
-		$("#contentPanel").removeClass("adminview").addClass("createview");
+		$("#contentPanel").removeClass("adminview").removeClass("tradeview").addClass("createview");
 		$("#createView").fadeIn(300);
 		$("#adminView").hide();
+		$("#tradeView").hide();
 		$("input[name='name']").val('r' + randStr(6));
+	});
+	
+	$("#tradeLink").click(function(){
+		$("#contentPanel").removeClass("adminview").removeClass("createview").addClass("tradeview");
+		$("#tradeView").fadeIn(300);
+		$("#adminView").hide();
+		$("#createView").hide();
 	});
 	
 	$("#transferright").click(function(){
@@ -61,12 +73,39 @@ $(document).on('ready', function() {
 			console.log('removing', id);
 			var obj = 	{
 							type: "remove",
-							name: id
+							name: id,
+							v: 2
 						};
 			ws.send(JSON.stringify(obj));
 			//$(".selectedball").removeClass("selectedball");
-			showAdminPanel(true);
+			showAdminPanel();
 		}
+	});
+	
+	$("#logIn").click(function(){										//drop down for login
+		if($("#userSelect").is(":visible")){
+			$("#userSelect").fadeOut();
+		}
+		else{
+			$("#userSelect").fadeIn();
+		}
+	});
+	
+	$(".username").click(function(){									//log in as someone else
+		var name = $(this).html();
+		user.username = name.charAt(0).toUpperCase() + name.slice(1);
+		$("#loggedInName").html("Hi, " + user.username);
+		$("#userSelect").fadeOut(300);
+	});
+	
+	$("#setupTradeButton").click(function(){
+		$("#openTrades").fadeOut();
+		$("#createTrade").fadeIn();
+	});
+	
+	$("#viewTradeButton").click(function(){
+		$("#openTrades").fadeIn();
+		$("#createTrade").fadeOut();
 	});
 	
 	
@@ -74,19 +113,11 @@ $(document).on('ready', function() {
 	// Helper Fun
 	// ================================================================================
 	//show admin panel page
-	function showAdminPanel(reset){
-		$("#contentPanel").removeClass("createview").addClass("adminview");
+	function showAdminPanel(){
+		$("#contentPanel").removeClass("createview").removeClass("tradeview").addClass("adminview");
 		$("#adminView").fadeIn(300);
 		$("#createView").hide();
-		if(reset === true){
-			$("#bobswrap").html('');
-			$("#leroyswrap").html('');
-		}
-		console.log('getting new balls');
-		setTimeout(function(){
-			ws.send(JSON.stringify({type: "get"}));						//need to wait a bit - dsh to do, tap into new block event
-			ws.send(JSON.stringify({type: "chainstats"}));
-		}, 200);
+		$("#tradeView").hide();
 	}
 	
 	//transfer selected ball to user
@@ -97,10 +128,11 @@ $(document).on('ready', function() {
 			var obj = 	{
 							type: "transfer",
 							name: marbleName,
-							user: user
+							user: user,
+							v: 2
 						};
 			ws.send(JSON.stringify(obj));
-			showAdminPanel(true);
+			showAdminPanel();
 		}
 	}
 	
@@ -134,6 +166,8 @@ function connect_to_server(){
 	
 	function onOpen(evt){
 		console.log("WS CONNECTED");
+		ws.send(JSON.stringify({type: "get", v:2}));
+		ws.send(JSON.stringify({type: "chainstats", v:2}));
 	}
 
 	function onClose(evt){
@@ -152,6 +186,10 @@ function connect_to_server(){
 				$("#blockcounter").html(nDig((data.chainstats.height - 1), 3));
 				var e = formatDate(data.blockstats.transactions[0].timestamp.seconds * 1000, '%M-%d-%Y %I:%m%p');
 				$("#blockdate").html(e + ' UTC');
+			}
+			else if(data.msg === 'reset'){							//clear marble knowledge, prepare of incoming marble states
+				$("#leroyswrap").html('');
+				$("#bobswrap").html('');
 			}
 		}
 		catch(e){
@@ -177,11 +215,13 @@ function connect_to_server(){
 function build_ball(data){
 	var html = '';
 	var style = '';
+	var size = 'fa-5x';
 	
 	if(!$("#" + data.name).length){								//only populate if it doesn't exists
+		if(data.size == 16) size = 'fa-3x';
 		if(data.color) style = "color:" + data.color.toLowerCase();
 		
-		html += '<span id="' + data.name +'" class=" fa fa-circle fa-5x ball" title="' + data.name +'" style="' + style +'" user="' + data.user + '"></span>';
+		html += '<span id="' + data.name +'" class=" fa fa-circle ' + size + ' ball" title="' + data.name +'" style="' + style +'" user="' + data.user + '"></span>';
 		if((data.user && data.user.toLowerCase() == 'bob') || (data.owner && data.owner.toLowerCase() == 'bob')){
 			$("#bobswrap").append(html);
 		}

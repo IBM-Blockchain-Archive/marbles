@@ -3,6 +3,19 @@ extends ./template/layout.jade
 
 block custom_header
 	style.
+		button{
+			padding: 5px 15px;
+			font-size: 13px;
+			background: #41719C;
+			border: 1px #41719c solid;
+		}
+		button:hover{
+			background:#fff;
+			color:#41719C;
+		}
+		hr{
+			background:#41719c;
+		}
 		body{
 			margin: auto;
 		}
@@ -115,10 +128,10 @@ block custom_header
 				if(bag.cc.details.deployed_name && bag.cc.details.deployed_name.length > 32) $("input[name='cc_name']").val(bag.cc.details.deployed_name);
 
 				//localStorage.clear();
-				var obj = load_ls();
-				if(obj && obj.cc && obj.cc.names){
-					build_cc_options(obj.cc);
-				}
+				//var obj = load_ls();
+				//if(obj && obj.cc && obj.cc.names){
+					build_cc_options(bag.cc);
+				//}
 			}
 			
 			function load_ls(){
@@ -650,7 +663,7 @@ block content
 	p
 		a#changecclink
 			span.fa.fa-plus(style="font-size:12px;")
-			span Change Chaincode JSON Details
+			span Edit Chaincode Summary
 	#chaincodeDetailsWrap
 		textarea#jsonarea stuff
 		button(type="button")#loadjson Load
@@ -665,7 +678,7 @@ block content
 		button(type="button" style="float:none")#deploy
 			span Deploy
 			span.fa.fa-chevron-right
-		
+		hr
 		select(style="margin-left:0;")#chaincodes
 		input(type="text" name="cc_name" placeholder= "ChainCode Name" style="width:900px; margin-left:0;")
 		span.fa.fa-remove#delccname

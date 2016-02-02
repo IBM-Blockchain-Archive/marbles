@@ -139,24 +139,24 @@ p {
 hr {
   height: 1px;
   border: none;
-  background: #555; }
+  background: #fff; }
 
 pre {
   padding-left: 15px; }
 
 input[type="submit"], input[type="button"], button {
-  font-size: 12px;
+  font-size: 18px;
   cursor: pointer;
   padding: 5px 10px;
-  background: #2e6da4;
+  background: #68B7F0;
   color: #fff;
-  border: 2px #2e6da4 solid;
+  border: 2px #fff solid;
   transition: background-color 0.2s ease;
   border-radius: 5px; }
 
 input[type="submit"]:hover, input[type="button"]:hover, button:hover {
   background: #fff;
-  color: #2e6da4; }
+  color: #68B7F0; }
 
 input[type="text"], input[type="password"], select {
   padding: 5px 10px;
@@ -214,6 +214,10 @@ label {
 .createview {
   padding: 0 20px;
   background: orange; }
+
+.tradeview {
+  padding: 0 20px;
+  background: yellowgreen; }
 
 #navPanel {
   display: inline-block; }
@@ -323,6 +327,66 @@ label {
   text-align: center;
   width: 200px;
   margin-top: 20px; }
+
+#ownedMarbles {
+  width: 100%;
+  text-align: center;
+  margin-top: 90px;
+  min-height: 200px; }
+
+.tradeTitle {
+  display: inline;
+  font-size: 28px; }
+
+#tradeForm {
+  text-align: center;
+  width: 100%; }
+
+#marbleBox {
+  border: 1px #fff solid;
+  width: 80%;
+  margin: 5px auto;
+  padding: 15px 5px;
+  margin-top: 15px; }
+
+#userSelect {
+  position: absolute;
+  top: 45px;
+  z-index: 2;
+  text-align: right;
+  margin-left: -40px;
+  padding-right: 10px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  padding-bottom: 5px; }
+
+.username:hover {
+  text-decoration: underline; }
+
+#userWrap, #userSelect {
+  width: 120px;
+  background: #fff; }
+
+.openTrades {
+  margin-bottom: 10px; }
+
+.openTrades span {
+  vertical-align: middle;
+  margin-right: 8px; }
+
+.txt {
+  font-size: 20px; }
+
+.large {
+  font-size: 80px; }
+
+.takeTradeButton {
+  position: relative;
+  font-size: 30px; }
+
+.takeTradeButton:hover {
+  color: #555;
+  cursor: pointer; }
 
 
 /* Example

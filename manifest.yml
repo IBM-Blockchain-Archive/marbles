@@ -1,4 +1,10 @@
 ---
+
+#declared-services:
+#  ibm-blockchain-3-dev:
+#    label: myblockchain
+#    plan: ibm-blockchain-plan-3-dev
+
 applications:
 - disk_quota: 1024M
   host: marbles

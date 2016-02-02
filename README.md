@@ -26,9 +26,10 @@
 - [ ] New block events trigger a marble page update
 - [ ] Can transfer/delete multiple marbles at once
 - [ ] User's can advertise to trade their marbles (ie willing to trade large red for large blue/yellow/green)
+- [x] User identity (fake login as bob or leroy)
 
 ## Demo Phase 3 Goals
-- [ ] User identity and autentication (crypto signing of transactions)
+- [ ] User autentication (crypto signing of transactions)
 - [ ] User registration
 - [ ] Transacation privacy
 
@@ -59,6 +60,7 @@
 - [ ] move to socket.io (unsure, postpone)
 - [ ] change test var "a" to "test" in cc
 - [ ] make advanced link in cci and hide ip/port fields, hide all things under tool like categories
+- [ ] make CCI work for multiple apps, pick which cc to load (even custom functions)
 
 
 ### ChainCode Notes:
@@ -68,3 +70,6 @@
 
 ### Junk Notes:
 - npm install git+ssh://git@github.ibm.com:openblockchain/obc-js.git
+- phase two changes websocket msg structure!
+	- UI no longer tracks ledger updates and sets a local timer to request the new marble states
+	- backend will send a clear msg and then the new marble states whenever a request was made that would touch the ledger

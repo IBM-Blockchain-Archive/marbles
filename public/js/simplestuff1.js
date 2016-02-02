@@ -20,8 +20,9 @@ $(document).on('ready', function() {
 						type: "create",
 						name: $("input[name='name']").val(),
 						color: $("select[name='color']").val(),
-						size: Number($("select[name='size']").val()),
-						user: $("select[name='user']").val()
+						size: $("select[name='size']").val(),
+						user: $("select[name='user']").val(),
+						v: 1
 					};
 		ws.send(JSON.stringify(obj));
 		showAdminPanel();
@@ -63,7 +64,8 @@ $(document).on('ready', function() {
 			console.log('removing', id);
 			var obj = 	{
 							type: "remove",
-							name: id
+							name: id,
+							v: 1
 						};
 			ws.send(JSON.stringify(obj));
 			//$(".selectedball").removeClass("selectedball");
@@ -86,8 +88,8 @@ $(document).on('ready', function() {
 		}
 		console.log('getting new balls');
 		setTimeout(function(){
-			ws.send(JSON.stringify({type: "get"}));						//need to wait a bit - dsh to do, tap into new block event
-			ws.send(JSON.stringify({type: "chainstats"}));
+			ws.send(JSON.stringify({type: "get", v: 1}));						//need to wait a bit - dsh to do, tap into new block event
+			ws.send(JSON.stringify({type: "chainstats", v: 1}));
 		}, 200);
 	}
 	
@@ -99,7 +101,8 @@ $(document).on('ready', function() {
 			var obj = 	{
 							type: "transfer",
 							name: marbleName,
-							user: user
+							user: user,
+							v: 1
 						};
 			ws.send(JSON.stringify(obj));
 			showAdminPanel(true);
@@ -136,8 +139,8 @@ function connect_to_server(){
 	
 	function onOpen(evt){
 		console.log("WS CONNECTED");
-		ws.send(JSON.stringify({type: "get"}));
-		ws.send(JSON.stringify({type: "chainstats"}));
+		ws.send(JSON.stringify({type: "get", v:1}));
+		ws.send(JSON.stringify({type: "chainstats", v:1}));
 	}
 
 	function onClose(evt){
@@ -181,11 +184,13 @@ function connect_to_server(){
 function build_ball(data){
 	var html = '';
 	var style = '';
+	var size = 'fa-5x';
 	
 	if(!$("#" + data.name).length){								//only populate if it doesn't exists
+		if(data.size == 16) size = 'fa-3x';
 		if(data.color) style = "color:" + data.color.toLowerCase();
 		
-		html += '<span id="' + data.name +'" class=" fa fa-circle fa-5x ball" title="' + data.name +'" style="' + style +'" user="' + data.user + '"></span>';
+		html += '<span id="' + data.name +'" class=" fa fa-circle ' + size + ' ball" title="' + data.name +'" style="' + style +'" user="' + data.user + '"></span>';
 		if((data.user && data.user.toLowerCase() == 'bob') || (data.owner && data.owner.toLowerCase() == 'bob')){
 			$("#bobswrap").append(html);
 		}
