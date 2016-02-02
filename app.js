@@ -43,7 +43,7 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use('/cc/summary', serve_static(path.join(__dirname, 'cc_summaries')) );												//for chaincode investigator
 //app.use( serve_static(path.join(__dirname, 'public'), {maxAge: '1d', setHeaders: setCustomCC}) );							//1 day cache
-app.use( serve_static(path.join(__dirname, 'public')) );							//1 day cache
+app.use( serve_static(path.join(__dirname, 'public')) );
 app.use(session({secret:'Somethignsomething1234!test', resave:true, saveUninitialized:true}));
 function setCustomCC(res, path) {
 	if (serve_static.mime.lookup(path) === 'image/jpeg')  res.setHeader('Cache-Control', 'public, max-age=2592000');		//30 days cache
@@ -92,7 +92,9 @@ app.use(function(err, req, res, next) {		// = development error handler, print s
 	res.render('template/error', {bag:req.bag});
 });
 
-////////////// Launch //////////////
+// ============================================================================================================================
+// 														Launch Webserver
+// ============================================================================================================================
 var server = http.createServer(app).listen(port, function() {});
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 server.timeout = 240000;																							// Ta-da.
@@ -127,7 +129,7 @@ var Obc1 = require('./utils/obc-js/index');
 var obc = new Obc1();
 
 // ==================================
-// load peers manually or from VCAP
+// load peers manually or from VCAP, VCAP will overwrite hardcoded list!
 // ==================================
 var peers =    [
       {
@@ -172,7 +174,7 @@ var peers =    [
       }
     ];
 
-if(process.env.VCAP_SERVICES){
+if(process.env.VCAP_SERVICES){															//load from vcap, search for service, 1 of the 3 should be found...
 	console.log("We are running in Cloud Foundry!");
 	var servicesObject = JSON.parse(process.env.VCAP_SERVICES);
 	
@@ -201,8 +203,8 @@ obc.network(peers);																		//setup network connection for rest endpoin
 // ==================================
 var options = 	{
 					zip_url: 'https://github.com/dshuffma-ibm/simplestuff/archive/master.zip',
-					git_dir: 'simplestuff-master',																		//subdirectroy name of chaincode after unzipped
-					git_url: 'https://github.com/dshuffma-ibm/simplestuff',												//git clone http url
+					git_dir: 'simplestuff-master',														//subdirectroy name of chaincode after unzipped
+					git_url: 'https://github.com/dshuffma-ibm/simplestuff',								//git clone http url
 					
 					//hashed cc name from prev deployment
 					deployed_name: 'c1e753194f800976e5c1640b283748572ea97ba6d438f786355f77daa6cfc823cb7ab2c290fd2810d86681044bc936408fa9179070913195c66cd23c82bb79a4'
@@ -239,16 +241,15 @@ function cb_deployed(){
 			var data = JSON.parse(message);
 			app1.process_msg(ws, data);
 			app2.process_msg(ws, data);
-			//broadcast({test:"test"});
 		});
 		
 		ws.on('close', function(){
-			app2.close();
+			app2.close();																//close peridic poll that phase 2 does
 		});
 	});
 }
 
-/* ignore this code
+/* ignore this code - 2/1/2016
 var ws_cons = [];
 function broadcast(data){
 	for(var i in ws_cons){
