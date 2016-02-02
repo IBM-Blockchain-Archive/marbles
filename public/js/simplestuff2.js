@@ -21,7 +21,7 @@ $(document).on('ready', function() {
 						type: "create",
 						name: $("input[name='name']").val(),
 						color: $("select[name='color']").val(),
-						size: Number($("select[name='size']").val()),
+						size: $("select[name='size']").val(),
 						user: $("select[name='user']").val(),
 						v: 2
 					};
