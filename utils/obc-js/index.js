@@ -229,7 +229,9 @@ obc.prototype.save =  function(dir, cb){
 		if(cb) cb(eFmt('input error', 400, errors));
 	}
 	else{
-		var dest = path.join(dir, '/chaincode.json');
+		var fn = 'chaincode.json';
+		if(chaincode.details.deployed_name) fn = chaincode.details.deployed_name + '.json';
+		var dest = path.join(dir, fn);
 		fs.writeFile(dest, JSON.stringify({details: chaincode.details}), function(e){
 			if(e != null){
 				console.log(e);
