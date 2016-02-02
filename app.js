@@ -128,14 +128,46 @@ var obc = new Obc1();
 // ==================================
 // load peers manually or from VCAP
 // ==================================
-var peers =   [
+var peers =    [
       {
-        "discovery_host": "169.53.72.245",
-        "discovery_port": "33568",
-        "api_host": "169.53.72.245",
-        "api_port": "33569",
-        "id": "9a45fe8c-7701-459a-abdb-7c86076ff635_vp5",
-        "api_url": "http://169.53.72.245:33569"
+        "discovery_host": "169.44.38.124",
+        "discovery_port": "32780",
+        "api_host": "169.44.38.124",
+        "api_port": "32781",
+        "id": "b6ec263b-20c4-4a3e-ad89-f3ecff139b37_vp1",
+        "api_url": "http://169.44.38.124:32781"
+      },
+      {
+        "discovery_host": "169.44.38.114",
+        "discovery_port": "32770",
+        "api_host": "169.44.38.114",
+        "api_port": "32771",
+        "id": "b6ec263b-20c4-4a3e-ad89-f3ecff139b37_vp3",
+        "api_url": "http://169.44.38.114:32771"
+      },
+      {
+        "discovery_host": "169.44.38.102",
+        "discovery_port": "32776",
+        "api_host": "169.44.38.102",
+        "api_port": "32777",
+        "id": "b6ec263b-20c4-4a3e-ad89-f3ecff139b37_vp2",
+        "api_url": "http://169.44.38.102:32777"
+      },
+      {
+        "discovery_host": "169.44.38.120",
+        "discovery_port": "32776",
+        "api_host": "169.44.38.120",
+        "api_port": "32777",
+        "id": "b6ec263b-20c4-4a3e-ad89-f3ecff139b37_vp4",
+        "api_url": "http://169.44.38.120:32777"
+      },
+      {
+        "discovery_host": "169.44.38.120",
+        "discovery_port": "32778",
+        "api_host": "169.44.38.120",
+        "api_port": "32779",
+        "id": "b6ec263b-20c4-4a3e-ad89-f3ecff139b37_vp5",
+        "api_url": "http://169.44.38.120:32779"
       }
     ];
 
@@ -165,7 +197,7 @@ var options = 	{
 					git_url: 'https://github.com/dshuffma-ibm/simplestuff',												//git clone http url
 					
 					//hashed cc name from prev deploy [IF YOU COMMENT LINE BELOW OUT IT WILL DEPLOY]
-					deployed_name: '5e34bf5b51c51fbc8e1af98da8ad840c69ac9c9a8885e3e4d0e63b3b8074ee66669ac903588315a6c8d88683f563418e330747feafe7ef20a1cd54ff7685da19'
+					deployed_name: 'c1e753194f800976e5c1640b283748572ea97ba6d438f786355f77daa6cfc823cb7ab2c290fd2810d86681044bc936408fa9179070913195c66cd23c82bb79a4'
 				};
 obc.load(options, cb_ready);															//parse/load chaincode
 
@@ -197,6 +229,10 @@ function cb_deployed(){
 			app2.process_msg(ws, data);
 			//broadcast({test:"test"});
 		});
+		
+		ws.on('close', function(){
+			app2.close();
+		});
 	});
 }
 /*
@@ -212,3 +248,17 @@ function broadcast(data){
 		}
 	}
 }*/
+
+
+/*
+- simpilify chaincode.json, remove discovery and api_url
+- save chaincode.json as cc_<hash>.json
+- have GET API that retruns all cc_<hash>.json file names
+- have GET API that returns the cc_<hash>.json file
+- allow cci to take in <hash> as url parameter
+- deploy on CCI actually runs through flow
+	- load spin icon
+	- poll on new chaincode.json file name API
+	- finally fade spin and rebuild UI from file
+	- (depending on how this works maybe remove HTML5 local storage)
+*/
