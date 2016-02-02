@@ -172,7 +172,7 @@ var peers =    [
       }
     ];
 
-if (process.env.VCAP_SERVICES){
+if(process.env.VCAP_SERVICES){
 	console.log("We are running in Cloud Foundry!");
 	var servicesObject = JSON.parse(process.env.VCAP_SERVICES);
 	
@@ -181,10 +181,23 @@ if (process.env.VCAP_SERVICES){
 		console.log('loading peers from env: blockchain-staging');
 		peers = servicesObject['blockchain-staging'][0].credentials.peers;
 	}
-	//new
+	
+	//staging
 	else if(servicesObject && servicesObject['ibm-blockchain-3-staging'] && servicesObject['ibm-blockchain-3-staging'][0] && servicesObject['ibm-blockchain-3-staging'][0].credentials){
 		console.log('loading peers from env: ibm-blockchain-3-staging');
 		peers = servicesObject['ibm-blockchain-3-staging'][0].credentials.peers;
+	}
+	
+	//dev
+	else if(servicesObject && servicesObject['ibm-blockchain-3-dev'] && servicesObject['ibm-blockchain-3-dev'][0] && servicesObject['ibm-blockchain-3-dev'][0].credentials){
+		console.log('loading peers from env: ibm-blockchain-3-dev');
+		peers = servicesObject['ibm-blockchain-3-dev'][0].credentials.peers;
+	}
+	
+	//prod
+	else if(servicesObject && servicesObject['ibm-blockchain-3-prod'] && servicesObject['ibm-blockchain-3-prod'][0] && servicesObject['ibm-blockchain-3-prod'][0].credentials){
+		console.log('loading peers from env: ibm-blockchain-3-prod');
+		peers = servicesObject['ibm-blockchain-3-prod'][0].credentials.peers;
 	}
 }
 obc.network(peers);																		//setup network connection for rest endpoint
@@ -198,7 +211,7 @@ var options = 	{
 					git_url: 'https://github.com/dshuffma-ibm/simplestuff',												//git clone http url
 					
 					//hashed cc name from prev deploy [IF YOU COMMENT LINE BELOW OUT IT WILL DEPLOY]
-					deployed_name: 'c1e753194f800976e5c1640b283748572ea97ba6d438f786355f77daa6cfc823cb7ab2c290fd2810d86681044bc936408fa9179070913195c66cd23c82bb79a4'
+					//deployed_name: 'c1e753194f800976e5c1640b283748572ea97ba6d438f786355f77daa6cfc823cb7ab2c290fd2810d86681044bc936408fa9179070913195c66cd23c82bb79a4'
 				};
 obc.load(options, cb_ready);															//parse/load chaincode
 
@@ -260,6 +273,7 @@ CCI improvements
 - [x] have GET API that returns the cc_<hash>.json file
 - [x] allow cci to take in <hash> as url parameter
 - [ ] deploy on CCI actually runs through flow
+- [ ] 
 	- load spin icon
 	- poll on new chaincode.json file name API
 	- finally fade spin and rebuild UI from file
