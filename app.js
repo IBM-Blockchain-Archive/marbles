@@ -41,6 +41,7 @@ app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded()); 
 app.use(cookieParser());
+app.use('/cc/summary', serve_static(path.join(__dirname, 'cc_summaries')) );												//for chaincode investigator
 //app.use( serve_static(path.join(__dirname, 'public'), {maxAge: '1d', setHeaders: setCustomCC}) );							//1 day cache
 app.use( serve_static(path.join(__dirname, 'public')) );							//1 day cache
 app.use(session({secret:'Somethignsomething1234!test', resave:true, saveUninitialized:true}));
@@ -208,7 +209,6 @@ function cb_ready(err, cc){																//response has chaincode functions
 		cc.deploy('init', ['99'], './', cb_deployed);
 	}
 	else{
-		obc.save('./');
 		console.log('chaincode summary file indicates chaincode has been previously deployed');
 		cb_deployed();
 	}
@@ -219,6 +219,7 @@ function cb_ready(err, cc){																//response has chaincode functions
 // ============================================================================================================================
 function cb_deployed(){
 	console.log('starting websocket');
+	obc.save('./cc_summaries');															//save it here for chaincode investigator
 	wss = new ws.Server({server: server});												//start the websocket now
 	wss.on('connection', function connection(ws) {
 		//ws_cons.push(ws);
@@ -235,7 +236,8 @@ function cb_deployed(){
 		});
 	});
 }
-/*
+
+/* ignore this code
 var ws_cons = [];
 function broadcast(data){
 	for(var i in ws_cons){
@@ -251,12 +253,13 @@ function broadcast(data){
 
 
 /*
-- simpilify chaincode.json, remove discovery and api_url
-- save chaincode.json as cc_<hash>.json
-- have GET API that retruns all cc_<hash>.json file names
-- have GET API that returns the cc_<hash>.json file
-- allow cci to take in <hash> as url parameter
-- deploy on CCI actually runs through flow
+CCI improvements
+- [x] simpilify chaincode.json, remove discovery and api_url
+- [x] save chaincode.json as cc_<hash>.json
+- [x] have GET API that retruns all cc_<hash>.json file names
+- [x] have GET API that returns the cc_<hash>.json file
+- [x] allow cci to take in <hash> as url parameter
+- [ ] deploy on CCI actually runs through flow
 	- load spin icon
 	- poll on new chaincode.json file name API
 	- finally fade spin and rebuild UI from file

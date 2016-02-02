@@ -128,10 +128,10 @@ block custom_header
 				if(bag.cc.details.deployed_name && bag.cc.details.deployed_name.length > 32) $("input[name='cc_name']").val(bag.cc.details.deployed_name);
 
 				//localStorage.clear();
-				var obj = load_ls();
-				if(obj && obj.cc && obj.cc.names){
-					build_cc_options(obj.cc);
-				}
+				//var obj = load_ls();
+				//if(obj && obj.cc && obj.cc.names){
+					build_cc_options(bag.cc);
+				//}
 			}
 			
 			function load_ls(){
