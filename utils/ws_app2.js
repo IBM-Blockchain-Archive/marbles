@@ -3,6 +3,8 @@
 // ==================================
 var obc = {};
 var chaincode = {};
+var last_blockheight = 0;
+var pollInt = null;
 
 module.exports.setup = function(sdk, cc){
 	obc = sdk;
@@ -34,12 +36,21 @@ module.exports.process_msg = function(ws, data){
 			console.log('chainstats msg');
 			obc.chain_stats(cb_chainstats);
 		}
+		
+		/*
+		if(pollInt === null){																			//monitor blockchain for events
+			pollInt = setInterval(function(){
+				console.log('polling on block height');
+				obc.chain_stats(cb_chainstats);
+			}, 15000);
+		}
+		*/
 	}
 	
-	function ledger_edit(){																				//there was a ledger edit action, lets refresh all the things
+	function ledger_edit(skip_chainstats){																//there was a ledger edit action, lets refresh all the things
 		sendMsg({msg: 'reset'});																		//msg to clear the page
 		setTimeout(function(){
-			obc.chain_stats(cb_chainstats);
+			if(!skip_chainstats) obc.chain_stats(cb_chainstats);
 			get_marbles();
 		}, 250);																						//wait long enough for it to take effect
 	}
@@ -80,15 +91,18 @@ module.exports.process_msg = function(ws, data){
 	function cb_chainstats(e, stats){
 		//console.log('stats', stats.height);
 		chain_stats = stats;
+		if(last_blockheight != stats.height) {
+			console.log('! new block', stats.height);
+			last_blockheight = stats.height;
+			ledger_edit(true);
+		}
 		if(stats && stats.height) obc.block_stats(stats.height - 1, cb_blockstats);
 	}
-	
+
 	function cb_blockstats(e, stats){
 		//console.log('replying', stats);
 		sendMsg({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
 	}
-	
-	
 	
 	function sendMsg(json){
 		try{
@@ -98,4 +112,12 @@ module.exports.process_msg = function(ws, data){
 			console.log('error ws', e);
 		}
 	}
+};
+
+module.exports.close = function(){
+	/*
+	clearInterval(pollInt);
+	pollInt = null;
+	console.log('closed ws');
+	*/
 };
