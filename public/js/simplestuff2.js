@@ -215,11 +215,13 @@ function connect_to_server(){
 function build_ball(data){
 	var html = '';
 	var style = '';
+	var size = 'fa-5x';
 	
 	if(!$("#" + data.name).length){								//only populate if it doesn't exists
+		if(data.size == 16) size = 'fa-3x';
 		if(data.color) style = "color:" + data.color.toLowerCase();
 		
-		html += '<span id="' + data.name +'" class=" fa fa-circle fa-5x ball" title="' + data.name +'" style="' + style +'" user="' + data.user + '"></span>';
+		html += '<span id="' + data.name +'" class=" fa fa-circle ' + size + ' ball" title="' + data.name +'" style="' + style +'" user="' + data.user + '"></span>';
 		if((data.user && data.user.toLowerCase() == 'bob') || (data.owner && data.owner.toLowerCase() == 'bob')){
 			$("#bobswrap").append(html);
 		}
