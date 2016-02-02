@@ -192,13 +192,19 @@ obc.prototype.network = function(arrayPeers){
 	else{
 		for(var i in arrayPeers){
 			var pos = arrayPeers[i].id.indexOf('_') + 1;
-			arrayPeers[i].name = arrayPeers[i].id.substring(pos) + '-' + arrayPeers[i].api_host + ':' + arrayPeers[i].api_port;	//build friendly name
-			console.log('[obc-js] Peer: ', arrayPeers[i].name);
+			var temp = 	{
+							name: '',
+							api_host: arrayPeers[i].api_host,
+							api_port: arrayPeers[i].api_port,
+							id: arrayPeers[i].id,
+							ssl: true
+						};
+			temp.name = arrayPeers[i].id.substring(pos) + '-' + arrayPeers[i].api_host + ':' + arrayPeers[i].api_port;	//build friendly name
+			if(arrayPeers[i].api_url.indexOf('https') == -1) temp.ssl = false;
+			console.log('[obc-js] Peer: ', temp.name);
+			chaincode.details.peers.push(temp);
 		}
-		var ssl = true;
-		chaincode.details.peers = arrayPeers;
-		if(arrayPeers[0].api_url.indexOf('https') == -1) ssl = false;				//not https, no tls
-		
+
 		rest.init({																	//load default values for rest call to peer
 					host: chaincode.details.peers[0].api_host,
 					port: chaincode.details.peers[0].api_port,
@@ -206,7 +212,7 @@ obc.prototype.network = function(arrayPeers){
 								"Content-Type": "application/json",
 								"Accept": "application/json",
 							},
-					ssl: ssl,
+					ssl: chaincode.details.peers[0].ssl,
 					quiet: true
 		});
 	}
@@ -308,7 +314,6 @@ obc.prototype.chain_stats =  function(cb){
 //============================================================================================================================
 obc.prototype.block_stats =  function(id, cb){
 	var options = {path: '/chain/blocks/' + id};					//i think block IDs start at 0, height starts at 1, fyi
-	console.log('sending', options);
 	options.success = function(statusCode, data){
 		console.log("[obc-js] Block Stats - success");
 		if(cb) cb(null, data);
