@@ -60,6 +60,7 @@
 - [ ] move to socket.io (unsure, postpone)
 - [ ] change test var "a" to "test" in cc
 - [ ] make advanced link in cci and hide ip/port fields, hide all things under tool like categories
+- [ ] make CCI work for multiple apps, pick which cc to load (even custom functions)
 
 
 ### ChainCode Notes:
@@ -69,3 +70,6 @@
 
 ### Junk Notes:
 - npm install git+ssh://git@github.ibm.com:openblockchain/obc-js.git
+- phase two changes websocket msg structure!
+	- UI no longer tracks ledger updates and sets a local timer to request the new marble states
+	- backend will send a clear msg and then the new marble states whenever a request was made that would touch the ledger
