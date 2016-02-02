@@ -176,14 +176,8 @@ if(process.env.VCAP_SERVICES){
 	console.log("We are running in Cloud Foundry!");
 	var servicesObject = JSON.parse(process.env.VCAP_SERVICES);
 	
-	//old
-	if(servicesObject && servicesObject['blockchain-staging'] && servicesObject['blockchain-staging'][0] && servicesObject['blockchain-staging'][0].credentials){
-		console.log('loading peers from env: blockchain-staging');
-		peers = servicesObject['blockchain-staging'][0].credentials.peers;
-	}
-	
 	//staging
-	else if(servicesObject && servicesObject['ibm-blockchain-3-staging'] && servicesObject['ibm-blockchain-3-staging'][0] && servicesObject['ibm-blockchain-3-staging'][0].credentials){
+	if(servicesObject && servicesObject['ibm-blockchain-3-staging'] && servicesObject['ibm-blockchain-3-staging'][0] && servicesObject['ibm-blockchain-3-staging'][0].credentials){
 		console.log('loading peers from env: ibm-blockchain-3-staging');
 		peers = servicesObject['ibm-blockchain-3-staging'][0].credentials.peers;
 	}
@@ -210,9 +204,13 @@ var options = 	{
 					git_dir: 'simplestuff-master',																		//subdirectroy name of chaincode after unzipped
 					git_url: 'https://github.com/dshuffma-ibm/simplestuff',												//git clone http url
 					
-					//hashed cc name from prev deploy [IF YOU COMMENT LINE BELOW OUT IT WILL DEPLOY]
-					//deployed_name: 'c1e753194f800976e5c1640b283748572ea97ba6d438f786355f77daa6cfc823cb7ab2c290fd2810d86681044bc936408fa9179070913195c66cd23c82bb79a4'
+					//hashed cc name from prev deployment
+					deployed_name: 'c1e753194f800976e5c1640b283748572ea97ba6d438f786355f77daa6cfc823cb7ab2c290fd2810d86681044bc936408fa9179070913195c66cd23c82bb79a4'
 				};
+if(process.env.VCAP_SERVICES){
+	console.log('\n[!] looks like you are in bluemix, I am going to clear out the deploy_name so that it deploys new cc.\n[!] hope that is ok budddy\n');
+	options.deployed_name = "";
+}
 obc.load(options, cb_ready);															//parse/load chaincode
 
 function cb_ready(err, cc){																//response has chaincode functions
