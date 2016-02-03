@@ -34,6 +34,13 @@ block custom_header
 			color: inherit;
 			margin:0 5px;
 		}
+		#customcc, #newcc{
+			padding:10px;
+		}
+		#customcc:hover, #newcc:hover{
+			color:#ccc;
+			cursor:pointer;
+		}
 		
 		#delccname{
 			cursor:pointer;
@@ -41,13 +48,13 @@ block custom_header
 		}
 		
 		#chaincodeDetailsWrap{
-			display:none;
+			/*display:none;*/
 		}
 		#jsonarea{
-			width: 1050px;
-			max-width:1050px;
+			width: 100%;
+			max-width:100%;
 			padding:5px;
-			height:100px;
+			height:300px;
 		}
 		
 		
@@ -232,15 +239,6 @@ block custom_header
 				$("#chaincodeDetailsWrap").fadeOut();
 			});
 			
-			$("#changecclink").click(function(){
-				console.log('hi');
-				if($("#chaincodeDetailsWrap").is(":visible")){
-					$("#chaincodeDetailsWrap").fadeOut();
-				}
-				else{
-					$("#chaincodeDetailsWrap").fadeIn();
-				}
-			});
 			
 			$("#barebones").click(function(){
 				rest_barebones();
@@ -369,12 +367,11 @@ block custom_header
 				var data = 	{
 								type: "GOLANG",
 								chaincodeID: {
-									path: $("input[name='deployed_name']").val()
+									path: bag.cc.details.git_url
 								},
 								ctorMsg: {
 									function: "init",
-									//"args": JSON.parse("[" + $("input[name='init_args']").val() + "]")
-									args: ["72"]
+									"args": JSON.parse("[" + $("input[name='init_args']").val() + "]")
 								}
 							};
 				console.log(data);
@@ -551,6 +548,7 @@ block custom_header
 					success: function(json){
 						console.log('Success - get a cc summary');
 						bag.cc = json;
+						$("#jsonarea").html(JSON.stringify(json, null, 4));
 						on_start();
 					},
 					error: function(e){
@@ -575,6 +573,7 @@ block custom_header
 						}
 					}
 					$("#customgowrap").html(html);
+					$("#giturl").html(cc.git_url);
 				}
 			}
 			
@@ -585,7 +584,8 @@ block custom_header
 					if(bag.cc.details && names[i].indexOf(bag.cc.details.deployed_name) >= 0) css_sel = 'sel'
 					html += '<div class="ccSummary ' + css_sel + '" hash="' + names[i] +'">' + names[i].substring(0, 3) + '</div>';
 				}
-				html += '<span class="fa fa-plus" id="customcc"></span>';
+				html += '<span class="fa fa-plus" id="newcc"></span>';
+				html += '<span class="fa fa-gear" id="customcc"></span>';
 				$("#chaincodes").html(html);
 			}
 			
@@ -613,7 +613,28 @@ block content
 		span.legend Load:
 		span#chaincodes
 			.ccSummary ...
-		
+
+	#chaincodeDetailsWrap
+		span.legend Custom:
+		span (you can click a chaincode above to copy its details)
+		textarea#jsonarea stuff
+		center
+			button(type="button" style="float:none")#loadjson Load CC 
+			span &nbsp;&nbsp;
+			
+	
+	#newccWrap
+		span.legend New:
+		p
+			input(type="text" placeholder="Git Clone URL" name="git_url")
+		p
+			input(type="text" placeholder="Git Zip URL" name="git_zip")
+		p
+			input(type="text" placeholder="Unzipped Directory/Path" name="git_dir")
+		center
+			button(type="button" style="float:none")#loadjson SDK Parse CC 
+			span &nbsp;&nbsp;
+	
 	#loadWrap
 		span.legend Peer:
 		select(style="margin-left:0;")#peers
@@ -655,12 +676,16 @@ block content
 					span.fa.fa-fire
 			
 			.func 
-				span Init (
-				input(type="text" name="init_args" placeholder="array of strings")
-				span ); 
+				span Init ([
+				input(type="text" name="init_args" placeholder="array of strings" value='"72"' style="width:100px;")
+				span ]); 
+				span#giturl(style="font-size:11px; margin-left:10px;") none
 				button(type="button")#init
 					span Run
 					span.fa.fa-fire
+				button(type="button" style="margin-right:10px;")#deploy
+					span Deploy
+					span.fa.fa-chevron-right
 			br
 			
 			h2 Custom Chaincode:
@@ -678,25 +703,3 @@ block content
 				button(type="button")#barebones
 					span Run
 					span.fa.fa-fire
-	br
-	br
-	br
-	br
-	br
-	br
-	br
-	br
-	br
-	
-	p OLD STUFF
-	//p
-		a#changecclink
-			span.fa.fa-plus(style="font-size:12px;")
-			span Edit Chaincode Summary
-		#chaincodeDetailsWrap
-			textarea#jsonarea stuff
-			button(type="button")#loadjson Load
-		button(type="button" style="float:none")#deploy
-			span Deploy
-			span.fa.fa-chevron-right
-
