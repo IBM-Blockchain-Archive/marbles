@@ -25,7 +25,7 @@
 ***
 
 #Prereq:
-1. Bluemix ID https://console.ng.bluemix.net/ (needed to create your OBC network)
+1. Bluemix ID https://console.ng.bluemix.net/ (needed to create your OBC network) (stage1 or production)
 1. Node JS 0.12+ (needed for this application)
 1. GoLang Environment (only needed to build your own chaincode, not needed if you just run the marbles app as is)
 1. You are at least partially aware of the term 'chaincode', 'ledger', and 'peer' in a blockchain context. [Blockchain Docs](https://github.com/openblockchain/obc-docs), [Term Help](https://github.com/openblockchain/obc-docs/blob/master/glossary.md)
@@ -98,7 +98,7 @@ It will then give you a dot notation to use them in your Node.js application. ie
 	chaincode.read("abc")				//calls the Query() function which will read the value of "abc" from the cc state
 	chaincode.rule_the_world("tomrrow")	//invokes the chaincode function "rule_the_world" (assuming it exists)
 
-#Network
+#Create Network
 So the cc is great and all but first we need a blockchain network.
 We have a Bluemix tile that can create you your own personal network at the push of a button.
 
@@ -113,7 +113,7 @@ We have a Bluemix tile that can create you your own personal network at the push
 	- from here you can monitor if your peers crash, if the chaincode containers are running, and logs for all
 
 
-The network is all setup.  Now we need to copy the peer data and pass it to our application.
+The network is all setup.  Now we need to copy the peer data and pass it to our application (only need this step if we run the app localy, which I recommend. alternative is to run in bluemix).
 
 1. Click the "myblockchain" tile in you Bluemix Dashboard
 1. Click the "Service Credentials" link on the left
@@ -125,8 +125,9 @@ Now we are ready to work on the application!
 1. First up we need to install our dependencies. Open a command prompt/terminal and browse to the root of this project.
 1. In the command prompt type:
 	
-		> npm install
+		> npm install  
 		> gulp
+		
 1. If all goes well you should see this message in the console:
 	
 		--------------------------------------- Server Up - localhost:3000 ---------------------------------------
@@ -160,6 +161,7 @@ Now we are ready to work on the application!
 1. Edit manifest.yml 
 	- change the sevice name to match your network's name, or remove the line if you don't want the app to bind to the service
 	- change the app name and host name
+	- remove the 'domain:' line if it is in your manifest.yml
 1. Push the application by opening a command prompt and browsing to this directory
 	
 	> cf login  
