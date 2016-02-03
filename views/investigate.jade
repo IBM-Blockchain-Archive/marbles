@@ -619,11 +619,9 @@ block custom_header
 			
 			function rest_get_cc_names(){
 				//console.log("getting cc summary files");
-				var host = 'localhost';
-				var port = '3000';
 				$.ajax({
 					method: 'GET',
-					url: 'http://' + host + ':' + port + '/cc/summary',
+					url: 'http://' + bag.setup.SERVER.EXTURI + '/cc/summary',
 					contentType: 'application/json',
 					success: function(json){
 						console.log('Success - get cc summaries');
@@ -637,11 +635,9 @@ block custom_header
 			
 			function rest_get_cc(hash){
 				//console.log("getting a cc summary file");
-				var host = 'localhost';
-				var port = '3000';
 				$.ajax({
 					method: 'GET',
-					url: 'http://' + host + ':' + port + '/cc/summary/' + hash,
+					url: 'http://' + bag.setup.SERVER.EXTURI + '/cc/summary/' + hash,
 					contentType: 'application/json',
 					success: function(json){
 						console.log('Success - get a cc summary');
