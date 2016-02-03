@@ -8,6 +8,7 @@ block custom_header
 			font-size: 13px;
 			background: #41719C;
 			border: 1px #41719c solid;
+			float:right;
 		}
 		button:hover{
 			background:#fff;
@@ -27,64 +28,8 @@ block custom_header
 			text-align:left;
 			position:relative;
 		}
-		#leftWrap{
-			width:39%;
-			margin:0;
-			padding: 0;
-			position: relative;
-			left:0;
-			min-height:450px;
-			overflow-y:auto;
-			max-height:700px;
-		}
-		#rightWrap{
-			width:59%;
-			position:absolute;
-			right:0;
-			top:0;
-		}
-		
-		
-		.transEntry{
-			width:100%;
-		}
-		.transDate, .transBlock{
-			padding:4px;
-			display:inline-block;
-		}
-		.transDate{
-			border:1px #fff solid;
-		}
-		.transBlock{
-			width:325px;
-			background:#5B9BD5;
-			color:#fff;
-			border:1px #41719C solid;
-			border-top:1px #5B9BD5 solid;
-			text-align:center;
-			cursor: pointer;
-		}
-		.transBlock:hover{
-			border-color:#fff;
-		}
-		
-		
-		#stateWrap{
-			margin:15px;
-			min-height: 400px;
-			padding:10px;
-		}
-		
-		.selected{
-			font-weight:900;
-			background: #555;
-			border-top:1px #555 solid;
-		}
-		
-		.remove, .refresh{
-			margin:0px 5px;
-			cursor:pointer;
-		}
+
+
 		.fa{
 			color: inherit;
 			margin:0 5px;
@@ -104,17 +49,14 @@ block custom_header
 			padding:5px;
 			height:100px;
 		}
-		button{float:right;}
 		
 		
 		#mainPanel{
 			padding: 15px;
 		}
-		
 		#ccWrap{
 			width:700px;
 		}
-		
 		.ccSummary{
 			width:85px;
 			height: 85px;
@@ -198,7 +140,7 @@ block custom_header
 			// ===============================================================================================================
 			// 												jQuery Events
 			// ================================================================================================================
-			$(document).on("click", ".go", function(){
+			$(document).on("click", ".runButton", function(){
 				var host = bag.cc.details.peers[sel].api_host;
 				var port = bag.cc.details.peers[sel].api_port;
 				var func = $(this).attr('func').toLowerCase();
@@ -234,39 +176,6 @@ block custom_header
 				}
 				catch(e){
 					console.log('ERROR you done messed up - body was not vaild json');
-				}
-			});
-			
-			$(document).on("click", ".transBlock", function(){
-				var html = "";
-				html += $(this).prev().html();
-				html += " " + $(this).html();
-				$("#selectedLegend").html(html);
-				
-				$("#stateInnerWrap").html('<center>' + loading + '</center>');
-				
-				rest_readNames(cb_got_names);
-				
-				function cb_got_names(e, names){
-					buildVarObjcts(names);
-				}
-			});
-			
-			$(document).on("click", ".refresh", function(){
-				var name = $(this).parent().attr("varName");
-				var me = this;
-				rest_read(name, null, cb_got_value);
-				$(this).parent().append(loading);
-				
-				function cb_got_value(e, value){
-					console.log('got', e, value);
-					$(me).parent().find(".loadingdiv").fadeOut();
-					if(e != null){
-						$(me).prev("input").val('Error :(' );
-					}
-					else{
-						$(me).prev("input").val(value.OK);
-					}
 				}
 			});
 			
@@ -662,40 +571,11 @@ block custom_header
 					for(var i in cc.func){
 						if(!in_array(cc.func[i].toLowerCase(), skip)){
 							html += '<div class="func">' + cc.func[i] + '([ ' + field + ']); </div>'
-							html += '<button type="button" class="go" func="' + cc.func[i] + '"> Run <span class="fa fa-fire"></span> </button>&nbsp;&nbsp;';
+							html += '<button type="button" class="runButton" func="' + cc.func[i] + '"> Run <span class="fa fa-fire"></span> </button>&nbsp;&nbsp;';
 						}
 					}
 					$("#customgowrap").html(html);
 				}
-			}
-			
-			function buildVarObjcts(names){
-				var html = "";
-				for(var i in names){
-					html += '<div varname="' + names[i] + '">' +
-								'<span> ' + names[i] + ' = </span>' +
-								'<input type="text" placeholder="???" name="var_' + names[i] + '"/>' +
-								'<span class="fa fa-refresh refresh"></span>' +
-								//'<span class="fa fa-remove remove"></span>' +
-							'</div>';
-				}
-				$("#stateInnerWrap").html("").append(html);
-			}
-			
-			function buildLedger(data){
-				var html = "";
-				var current = 	'<div class="transEntry">';
-				current += 			'<div class="transDate" id="currentDate">' + formatDate(Date.now(), '%I:%m:%s %p') + '</div>';
-				current += 			'<div class="transBlock selected">Current</div>';
-				current += 		'</div>';
-				for(var i in data){
-					html += '<div class="transEntry">';
-					html += 	'<div class="transDate">' + formatDate(data[i].timestamp, '%I:%m:%s %p') + '</div>';
-					html += 	'<div class="transBlock">' + data[i].name + '</div>';
-					html += '</div>';
-				}
-				html += current;
-				$("#leftWrap").html(html);
 			}
 			
 			function build_cc(names){														//chaincode select options
@@ -816,36 +696,7 @@ block content
 		#chaincodeDetailsWrap
 			textarea#jsonarea stuff
 			button(type="button")#loadjson Load
-		hr
-		
-		
-		#mainWrap
-			//select(style="margin-left:0;")#peers
-			input(type="text" name="host" placeholder="Peer IP" style="margin-left:0; width:100px;")
-			input(type="text" name="port" placeholder= "Peer Port" style="width:50px;")
-			input(type="text" name="deployed_name" placeholder= "ChainCode Git URL" style="width:610px;")
-			button(type="button" style="float:none")#deploy
-				span Deploy
-				span.fa.fa-chevron-right
-			hr
-			select(style="margin-left:0;")#chaincodes
-			input(type="text" name="cc_name" placeholder= "ChainCode Name" style="width:900px; margin-left:0;")
-			span.fa.fa-remove#delccname
-			
-			#innerWrap.borderMe(style="display:none;")
-				#leftWrap
-					center.
-						<div class="loadingdiv">
-							<span></span>
-							<span></span>
-							<span></span>
-							<span></span>
-							<span></span>
-							<div></div>
-						</div>
-						
-				#rightWrap
-					#stateWrap.borderMe
-						center
-							h2#selectedLegend Select a Time
-						#stateInnerWrap
+		button(type="button" style="float:none")#deploy
+			span Deploy
+			span.fa.fa-chevron-right
+

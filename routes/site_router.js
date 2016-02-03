@@ -58,16 +58,13 @@ router.route("/cci/:filename?").get(function(req, res){
 	var cc = {};
 	if(req.params.filename){
 		try{
-			console.log('loading', req.params.filename);
-			//var temp = fs.readFileSync( path.join(__dirname,'../cc_summaries/' + req.params.filename + '.json'), 'utf8');
-			//cc = JSON.parse(temp);
+			console.log('loading cc summary:', req.params.filename);
 			cc = require('../cc_summaries/' + req.params.filename + '.json');
 		}
 		catch(e){
 			console.log('error loading chaincode summary file', e);
 		};
 	}
-	console.log('got', cc);
 	res.render('investigate', {title: 'Investigator', bag: {cc: cc, setup: setup}} );
 });
 

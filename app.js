@@ -133,44 +133,44 @@ var obc = new Obc1();
 // ==================================
 var peers =     [
       {
-        "discovery_host": "169.53.72.245",
-        "discovery_port": "33714",
-        "api_host": "169.53.72.245",
-        "api_port": "33715",
-        "id": "729224d6-9581-4db1-ad6e-d6423d4b5998_vp1",
-        "api_url": "http://169.53.72.245:33715"
+        "discovery_host": "169.44.38.124",
+        "discovery_port": "32826",
+        "api_host": "169.44.38.124",
+        "api_port": "32827",
+        "id": "41e46128-cbed-4cc9-a635-bc140226a309_vp1",
+        "api_url": "http://169.44.38.124:32827"
       },
       {
-        "discovery_host": "158.85.255.239",
-        "discovery_port": "33334",
-        "api_host": "158.85.255.239",
-        "api_port": "33335",
-        "id": "729224d6-9581-4db1-ad6e-d6423d4b5998_vp2",
-        "api_url": "http://158.85.255.239:33335"
+        "discovery_host": "169.44.38.120",
+        "discovery_port": "32804",
+        "api_host": "169.44.38.120",
+        "api_port": "32805",
+        "id": "41e46128-cbed-4cc9-a635-bc140226a309_vp3",
+        "api_url": "http://169.44.38.120:32805"
       },
       {
-        "discovery_host": "158.85.255.228",
-        "discovery_port": "33336",
-        "api_host": "158.85.255.228",
-        "api_port": "33337",
-        "id": "729224d6-9581-4db1-ad6e-d6423d4b5998_vp4",
-        "api_url": "http://158.85.255.228:33337"
+        "discovery_host": "169.44.38.114",
+        "discovery_port": "32810",
+        "api_host": "169.44.38.114",
+        "api_port": "32811",
+        "id": "41e46128-cbed-4cc9-a635-bc140226a309_vp4",
+        "api_url": "http://169.44.38.114:32811"
       },
       {
-        "discovery_host": "169.53.72.245",
-        "discovery_port": "33716",
-        "api_host": "169.53.72.245",
-        "api_port": "33717",
-        "id": "729224d6-9581-4db1-ad6e-d6423d4b5998_vp5",
-        "api_url": "http://169.53.72.245:33717"
+        "discovery_host": "169.44.38.102",
+        "discovery_port": "32820",
+        "api_host": "169.44.38.102",
+        "api_port": "32821",
+        "id": "41e46128-cbed-4cc9-a635-bc140226a309_vp5",
+        "api_url": "http://169.44.38.102:32821"
       },
       {
-        "discovery_host": "158.85.255.230",
-        "discovery_port": "33356",
-        "api_host": "158.85.255.230",
-        "api_port": "33357",
-        "id": "729224d6-9581-4db1-ad6e-d6423d4b5998_vp3",
-        "api_url": "http://158.85.255.230:33357"
+        "discovery_host": "169.44.38.102",
+        "discovery_port": "32818",
+        "api_host": "169.44.38.102",
+        "api_port": "32819",
+        "id": "41e46128-cbed-4cc9-a635-bc140226a309_vp2",
+        "api_url": "http://169.44.38.102:32819"
       }
     ];
 console.log('loading hardcoded peers');
