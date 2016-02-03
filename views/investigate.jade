@@ -18,6 +18,7 @@ block custom_header
 		}
 		body{
 			margin: auto;
+			width:800px;
 		}
 		#mainWrap{
 			margin: 0 auto;
@@ -79,9 +80,7 @@ block custom_header
 			background: #555;
 			border-top:1px #555 solid;
 		}
-		#funWrap{
-			padding:10px;
-		}
+		
 		.remove, .refresh{
 			margin:0px 5px;
 			cursor:pointer;
@@ -107,8 +106,46 @@ block custom_header
 		}
 		button{float:right;}
 		
+		
+		#mainPanel{
+			padding: 15px;
+		}
+		
+		#ccWrap{
+			width:700px;
+		}
+		
+		.ccSummary{
+			width:85px;
+			height: 85px;
+			font-size: 35px;
+			font-family: Courier New;
+			background:#fff;
+			border: 1px #aaa solid;
+			display:inline-block;
+			margin-right: 10px;
+			vertical-align:middle;
+			text-align: center;
+			line-height:85px;
+		}
+		.sel, .ccSummary:hover{
+			cursor:pointer;
+			border:1px #41719C solid;
+		}
+		
+		.legend{
+			display:inline-block;
+			font-size:20px;
+			width:100px;
+			text-align:left;
+		}
+		.func{
+			margin-left:50px;
+		}
+		
 	script(type='text/javascript').
 		var ledger = [];
+		var sel = 0;
 		$(document).ready(function(){
 			var loading = '<div class="loadingdiv"><span></span> <span></span> <span></span> <span></span> <span></span><div></div></div>';
 			var lsKey = 'cc_investigator';
@@ -118,20 +155,17 @@ block custom_header
 			// ================================================================================================================
 			on_start();
 			function on_start(){
-				if(!bag || !bag.cc || !bag.cc.details) return;							//there is no hope
-				buildGoFunc(bag.cc.details);											//populate custom go functions panel
-				build_peer_options(bag.cc.details.peers);								//populate drop down peer select box
-				$("#jsonarea").html(JSON.stringify(bag.cc, null, 4));
-				$("input[name='host']").val(bag.cc.details.peers[0].api_host);
-				$("input[name='port']").val(bag.cc.details.peers[0].api_port);
-				$("input[name='deployed_name']").val(bag.cc.details.git_url);
-				if(bag.cc.details.deployed_name && bag.cc.details.deployed_name.length > 32) $("input[name='cc_name']").val(bag.cc.details.deployed_name);
+
+				buildGoFunc(bag.cc.details);															//populate custom go functions panel
+				if(bag && bag.cc && bag.cc.details) build_peer_options(bag.cc.details.peers);			//populate drop down peer select box
+				//$("#jsonarea").html(JSON.stringify(bag.cc, null, 4));
 
 				//localStorage.clear();
 				//var obj = load_ls();
 				//if(obj && obj.cc && obj.cc.names){
-					build_cc_options(bag.cc);
+				//	build_cc(bag.cc);
 				//}
+				rest_get_cc_names();
 			}
 			
 			function load_ls(){
@@ -158,15 +192,15 @@ block custom_header
 				
 				if(name && !in_array(name, obj.cc.names)) obj.cc.names.push(name);			//only add if it doesn't exist yet
 				window.localStorage.setItem(lsKey, JSON.stringify(obj));					//save new one
-				build_cc_options(obj.cc);
+				//build_cc(obj.cc);
 			}
 			
 			// ===============================================================================================================
 			// 												jQuery Events
 			// ================================================================================================================
 			$(document).on("click", ".go", function(){
-				var host = $("input[name='host']").val();
-				var port = $("input[name='port']").val();
+				var host = bag.cc.details.peers[sel].api_host;
+				var port = bag.cc.details.peers[sel].api_port;
 				var func = $(this).attr('func').toLowerCase();
 				var args = $(this).prev().val();
 				
@@ -174,7 +208,7 @@ block custom_header
 								"chaincodeSpec": {
 									"type": "GOLANG",
 									"chaincodeID": {
-										name: $("input[name='cc_name']").val(),
+										name: bag.cc.details.deployed_name,
 									},
 									"ctorMsg": {
 										"function": func,
@@ -249,7 +283,6 @@ block custom_header
 			});
 			
 			$("#deploy").click(function(){
-				$("input[name='cc_name']").val('loading...');
 				rest_deploy(cb_wait);
 				
 				function cb_wait(e, json){
@@ -258,21 +291,13 @@ block custom_header
 			});
 			
 			$("#peers").change(function(){
-				var selected = $(this).val();
-				console.log('selected', selected);
-				$("input[name='host']").val(bag.cc.details.peers[selected].api_host);
-				$("input[name='port']").val(bag.cc.details.peers[selected].api_port);
-			});
-			
-			$("#chaincodes").change(function(){
-				var selected = $(this).val();
-				console.log('selected', selected);
-				$("input[name='cc_name']").val(selected);
+				sel = $(this).val();
+				console.log('Selected: ', bag.cc.details.peers[sel].api_host, bag.cc.details.peers[sel].api_port);
 			});
 			
 			$("#delccname").click(function(){
 				var obj = load_ls();
-				var name = $("input[name='cc_name']").val();
+				var name = bag.cc.details.deployed_name;
 				if(name && name.length > 1){
 					for(var i in obj.cc.names){
 						if(obj.cc.names[i] == name){
@@ -280,8 +305,7 @@ block custom_header
 							obj.cc.names.splice(i, 1);
 							window.localStorage.setItem(lsKey, JSON.stringify(obj));
 							
-							build_cc_options(obj.cc);
-							$("input[name='cc_name']").val("");
+							//build_cc(obj.cc);
 							break;
 						}
 					}
@@ -321,18 +345,24 @@ block custom_header
 				rest_init();
 			});
 			
+			$(document).on("click", ".ccSummary", function(){
+				var hash = $(this).attr("hash");
+				console.log('Selected: ', hash);
+				rest_get_cc(hash);
+			});
+			
 			// ===============================================================================================================
 			// 												HTTP Functions
 			// ================================================================================================================
 			function rest_read(name, lvl, cb){
 				console.log("reading var", name);
-				var host = $("input[name='host']").val();
-				var port = $("input[name='port']").val();
+				var host = bag.cc.details.peers[sel].api_host;
+				var port = bag.cc.details.peers[sel].api_port;
 				var data = {
 								"chaincodeSpec": {
 									"type": "GOLANG",
 									"chaincodeID": {
-										name: $("input[name='cc_name']").val(),
+										name: bag.cc.details.deployed_name,
 									},
 									"ctorMsg": {
 										"function": "query",
@@ -360,13 +390,13 @@ block custom_header
 			
 			function rest_write(name, value, cb){
 				console.log("writing var", name);
-				var host = $("input[name='host']").val();
-				var port = $("input[name='port']").val();
+				var host = bag.cc.details.peers[sel].api_host;
+				var port = bag.cc.details.peers[sel].api_port;
 				var data = {
 								"chaincodeSpec": {
 									"type": "GOLANG",
 									"chaincodeID": {
-										name: $("input[name='cc_name']").val(),
+										name: bag.cc.details.deployed_name,
 									},
 									"ctorMsg": {
 										"function": "write",
@@ -392,13 +422,13 @@ block custom_header
 			
 			function rest_readNames(cb){
 				console.log("reading all var names");
-				var host = $("input[name='host']").val();
-				var port = $("input[name='port']").val();
+				var host = bag.cc.details.peers[sel].api_host;
+				var port = bag.cc.details.peers[sel].api_port;
 				var data = {
 								"chaincodeSpec": {
 									"type": "GOLANG",
 									"chaincodeID": {
-										name: $("input[name='cc_name']").val(),
+										name: bag.cc.details.deployed_name,
 									},
 									"ctorMsg": {
 										"function": "readnames",
@@ -425,8 +455,8 @@ block custom_header
 			
 			function rest_deploy(cb){
 				console.log("deploying chaincode");
-				var host = $("input[name='host']").val();
-				var port = $("input[name='port']").val();
+				var host = bag.cc.details.peers[sel].api_host;
+				var port = bag.cc.details.peers[sel].api_port;
 				var data = 	{
 								type: "GOLANG",
 								chaincodeID: {
@@ -447,12 +477,12 @@ block custom_header
 					contentType: 'application/json',
 					success: function(json){
 						console.log('Success - deploy (you should still wait for go)', json);
-						store_cc_name(json.message);
-						if(cb) setTimeout(function(){ $("input[name='cc_name']").val(json.message); cb(null, json); }, 60000);
+
+						if(cb) setTimeout(function(){ cb(null, json); }, 60000);
 					},
 					error: function(e){
 						console.log('Error - deploy', e);
-						$("input[name='cc_name']").val('error :(');
+
 						if(cb) cb(e, null);
 					}
 				});
@@ -460,13 +490,13 @@ block custom_header
 			
 			function rest_read_all_peers(name, lvl, cb){
 				console.log("reading var", name);
-				var host = $("input[name='host']").val();
-				var port = $("input[name='port']").val();
+				var host = bag.cc.details.peers[sel].api_host;
+				var port = bag.cc.details.peers[sel].api_port;
 				var data = {
 								"chaincodeSpec": {
 									"type": "GOLANG",
 									"chaincodeID": {
-										name: $("input[name='cc_name']").val(),
+										name: bag.cc.details.deployed_name,
 									},
 									"ctorMsg": {
 										"function": "query",
@@ -497,13 +527,13 @@ block custom_header
 			
 			function rest_remove(){
 				console.log("removing");
-				var host = $("input[name='host']").val();
-				var port = $("input[name='port']").val();				
+				var host = bag.cc.details.peers[sel].api_host;
+				var port = bag.cc.details.peers[sel].api_port;				
 				var data = {
 								"chaincodeSpec": {
 									"type": "GOLANG",
 									"chaincodeID": {
-										name: $("input[name='cc_name']").val(),
+										name: bag.cc.details.deployed_name,
 									},
 									"ctorMsg": {
 										"function": 'delete',
@@ -528,13 +558,13 @@ block custom_header
 			
 			function rest_init(){
 				console.log("init");
-				var host = $("input[name='host']").val();
-				var port = $("input[name='port']").val();
+				var host = bag.cc.details.peers[sel].api_host;
+				var port = bag.cc.details.peers[sel].api_port;
 				var data = {
 								"chaincodeSpec": {
 									"type": "GOLANG",
 									"chaincodeID": {
-										name: $("input[name='cc_name']").val(),
+										name: bag.cc.details.deployed_name,
 									},
 									"ctorMsg": {
 										"function": "init",
@@ -558,13 +588,13 @@ block custom_header
 			}
 			
 			function rest_barebones(){
-				var host = $("input[name='host']").val();
-				var port = $("input[name='port']").val();				
+				var host = bag.cc.details.peers[sel].api_host;
+				var port = bag.cc.details.peers[sel].api_port;				
 				var data = {
 								"chaincodeSpec": {
 									"type": "GOLANG",
 									"chaincodeID": {
-										name: $("input[name='cc_name']").val(),
+										name: bag.cc.details.deployed_name,
 									},
 									"ctorMsg": {
 										"function": $("input[name='func_name']").val(),
@@ -587,6 +617,43 @@ block custom_header
 				});
 			}
 			
+			function rest_get_cc_names(){
+				//console.log("getting cc summary files");
+				var host = 'localhost';
+				var port = '3000';
+				$.ajax({
+					method: 'GET',
+					url: 'http://' + host + ':' + port + '/cc/summary',
+					contentType: 'application/json',
+					success: function(json){
+						console.log('Success - get cc summaries');
+						build_cc(json);
+					},
+					error: function(e){
+						console.log('Error - get cc summaries', e);
+					}
+				});
+			}
+			
+			function rest_get_cc(hash){
+				//console.log("getting a cc summary file");
+				var host = 'localhost';
+				var port = '3000';
+				$.ajax({
+					method: 'GET',
+					url: 'http://' + host + ':' + port + '/cc/summary/' + hash,
+					contentType: 'application/json',
+					success: function(json){
+						console.log('Success - get a cc summary');
+						bag.cc = json;
+						on_start();
+					},
+					error: function(e){
+						console.log('Error - get cc summary', e);
+					}
+				});
+			}
+			
 			
 			// ===============================================================================================================
 			// 												Build UI Fun
@@ -595,13 +662,15 @@ block custom_header
 				var skip = ['write', 'read', 'delete', 'init'];
 				var html = '';
 				var field = '<input class="arginput" type="text" placeholder="array of strings"/>';
-				for(var i in cc.func){
-					if(!in_array(cc.func[i].toLowerCase(), skip)){
-						html += '<div class="func">' + cc.func[i] + '([ ' + field + ']); </dic>'
-						html += '<button type="button" class="go" func="' + cc.func[i] + '"> Run <span class="fa fa-fire"></span> </button>&nbsp;&nbsp;';
+				if(cc && cc.func){
+					for(var i in cc.func){
+						if(!in_array(cc.func[i].toLowerCase(), skip)){
+							html += '<div class="func">' + cc.func[i] + '([ ' + field + ']); </div>'
+							html += '<button type="button" class="go" func="' + cc.func[i] + '"> Run <span class="fa fa-fire"></span> </button>&nbsp;&nbsp;';
+						}
 					}
+					$("#customgowrap").html(html);
 				}
-				$("#customgowrap").html(html);
 			}
 			
 			function buildVarObjcts(names){
@@ -633,77 +702,50 @@ block custom_header
 				$("#leftWrap").html(html);
 			}
 			
-			function build_cc_options(data){														//chaincode select options
-				var html = '<option value="nope" selected="selected"> Select A ChainCode </option>';
-				for(var i in data.names){
-					var len = 8;
-					var cc_name = data.names[i].substring(0, len) + '...' + data.names[i].substring(data.names[i].length-len);
-					html += '<option value="' + data.names[i] +'">' + cc_name + '</option>';
+			function build_cc(names){														//chaincode select options
+				var html = '';
+				for(var i in names){
+					var css_sel = '';
+					if(bag.cc.details && names[i].indexOf(bag.cc.details.deployed_name) >= 0) css_sel = 'sel'
+					html += '<div class="ccSummary ' + css_sel + '" hash="' + names[i] +'">' + names[i].substring(0, 3) + '</div>';
 				}
+				html += '<span class="fa fa-plus" id="customcc"></span>';
 				$("#chaincodes").html(html);
 			}
 			
 			function build_peer_options(peers){														//peer select options
-				peers.sort(function(a, b) {															//alpha sort me
-					var textA = a.id.toUpperCase();
-					var textB = b.id.toUpperCase();
-					return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-				});
-				var html = '<option value="home" selected="selected"> Select A Peer </option>';
-				for(var i in peers){
-					html += '<option value="' + i +'">' + peers[i].name + '</option>';
+				if(peers){
+					peers.sort(function(a, b) {															//alpha sort me
+						var textA = a.id.toUpperCase();
+						var textB = b.id.toUpperCase();
+						return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+					});
+					var html = '';
+					for(var i in peers){
+						html += '<option value="' + i +'">' + peers[i].name + '</option>';
+					}
+					$("#peers").html(html);
 				}
-				$("#peers").html(html);
 			}
 		});
 
 block content
 	h1 ChainCode Investigator
 	p Examine/test your chaincode
-	p
-		a#changecclink
-			span.fa.fa-plus(style="font-size:12px;")
-			span Edit Chaincode Summary
-	#chaincodeDetailsWrap
-		textarea#jsonarea stuff
-		button(type="button")#loadjson Load
-	hr
 	
-	
-	#mainWrap
-		select(style="margin-left:0;")#peers
-		input(type="text" name="host" placeholder="Peer IP" style="margin-left:0; width:100px;")
-		input(type="text" name="port" placeholder= "Peer Port" style="width:50px;")
-		input(type="text" name="deployed_name" placeholder= "ChainCode Git URL" style="width:610px;")
-		button(type="button" style="float:none")#deploy
-			span Deploy
-			span.fa.fa-chevron-right
-		hr
-		select(style="margin-left:0;")#chaincodes
-		input(type="text" name="cc_name" placeholder= "ChainCode Name" style="width:900px; margin-left:0;")
-		span.fa.fa-remove#delccname
+	#chaincodeWrap
+		span.legend Load:
+		span#chaincodes
+			.ccSummary ...
 		
-		#innerWrap.borderMe(style="display:none;")
-			#leftWrap
-				center.
-					<div class="loadingdiv">
-						<span></span>
-						<span></span>
-						<span></span>
-						<span></span>
-						<span></span>
-						<div></div>
-					</div>
-					
-			#rightWrap
-				#stateWrap.borderMe
-					center
-						h2#selectedLegend Select a Time
-					#stateInnerWrap
+	#loadWrap
+		span.legend Peer:
+		select(style="margin-left:0;")#peers
 	
 	br
+	br
 	
-	#funWrap.borderMe
+	#funWrap
 		
 		form#ccWrap
 			h2 CRUD:
@@ -760,4 +802,54 @@ block content
 				button(type="button")#barebones
 					span Run
 					span.fa.fa-fire
+	br
+	br
+	br
+	br
+	br
+	br
+	br
+	br
+	br
+	
+	p OLD STUFF
+	//p
+		a#changecclink
+			span.fa.fa-plus(style="font-size:12px;")
+			span Edit Chaincode Summary
+		#chaincodeDetailsWrap
+			textarea#jsonarea stuff
+			button(type="button")#loadjson Load
+		hr
 		
+		
+		#mainWrap
+			//select(style="margin-left:0;")#peers
+			input(type="text" name="host" placeholder="Peer IP" style="margin-left:0; width:100px;")
+			input(type="text" name="port" placeholder= "Peer Port" style="width:50px;")
+			input(type="text" name="deployed_name" placeholder= "ChainCode Git URL" style="width:610px;")
+			button(type="button" style="float:none")#deploy
+				span Deploy
+				span.fa.fa-chevron-right
+			hr
+			select(style="margin-left:0;")#chaincodes
+			input(type="text" name="cc_name" placeholder= "ChainCode Name" style="width:900px; margin-left:0;")
+			span.fa.fa-remove#delccname
+			
+			#innerWrap.borderMe(style="display:none;")
+				#leftWrap
+					center.
+						<div class="loadingdiv">
+							<span></span>
+							<span></span>
+							<span></span>
+							<span></span>
+							<span></span>
+							<div></div>
+						</div>
+						
+				#rightWrap
+					#stateWrap.borderMe
+						center
+							h2#selectedLegend Select a Time
+						#stateInnerWrap

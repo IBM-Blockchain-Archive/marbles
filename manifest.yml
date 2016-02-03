@@ -11,7 +11,6 @@ applications:
   name: marbles
   command: "node app.js"
   path: "."
-  domain: stage1.mybluemix.net
   instances: 1
   memory: 512M
   services:
