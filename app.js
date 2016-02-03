@@ -131,69 +131,60 @@ var obc = new Obc1();
 // ==================================
 // load peers manually or from VCAP, VCAP will overwrite hardcoded list!
 // ==================================
-var peers =    [
+var peers =     [
       {
-        "discovery_host": "169.44.38.124",
-        "discovery_port": "32780",
-        "api_host": "169.44.38.124",
-        "api_port": "32781",
-        "id": "b6ec263b-20c4-4a3e-ad89-f3ecff139b37_vp1",
-        "api_url": "http://169.44.38.124:32781"
+        "discovery_host": "169.53.72.245",
+        "discovery_port": "33714",
+        "api_host": "169.53.72.245",
+        "api_port": "33715",
+        "id": "729224d6-9581-4db1-ad6e-d6423d4b5998_vp1",
+        "api_url": "http://169.53.72.245:33715"
       },
       {
-        "discovery_host": "169.44.38.114",
-        "discovery_port": "32770",
-        "api_host": "169.44.38.114",
-        "api_port": "32771",
-        "id": "b6ec263b-20c4-4a3e-ad89-f3ecff139b37_vp3",
-        "api_url": "http://169.44.38.114:32771"
+        "discovery_host": "158.85.255.239",
+        "discovery_port": "33334",
+        "api_host": "158.85.255.239",
+        "api_port": "33335",
+        "id": "729224d6-9581-4db1-ad6e-d6423d4b5998_vp2",
+        "api_url": "http://158.85.255.239:33335"
       },
       {
-        "discovery_host": "169.44.38.102",
-        "discovery_port": "32776",
-        "api_host": "169.44.38.102",
-        "api_port": "32777",
-        "id": "b6ec263b-20c4-4a3e-ad89-f3ecff139b37_vp2",
-        "api_url": "http://169.44.38.102:32777"
+        "discovery_host": "158.85.255.228",
+        "discovery_port": "33336",
+        "api_host": "158.85.255.228",
+        "api_port": "33337",
+        "id": "729224d6-9581-4db1-ad6e-d6423d4b5998_vp4",
+        "api_url": "http://158.85.255.228:33337"
       },
       {
-        "discovery_host": "169.44.38.120",
-        "discovery_port": "32776",
-        "api_host": "169.44.38.120",
-        "api_port": "32777",
-        "id": "b6ec263b-20c4-4a3e-ad89-f3ecff139b37_vp4",
-        "api_url": "http://169.44.38.120:32777"
+        "discovery_host": "169.53.72.245",
+        "discovery_port": "33716",
+        "api_host": "169.53.72.245",
+        "api_port": "33717",
+        "id": "729224d6-9581-4db1-ad6e-d6423d4b5998_vp5",
+        "api_url": "http://169.53.72.245:33717"
       },
       {
-        "discovery_host": "169.44.38.120",
-        "discovery_port": "32778",
-        "api_host": "169.44.38.120",
-        "api_port": "32779",
-        "id": "b6ec263b-20c4-4a3e-ad89-f3ecff139b37_vp5",
-        "api_url": "http://169.44.38.120:32779"
+        "discovery_host": "158.85.255.230",
+        "discovery_port": "33356",
+        "api_host": "158.85.255.230",
+        "api_port": "33357",
+        "id": "729224d6-9581-4db1-ad6e-d6423d4b5998_vp3",
+        "api_url": "http://158.85.255.230:33357"
       }
     ];
+console.log('loading hardcoded peers');
 
 if(process.env.VCAP_SERVICES){															//load from vcap, search for service, 1 of the 3 should be found...
-	console.log("We are running in Cloud Foundry!");
 	var servicesObject = JSON.parse(process.env.VCAP_SERVICES);
-	
-	//staging
-	if(servicesObject && servicesObject['ibm-blockchain-3-staging'] && servicesObject['ibm-blockchain-3-staging'][0] && servicesObject['ibm-blockchain-3-staging'][0].credentials){
-		console.log('loading peers from env: ibm-blockchain-3-staging');
-		peers = servicesObject['ibm-blockchain-3-staging'][0].credentials.peers;
-	}
-	
-	//dev
-	else if(servicesObject && servicesObject['ibm-blockchain-3-dev'] && servicesObject['ibm-blockchain-3-dev'][0] && servicesObject['ibm-blockchain-3-dev'][0].credentials){
-		console.log('loading peers from env: ibm-blockchain-3-dev');
-		peers = servicesObject['ibm-blockchain-3-dev'][0].credentials.peers;
-	}
-	
-	//prod
-	else if(servicesObject && servicesObject['ibm-blockchain-3-prod'] && servicesObject['ibm-blockchain-3-prod'][0] && servicesObject['ibm-blockchain-3-prod'][0].credentials){
-		console.log('loading peers from env: ibm-blockchain-3-prod');
-		peers = servicesObject['ibm-blockchain-3-prod'][0].credentials.peers;
+	for(var i in servicesObject){
+		if(i.indexOf('ibm-blockchain') >= 0){											//looks close enough
+			if(servicesObject[i][0].credentials && servicesObject[i][0].credentials.peers){
+				console.log('overwritting peers, loading from a vcap service: ', i);
+				peers = servicesObject[i][0].credentials.peers;
+				break;
+			}
+		}
 	}
 }
 obc.network(peers);																		//setup network connection for rest endpoint
