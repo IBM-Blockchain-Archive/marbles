@@ -62,6 +62,11 @@
 - [ ] change test var "a" to "test" in cc
 - [ ] make advanced link in cci and hide ip/port fields, hide all things under tool like categories
 - [ ] make CCI work for multiple apps, pick which cc to load (even custom functions)
+- [x] block history UI
+- [ ] CCI video
+- [ ] CCI screens with filled out info
+- [ ] restyle marbles to match new design
+- [ ] multi marble on willing list
 
 
 ### ChainCode Notes:

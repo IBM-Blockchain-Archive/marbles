@@ -156,6 +156,15 @@ block custom_header
 				var func = $(this).attr('func').toLowerCase();
 				var args = $(this).prev().val();
 				
+				var temp = '';
+				try{
+					temp = JSON.parse("[" + args + "]");
+				}
+				catch(e){
+					console.log('ERROR you done messed up - body was not vaild json');
+					return false;
+				}
+				
 				var data = {
 								"chaincodeSpec": {
 									"type": "GOLANG",
@@ -164,29 +173,24 @@ block custom_header
 									},
 									"ctorMsg": {
 										"function": func,
-										"args": JSON.parse("[" + args + "]")
+										"args": temp
 									}
 								}
 							};
-				try{
-					console.log("invoking func", func);
-					
-					$.ajax({
-						method: 'POST',
-						url: 'http://' + host + ':' + port + '/devops/invoke',
-						data: JSON.stringify(data),
-						contentType: 'application/json',
-						success: function(json){
-							console.log('Success', json);
-						},
-						error: function(e){
-							console.log('Error', e);
-						}
-					});
-				}
-				catch(e){
-					console.log('ERROR you done messed up - body was not vaild json');
-				}
+				
+				console.log("invoking func", func, data);
+				$.ajax({
+					method: 'POST',
+					url: 'http://' + host + ':' + port + '/devops/invoke',
+					data: JSON.stringify(data),
+					contentType: 'application/json',
+					success: function(json){
+						console.log('Success', json);
+					},
+					error: function(e){
+						console.log('Error', e);
+					}
+				});
 			});
 			
 			$("#read").click(function(){
@@ -618,8 +622,9 @@ block custom_header
 				if(cc && cc.func){
 					for(var i in cc.func){
 						if(!in_array(cc.func[i].toLowerCase(), skip)){
-							html += '<div class="func">' + cc.func[i] + '([ ' + field + ']); </div>'
-							html += '<button type="button" class="runButton" func="' + cc.func[i] + '"> Run <span class="fa fa-fire"></span> </button>&nbsp;&nbsp;';
+							html += '<div class="func">' + cc.func[i] + '([ ' + field + ']);'
+								html += '<button type="button" class="runButton" func="' + cc.func[i] + '"> Run <span class="fa fa-fire"></span> </button>&nbsp;&nbsp;';
+							html += '</div>';
 						}
 					}
 					$("#customgowrap").html(html);

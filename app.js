@@ -194,11 +194,11 @@ obc.network(peers);																		//setup network connection for rest endpoin
 // ==================================
 var options = 	{
 					zip_url: 'https://github.com/dshuffma-ibm/simplestuff/archive/master.zip',
-					git_dir: 'simplestuff-master',														//subdirectroy name of chaincode after unzipped
-					git_url: 'https://github.com/dshuffma-ibm/simplestuff',								//git clone http url
+					git_dir: 'simplestuff-master/phase2',												//subdirectroy name of chaincode after unzipped
+					git_url: 'https://github.com/dshuffma-ibm/simplestuff/phase2',						//git clone http url
 					
 					//hashed cc name from prev deployment
-					deployed_name: 'c1e753194f800976e5c1640b283748572ea97ba6d438f786355f77daa6cfc823cb7ab2c290fd2810d86681044bc936408fa9179070913195c66cd23c82bb79a4'
+					deployed_name: '47f476a67cb1f53447255a2f9f8920395d7f27f41f623bb94e7837e5ac442374d08acfae497352c8eff6b1c78995a5d259a478ab5d3cf9f3ebacbbc279150135'
 				};
 if(process.env.VCAP_SERVICES){
 	console.log('\n[!] looks like you are in bluemix, I am going to clear out the deploy_name so that it deploys new cc.\n[!] hope that is ok budddy\n');
@@ -210,7 +210,7 @@ function cb_ready(err, cc){																//response has chaincode functions
 	app1.setup(obc, cc);
 	app2.setup(obc, cc);
 	if(cc.details.deployed_name === ""){												//decide if i need to deploy
-		cc.deploy('init', ['99'], './', cb_deployed);
+		cc.deploy('init', ['99'], './cc_summaries', cb_deployed);
 	}
 	else{
 		console.log('chaincode summary file indicates chaincode has been previously deployed');
