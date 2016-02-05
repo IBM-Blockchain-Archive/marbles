@@ -27,6 +27,7 @@
 - [ ] Can transfer/delete multiple marbles at once
 - [ ] User's can advertise to trade their marbles (ie willing to trade large red for large blue/yellow/green)
 - [x] User identity (fake login as bob or leroy)
+- [x] Ability to see past blocks details and some sort of animation on new blocks
 
 ## Demo Phase 3 Goals
 - [ ] User autentication (crypto signing of transactions)

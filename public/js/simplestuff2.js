@@ -183,9 +183,11 @@ function connect_to_server(){
 				build_ball(data.marble);
 			}
 			else if(data.msg === 'chainstats'){
-				$("#blockcounter").html(nDig((data.chainstats.height - 1), 3));
-				var e = formatDate(data.blockstats.transactions[0].timestamp.seconds * 1000, '%M-%d-%Y %I:%m%p');
-				$("#blockdate").html(e + ' UTC');
+				var temp = { 
+								id: nDig((data.chainstats.height - 1), 3), 
+								blockstats: data.blockstats
+							};
+				new_block(temp);									//send to blockchain.js
 			}
 			else if(data.msg === 'reset'){							//clear marble knowledge, prepare of incoming marble states
 				$("#leroyswrap").html('');

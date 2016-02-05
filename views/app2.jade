@@ -3,12 +3,13 @@ extends ./template/layout.jade
 
 block custom_header
 	script(src='/js/simplestuff2.js')
+	script(src='/js/blockchain.js')
 	script(type='text/javascript').
 		$(document).ready(function(){
 			
 		});
 	style.
-		#mainPanel{
+		#contentPanel{
 			border-bottom:10px solid orange;
 		}
 
@@ -34,8 +35,6 @@ block content
 
 	
 	#contentPanel.adminview
-		#blockcounter(title="last block number") ...
-		#blockdate(title="date of last block") loading...
 		
 		
 		// --------------- Admin View -------------- //
@@ -170,4 +169,10 @@ block content
 					
 				p#closedTradesWrap
 					.closedTrades
+				
+	#footer
+		#blockWrap
+			#details
+				p Loading...
+				hr
 				

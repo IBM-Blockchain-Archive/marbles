@@ -388,6 +388,50 @@ label {
   color: #555;
   cursor: pointer; }
 
+#blockWrap {
+  position: relative;
+  top: 3px; }
+
+.block {
+  line-height: 30px;
+  color: #555;
+  text-align: center;
+  position: absolute;
+  top: 0;
+  left: 100%;
+  background: #ccc;
+  height: 30px;
+  width: 30px;
+  border-radius: 4px;
+  opacity: 0;
+  border: #ccc solid 1px;
+  font-size: 12px;
+  transition: background-color 0.5s ease; }
+
+/*.block:last-of-type{
+	background:#555;
+	color:#fff;
+	border-color:#555;
+}*/
+.lastblock {
+  transition: background-color 1s ease;
+  background: #555;
+  color: #fff;
+  border-color: #555; }
+
+.block:hover {
+  border: #36A8FD solid 1px; }
+
+#details {
+  display: none;
+  position: relative;
+  top: 40px;
+  border: 1px #ccc solid;
+  width: 400px;
+  border-radius: 10px;
+  padding: 10px;
+  word-break: break-all; }
+
 
 /* Example
 <div class="loadingdiv">
