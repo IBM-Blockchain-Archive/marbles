@@ -91,6 +91,9 @@ block custom_header
 		.func{
 			margin-left:50px;
 		}
+		.newInput{
+			width:100%;
+		}
 		
 	script(type='text/javascript').
 		var ledger = [];
@@ -257,6 +260,29 @@ block custom_header
 				console.log('Selected: ', hash);
 				rest_get_cc(hash);
 			});
+			
+			$(document).on("click", "#newcc", function(){
+				if($("#newccWrap").is(":visible")){
+					$("#newccWrap").fadeOut();
+				}
+				else{
+					$("#newccWrap").fadeIn();
+				}
+			});
+			
+			$(document).on("click", "#customcc", function(){
+				if($("#chaincodeDetailsWrap").is(":visible")){
+					$("#chaincodeDetailsWrap").fadeOut();
+				}
+				else{
+					$("#chaincodeDetailsWrap").fadeIn();
+				}
+			});
+			
+			$("#parsecc").click(function(){
+				rest_parse_cc();
+			});
+			
 			
 			// ===============================================================================================================
 			// 												HTTP Functions
@@ -557,6 +583,30 @@ block custom_header
 				});
 			}
 			
+			function rest_parse_cc(){
+				//console.log("getting a cc summary file");
+				var data = 	{
+								zip_url: '',
+								git_url: '',
+								git_dir: ''
+							};
+				$.ajax({
+					method: 'POST',
+					url: 'http://' + bag.setup.SERVER.EXTURI + '/cc/summary/' + hash,
+					data: JSON.stringify(data),
+					contentType: 'application/json',
+					success: function(json){
+						console.log('Success - get a cc summary');
+						bag.cc = json;
+						$("#jsonarea").html(JSON.stringify(json, null, 4));
+						on_start();
+					},
+					error: function(e){
+						console.log('Error - get cc summary', e);
+					}
+				});
+			}
+			
 			
 			// ===============================================================================================================
 			// 												Build UI Fun
@@ -614,7 +664,7 @@ block content
 		span#chaincodes
 			.ccSummary ...
 
-	#chaincodeDetailsWrap
+	#chaincodeDetailsWrap(hidden)
 		span.legend Custom:
 		span (you can click a chaincode above to copy its details)
 		textarea#jsonarea stuff
@@ -623,26 +673,26 @@ block content
 			span &nbsp;&nbsp;
 			
 	
-	#newccWrap
+	#newccWrap(hidden)
 		span.legend New:
 		p
-			input(type="text" placeholder="Git Clone URL" name="git_url")
+			input(type="text" placeholder="Git Clone URL" name="git_url").newInput
 		p
-			input(type="text" placeholder="Git Zip URL" name="git_zip")
+			input(type="text" placeholder="Git Zip URL" name="zip_url").newInput
 		p
-			input(type="text" placeholder="Unzipped Directory/Path" name="git_dir")
+			input(type="text" placeholder="Unzipped Directory/Path" name="git_dir").newInput
 		center
-			button(type="button" style="float:none")#loadjson SDK Parse CC 
+			button(type="button" style="float:none")#parsecc SDK Parse CC 
 			span &nbsp;&nbsp;
 	
-	#loadWrap
+	#loadWrap.ready
 		span.legend Peer:
 		select(style="margin-left:0;")#peers
 	
 	br
 	br
 	
-	#funWrap
+	#funWrap.ready
 		
 		form#ccWrap
 			h2 CRUD:
