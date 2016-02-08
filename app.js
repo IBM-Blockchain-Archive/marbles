@@ -198,7 +198,7 @@ var options = 	{
 					git_url: 'https://github.com/dshuffma-ibm/simplestuff/phase2',						//git clone http url
 					
 					//hashed cc name from prev deployment
-					deployed_name: '47f476a67cb1f53447255a2f9f8920395d7f27f41f623bb94e7837e5ac442374d08acfae497352c8eff6b1c78995a5d259a478ab5d3cf9f3ebacbbc279150135'
+					deployed_name: '4a237d1e7be8bb2fe61a9f00b7200c1f9a16f77ec2dc4045a540fd84da2327a80975d66394add22961544ea07dae943a1941f175d547b554a0b5d5d2fa8d7c93'
 				};
 if(process.env.VCAP_SERVICES){
 	console.log('\n[!] looks like you are in bluemix, I am going to clear out the deploy_name so that it deploys new cc.\n[!] hope that is ok budddy\n');

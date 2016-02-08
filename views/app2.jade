@@ -96,76 +96,74 @@ block content
 		#tradeView(hidden)
 			.legend Trade
 			
-			center
-				p
-					button(type="button")#setupTradeButton Setup a trade
-					span &nbsp;&nbsp;&nbsp;
-					button(type="button")#viewTradeButton View open trades
+			p
+				button(type="button")#setupTradeButton Setup a trade
+				span &nbsp;&nbsp;&nbsp;
+				button(type="button")#viewTradeButton View open trades
 			hr
 			
 			
 			// ------ Create Trade sub Panel ------ //
-			#createTrade(hidden)
-				h1 New:
+			#createTrade
 				form(action="/create" method="POST")#tradeForm
-					br
-					span.tradeTitle I want a
-
-					select(name="color").tradeTitle
-						option(value="white"  style="color:black") 	White
-						option(value="black"  style="color:black") 	Black
-						option(value="red"    style="color:red") 	Red
-						option(value="green"  style="color:green") 	Green
-						option(value="blue"   style="color:blue") 	Blue
-						option(value="purple" style="color:purple") Purple
-						option(value="pink"   style="color:pink") 	Pink
-						option(value="orange" style="color:orange") Orange
-
-					select(name="size").tradeTitle
-						option(value="35") Large
-						option(value="16") Small
 					
-					span.tradeTitle marble for any 1 of:
-					br
-					#marbleBox (need at least one marble)
-					button(type="button")#submit Open this trade
-					
+					#wantTradeSide
+						p I WANT
+						br
+						select(name="want_quantity")
+							option 1
+							
+						select(name="want_color")
+							option(value="white"  style="color:black") 	White
+							option(value="black"  style="color:black") 	Black
+							option(value="red"    style="color:red") 	Red
+							option(value="green"  style="color:green") 	Green
+							option(value="blue"   style="color:blue") 	Blue
+							option(value="purple" style="color:purple") Purple
+							option(value="pink"   style="color:pink") 	Pink
+							option(value="orange" style="color:orange") Orange
 
-				#ownedMarbles
-					hr
-					h2(style="text-align:left;") Owned Marbles:
-					p (select marbles you are willing to trade away)
+						select(name="want_size")
+							option(value="35") Large
+							option(value="16") Small
+					
+					#willingTradeSide
+						p I AM WILLING TOT RADE AWAY
+						br
+						
+						.willingWrap
+							select(name="will_quantity")
+								option 1
+								
+							select(name="will_color")
+								
+							select(name="will_size")
+								option(value="0") -
+							
+						button(type="button")#addMarbleButton
+							span.fa.fa-plus &nbsp;&nbsp;&nbsp;
+							span ADD
+						
+					button(type="button")#tradeSubmit 
+						span.fa.fa-check &nbsp;&nbsp;&nbsp;
+						span OPEN A TRADE
+					
 				
-			#openTrades(hidden)
+			#openTrades
 				h1 Open Trades:
 				br
-				p#openTradesWrap
-					
-					.openTrades
-						span 2/1/ 11:17am - 
-						span.txt WTT
-						span.fa.fa-circle.fa-5x 
-						span.txt for either
-						span.large [
-						span.fa.fa-circle.fa-5x(style="color:red")
-						span.large ,
-						span.fa.fa-circle.fa-5x(style="color:green")
-						span.large ]
-						span.fa.fa-exchange.takeTradeButton
-						
-					.openTrades
-						span 2/1/ 11:16am - 
-						span.txt WTT
-						span.fa.fa-circle.fa-5x(style="color:blue")
-						span.txt for either
-						span.large [
-						span.fa.fa-circle.fa-5x(style="color:black")
-						span.large ,
-						span.fa.fa-circle.fa-5x(style="color:white")
-						span.large ,
-						span.fa.fa-circle.fa-5x(style="color:yellow")
-						span.large ]
-						span.fa.fa-exchange.takeTradeButton
+			
+				table#openTradesTable
+					thead
+						tr 
+							th TIME
+							//th USER
+							th COLOR
+							th SIZE
+							th AMOUNT
+							th FOR
+							th &nbsp;
+					tbody#openTradesBody
 					
 				p#closedTradesWrap
 					.closedTrades

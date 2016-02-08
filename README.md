@@ -67,6 +67,11 @@
 - [ ] CCI screens with filled out info
 - [ ] restyle marbles to match new design
 - [ ] multi marble on willing list
+- [ ] remove named marble on perform_trade message/golang func
+- [ ] check requirments of trade before exe, in CC
+-
+
+- I changed a if(e != null) to if(e == null) and it didn't create a new hash...?
 
 
 ### ChainCode Notes:

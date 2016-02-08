@@ -323,32 +323,6 @@ label {
 #ccWrap {
   width: 50%; }
 
-#submit {
-  text-align: center;
-  width: 200px;
-  margin-top: 20px; }
-
-#ownedMarbles {
-  width: 100%;
-  text-align: center;
-  margin-top: 90px;
-  min-height: 200px; }
-
-.tradeTitle {
-  display: inline;
-  font-size: 28px; }
-
-#tradeForm {
-  text-align: center;
-  width: 100%; }
-
-#marbleBox {
-  border: 1px #fff solid;
-  width: 80%;
-  margin: 5px auto;
-  padding: 15px 5px;
-  margin-top: 15px; }
-
 #userSelect {
   position: absolute;
   top: 45px;
@@ -367,26 +341,11 @@ label {
   width: 120px;
   background: #fff; }
 
-.openTrades {
-  margin-bottom: 10px; }
+.invalid {
+  opacity: 0.5; }
 
-.openTrades span {
-  vertical-align: middle;
-  margin-right: 8px; }
-
-.txt {
-  font-size: 20px; }
-
-.large {
-  font-size: 80px; }
-
-.takeTradeButton {
-  position: relative;
-  font-size: 30px; }
-
-.takeTradeButton:hover {
-  color: #555;
-  cursor: pointer; }
+button:disabled {
+  opacity: 0.5; }
 
 #blockWrap {
   position: relative;
@@ -500,6 +459,49 @@ label {
   100% {
     height: 10px;
     -moz-transform: translateZ(0); } }
+
+#wantTradeSide, #willingTradeSide {
+  position: relative;
+  display: inline-block;
+  width: 49%;
+  vertical-align: top;
+  text-align: left; }
+
+#tradeForm {
+  text-align: center;
+  width: 100%; }
+
+.openTrades {
+  margin-bottom: 10px; }
+
+.openTrades span {
+  vertical-align: middle;
+  margin-right: 8px; }
+
+#addMarbleButton {
+  position: absolute;
+  top: 40px;
+  right: 100px; }
+
+.txt {
+  font-size: 20px; }
+
+.large {
+  font-size: 80px; }
+
+.takeTradeButton {
+  position: relative;
+  font-size: 30px; }
+
+.takeTradeButton:hover {
+  color: #555;
+  cursor: pointer; }
+
+#tradeSubmit {
+  float: right;
+  text-align: center;
+  width: 200px;
+  margin-top: 20px; }
 
 @media (max-width: 600px) {
   /* Nav Links */

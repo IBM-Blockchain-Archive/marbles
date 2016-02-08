@@ -1,0 +1,49 @@
+@import 'color_theme';
+
+// --------- app2 ---------
+#wantTradeSide, #willingTradeSide{
+	position: relative;
+	display:inline-block;
+	width:49%;
+	vertical-align: top;
+	text-align:left;
+}
+
+#tradeForm{
+	text-align: center;
+	width:100%;
+}
+.openTrades{
+	margin-bottom:10px;
+}
+.openTrades span{
+	vertical-align: middle;
+	margin-right:8px;
+}
+
+#addMarbleButton{
+	position:absolute;
+	top:40px;
+	right: 100px;
+}
+
+
+
+.txt{font-size:20px;} 			//open trade text
+.large{font-size:80px;}
+.takeTradeButton{
+	position: relative;
+	font-size:30px;
+}
+.takeTradeButton:hover{
+	color:#555;
+	cursor: pointer;
+}
+
+
+#tradeSubmit{
+	float:right;
+	text-align: center;
+	width:200px;
+	margin-top:20px;
+}

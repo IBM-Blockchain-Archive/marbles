@@ -36,6 +36,24 @@ module.exports.process_msg = function(ws, data){
 			console.log('chainstats msg');
 			obc.chain_stats(cb_chainstats);
 		}
+		else if(data.type == 'open_trade'){
+			console.log('open_trade msg');
+			if(data.willing.length < 0){
+				console.log('error, "willing" is empty');
+			}
+			else{
+				var args = [data.user, data.want.color, data.want.size, data.willing[0].color, data.willing[0].size];
+				chaincode.open_trade(args);
+			}
+		}
+		else if(data.type == 'get_open_trades'){
+			console.log('get_open_trades msg');
+			chaincode.read('_opentrades', cb_got_trades);
+		}
+		else if(data.type == 'perform_trade'){
+			console.log('perform_trade msg');
+			chaincode.perform_trade([data.id, data.closer.user, data.closer.name, data.opener.user, data.opener.color, data.opener.size], cb_test);
+		}
 		
 		/*
 		if(pollInt === null){																			//monitor blockchain for events
@@ -45,6 +63,10 @@ module.exports.process_msg = function(ws, data){
 			}, 15000);
 		}
 		*/
+	}
+	
+	function cb_test(e, d){
+		console.log('?', e, d);
 	}
 	
 	function ledger_edit(skip_chainstats){																//there was a ledger edit action, lets refresh all the things
@@ -103,6 +125,18 @@ module.exports.process_msg = function(ws, data){
 		//console.log('replying', stats);
 		sendMsg({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
 	}
+	
+	
+	function cb_got_trades(e, trades){
+		if(e != null) console.log('error:', e);
+		else {
+			if(trades && trades.open_trades){
+				sendMsg({msg: 'open_trades', e: e, open_trades: trades.open_trades});
+			}
+		}
+	}
+	
+	
 	
 	function sendMsg(json){
 		try{
