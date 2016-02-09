@@ -1,0 +1,38 @@
+#createPanel(hidden).panel
+	h1 Create Marble
+	hr
+	
+	#innerWrap
+		span.createball
+		
+		form(action="/create" method="POST")#createform
+			legend 
+				input(type="text" name="name" placeholder="Name Your Marble")
+				span.hint RANDOM OR CUSTOM STRING
+			br
+			legend 
+				select(name="color")
+					option(value="white" disabled="disabled" selected="selected") Color
+					option(value="white" style="color:black") 	White
+					option(value="black" style="color:black") 	Black
+					option(value="red" style="color:red") 		Red
+					option(value="green" style="color:green") 	Green
+					option(value="blue" style="color:blue") 	Blue
+					option(value="purple" style="color:purple") Purple
+					option(value="pink" style="color:pink") 	Pink
+					option(value="orange" style="color:orange") Orange
+			br
+			legend 
+				select(name="size")
+					option(value="35" disabled="disabled" selected="selected") Size
+					option(value="35") Large
+					option(value="16") Small
+			br
+			legend 
+				select(name="user")
+					option(value="Bob" disabled="disabled" selected="selected") User
+					option Bob
+					option Leroy
+			button(type="button")#submit
+				span.fa.fa-check &nbsp;&nbsp;
+				span CREATE

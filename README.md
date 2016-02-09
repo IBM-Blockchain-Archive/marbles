@@ -67,8 +67,9 @@
 - [ ] CCI screens with filled out info
 - [ ] restyle marbles to match new design
 - [ ] multi marble on willing list
-- [ ] remove named marble on perform_trade message/golang func
+- [ ] remove named marble argument on perform_trade message/golang func, replace with color/size thing
 - [ ] check requirments of trade before exe, in CC
+- [ ] error checking on arguements before invoking... do not let e blank named marble in
 -
 
 - I changed a if(e != null) to if(e == null) and it didn't create a new hash...?

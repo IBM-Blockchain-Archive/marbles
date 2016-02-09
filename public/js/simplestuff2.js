@@ -41,23 +41,21 @@ $(document).on('ready', function() {
 		}
 	});
 	
-	$("#adminLink").click(function(){
+	$("#homeLink").click(function(){
 		showAdminPanel();
 	});
 
 	$("#createLink").click(function(){
-		$("#contentPanel").removeClass("adminview").removeClass("tradeview").addClass("createview");
-		$("#createView").fadeIn(300);
-		$("#adminView").hide();
+		$("#createPanel").fadeIn(300);
+		$("#homePanel").hide();
 		$("#tradeView").hide();
 		$("input[name='name']").val('r' + randStr(6));
 	});
 	
 	$("#tradeLink").click(function(){
-		$("#contentPanel").removeClass("adminview").removeClass("createview").addClass("tradeview");
 		$("#tradeView").fadeIn(300);
-		$("#adminView").hide();
-		$("#createView").hide();
+		$("#homePanel").hide();
+		$("#createPanel").hide();
 		build_my_color_options(user.username);
 		ws.send(JSON.stringify({type: "get_open_trades", v: 2}));
 	});
@@ -178,9 +176,8 @@ $(document).on('ready', function() {
 	// ================================================================================
 	//show admin panel page
 	function showAdminPanel(){
-		$("#contentPanel").removeClass("createview").removeClass("tradeview").addClass("adminview");
-		$("#adminView").fadeIn(300);
-		$("#createView").hide();
+		$("#homePanel").fadeIn(300);
+		$("#createPanel").hide();
 		$("#tradeView").hide();
 	}
 	

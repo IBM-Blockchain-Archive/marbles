@@ -1,0 +1,22 @@
+#homePanel.panel
+	div
+		h1 Marbles
+		hr
+		
+		#description.hint DRAG AND DROP A MARBLE TO TRANSFER IT
+		.marblesWrap
+			.legend(style="text-align:right;") Bob
+			#bobswrap
+		
+		.marblesWrap(style="float:right;")
+			.legend Leroy
+			#leroyswrap(style="text-align:left;")
+		
+		#transferWrap
+			span.fa.fa-chevron-left.fa-4x#transferleft(title="transfer marble left")
+			span.fa.fa-remove.fa-4x(title="remove marble")#removemarble
+			span.fa.fa-chevron-right.fa-4x#transferright(title="transfer marble right")
+			
+		#toolWrap
+			span.fa.fa-trash-o.fa-2x
+			p.hint DRAG HERE TO REMOVE

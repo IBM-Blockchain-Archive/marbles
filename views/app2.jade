@@ -12,6 +12,9 @@ block custom_header
 		#contentPanel{
 			border-bottom:10px solid orange;
 		}
+		
+block navpanel
+	include ./template/nav_phase2.jade
 
 block content
 	#headerPanel
@@ -34,12 +37,12 @@ block content
 			span(style="font-size:20px;").fa.fa-flag
 
 	
-	#contentPanel.adminview
+	#contentPanel
 		
 		
 		// --------------- Admin View -------------- //
-		#adminView
-			#description (Click a marble then the arrow to transfer it)
+		#homePanel
+			.hint (Click a marble then the arrow to transfer it)
 			.personWrap
 				.legend Bob
 				#bobswrap

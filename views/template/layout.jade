@@ -11,24 +11,47 @@ doctype html
 html
 	//Built by: Me
 	//ETI Labs
-	//Copyright 2015  - IBM
+	//Copyright 2016  - IBM
 	head
 		title #{title}
 		link(rel="icon", type="image/png", href="/imgs/favicon.ico")
 		link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css")
 		link(type="text/css" rel="stylesheet" href="/css/main.min.css")
-		link(href='https://fonts.googleapis.com/css?family=Roboto:400,500,700,300' rel='stylesheet' type='text/css')
 		script(src='/js/util/jquery-1.11.1.min.js')
 		script(src='/js/funk.js')
+		script(src='/js/blockchain.js')
 		script(type='text/javascript').
 			var bag = !{JSON.stringify(bag)};						//throw jade json over to JS
 			console.log('bag', bag);
 			$(document).ready(function(){
 				
+				//Tab Navigation, show the corresponding panel
+				$(".nav").click(function(){
+					var show = $(this).html().trim().toLowerCase();
+					console.log('changing view to: ', show);
+					$(".panel").hide();
+					$("#" + show + "Panel").fadeIn(300);
+					$(".selectedNav").removeClass("selectedNav");
+					$(this).addClass("selectedNav");
+				});
+				
+				$("#viewBCWrap").click(function(){
+					if($("#footerWrap").is(":visible")){
+						$("#footerWrap").slideUp();
+					}
+					else{
+						$("#footerWrap").slideDown();
+					}
+				});
 			});
 		block custom_header
 		
 		body
+			#navPanel
+				block navpanel
+			
 			#mainPanel
-				//Main Content Panel
 				block content
+				
+			#footerPanel
+				block footer

@@ -6,85 +6,100 @@
   margin-top:10px;
 }
 
+#navPanel{
+	height:60px;
+	line-height: 60px;
+	width:100%;
+	background: $acc_color1;
+	font-size: 15px;
+}
+
+#mainPanel{
+	color: $main_color;
+}
+
 #contentPanel {
 	min-height:500px;
-	color:#fff;
 	position: relative;
+	margin:30px 50px auto;
 }
 
-.adminview{
-	background: $main_bg;
-}
-
-.createview{
-	padding:0 20px;
-	background: orange;
-}
-
-.tradeview{
-	padding:0 20px;
-	background: yellowgreen;
+#footerPanel{
+	position: fixed;
+	bottom: 0;
+	width:100%;
 }
 
 
 
-
-#navPanel {
-	display:inline-block;
-}
 .nav {
-	background: #fff;
-	color:#fff;
-	padding: 15px 40px;
+	color:$acc_color3;
+	padding: 0px 30px;
 	display:inline-block;
-	}
+}
 .nav:hover{
 	text-decoration: underline;
 	cursor: pointer;
 }
-.selectednav{
-	background: $main_bg
+.selectedNav{
+	color: $main_color;
 }
-
-
+#linkWraps{
+	text-align:center;
+	width:100%;
+	position: absolute;
+	top:0;
+	left:0;
+	z-index: 2;
+}
+#whoAmI{
+	position: absolute;
+	right:20px;
+	z-index:3;
+	top:0;
+	color: $main_color;
+}
+#userIcon{
+	background:$acc_color3;
+	padding:10px;
+	border-radius:20px;
+	width:20px;
+	text-align: center;
+	color: $main_bg;
+	margin-right:10px;
+	font-size:20px;
+}
 
 #logo{
-	color: $acc_color;
-	float:right;
-}
-#appName{
-	font-size: 24px;
-	padding-bottom:4px; 
-	font-weight:900;
+	color: $acc_color3;
 	display:inline-block;
-}
-#owner{
-	font-size:12px;
-	font-weight: 500;
-	position: absolute;
-	margin-left:88px;
-	color:#222;
+	margin-left: 20px;
+	font-size: 18px;
+	font-weight: 600;
+	background: $acc_color1;
+	position: relative;
+	z-index:4;
 }
 
 
-.personWrap{
+// --------- Home ---------
+.marblesWrap{
 	width:42%;
 	display:inline-block;
-	text-align: left;
+	text-align: right;
 	color:#fff;
-	margin-left:2%;
 }
 .legend{
-	font-size:100px;
-	border-bottom: 1px #fff solid;
+	font-size:30px;
+	border-bottom: 1px $acc_color2 solid;
 	padding-bottom:5px;
+	text-align: left;
 }
 
 #transferright:hover, #transferleft:hover, #removemarble:hover{
 	cursor: pointer;
 	color:orange;
 }
-
 .ball{
 	display:inline-block;
 	margin:1px;
@@ -98,62 +113,87 @@
 .selectedball{
 	border:1px #fff solid;
 }
-
-.createball{
-	font-size:175px;
-	float:left;
-	margin-left:100px;
-}
-
-.borderMe{
-	border: 1px #41719C solid;
-}
-	
-#transferWrap{
-	position: absolute;
-	width:100%;
-	text-align: center;
-	top:30px;
-}
-
-#createform{
-	float:left;
-	margin-top:10px;
-	margin-left:20px;
-}
-
-#blockcounter{
-	position: absolute;
-	bottom:10px;
-	left:10px;
-}
-
-#blockdate{
-	position: absolute;
-	bottom:10px;
-	right:10px;
-}
-
 #description{
 	position: absolute;
 	bottom:75px;
 	width:100%;
 	text-align: center;
 }
+#toolWrap{
+	width:100%;
+	text-align: center;
+	position: fixed;
+	bottom:55px;
+}
 
+
+// --------- Create ---------
+.createball{
+	font-size:275px;
+	float:left;
+	color: transparent;
+	border: 2px dashed $main_color;
+	border-radius: 200px;
+	width: 270px;
+	height: 270px;
+}
+#transferWrap{
+	position: absolute;
+	width:100%;
+	text-align: center;
+	top:60px;
+}
+#createform{
+	float: left;
+	margin-left: 40px;
+}
 .createLegend{
 	width:45px;
 	display: inline-block;
 }
+#innerWrap{
+	width:800px;
+	margin:auto;
+	text-align: right;
+	margin-top:50px;
+}
 
 
-#ccWrap{width:50%;}
+// --------- common ---------
+#blockdate{
+	position: absolute;
+	top:30px;
+	right:10px;
+	font-size:13px;
+	color: $hi_color1;
+	font-weight:bold;
+}
 
-
+.hint{
+	font-size:12px;
+	font-weight:bold;
+	color:$acc_color2;
+}
+#viewBCWrap{
+	color:$main_color;
+	padding:22px;
+	background: $acc_color1;
+	font-size:12px;
+	cursor:pointer;
+	width:180px;
+	text-align: center;
+	margin-left:25px;
+}
+#footerWrap{
+	height: 235px;
+	background: $acc_color0;
+	color: $acc_color2;
+	width:100%;
+	border-top:25px $acc_color1 solid;
+}
 
 
 // --------- app2 ---------
-
 #userSelect{
 	position: absolute;
 	top:45px;

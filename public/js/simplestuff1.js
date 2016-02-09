@@ -39,14 +39,13 @@ $(document).on('ready', function() {
 		}
 	});
 	
-	$("#adminLink").click(function(){
+	$("#homeLink").click(function(){
 		showAdminPanel();
 	});
 
 	$("#createLink").click(function(){
-		$("#contentPanel").removeClass("adminview").addClass("createview");
-		$("#createView").fadeIn(300);
-		$("#adminView").hide();
+		$("#createPanel").fadeIn(300);
+		$("#homePanel").hide();
 		$("input[name='name']").val('r' + randStr(6));
 	});
 	
@@ -79,9 +78,8 @@ $(document).on('ready', function() {
 	// ================================================================================
 	//show admin panel page
 	function showAdminPanel(reset){
-		$("#contentPanel").removeClass("createview").addClass("adminview");
-		$("#adminView").fadeIn(300);
-		$("#createView").hide();
+		$("#homePanel").fadeIn(300);
+		$("#createPanel").hide();
 		if(reset === true){
 			$("#bobswrap").html('');
 			$("#leroyswrap").html('');
@@ -144,9 +142,13 @@ function connect_to_server(){
 				build_ball(data.marble);
 			}
 			else if(data.msg === 'chainstats'){
-				$("#blockcounter").html(nDig((data.chainstats.height - 1), 3));
-				var e = formatDate(data.blockstats.transactions[0].timestamp.seconds * 1000, '%M-%d-%Y %I:%m%p');
-				$("#blockdate").html(e + ' UTC');
+				var e = formatDate(data.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%p');
+				$("#blockdate").html('<span style="color:#fff">TIME</span>&nbsp;&nbsp;' + e + ' UTC');
+				var temp = { 
+								id: nDig((data.chainstats.height - 1), 3), 
+								blockstats: data.blockstats
+							};
+				new_block(temp);									//send to blockchain.js
 			}
 		}
 		catch(e){
