@@ -19,7 +19,6 @@
 	margin-right:10px;
 	font-size:20px;
 }
-
 #userSelect{
 	display:none;
 	position: absolute;
@@ -82,7 +81,6 @@ button:disabled, .inactiveButton{
 	vertical-align: top;
 	text-align:left;
 }
-
 #tradeForm{
 	text-align: center;
 	width:100%;
@@ -94,14 +92,12 @@ button:disabled, .inactiveButton{
 	vertical-align: middle;
 	margin-right:8px;
 }
-
 #addMarbleButton{
 	float:left;
 	min-width: initial;
 	text-align: center;
 	margin-left:5px;
 }
-
 #tradeSubmit{
 	float:right;
 	text-align: center;
@@ -112,16 +108,6 @@ button:disabled, .inactiveButton{
 // --------- cloes a trade ---------
 #openTradesTable{
 	margin-top:40px;
-}
-.txt{font-size:20px;} 			//open trade text
-.large{font-size:80px;}
-.takeTradeButton{
-	position: relative;
-	font-size:30px;
-}
-.takeTradeButton:hover{
-	color:#555;
-	cursor: pointer;
 }
 .confirmTrade{
 	min-width: 90px;

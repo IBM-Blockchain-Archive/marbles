@@ -5,7 +5,6 @@
 	position:relative;
 	margin: 15px 25px;
 }
-
 .block{
 	line-height: 30px;
 	color:$hi_color2;
@@ -22,24 +21,25 @@
 	transition: background-color 0.5s ease;
 	font-weight: bold;
 }
-
-/*.block:last-of-type{
+/*
+.block:last-of-type{
 	background:#555;
 	color:#fff;
 	border-color:#555;
-}*/
-
+}
+*/
 .lastblock{
 	transition: background-color 1s ease;
 	background: $hi_color2;
 	color: $acc_color1;
 	border-color: $hi_color2;
 }
-
 .block:hover{
 	border:#22697A solid 1px;
 	color: #22697A;
 }
+
+
 
 #details{
 	background: $acc_color1;
@@ -53,13 +53,11 @@
 	word-break: break-all;
 	font-size: 12px;
 }
-
 .blckLegend{
 	font-size: 16px;
 	font-weight: bold;
 }
-
 .line{
-	background: $hi_color1;
+	background: $main_color;
 	height: 1px !important;
 }

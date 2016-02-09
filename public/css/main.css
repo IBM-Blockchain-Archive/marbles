@@ -415,11 +415,13 @@ label {
   transition: background-color 0.5s ease;
   font-weight: bold; }
 
-/*.block:last-of-type{
+/*
+.block:last-of-type{
 	background:#555;
 	color:#fff;
 	border-color:#555;
-}*/
+}
+*/
 .lastblock {
   transition: background-color 1s ease;
   background: #2EB9D6;
@@ -447,7 +449,7 @@ label {
   font-weight: bold; }
 
 .line {
-  background: orange;
+  background: #fff;
   height: 1px !important; }
 
 
@@ -616,20 +618,6 @@ button:disabled, .inactiveButton {
 
 #openTradesTable {
   margin-top: 40px; }
-
-.txt {
-  font-size: 20px; }
-
-.large {
-  font-size: 80px; }
-
-.takeTradeButton {
-  position: relative;
-  font-size: 30px; }
-
-.takeTradeButton:hover {
-  color: #555;
-  cursor: pointer; }
 
 .confirmTrade {
   min-width: 90px;
