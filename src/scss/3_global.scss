@@ -52,24 +52,6 @@
 	left:0;
 	z-index: 2;
 }
-#whoAmI{
-	position: absolute;
-	right:20px;
-	z-index:3;
-	top:0;
-	color: $main_color;
-}
-#userIcon{
-	background:$acc_color3;
-	padding:10px;
-	border-radius:20px;
-	width:20px;
-	text-align: center;
-	color: $main_bg;
-	margin-right:10px;
-	font-size:20px;
-}
-
 #logo{
 	color: $acc_color3;
 	display:inline-block;
@@ -192,32 +174,35 @@
 	border-top:25px $acc_color1 solid;
 }
 
-
-// --------- app2 ---------
-#userSelect{
+#notificationPanel{
+	display:none;
+	width: 450px;
 	position: absolute;
-	top:45px;
-	z-index:2;
-	text-align: right;
-	margin-left:-40px;
-	padding-right:10px;
-	border-bottom-left-radius: 5px;
-	border-bottom-right-radius: 5px;
-	padding-bottom:5px;
+	right:0;
+	top: 90px;
+	color: $acc_color3;
+	background: $acc_color1;
+	padding: 30px 0;
+	border-left: 25px $hi_color3 solid;
+	border-top-left-radius: 10px;
+	border-bottom-left-radius: 10px;
+	text-align: center;
 }
-.username:hover{
-	text-decoration: underline;
-}
-
-#userWrap, #userSelect{
-	width:120px;
-	background:#fff;
-}
-
-.invalid{
-	opacity: 0.5;
+#noticeText{
+	margin-bottom:10px;
+	font-size:13px;
+	width:100%;
+	text-align: center;
 }
 
-button:disabled{
-	opacity: 0.5;
+#closeNotification{
+	background:initial;
+	color: $main_color;
+}
+
+#noticeIcon{
+	position:absolute; 
+	left:-19px; 
+	top: 45px; 
+	color:$acc_color1;
 }

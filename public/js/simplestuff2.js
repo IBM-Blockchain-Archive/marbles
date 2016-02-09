@@ -83,7 +83,7 @@ $(document).on('ready', function() {
 		}
 	});
 	
-	$("#logIn").click(function(){										//drop down for login
+	$("#whoAmI").click(function(){													//drop down for login
 		if($("#userSelect").is(":visible")){
 			$("#userSelect").fadeOut();
 		}
@@ -92,28 +92,32 @@ $(document).on('ready', function() {
 		}
 	});
 	
-	$(".username").click(function(){									//log in as someone else
-		var name = $(this).html();
-		user.username = name.charAt(0).toUpperCase() + name.slice(1);
-		$("#loggedInName").html("Hi, " + user.username);
+	$(".userLine").click(function(){												//log in as someone else
+		var name = $(this).attr("name");
+		user.username = name.toLowerCase().charAt(0).toUpperCase() + name.slice(1);	//title case username
+		$("#userField").html("Hi " + user.username);
 		$("#userSelect").fadeOut(300);
 		build_my_color_options(user.username);
 		build_trades(bag.trades);
 	});
 	
 	$("#setupTradeButton").click(function(){
+		$(".inactiveButton").removeClass("inactiveButton");
+		$("#viewTradeButton").addClass("inactiveButton");
 		$("#openTrades").fadeOut();
 		$("#createTrade").fadeIn();
 	});
 	
 	$("#viewTradeButton").click(function(){
+		$(".inactiveButton").removeClass("inactiveButton");
+		$("#setupTradeButton").addClass("inactiveButton");
 		$("#openTrades").fadeIn();
 		$("#createTrade").fadeOut();
 	});
 	
 	$("#addMarbleButton").click(function(){
 		var temp = $(".willingWrap:first").html();
-		$("#willingTradeSide").append('<div class="willingWrap">' + temp + '</div>');
+		$(".willingWrap:first").parent().append('<div class="willingWrap">' + temp + '</div>');
 	});
 	
 	$("#tradeSubmit").click(function(){
@@ -142,6 +146,7 @@ $(document).on('ready', function() {
 		
 		console.log('sending', msg);
 		ws.send(JSON.stringify(msg));
+		$("#notificationPanel").animate({width:'toggle'});
 	});
 	
 	$(document).on("click", ".confirmTrade", function(){
@@ -232,6 +237,8 @@ function connect_to_server(){
 				build_ball(data.marble);
 			}
 			else if(data.msg === 'chainstats'){
+				var e = formatDate(data.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
+				$("#blockdate").html('<span style="color:#fff">TIME</span>&nbsp;&nbsp;' + e + ' UTC');
 				var temp = { 
 								id: nDig((data.chainstats.height - 1), 3), 
 								blockstats: data.blockstats
@@ -311,13 +318,17 @@ function build_trades(trades){
 					buttonStatus = 'disabled="disabled"';
 				}
 				html += '<tr class="' + style +'">';
-				html +=		'<td>' + formatDate(Number(trades[i].timestamp) / 1000 / 1000, '%M-%d %I:%m%p') + '</td>';
+				html +=		'<td>' + formatDate(Number(trades[i].timestamp) / 1000 / 1000, '%M/%d %I:%m%P') + '</td>';
 				//html +=		'<td>' + trades[i].user + '</td>';
 				html +=		'<td>' + trades[i].want.color + '</td>';
 				html +=		'<td>' + trades[i].want.size + '</td>';
 				html +=		'<td>1</td>';
 				html +=		'<td>' + trades[i].willing[x].color + ' - ' + trades[i].willing[x].size + '</td>';
-				html +=		'<td><button type="button" class="confirmTrade" ' + buttonStatus +' name="' + name + '" trade_pos="' + i + '" willing_pos="' + x + '">TRADE</button></td>';
+				html +=		'<td>';
+				html +=			'<button type="button" class="confirmTrade altButton" ' + buttonStatus +' name="' + name + '" trade_pos="' + i + '" willing_pos="' + x + '">';
+				html +=				'<span class="fa fa-exchange"> &nbsp;&nbsp;TRADE</span>';
+				html +=			'</button>';
+				html += 	'</td>';
 				html += '</tr>';
 			}
 		}

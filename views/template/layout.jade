@@ -43,6 +43,13 @@ html
 						$("#footerWrap").slideDown();
 					}
 				});
+				
+				$("#closeNotification").click(function(){
+					//$("#notificationPanel").animate({right:'-=450'}, 500, function(){
+					//	$(this).hide();
+					//});
+					$("#notificationPanel").animate({width:'toggle'});
+				});
 			});
 		block custom_header
 		
@@ -52,6 +59,14 @@ html
 			
 			#mainPanel
 				block content
+				
+				#notificationPanel
+					span.fa.fa-check#noticeIcon
+					#noticeText YOUR TRADE WAS SUBMITTED SUCCESSFULLY!
+					a(href="#")
+						button(type="button") GO CHECK
+					span &nbsp;&nbsp;
+					button(type="button")#closeNotification OK
 				
 			#footerPanel
 				block footer

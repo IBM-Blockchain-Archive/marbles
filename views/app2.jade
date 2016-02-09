@@ -1,6 +1,7 @@
 extends ./template/layout.jade
-
-
+	
+	
+// --------------- Header -------------- //
 block custom_header
 	script(src='/js/simplestuff2.js')
 	script(src='/js/blockchain.js')
@@ -8,172 +9,30 @@ block custom_header
 		$(document).ready(function(){
 			
 		});
-	style.
-		#contentPanel{
-			border-bottom:10px solid orange;
-		}
 		
+		
+// --------------- Navigation Bar  -------------- //
 block navpanel
 	include ./template/nav_phase2.jade
-
-block content
-	#headerPanel
-		#navPanel
-			.nav.selectednav#adminLink Admin
-			.nav(style="background:orange;")#createLink Create
-			.nav(style="background:yellowgreen;")#tradeLink Trade
-			.nav(style="background:#fff; color:#000;")#userWrap
-				#logIn
-					span.fa.fa-user &nbsp;
-					span#loggedInName Hi, Bob &nbsp;
-					span.fa.fa-angle-down
-				#userSelect(hidden)
-					.username Bob
-					.username Leroy
-				
-		#logo
-			#appName SimpleStuff App2
-			span &nbsp;&nbsp;
-			span(style="font-size:20px;").fa.fa-flag
-
 	
+	
+// --------------- Main Stuff  -------------- //
+block content
 	#contentPanel
 		
-		
-		// --------------- Admin View -------------- //
-		#homePanel
-			.hint (Click a marble then the arrow to transfer it)
-			.personWrap
-				.legend Bob
-				#bobswrap
+		#blockdate(title="date of last block") loading...
 			
-			.personWrap(style="float:right;")
-				.legend Leroy
-				#leroyswrap
 			
-			#transferWrap
-				span.fa.fa-chevron-left.fa-4x#transferleft(title="transfer marble left")
-				span.fa.fa-remove.fa-4x(title="remove marble")#removemarble
-				span.fa.fa-chevron-right.fa-4x#transferright(title="transfer marble right")
+		// --------------- Home Panel
+		include ./panel_home.jade
 		
 		
-		// --------------- Create View -------------- //
-		#createView(hidden)
-			.legend Create Marble
-
-			span.fa.fa-circle.fa-5x.createball
-			
-			form(action="/create" method="POST")#createform
-				legend 
-					.createLegend Name:
-					input(type="text" name="name" placeholder="Name")
-					span (random or custom string)
-				br
-				legend 
-					.createLegend Color:
-					select(name="color")
-						option(value="white" style="color:black") 	White
-						option(value="black" style="color:black") 	Black
-						option(value="red" style="color:red") 		Red
-						option(value="green" style="color:green") 	Green
-						option(value="blue" style="color:blue") 	Blue
-						option(value="purple" style="color:purple") Purple
-						option(value="pink" style="color:pink") 	Pink
-						option(value="orange" style="color:orange") Orange
-				br
-				legend 
-					.createLegend Size:
-					select(name="size")
-						option(value="35") Large
-						option(value="16") Small
-				br
-				legend 
-					.createLegend User:
-					select(name="user")
-						option Bob
-						option Leroy
-				button(type="button")#submit Create
+		// --------------- Create Panel
+		include ./panel_create.jade
 		
 		
-		// --------------- Trade View -------------- //
-		#tradeView(hidden)
-			.legend Trade
-			
-			p
-				button(type="button")#setupTradeButton Setup a trade
-				span &nbsp;&nbsp;&nbsp;
-				button(type="button")#viewTradeButton View open trades
-			hr
-			
-			
-			// ------ Create Trade sub Panel ------ //
-			#createTrade
-				form(action="/create" method="POST")#tradeForm
-					
-					#wantTradeSide
-						p I WANT
-						br
-						select(name="want_quantity")
-							option 1
-							
-						select(name="want_color")
-							option(value="white"  style="color:black") 	White
-							option(value="black"  style="color:black") 	Black
-							option(value="red"    style="color:red") 	Red
-							option(value="green"  style="color:green") 	Green
-							option(value="blue"   style="color:blue") 	Blue
-							option(value="purple" style="color:purple") Purple
-							option(value="pink"   style="color:pink") 	Pink
-							option(value="orange" style="color:orange") Orange
-
-						select(name="want_size")
-							option(value="35") Large
-							option(value="16") Small
-					
-					#willingTradeSide
-						p I AM WILLING TOT RADE AWAY
-						br
-						
-						.willingWrap
-							select(name="will_quantity")
-								option 1
-								
-							select(name="will_color")
-								
-							select(name="will_size")
-								option(value="0") -
-							
-						button(type="button")#addMarbleButton
-							span.fa.fa-plus &nbsp;&nbsp;&nbsp;
-							span ADD
-						
-					button(type="button")#tradeSubmit 
-						span.fa.fa-check &nbsp;&nbsp;&nbsp;
-						span OPEN A TRADE
-					
-				
-			#openTrades
-				h1 Open Trades:
-				br
-			
-				table#openTradesTable
-					thead
-						tr 
-							th TIME
-							//th USER
-							th COLOR
-							th SIZE
-							th AMOUNT
-							th FOR
-							th &nbsp;
-					tbody#openTradesBody
-					
-				p#closedTradesWrap
-					.closedTrades
-				
-	#footer
-		#blockWrap
-			#details
-				p Loading...
-				hr
-				
+		// --------------- Trade View
+		include ./panel_trade.jade
+		
+block footer
+	include ./template/blockchain.jade

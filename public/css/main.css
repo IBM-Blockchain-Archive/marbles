@@ -99,38 +99,39 @@ ul, li {
 tr, td, th {
   border: 0;
   padding: 3px;
-  text-align: left;
-  border-right: 1px #ccc solid; }
+  text-align: center; }
 
 table {
   border-spacing: 0;
   border: 0;
   border-collapse: collapse;
-  text-align: center; }
+  text-align: center;
+  width: 100%;
+  font-size: 15px; }
 
 tr {
-  border-bottom: 1px #ccc solid; }
-
-tr:nth-child(even) {
-  background: #F6F5F7;
-  border: 0; }
+  margin-bottom: 5px;
+  background: #39424D;
+  border-bottom: 6px #343D48 solid; }
 
 tr:hover {
-  background: #ccc; }
-
-tr:nth-child(even):hover {
-  background: #ccc;
-  border: 0; }
+  background: orange; }
 
 td {
-  padding: 5px 15px 5px 15px; }
+  padding: 15px 10px; }
 
 th {
-  padding: 4px;
+  padding: 10px 5px;
   font-weight: normal;
-  background: #555;
-  color: #fff;
-  text-align: center; }
+  font-size: 12px;
+  background: #343D48;
+  color: #7E90A0;
+  text-align: center;
+  font-weight: bold; }
+
+thead tr {
+  border-top: 1px #646B73 solid;
+  border-bottom: 1px #646B73 solid; }
 
 p {
   margin: 5px;
@@ -156,9 +157,9 @@ input[type="submit"], input[type="button"], button {
   border: 0;
   transition: background-color 0.2s ease;
   border-radius: 30px;
-  min-width: 150px; }
+  min-width: 130px; }
 
-input:focus, select:focus {
+input:focus, select:focus, button:focus {
   outline: none !important;
   border-color: #fff !important; }
 
@@ -169,7 +170,7 @@ input[type="text"], input[type="password"], select {
   padding: 3px 10px;
   margin: 5px;
   color: #fff;
-  border: 1px solid #6D7C8D;
+  border: 1px solid #7E90A0;
   border-radius: 30px;
   background: #343D48;
   min-width: 120px; }
@@ -235,7 +236,7 @@ label {
   width: 100%; }
 
 .nav {
-  color: #6D7C8D;
+  color: #7E90A0;
   padding: 0px 30px;
   display: inline-block; }
 
@@ -254,25 +255,8 @@ label {
   left: 0;
   z-index: 2; }
 
-#whoAmI {
-  position: absolute;
-  right: 20px;
-  z-index: 3;
-  top: 0;
-  color: #fff; }
-
-#userIcon {
-  background: #6D7C8D;
-  padding: 10px;
-  border-radius: 20px;
-  width: 20px;
-  text-align: center;
-  color: #343D48;
-  margin-right: 10px;
-  font-size: 20px; }
-
 #logo {
-  color: #6D7C8D;
+  color: #7E90A0;
   display: inline-block;
   margin-left: 20px;
   font-size: 18px;
@@ -381,29 +365,35 @@ label {
   width: 100%;
   border-top: 25px #222832 solid; }
 
-#userSelect {
+#notificationPanel {
+  display: none;
+  width: 450px;
   position: absolute;
+  right: 0;
+  top: 90px;
+  color: #7E90A0;
+  background: #222832;
+  padding: 30px 0;
+  border-left: 25px #6CC284 solid;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  text-align: center; }
+
+#noticeText {
+  margin-bottom: 10px;
+  font-size: 13px;
+  width: 100%;
+  text-align: center; }
+
+#closeNotification {
+  background: initial;
+  color: #fff; }
+
+#noticeIcon {
+  position: absolute;
+  left: -19px;
   top: 45px;
-  z-index: 2;
-  text-align: right;
-  margin-left: -40px;
-  padding-right: 10px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  padding-bottom: 5px; }
-
-.username:hover {
-  text-decoration: underline; }
-
-#userWrap, #userSelect {
-  width: 120px;
-  background: #fff; }
-
-.invalid {
-  opacity: 0.5; }
-
-button:disabled {
-  opacity: 0.5; }
+  color: #222832; }
 
 #blockWrap {
   position: relative;
@@ -529,6 +519,72 @@ button:disabled {
     height: 10px;
     -moz-transform: translateZ(0); } }
 
+#whoAmI {
+  position: absolute;
+  right: 20px;
+  z-index: 3;
+  top: 0;
+  color: #fff;
+  cursor: pointer; }
+
+#userIcon {
+  background: #7E90A0;
+  padding: 10px;
+  border-radius: 20px;
+  width: 20px;
+  text-align: center;
+  color: #343D48;
+  margin-right: 10px;
+  font-size: 20px; }
+
+#userSelect {
+  display: none;
+  position: absolute;
+  top: 65px;
+  z-index: 2;
+  right: -10px;
+  color: #646B73;
+  padding: 10px 0;
+  background: #222832;
+  border-radius: 10px;
+  width: 150px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: bold; }
+
+.userLine {
+  line-height: 40px;
+  height: 40px;
+  cursor: pointer; }
+
+.userLine:hover {
+  background: #181C22; }
+
+.invalid {
+  opacity: 0.5; }
+
+button:disabled {
+  cursor: default; }
+
+button:disabled:hover {
+  background: initial; }
+
+button:disabled, .inactiveButton {
+  opacity: 0.5; }
+
+.altButton {
+  background: #2EB9D6; }
+
+.leftButton {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-right: 2px; }
+
+.rightButton {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  margin: 0; }
+
 #wantTradeSide, #willingTradeSide {
   position: relative;
   display: inline-block;
@@ -548,9 +604,18 @@ button:disabled {
   margin-right: 8px; }
 
 #addMarbleButton {
-  position: absolute;
-  top: 40px;
-  right: 100px; }
+  float: left;
+  min-width: initial;
+  text-align: center;
+  margin-left: 5px; }
+
+#tradeSubmit {
+  float: right;
+  text-align: center;
+  width: 200px; }
+
+#openTradesTable {
+  margin-top: 40px; }
 
 .txt {
   font-size: 20px; }
@@ -566,11 +631,9 @@ button:disabled {
   color: #555;
   cursor: pointer; }
 
-#tradeSubmit {
-  float: right;
-  text-align: center;
-  width: 200px;
-  margin-top: 20px; }
+.confirmTrade {
+  min-width: 90px;
+  font-weight: bold; }
 
 @media (max-width: 600px) {
   /* Nav Links */

@@ -17,14 +17,26 @@ h4{font-size:16pt; font-weight:normal; margin:0;}
 h5{font-size:14px; font-weight:normal; margin:0;}
 h6{font-size:12px; font-weight:normal; margin:0;}
 ul,li{margin:0; padding:0;}
-tr,td,th{border:0; padding:3px; text-align:left; border-right:1px #ccc solid;}
-table{border-spacing:0; border:0; border-collapse:collapse; text-align:center;}
-tr{border-bottom:1px #ccc solid;}
-tr:nth-child(even){background:#F6F5F7; border:0;}
-tr:hover{background:#ccc;}
-tr:nth-child(even):hover{background:#ccc; border:0;}
-td{padding:5px 15px 5px 15px;}
-th{padding:4px; font-weight:normal; background:#555; color:#fff; text-align:center;}
+tr,td,th{border:0; padding:3px; text-align:center;}
+table{border-spacing:0; border:0; border-collapse:collapse; text-align:center; width:100%; font-size:15px;}
+tr{margin-bottom:5px; background:$acc_color1-5; border-bottom: 6px $main_bg solid;}
+//tr:nth-child(even){background:$acc_color1-5; border:0;}
+tr:hover{background:$hi_color1;}
+//tr:nth-child(even):hover{background:$hi_color1; border:0;}
+td{padding:15px 10px;}
+th{
+	padding:10px 5px; 
+	font-weight:normal; 
+	font-size: 12px; 
+	background: $main_bg; 
+	color:$acc_color3; 
+	text-align:center; 
+	font-weight: bold;
+}
+thead tr{
+	border-top:1px $acc_color2 solid;
+	border-bottom:1px $acc_color2 solid;
+}
 p{margin:5px; padding:0;}
 hr{height:1px; border:none; background: $acc_color2;}
 hr:first-of-type{height:2px;}
@@ -33,14 +45,14 @@ input[type="submit"],input[type="button"], button{
 	font-size:11px; 
 	cursor:pointer; 
 	padding:5px 10px; 
-	background:#6CC284; 
+	background: $hi_color3; 
 	color:$acc_color1;
 	border:0; 
 	transition:background-color 0.2s ease;
 	border-radius:30px;
-	min-width:150px;
+	min-width:130px;
 }
-input:focus, select:focus{
+input:focus, select:focus, button:focus{
 	outline: none !important;
 	border-color: #fff !important;
 }

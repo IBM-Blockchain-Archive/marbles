@@ -142,7 +142,7 @@ function connect_to_server(){
 				build_ball(data.marble);
 			}
 			else if(data.msg === 'chainstats'){
-				var e = formatDate(data.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%p');
+				var e = formatDate(data.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
 				$("#blockdate").html('<span style="color:#fff">TIME</span>&nbsp;&nbsp;' + e + ' UTC');
 				var temp = { 
 								id: nDig((data.chainstats.height - 1), 3), 
