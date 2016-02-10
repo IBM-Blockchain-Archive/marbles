@@ -96,6 +96,9 @@ ul, li {
   margin: 0;
   padding: 0; }
 
+legend {
+  text-align: left; }
+
 tr, td, th {
   border: 0;
   padding: 3px;
@@ -395,6 +398,94 @@ label {
   top: 45px;
   color: #222832; }
 
+.white {
+  color: #FFF; }
+
+.black {
+  color: #000; }
+
+.red {
+  color: #CC0000; }
+
+.green {
+  color: #68BF67; }
+
+.blue {
+  color: #3B75BB; }
+
+.purple {
+  color: #B200FF; }
+
+.pink {
+  color: #FF00DC; }
+
+.orange {
+  color: #F15747; }
+
+.yellow {
+  color: #DCCB4E; }
+
+.whitebg {
+  background: #FFF; }
+
+.blackbg {
+  background: #000; }
+
+.redbg {
+  background: #CC0000; }
+
+.greenbg {
+  background: #68BF67; }
+
+.bluebg {
+  background: #3B75BB; }
+
+.purplebg {
+  background: #B200FF; }
+
+.pinkbg {
+  background: #FF00DC; }
+
+.orangebg {
+  background: #F15747; }
+
+.yellowbg {
+  background: #DCCB4E; }
+
+.colorSelectWrap {
+  text-align: left;
+  margin: 5px; }
+
+.colorInput {
+  width: 105px;
+  border: 1px solid #7E90A0;
+  border-radius: 20px;
+  padding: 5px;
+  font-size: 13px; }
+
+.colorOptionsWrap {
+  display: none;
+  position: absolute;
+  background: #222832;
+  padding: 10px 0;
+  width: 105px;
+  border-radius: 10px;
+  text-align: left;
+  margin-top: 1px; }
+
+.colorOption {
+  width: 85px;
+  display: block;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer; }
+
+.colorOption:hover {
+  background: #181C22; }
+
+.colorValue {
+  margin-left: 10px; }
+
 #blockWrap {
   position: relative;
   margin: 15px 25px; }
@@ -617,7 +708,7 @@ button:disabled, .inactiveButton {
   width: 200px; }
 
 #openTradesTable {
-  margin-top: 40px; }
+  margin-top: 20px; }
 
 .confirmTrade {
   min-width: 90px;

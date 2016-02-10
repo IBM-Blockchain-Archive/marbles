@@ -8,19 +8,39 @@
 		form(action="/create" method="POST")#createform
 			legend 
 				input(type="text" name="name" placeholder="Name Your Marble")
-				span.hint RANDOM OR CUSTOM STRING
+				span.hint &nbsp;&nbsp;RANDOM OR CUSTOM STRING
+			
 			br
-			legend 
-				select(name="color")
-					option(value="white" disabled="disabled" selected="selected") Color
-					option(value="white" style="color:black") 	White
-					option(value="black" style="color:black") 	Black
-					option(value="red" style="color:red") 		Red
-					option(value="green" style="color:green") 	Green
-					option(value="blue" style="color:blue") 	Blue
-					option(value="purple" style="color:purple") Purple
-					option(value="pink" style="color:pink") 	Pink
-					option(value="orange" style="color:orange") Orange
+			legend
+				.colorSelectWrap
+					.colorInput
+						span.colorValue Color
+						span.fa.fa-angle-down(style="float:right; margin-right: 5px;")
+					.colorOptionsWrap
+						.colorOption.fa.fa-circle.white(color='white') &nbsp;
+						.colorOption.fa.fa-circle.black(color='black') &nbsp;
+						.colorOption.fa.fa-circle.red(color='red') &nbsp;
+						.colorOption.fa.fa-circle.green(color='green') &nbsp;
+						.colorOption.fa.fa-circle.blue(color='blue') &nbsp;
+						.colorOption.fa.fa-circle.purple(color='purple') &nbsp;
+						.colorOption.fa.fa-circle.pink(color='pink') &nbsp;
+						.colorOption.fa.fa-circle.orange(color='orange') &nbsp;
+						.colorOption.fa.fa-circle.yellow(color='yellow') &nbsp;
+		
+		
+			//br
+				legend 
+					select(name="color")
+						option(value="white" disabled="disabled" selected="selected") Color
+						option(value="white").white 	White
+						option(value="black").black		Black
+						option(value="red").red			Red
+						option(value="green").green		Green
+						option(value="blue").blue 		Blue
+						option(value="purple").purple 	Purple
+						option(value="pink").pink		Pink
+						option(value="orange").orange	Orange
+						option(value="yellow").yellow	Yellow
 			br
 			legend 
 				select(name="size")
@@ -36,3 +56,5 @@
 			button(type="button")#submit
 				span.fa.fa-check &nbsp;&nbsp;
 				span CREATE
+			
+			

@@ -19,11 +19,12 @@ $(document).on('ready', function() {
 		var obj = 	{
 						type: "create",
 						name: $("input[name='name']").val(),
-						color: $("select[name='color']").val(),
+						color: $(".colorSelected").attr('color'),
 						size: $("select[name='size']").val(),
 						user: $("select[name='user']").val(),
 						v: 1
 					};
+		console.log('sending', obj);
 		ws.send(JSON.stringify(obj));
 		showAdminPanel();
 		return false;
@@ -70,6 +71,24 @@ $(document).on('ready', function() {
 			//$(".selectedball").removeClass("selectedball");
 			showAdminPanel(true);
 		}
+	});
+	
+
+	
+	//marble color picker
+	$(document).on("click", ".colorInput", function(){
+		$(this).parent().find('.colorOptionsWrap').show();
+	});
+	$(document).on("click", ".colorOption", function(){
+		var colors = ["whitebg", "blackbg", "redbg", "greenbg", "bluebg", "purplebg", "pinkbg", "orangebg", "yellowbg"];
+		var color = $(this).attr('color');
+		var html = '<span class="fa fa-circle colorSelected ' + color + '" color="' + color +'"></span>';
+		
+		$(this).parent().parent().find('.colorValue').html(html);
+		$(this).parent().hide();
+
+		for(var i in colors) $(".createball").removeClass(colors[i]);			//remove prev color
+		$(".createball").css("border", "0").addClass(color + 'bg');				//set new color
 	});
 	
 	

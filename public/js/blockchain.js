@@ -1,3 +1,5 @@
+/* global formatDate */
+/* global $ */
 var block = 0;
 var blocks = [];
 
@@ -10,8 +12,8 @@ $(document).on('ready', function() {
 		var left = event.pageX - $('#details').parent().offset().left - 50;
 		var id = Number($(this).html());
 		if(left < 0) left = 0;
-		console.log('you be hovering', event.pageX, id);
-		
+		//console.log('you be hovering', event.pageX, id, blocks);
+	
 		var html = '<p class="blckLegend"> Block Height: ' + blocks[id].id + '</p>';
 		html += '<hr class="line"/><p>Created: &nbsp;' + formatDate(blocks[id].blockstats.transactions[0].timestamp.seconds * 1000, '%M-%d-%Y %I:%m%p') + ' UTC</p>';
 		html += '<p> UUID: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + blocks[id].blockstats.transactions[0].uuid + '</p>';
@@ -26,8 +28,8 @@ $(document).on('ready', function() {
 });
 
 function new_block(newblck){
-	blocks[newblck.id] = newblck;
-	console.log('on block', newblck.id);
+	blocks[Number(newblck.id)] = newblck;
+	//console.log('on block', newblck.id);
 	$("#blockWrap").append('<div class="block">' + newblck.id + '</div>');
 	$(".block:last").animate({opacity: 1, left: (block * 36)}, 600, function(){
 		$(".lastblock").removeClass("lastblock");

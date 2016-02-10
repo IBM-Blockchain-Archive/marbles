@@ -213,7 +213,8 @@ obc.prototype.network = function(arrayPeers){
 								"Accept": "application/json",
 							},
 					ssl: chaincode.details.peers[0].ssl,
-					quiet: true
+					quiet: true,
+					timeout: 60000
 		});
 	}
 };

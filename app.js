@@ -131,46 +131,46 @@ var obc = new Obc1();
 // ==================================
 // load peers manually or from VCAP, VCAP will overwrite hardcoded list!
 // ==================================
-var peers =     [
-      {
-        "discovery_host": "169.44.38.124",
-        "discovery_port": "32826",
-        "api_host": "169.44.38.124",
-        "api_port": "32827",
-        "id": "41e46128-cbed-4cc9-a635-bc140226a309_vp1",
-        "api_url": "http://169.44.38.124:32827"
-      },
+var peers =    [
       {
         "discovery_host": "169.44.38.120",
-        "discovery_port": "32804",
+        "discovery_port": "33366",
         "api_host": "169.44.38.120",
-        "api_port": "32805",
-        "id": "41e46128-cbed-4cc9-a635-bc140226a309_vp3",
-        "api_url": "http://169.44.38.120:32805"
+        "api_port": "33367",
+        "type": "peer",
+        "network_id": "701e50ec-fe8e-4d96-a2cd-62ee50fcb907",
+        "id": "701e50ec-fe8e-4d96-a2cd-62ee50fcb907_vp1",
+        "api_url": "http://169.44.38.120:33367"
+      },
+      {
+        "discovery_host": "169.44.38.113",
+        "discovery_port": "33509",
+        "api_host": "169.44.38.113",
+        "api_port": "33510",
+        "type": "peer",
+        "network_id": "701e50ec-fe8e-4d96-a2cd-62ee50fcb907",
+        "id": "701e50ec-fe8e-4d96-a2cd-62ee50fcb907_vp2",
+        "api_url": "http://169.44.38.113:33510"
       },
       {
         "discovery_host": "169.44.38.114",
-        "discovery_port": "32810",
+        "discovery_port": "33361",
         "api_host": "169.44.38.114",
-        "api_port": "32811",
-        "id": "41e46128-cbed-4cc9-a635-bc140226a309_vp4",
-        "api_url": "http://169.44.38.114:32811"
+        "api_port": "33362",
+        "type": "peer",
+        "network_id": "701e50ec-fe8e-4d96-a2cd-62ee50fcb907",
+        "id": "701e50ec-fe8e-4d96-a2cd-62ee50fcb907_vp4",
+        "api_url": "http://169.44.38.114:33362"
       },
       {
         "discovery_host": "169.44.38.102",
-        "discovery_port": "32820",
+        "discovery_port": "33314",
         "api_host": "169.44.38.102",
-        "api_port": "32821",
-        "id": "41e46128-cbed-4cc9-a635-bc140226a309_vp5",
-        "api_url": "http://169.44.38.102:32821"
-      },
-      {
-        "discovery_host": "169.44.38.102",
-        "discovery_port": "32818",
-        "api_host": "169.44.38.102",
-        "api_port": "32819",
-        "id": "41e46128-cbed-4cc9-a635-bc140226a309_vp2",
-        "api_url": "http://169.44.38.102:32819"
+        "api_port": "33315",
+        "type": "peer",
+        "network_id": "701e50ec-fe8e-4d96-a2cd-62ee50fcb907",
+        "id": "701e50ec-fe8e-4d96-a2cd-62ee50fcb907_vp3",
+        "api_url": "http://169.44.38.102:33315"
       }
     ];
 console.log('loading hardcoded peers');
@@ -221,7 +221,8 @@ function cb_ready(err, cc){																//response has chaincode functions
 // ============================================================================================================================
 // 												WebSocket Communication Madness
 // ============================================================================================================================
-function cb_deployed(){
+function cb_deployed(e, d){
+	console.log('!', e);
 	console.log('starting websocket');
 	obc.save('./cc_summaries');															//save it here for chaincode investigator
 	wss = new ws.Server({server: server});												//start the websocket now
