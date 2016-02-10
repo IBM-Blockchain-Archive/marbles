@@ -135,59 +135,113 @@ var obc = new Obc1();
 var peers =    [
       {
         "discovery_host": "169.44.38.120",
-        "discovery_port": "33366",
+        "discovery_port": "33490",
         "api_host": "169.44.38.120",
-        "api_port": "33367",
+        "api_port": "33491",
         "type": "peer",
-        "network_id": "701e50ec-fe8e-4d96-a2cd-62ee50fcb907",
-        "id": "701e50ec-fe8e-4d96-a2cd-62ee50fcb907_vp1",
-        "api_url": "http://169.44.38.120:33367"
+        "network_id": "2f2777bb-698c-4088-8fbf-bd48f22f1492",
+        "id": "2f2777bb-698c-4088-8fbf-bd48f22f1492_vp1",
+        "api_url": "http://169.44.38.120:33491"
       },
       {
-        "discovery_host": "169.44.38.113",
-        "discovery_port": "33509",
-        "api_host": "169.44.38.113",
-        "api_port": "33510",
+        "discovery_host": "169.44.38.124",
+        "discovery_port": "33540",
+        "api_host": "169.44.38.124",
+        "api_port": "33541",
         "type": "peer",
-        "network_id": "701e50ec-fe8e-4d96-a2cd-62ee50fcb907",
-        "id": "701e50ec-fe8e-4d96-a2cd-62ee50fcb907_vp2",
-        "api_url": "http://169.44.38.113:33510"
-      },
-      {
-        "discovery_host": "169.44.38.114",
-        "discovery_port": "33361",
-        "api_host": "169.44.38.114",
-        "api_port": "33362",
-        "type": "peer",
-        "network_id": "701e50ec-fe8e-4d96-a2cd-62ee50fcb907",
-        "id": "701e50ec-fe8e-4d96-a2cd-62ee50fcb907_vp4",
-        "api_url": "http://169.44.38.114:33362"
+        "network_id": "2f2777bb-698c-4088-8fbf-bd48f22f1492",
+        "id": "2f2777bb-698c-4088-8fbf-bd48f22f1492_vp4",
+        "api_url": "http://169.44.38.124:33541"
       },
       {
         "discovery_host": "169.44.38.102",
-        "discovery_port": "33314",
+        "discovery_port": "33418",
         "api_host": "169.44.38.102",
-        "api_port": "33315",
+        "api_port": "33419",
         "type": "peer",
-        "network_id": "701e50ec-fe8e-4d96-a2cd-62ee50fcb907",
-        "id": "701e50ec-fe8e-4d96-a2cd-62ee50fcb907_vp3",
-        "api_url": "http://169.44.38.102:33315"
+        "network_id": "2f2777bb-698c-4088-8fbf-bd48f22f1492",
+        "id": "2f2777bb-698c-4088-8fbf-bd48f22f1492_vp3",
+        "api_url": "http://169.44.38.102:33419"
+      },
+      {
+        "discovery_host": "169.44.38.120",
+        "discovery_port": "33492",
+        "api_host": "169.44.38.120",
+        "api_port": "33493",
+        "type": "peer",
+        "network_id": "2f2777bb-698c-4088-8fbf-bd48f22f1492",
+        "id": "2f2777bb-698c-4088-8fbf-bd48f22f1492_vp2",
+        "api_url": "http://169.44.38.120:33493"
       }
     ];
 console.log('loading hardcoded peers');
+
+var users = [
+      {
+        "username": "peer1",
+        "secret": "65e0f0e68b"
+      },
+      {
+        "username": "peer2",
+        "secret": "2eb48cf04f"
+      },
+      {
+        "username": "peer3",
+        "secret": "279ee05cef"
+      },
+      {
+        "username": "peer4",
+        "secret": "5fc0a9b796"
+      },
+      {
+        "username": "peer5",
+        "secret": "409285cfdf"
+      },
+      {
+        "username": "user1",
+        "secret": "d8b0303ee4"
+      },
+      {
+        "username": "user2",
+        "secret": "3915a873c9"
+      },
+      {
+        "username": "user3",
+        "secret": "074c75c1dc"
+      },
+      {
+        "username": "user4",
+        "secret": "bd484bc0dc"
+      },
+      {
+        "username": "user5",
+        "secret": "8e715c501b"
+      }
+    ];
+console.log('loading hardcoded users');
 
 if(process.env.VCAP_SERVICES){															//load from vcap, search for service, 1 of the 3 should be found...
 	var servicesObject = JSON.parse(process.env.VCAP_SERVICES);
 	for(var i in servicesObject){
 		if(i.indexOf('ibm-blockchain') >= 0){											//looks close enough
 			if(servicesObject[i][0].credentials && servicesObject[i][0].credentials.peers){
-				console.log('overwritting peers, loading from a vcap service: ', i);
+				console.log('overwritting peers & users, loading from a vcap service: ', i);
 				peers = servicesObject[i][0].credentials.peers;
+				users = servicesObject[i][0].credentials.users;
 				break;
 			}
 		}
 	}
 }
+// CATCH - We should only use 'user1-n', so deleting others
+var valid_users = [];
+for(var i = 0; i < users.length; i++) {
+	if(users[i].username.indexOf('user') == 0){
+		valid_users.push(users[i]);
+	}
+}
+
+users = valid_users;
 obc.network(peers);																		//setup network connection for rest endpoint
 
 // ==================================
@@ -199,7 +253,7 @@ var options = 	{
 					git_url: 'https://github.com/dshuffma-ibm/simplestuff/phase2',						//git clone http url
 					
 					//hashed cc name from prev deployment
-					deployed_name: '4a237d1e7be8bb2fe61a9f00b7200c1f9a16f77ec2dc4045a540fd84da2327a80975d66394add22961544ea07dae943a1941f175d547b554a0b5d5d2fa8d7c93'
+					//deployed_name: '4a237d1e7be8bb2fe61a9f00b7200c1f9a16f77ec2dc4045a540fd84da2327a80975d66394add22961544ea07dae943a1941f175d547b554a0b5d5d2fa8d7c93'
 				};
 if(process.env.VCAP_SERVICES){
 	console.log('\n[!] looks like you are in bluemix, I am going to clear out the deploy_name so that it deploys new cc.\n[!] hope that is ok budddy\n');
@@ -208,15 +262,20 @@ if(process.env.VCAP_SERVICES){
 obc.load(options, cb_ready);															//parse/load chaincode
 
 function cb_ready(err, cc){																//response has chaincode functions
-	app1.setup(obc, cc);
-	app2.setup(obc, cc);
-	if(cc.details.deployed_name === ""){												//decide if i need to deploy
-		cc.deploy('init', ['99'], './cc_summaries', cb_deployed);
-	}
-	else{
-		console.log('chaincode summary file indicates chaincode has been previously deployed');
-		cb_deployed();
-	}
+	async.each([0, 1, 2, 3], function(index, cb) {
+		obc.switchPeer(index, users[index].username);
+		obc.register(users[index].username, users[index].secret, cb);		
+	}, function(err) {
+		app1.setup(obc, cc);
+		app2.setup(obc, cc);
+		if(cc.details.deployed_name === ""){												//decide if i need to deploy
+			cc.deploy('init', ['99'], './cc_summaries', cb_deployed);
+		}
+		else{
+			console.log('chaincode summary file indicates chaincode has been previously deployed');
+			cb_deployed();
+		}
+	});
 }
 
 // ============================================================================================================================
