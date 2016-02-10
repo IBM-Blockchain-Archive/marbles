@@ -97,6 +97,7 @@ app.use(function(err, req, res, next) {		// = development error handler, print s
 // ============================================================================================================================
 var server = http.createServer(app).listen(port, function() {});
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+process.env.NODE_ENV = 'production';
 server.timeout = 240000;																							// Ta-da.
 console.log('info', '------------------------------------------ Server Up - ' + host + ':' + port + ' ------------------------------------------');
 if(process.env.PRODUCTION) console.log('Running using Production settings');
