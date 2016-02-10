@@ -21,16 +21,18 @@
 				
 				select(name="want_quantity")
 					option 1
-					
-				select(name="want_color")
-					option(value="white"  style="color:black") 	White
-					option(value="black"  style="color:black") 	Black
-					option(value="red"    style="color:red") 	Red
-					option(value="green"  style="color:green") 	Green
-					option(value="blue"   style="color:blue") 	Blue
-					option(value="purple" style="color:purple") Purple
-					option(value="pink"   style="color:pink") 	Pink
-					option(value="orange" style="color:orange") Orange
+				
+				span#wantColorWrap
+					include ./template/color_options.jade
+					//select(name="want_color")
+						option(value="white"  style="color:black") 	White
+						option(value="black"  style="color:black") 	Black
+						option(value="red"    style="color:red") 	Red
+						option(value="green"  style="color:green") 	Green
+						option(value="blue"   style="color:blue") 	Blue
+						option(value="purple" style="color:purple") Purple
+						option(value="pink"   style="color:pink") 	Pink
+						option(value="orange" style="color:orange") Orange
 
 				select(name="want_size")
 					option(value="35") Large
@@ -44,8 +46,9 @@
 					.willingWrap
 						select(name="will_quantity")
 							option 1
-							
-						select(name="will_color")
+						
+						include ./template/color_options.jade
+						//select(name="will_color")
 							
 						select(name="will_size")
 							option(value="0") -

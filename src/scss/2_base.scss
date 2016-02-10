@@ -52,6 +52,7 @@ input[type="submit"],input[type="button"], button{
 	transition:background-color 0.2s ease;
 	border-radius:30px;
 	min-width:130px;
+	box-shadow: -1px 4px 2px -2px rgba(0,0,0,0.75);
 }
 input:focus, select:focus, button:focus{
 	outline: none !important;

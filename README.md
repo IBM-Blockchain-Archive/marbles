@@ -23,13 +23,13 @@
 - [x] Deployable on bluemix
 
 ## Demo Phase 2 Goals
-- [ ] New block events trigger a marble page update
-- [ ] Can transfer/delete multiple marbles at once
-- [ ] User's can advertise to trade their marbles (ie willing to trade large red for large blue/yellow/green)
+- [x] Server pushes block/marble updates to client when a new block event has occured for local user
+- [ ] User's can advertise to trade/exchange their marbles (ie willing to trade large red for large blue/yellow/green)
 - [x] User identity (fake login as bob or leroy)
 - [x] Ability to see past blocks details and some sort of animation on new blocks
 
 ## Demo Phase 3 Goals
+- [ ] Server pushes block/marble updates to client when any new block event has occured
 - [ ] User autentication (crypto signing of transactions)
 - [ ] User registration
 - [ ] Transacation privacy
@@ -70,7 +70,7 @@
 - [ ] remove named marble argument on perform_trade message/golang func, replace with color/size thing
 - [ ] check requirments of trade before exe, in CC
 - [ ] error checking on arguements before invoking... do not let e blank named marble in
-- [ ] url routing mapper
+- [x] url routing mapper
 -
 
 - I changed a if(e != null) to if(e == null) and it didn't create a new hash...?

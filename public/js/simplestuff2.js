@@ -12,6 +12,7 @@ var user = {username: 'bob'};
 // =================================================================================
 $(document).on('ready', function() {
 	connect_to_server();
+	$("input[name='name']").val('r' + randStr(6));
 	
 	// =================================================================================
 	// jQuery UI Events
@@ -36,13 +37,14 @@ $(document).on('ready', function() {
 	});
 	
 	$("#tradeLink").click(function(){
-		build_my_color_options(user.username);
+		set_my_color_options(user.username);
 		ws.send(JSON.stringify({type: "get_open_trades", v: 2}));
 	});
 	
 	
 	//marble color picker
 	$(document).on("click", ".colorInput", function(){
+		$('.colorOptionsWrap').hide();											//hide any others
 		$(this).parent().find('.colorOptionsWrap').show();
 	});
 	$(document).on("click", ".colorOption", function(){
@@ -93,7 +95,6 @@ $(document).on('ready', function() {
 				setTimeout(function(){
 					$(ui.draggable).remove();
 				}, 300);
-				showAdminPanel(true);
 			}
 		}
 	});
@@ -111,10 +112,11 @@ $(document).on('ready', function() {
 	
 	$(".userLine").click(function(){												//log in as someone else
 		var name = $(this).attr("name");
-		user.username = name.toLowerCase().charAt(0).toUpperCase() + name.slice(1);	//title case username
-		$("#userField").html("Hi " + user.username);
+		//user.username = name.toLowerCase().charAt(0).toUpperCase() + name.slice(1);	//title case username
+		user.username = name.toLowerCase();
+		$("#userField").html("HI " + user.username.toUpperCase() + ' ');
 		$("#userSelect").fadeOut(300);
-		build_my_color_options(user.username);
+		set_my_color_options(user.username);
 		build_trades(bag.trades);
 	});
 	
@@ -145,7 +147,7 @@ $(document).on('ready', function() {
 						v: 2,
 						user: user.username,
 						want: {
-							color: $("select[name='want_color']").val(),
+							color: $("#wantColorWrap").find(".colorSelected").attr("color"),
 							size: $("select[name='want_size']").val()
 						},
 						willing: []
@@ -153,9 +155,9 @@ $(document).on('ready', function() {
 					
 		$(".willingWrap").each(function(){
 			var q = $(this).find("select[name='will_quantity']").val();
-			var color = $(this).find("select[name='will_color']").val();
+			var color = $(this).find(".colorSelected").attr('color');
 			var size = $(this).find("select[name='will_size']").val();
-			console.log('!', q, color, size);
+			//console.log('!', q, color, size);
 			var temp = 	{
 							color: color,
 							size: size
@@ -191,8 +193,8 @@ $(document).on('ready', function() {
 		ws.send(JSON.stringify(msg));
 	});
 	
-	$("select[name='will_color']").change(function(){
-		build_my_size_options(user.username, $("select[name='will_color']").val());
+	$(document).on("click", ".willingWrap .colorOption", function(){
+		set_my_size_options(user.username, this);
 	});
 	
 	// =================================================================================
@@ -245,6 +247,7 @@ function connect_to_server(){
 			console.log('rec', data);
 			if(data.marble){
 				build_ball(data.marble);
+				set_my_color_options(user.username);
 			}
 			else if(data.msg === 'chainstats'){
 				var e = formatDate(data.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
@@ -303,7 +306,7 @@ function build_ball(data){
 			$("#leroyswrap").append(html);
 		}
 	}
-	console.log('marbles', bag.marbles);
+	//console.log('marbles', bag.marbles);
 	
 	return html;
 }
@@ -349,26 +352,34 @@ function build_trades(trades){
 	return html;
 }
 
-function build_my_color_options(username){
-	var html = '';
-	var colors = {};
+function set_my_color_options(username){
+	var has_colors = {};
 	for(var i in bag.marbles){
 		if(bag.marbles[i].user.toLowerCase() == username.toLowerCase()){		//mark it as needed
-			colors[bag.marbles[i].color] = true;
+			has_colors[bag.marbles[i].color] = true;
 		}
 	}
 	
-	var first = true;
-	for(var i in colors){
-		if(first) build_my_size_options(username, i);
-		first = false;
-		html += '<option value="' + i + '">' + i + '</option>';					//build it
-	}
-	$("select[name='will_color']").html(html);
-
+	//console.log('has_colors', has_colors);
+	var colors = ["white", "black", "red", "green", "blue", "purple", "pink", "orange", "yellow"];
+	$(".willingWrap").each(function(){
+		for(var i in colors){
+			//console.log('checking if user has', colors[i]);
+			if(!has_colors[colors[i]]) {
+				//console.log('removing', colors[i]);
+				$(this).find('.' + colors[i] + ':first').hide();
+			}
+			else {
+				$(this).find('.' + colors[i] + ':first').show();
+				//console.log('yep');
+			}
+		}
+	});
 }
 
-function build_my_size_options(username, color){
+function set_my_size_options(username, colorOption){
+	var color = $(colorOption).attr('color');
+	//console.log('color', color);
 	var html = '';
 	var sizes = {};
 	for(var i in bag.marbles){
@@ -382,7 +393,7 @@ function build_my_size_options(username, color){
 	for(var i in sizes){
 		html += '<option value="' + i + '">' + i + '</option>';					//build it
 	}
-	$("select[name='will_size']").html(html);
+	$(colorOption).parent().parent().next("select[name='will_size']").html(html);
 }
 
 
