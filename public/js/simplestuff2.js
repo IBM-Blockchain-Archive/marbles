@@ -21,7 +21,7 @@ $(document).on('ready', function() {
 		var obj = 	{
 						type: "create",
 						name: $("input[name='name']").val(),
-						color: $("select[name='color']").val(),
+						color: $(".colorSelected").attr('color'),
 						size: $("select[name='size']").val(),
 						user: $("select[name='user']").val(),
 						v: 2
@@ -83,6 +83,23 @@ $(document).on('ready', function() {
 		}
 	});
 	
+	//marble color picker
+	$(document).on("click", ".colorInput", function(){
+		$(this).parent().find('.colorOptionsWrap').show();
+	});
+	$(document).on("click", ".colorOption", function(){
+		var colors = ["whitebg", "blackbg", "redbg", "greenbg", "bluebg", "purplebg", "pinkbg", "orangebg", "yellowbg"];
+		var color = $(this).attr('color');
+		var html = '<span class="fa fa-circle colorSelected ' + color + '" color="' + color +'"></span>';
+		
+		$(this).parent().parent().find('.colorValue').html(html);
+		$(this).parent().hide();
+
+		for(var i in colors) $(".createball").removeClass(colors[i]);			//remove prev color
+		$(".createball").css("border", "0").addClass(color + 'bg');				//set new color
+	});
+	
+	//login events
 	$("#whoAmI").click(function(){													//drop down for login
 		if($("#userSelect").is(":visible")){
 			$("#userSelect").fadeOut();
@@ -101,6 +118,7 @@ $(document).on('ready', function() {
 		build_trades(bag.trades);
 	});
 	
+	//trade events
 	$("#setupTradeButton").click(function(){
 		$(".inactiveButton").removeClass("inactiveButton");
 		$("#viewTradeButton").addClass("inactiveButton");
