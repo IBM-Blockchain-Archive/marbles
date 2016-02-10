@@ -18,7 +18,6 @@ $(document).on('ready', function() {
 	// jQuery UI Events
 	// =================================================================================
 	$("#submit").click(function(){
-		console.log('creating marble');
 		var obj = 	{
 						type: "create",
 						name: $("input[name='name']").val(),
@@ -27,8 +26,10 @@ $(document).on('ready', function() {
 						user: $("select[name='user']").val(),
 						v: 2
 					};
-		console.log('sending', obj);
+		console.log('creating marble, sending', obj);
 		ws.send(JSON.stringify(obj));
+		$(".panel").hide();
+		$("#homePanel").show();
 		return false;
 	});
 
@@ -288,7 +289,7 @@ function connect_to_server(){
 // =================================================================================
 function build_ball(data){
 	var html = '';
-	var style = '';
+	var colorClass = '';
 	var size = 'fa-5x';
 	
 	if(!bag.marbles) bag.marbles = {};
@@ -296,9 +297,9 @@ function build_ball(data){
 	
 	if(!$("#" + data.name).length){								//only populate if it doesn't exists
 		if(data.size == 16) size = 'fa-3x';
-		if(data.color) style = "color:" + data.color.toLowerCase();
+		if(data.color) colorClass = data.color.toLowerCase();
 		
-		html += '<span id="' + data.name +'" class=" fa fa-circle ' + size + ' ball" title="' + data.name +'" style="' + style +'" user="' + data.user + '"></span>';
+		html += '<span id="' + data.name +'" class=" fa fa-circle ' + size + ' ball ' + colorClass + '" title="' + data.name +'" user="' + data.user + '"></span>';
 		if((data.user && data.user.toLowerCase() == 'bob') || (data.owner && data.owner.toLowerCase() == 'bob')){
 			$("#bobswrap").append(html);
 		}

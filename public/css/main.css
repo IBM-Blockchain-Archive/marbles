@@ -396,58 +396,58 @@ label {
   color: #222832; }
 
 .white {
-  color: #FFF; }
+  color: #FFFEF3; }
 
 .black {
-  color: #000; }
+  color: #1C2026; }
 
 .red {
-  color: #CC0000; }
+  color: #F15847; }
 
 .green {
-  color: #68BF67; }
+  color: #68B369; }
 
 .blue {
-  color: #3B75BB; }
+  color: #3D76BA; }
 
 .purple {
-  color: #B200FF; }
+  color: #634FA1; }
 
 .pink {
-  color: #FF00DC; }
+  color: #CC5AA2; }
 
 .orange {
-  color: #F15747; }
+  color: #F15847; }
 
 .yellow {
-  color: #DCCB4E; }
+  color: #DAC94E; }
 
 .whitebg {
-  background: #FFF; }
+  background: #FFFEF3; }
 
 .blackbg {
-  background: #000; }
+  background: #1C2026; }
 
 .redbg {
-  background: #CC0000; }
+  background: #F15847; }
 
 .greenbg {
-  background: #68BF67; }
+  background: #68B369; }
 
 .bluebg {
-  background: #3B75BB; }
+  background: #3D76BA; }
 
 .purplebg {
-  background: #B200FF; }
+  background: #634FA1; }
 
 .pinkbg {
-  background: #FF00DC; }
+  background: #CC5AA2; }
 
 .orangebg {
-  background: #F15747; }
+  background: #F15847; }
 
 .yellowbg {
-  background: #DCCB4E; }
+  background: #DAC94E; }
 
 .colorSelectWrap {
   text-align: left;
