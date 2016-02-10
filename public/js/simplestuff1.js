@@ -30,16 +30,6 @@ $(document).on('ready', function() {
 		return false;
 	});
 	
-	$(document).on("click", ".ball", function(){
-		if($(this).hasClass("selectedball")){
-			$(this).removeClass("selectedball");
-		}
-		else{
-			$(".selectedball").removeClass("selectedball");
-			$(this).addClass("selectedball");
-		}
-	});
-	
 	$("#homeLink").click(function(){
 		showAdminPanel();
 	});
@@ -49,30 +39,6 @@ $(document).on('ready', function() {
 		$("#homePanel").hide();
 		$("input[name='name']").val('r' + randStr(6));
 	});
-	
-	$("#transferright").click(function(){
-		transfer('leroy');
-	});
-	
-	$("#transferleft").click(function(){
-		transfer('bob');
-	});
-	
-	$("#removemarble").click(function(){
-		var id = $(".selectedball").attr("id");
-		if(id){
-			console.log('removing', id);
-			var obj = 	{
-							type: "remove",
-							name: id,
-							v: 1
-						};
-			ws.send(JSON.stringify(obj));
-			//$(".selectedball").removeClass("selectedball");
-			showAdminPanel(true);
-		}
-	});
-	
 
 	
 	//marble color picker
@@ -92,6 +58,47 @@ $(document).on('ready', function() {
 	});
 	
 	
+	//drag and drop marble
+	$("#leroyswrap, #bobswrap, #trashbin").sortable({connectWith: ".sortable"}).disableSelection();
+	$("#leroyswrap").droppable({drop:
+		function( event, ui ) {
+			var user = $(ui.draggable).attr('user');
+			if(user.toLowerCase() != 'leroy'){
+				$(ui.draggable).addClass("invalid");
+				transfer($(ui.draggable).attr('id'), 'leroy');
+			}
+		}
+	});
+	$("#bobswrap").droppable({drop:
+		function( event, ui ) {
+			var user = $(ui.draggable).attr('user');
+			if(user.toLowerCase() != 'bob'){
+				$(ui.draggable).addClass("invalid");
+				transfer($(ui.draggable).attr('id'), 'bob');
+			}
+		}
+	});
+	$("#trashbin").droppable({drop:
+		function( event, ui ) {
+			var id = $(ui.draggable).attr('id');
+			if(id){
+				console.log('removing marble', id);
+				var obj = 	{
+								type: "remove",
+								name: id,
+								v: 1
+							};
+				ws.send(JSON.stringify(obj));
+				$(ui.draggable).fadeOut();
+				setTimeout(function(){
+					$(ui.draggable).remove();
+				}, 300);
+				showAdminPanel(true);
+			}
+		}
+	});
+	
+	
 	// =================================================================================
 	// Helper Fun
 	// ================================================================================
@@ -100,19 +107,22 @@ $(document).on('ready', function() {
 		$("#homePanel").fadeIn(300);
 		$("#createPanel").hide();
 		if(reset === true){
-			$("#bobswrap").html('');
-			$("#leroyswrap").html('');
+			setTimeout(function(){
+				$("#bobswrap").html('');
+				$("#leroyswrap").html('');
+			}, 300);
 		}
 		console.log('getting new balls');
 		setTimeout(function(){
+			$("#bobswrap").html('');
+			$("#leroyswrap").html('');
 			ws.send(JSON.stringify({type: "get", v: 1}));						//need to wait a bit - dsh to do, tap into new block event
 			ws.send(JSON.stringify({type: "chainstats", v: 1}));
-		}, 200);
+		}, 300);
 	}
 	
 	//transfer selected ball to user
-	function transfer(user){
-		var marbleName = $(".selectedball").attr("id");
+	function transfer(marbleName, user){
 		if(marbleName){
 			console.log('transfering', marbleName);
 			var obj = 	{

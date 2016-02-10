@@ -280,10 +280,6 @@ label {
   padding-bottom: 5px;
   text-align: left; }
 
-#transferright:hover, #transferleft:hover, #removemarble:hover {
-  cursor: pointer;
-  color: orange; }
-
 .ball {
   display: inline-block;
   margin: 1px;
@@ -293,9 +289,6 @@ label {
 .ball:hover {
   cursor: pointer;
   border-bottom: 1px #fff solid; }
-
-.selectedball {
-  border: 1px #fff solid; }
 
 #description {
   position: absolute;
@@ -307,7 +300,15 @@ label {
   width: 100%;
   text-align: center;
   position: fixed;
-  bottom: 55px; }
+  bottom: 55px;
+  margin-left: -50px; }
+
+#trashbin {
+  width: 200px;
+  height: 70px;
+  margin: auto;
+  text-align: center;
+  margin-top: -70px; }
 
 .createball {
   font-size: 275px;
@@ -317,12 +318,6 @@ label {
   border-radius: 200px;
   width: 270px;
   height: 270px; }
-
-#transferWrap {
-  position: absolute;
-  width: 100%;
-  text-align: center;
-  top: 60px; }
 
 #createform {
   float: left;

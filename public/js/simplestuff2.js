@@ -31,15 +31,7 @@ $(document).on('ready', function() {
 		return false;
 	});
 	
-	$(document).on("click", ".ball", function(){
-		if($(this).hasClass("selectedball")){
-			$(this).removeClass("selectedball");
-		}
-		else{
-			$(".selectedball").removeClass("selectedball");
-			$(this).addClass("selectedball");
-		}
-	});
+
 	
 	$("#homeLink").click(function(){
 		showAdminPanel();
@@ -60,28 +52,7 @@ $(document).on('ready', function() {
 		ws.send(JSON.stringify({type: "get_open_trades", v: 2}));
 	});
 	
-	$("#transferright").click(function(){
-		transfer('leroy');
-	});
-	
-	$("#transferleft").click(function(){
-		transfer('bob');
-	});
-	
-	$("#removemarble").click(function(){
-		var id = $(".selectedball").attr("id");
-		if(id){
-			console.log('removing', id);
-			var obj = 	{
-							type: "remove",
-							name: id,
-							v: 2
-						};
-			ws.send(JSON.stringify(obj));
-			//$(".selectedball").removeClass("selectedball");
-			showAdminPanel();
-		}
-	});
+
 	
 	//marble color picker
 	$(document).on("click", ".colorInput", function(){
