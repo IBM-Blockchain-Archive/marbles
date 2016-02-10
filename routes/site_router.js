@@ -23,22 +23,29 @@ var rest    = require("../utils/rest.js");
 // Home
 // ============================================================================================================================
 router.route("/").get(function(req, res){
-	res.redirect('/app1');
+	res.redirect('/p1');
 });
 
 // ============================================================================================================================
-// App 1
+// Phase 1
 // ============================================================================================================================
-router.route("/app1").get(function(req, res){
-	res.render('app1', {title: 'SimpleStuff App1', bag: {setup: setup}} );
+router.route("/p1").get(function(req, res){
+	res.render('phase1', {title: 'Simple Stuff P1', bag: {setup: setup}} );
+});
+router.route("/p1/:page?").get(function(req, res){
+	res.render('phase1', {title: 'Simple Stuff P1', bag: {setup: setup}} );
 });
 
 // ============================================================================================================================
-// App 2
+// Phase 2
 // ============================================================================================================================
-router.route("/app2").get(function(req, res){
-	res.render('app2', {title: 'SimpleStuff App2', bag: {setup: setup}} );
+router.route("/p2").get(function(req, res){
+	res.render('phase2', {title: 'Simple Stuff P2', bag: {setup: setup}} );
 });
+router.route("/p2/:page?").get(function(req, res){
+	res.render('phase2', {title: 'Simple Stuff P2', bag: {setup: setup}} );
+});
+
 
 
 // ============================================================================================================================

@@ -15,7 +15,7 @@ html
 	head
 		title #{title}
 		link(rel="icon", type="image/png", href="/imgs/favicon.ico")
-		link(rel="stylesheet" href="css/font-awesome-4.5.0/css/font-awesome.min.css")
+		link(rel="stylesheet" href="/css/font-awesome-4.5.0/css/font-awesome.min.css")
 		link(type="text/css" rel="stylesheet" href="/css/main.min.css")
 		script(src='/js/util/jquery-1.11.1.min.js')
 		script(src='/js/util/jquery-ui-1.11.4/jquery-ui.min.js')
@@ -29,13 +29,26 @@ html
 				//Tab Navigation, show the corresponding panel
 				$(".nav").click(function(){
 					var show = $(this).html().trim().toLowerCase();
-					console.log('changing view to: ', show);
-					$(".panel").hide();
-					$("#" + show + "Panel").fadeIn(300);
-					$(".selectedNav").removeClass("selectedNav");
-					$(this).addClass("selectedNav");
+					showPanel(show);
 				});
+				function showPanel(show){
+					if(show == '') show = 'home';										//default
+					console.log('changing view to: ', show, $("#" + show + "Panel").length);
+
+					window.history.pushState({},'', show);								//put it in url so we can f5
+
+					$(".panel").hide();
+					if($("#" + show + "Panel").length == 0){
+						$("#error404").fadeIn();
+					}
+					else{
+						$("#" + show + "Panel").fadeIn(300);
+						$(".selectedNav").removeClass("selectedNav");
+						$(this).addClass("selectedNav");
+					}
+				}
 				
+				//Blockchain panel toggle
 				$("#viewBCWrap").click(function(){
 					if($("#footerWrap").is(":visible")){
 						$("#footerWrap").slideUp();
@@ -45,12 +58,21 @@ html
 					}
 				});
 				
+				//Notificatoin panel
 				$("#closeNotification").click(function(){
 					//$("#notificationPanel").animate({right:'-=450'}, 500, function(){
 					//	$(this).hide();
 					//});
 					$("#notificationPanel").animate({width:'toggle'});
 				});
+				
+				
+				//Page refresh show correct panel
+				var pos = window.location.pathname.substring(1).indexOf('/');			//skipping first char find first slash
+				if(pos >= 0){
+					showPanel(window.location.pathname.substring(2 + pos).toLowerCase());
+				}
+
 			});
 		block custom_header
 		
@@ -59,6 +81,11 @@ html
 				block navpanel
 			
 			#mainPanel
+				#error404(hidden).panel 
+					br
+					center
+						p Error 404
+				
 				block content
 				
 				#notificationPanel
@@ -68,6 +95,7 @@ html
 						button(type="button") GO CHECK
 					span &nbsp;&nbsp;
 					button(type="button")#closeNotification OK
+				
 				
 			#footerPanel
 				block footer

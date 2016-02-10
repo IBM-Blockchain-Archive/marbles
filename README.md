@@ -59,17 +59,18 @@
 - [x] add block stats to sdk
 - [x] write tutorial on phase 1
 - [ ] move to socket.io (unsure, postpone)
-- [ ] change test var "a" to "test" in cc
-- [ ] make advanced link in cci and hide ip/port fields, hide all things under tool like categories
-- [ ] make CCI work for multiple apps, pick which cc to load (even custom functions)
+- [x] change test var "a" to "abc" in cc
+- [x] make advanced link in cci and hide ip/port fields, hide all things under tool like categories
+- [x] make CCI work for multiple apps, pick which cc to load (even custom functions)
 - [x] block history UI
 - [ ] CCI video
 - [ ] CCI screens with filled out info
-- [ ] restyle marbles to match new design
+- [x] restyle marbles to match new design
 - [ ] multi marble on willing list
 - [ ] remove named marble argument on perform_trade message/golang func, replace with color/size thing
 - [ ] check requirments of trade before exe, in CC
 - [ ] error checking on arguements before invoking... do not let e blank named marble in
+- [ ] url routing mapper
 -
 
 - I changed a if(e != null) to if(e == null) and it didn't create a new hash...?
