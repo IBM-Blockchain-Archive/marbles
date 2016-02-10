@@ -40,7 +40,6 @@ $(document).on('ready', function() {
 		ws.send(JSON.stringify({type: "get_open_trades", v: 2}));
 	});
 	
-
 	
 	//marble color picker
 	$(document).on("click", ".colorInput", function(){
@@ -57,6 +56,48 @@ $(document).on('ready', function() {
 		for(var i in colors) $(".createball").removeClass(colors[i]);			//remove prev color
 		$(".createball").css("border", "0").addClass(color + 'bg');				//set new color
 	});
+	
+	
+	//drag and drop marble
+	$("#leroyswrap, #bobswrap, #trashbin").sortable({connectWith: ".sortable"}).disableSelection();
+	$("#leroyswrap").droppable({drop:
+		function( event, ui ) {
+			var user = $(ui.draggable).attr('user');
+			if(user.toLowerCase() != 'leroy'){
+				$(ui.draggable).addClass("invalid");
+				transfer($(ui.draggable).attr('id'), 'leroy');
+			}
+		}
+	});
+	$("#bobswrap").droppable({drop:
+		function( event, ui ) {
+			var user = $(ui.draggable).attr('user');
+			if(user.toLowerCase() != 'bob'){
+				$(ui.draggable).addClass("invalid");
+				transfer($(ui.draggable).attr('id'), 'bob');
+			}
+		}
+	});
+	$("#trashbin").droppable({drop:
+		function( event, ui ) {
+			var id = $(ui.draggable).attr('id');
+			if(id){
+				console.log('removing marble', id);
+				var obj = 	{
+								type: "remove",
+								name: id,
+								v: 2
+							};
+				ws.send(JSON.stringify(obj));
+				$(ui.draggable).fadeOut();
+				setTimeout(function(){
+					$(ui.draggable).remove();
+				}, 300);
+				showAdminPanel(true);
+			}
+		}
+	});
+	
 	
 	//login events
 	$("#whoAmI").click(function(){													//drop down for login
@@ -76,6 +117,7 @@ $(document).on('ready', function() {
 		build_my_color_options(user.username);
 		build_trades(bag.trades);
 	});
+	
 	
 	//trade events
 	$("#setupTradeButton").click(function(){
@@ -157,8 +199,7 @@ $(document).on('ready', function() {
 	// Helper Fun
 	// =================================================================================
 	//transfer selected ball to user
-	function transfer(user){
-		var marbleName = $(".selectedball").attr("id");
+	function transfer(marbleName, user){
 		if(marbleName){
 			console.log('transfering', marbleName);
 			var obj = 	{
