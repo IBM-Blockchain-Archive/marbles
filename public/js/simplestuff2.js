@@ -26,28 +26,16 @@ $(document).on('ready', function() {
 						user: $("select[name='user']").val(),
 						v: 2
 					};
+		console.log('sending', obj);
 		ws.send(JSON.stringify(obj));
-		showAdminPanel();
 		return false;
-	});
-	
-
-	
-	$("#homeLink").click(function(){
-		showAdminPanel();
 	});
 
 	$("#createLink").click(function(){
-		$("#createPanel").fadeIn(300);
-		$("#homePanel").hide();
-		$("#tradeView").hide();
 		$("input[name='name']").val('r' + randStr(6));
 	});
 	
 	$("#tradeLink").click(function(){
-		$("#tradeView").fadeIn(300);
-		$("#homePanel").hide();
-		$("#createPanel").hide();
 		build_my_color_options(user.username);
 		ws.send(JSON.stringify({type: "get_open_trades", v: 2}));
 	});
@@ -167,14 +155,7 @@ $(document).on('ready', function() {
 	
 	// =================================================================================
 	// Helper Fun
-	// ================================================================================
-	//show admin panel page
-	function showAdminPanel(){
-		$("#homePanel").fadeIn(300);
-		$("#createPanel").hide();
-		$("#tradeView").hide();
-	}
-	
+	// =================================================================================
 	//transfer selected ball to user
 	function transfer(user){
 		var marbleName = $(".selectedball").attr("id");
@@ -187,7 +168,6 @@ $(document).on('ready', function() {
 							v: 2
 						};
 			ws.send(JSON.stringify(obj));
-			showAdminPanel();
 		}
 	}
 });

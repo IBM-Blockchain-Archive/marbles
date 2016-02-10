@@ -35,8 +35,6 @@ $(document).on('ready', function() {
 	});
 
 	$("#createLink").click(function(){
-		$("#createPanel").fadeIn(300);
-		$("#homePanel").hide();
 		$("input[name='name']").val('r' + randStr(6));
 	});
 
