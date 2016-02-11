@@ -25,6 +25,7 @@
 ## Demo Phase 2 Goals
 - [x] Server pushes block/marble updates to client when a new block event has occured for local user
 - [ ] User's can advertise to trade/exchange their marbles (ie willing to trade large red for large blue/yellow/green)
+- [ ] User can remove their open trades
 - [x] User identity (fake login as bob or leroy)
 - [x] Ability to see past blocks details and some sort of animation on new blocks
 
@@ -67,11 +68,17 @@
 - [ ] CCI screens with filled out info
 - [x] restyle marbles to match new design
 - [ ] multi marble on willing list
+- [ ] remove/edit trades that are no longer possible in CC
 - [ ] remove named marble argument on perform_trade message/golang func, replace with color/size thing
 - [ ] check requirments of trade before exe, in CC
 - [ ] error checking on arguements before invoking... do not let e blank named marble in
 - [x] url routing mapper
--
+- [ ] improve marble redraw so we don't have to blank the marble divs
+- [ ] tutorial for p2
+- [ ] re-parallelize the queryies
+- [ ] show open trades made by user
+- [ ] ability to remove open trades by user
+
 
 - I changed a if(e != null) to if(e == null) and it didn't create a new hash...?
 

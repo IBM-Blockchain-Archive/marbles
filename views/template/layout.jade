@@ -35,7 +35,8 @@ html
 					if(show == '') show = 'home';										//default
 					console.log('changing view to: ', show, $("#" + show + "Panel").length);
 
-					window.history.pushState({},'', show);								//put it in url so we can f5
+					var phase = window.location.pathname.substring(0,3);
+					window.history.pushState({},'', phase + '/' + show);								//put it in url so we can f5
 
 					$(".panel").hide();
 					if($("#" + show + "Panel").length == 0){
@@ -66,6 +67,12 @@ html
 					$("#notificationPanel").animate({width:'toggle'});
 				});
 				
+				$(".backToHome").click(function(){
+					$(".panel").hide();
+					$("#homePanel").show();
+					$("#notificationPanel").animate({width:'toggle'});
+				});
+				
 				
 				//Page refresh show correct panel
 				var pos = window.location.pathname.substring(1).indexOf('/');			//skipping first char find first slash
@@ -90,9 +97,8 @@ html
 				
 				#notificationPanel
 					span.fa.fa-check#noticeIcon
-					#noticeText YOUR TRADE WAS SUBMITTED SUCCESSFULLY!
-					a(href="#")
-						button(type="button") GO CHECK
+					#noticeText YOUR TRADE WAS SUBMITTED!
+					button(type="button").backToHome GO CHECK
 					span &nbsp;&nbsp;
 					button(type="button")#closeNotification OK
 				

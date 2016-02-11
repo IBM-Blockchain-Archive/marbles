@@ -311,6 +311,9 @@ label {
   text-align: center;
   margin-top: -70px; }
 
+#bobswrap, #leroyswrap {
+  min-height: 100px; }
+
 .createball {
   font-size: 275px;
   float: left;
@@ -417,7 +420,7 @@ label {
   color: #CC5AA2; }
 
 .orange {
-  color: #F15847; }
+  color: #ED8F30; }
 
 .yellow {
   color: #DAC94E; }
@@ -444,7 +447,7 @@ label {
   background: #CC5AA2; }
 
 .orangebg {
-  background: #F15847; }
+  background: #ED8F30; }
 
 .yellowbg {
   background: #DAC94E; }
@@ -653,7 +656,7 @@ label {
   background: #181C22; }
 
 .invalid {
-  opacity: 0.5; }
+  opacity: 0.3; }
 
 button:disabled {
   cursor: default; }
@@ -662,7 +665,7 @@ button:disabled:hover {
   background: initial; }
 
 button:disabled, .inactiveButton {
-  opacity: 0.5; }
+  opacity: 0.3; }
 
 .altButton {
   background: #2EB9D6; }

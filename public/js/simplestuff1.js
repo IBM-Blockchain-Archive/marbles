@@ -4,6 +4,7 @@
 /* global bag */
 /* global $ */
 var ws = {};
+var bgcolors = ["whitebg", "blackbg", "redbg", "greenbg", "bluebg", "purplebg", "pinkbg", "orangebg", "yellowbg"];
 
 // =================================================================================
 // On Load
@@ -25,9 +26,14 @@ $(document).on('ready', function() {
 						user: $("select[name='user']").val(),
 						v: 1
 					};
-		console.log('sending', obj);
-		ws.send(JSON.stringify(obj));
-		showAdminPanel();
+		if(obj.user && obj.name && obj.color){
+			console.log('sending', obj);
+			ws.send(JSON.stringify(obj));
+			showAdminPanel();
+			$(".colorValue").html('Color');											//reset
+			for(var i in bgcolors) $(".createball").removeClass(bgcolors[i]);			//reset
+			$(".createball").css("border", "2px dashed #fff");						//reset
+		}
 		return false;
 	});
 	
@@ -45,14 +51,13 @@ $(document).on('ready', function() {
 		$(this).parent().find('.colorOptionsWrap').show();
 	});
 	$(document).on("click", ".colorOption", function(){
-		var colors = ["whitebg", "blackbg", "redbg", "greenbg", "bluebg", "purplebg", "pinkbg", "orangebg", "yellowbg"];
 		var color = $(this).attr('color');
 		var html = '<span class="fa fa-circle colorSelected ' + color + '" color="' + color +'"></span>';
 		
 		$(this).parent().parent().find('.colorValue').html(html);
 		$(this).parent().hide();
 
-		for(var i in colors) $(".createball").removeClass(colors[i]);			//remove prev color
+		for(var i in bgcolors) $(".createball").removeClass(bgcolors[i]);			//remove prev color
 		$(".createball").css("border", "0").addClass(color + 'bg');				//set new color
 	});
 	
@@ -153,8 +158,11 @@ function connect_to_server(){
 	
 	function onOpen(evt){
 		console.log("WS CONNECTED");
-		ws.send(JSON.stringify({type: "get", v:1}));
+		//ws.send(JSON.stringify({type: "get", v:1}));
 		ws.send(JSON.stringify({type: "chainstats", v:1}));
+		setTimeout(function(){
+			ws.send(JSON.stringify({type: "get", v:1}));
+		}, 300);
 	}
 
 	function onClose(evt){
@@ -201,14 +209,14 @@ function connect_to_server(){
 // =================================================================================
 function build_ball(data){
 	var html = '';
-	var style = '';
+	var colorClass = '';
 	var size = 'fa-5x';
 	
 	if(!$("#" + data.name).length){								//only populate if it doesn't exists
 		if(data.size == 16) size = 'fa-3x';
-		if(data.color) style = "color:" + data.color.toLowerCase();
+		if(data.color) colorClass = data.color.toLowerCase();
 		
-		html += '<span id="' + data.name +'" class=" fa fa-circle ' + size + ' ball" title="' + data.name +'" style="' + style +'" user="' + data.user + '"></span>';
+		html += '<span id="' + data.name +'" class=" fa fa-circle ' + size + ' ball ' + colorClass + '" title="' + data.name +'" user="' + data.user + '"></span>';
 		if((data.user && data.user.toLowerCase() == 'bob') || (data.owner && data.owner.toLowerCase() == 'bob')){
 			$("#bobswrap").append(html);
 		}

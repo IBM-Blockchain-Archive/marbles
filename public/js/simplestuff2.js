@@ -6,6 +6,7 @@
 /* global $ */
 var ws = {};
 var user = {username: 'bob'};
+var bgcolors = ["whitebg", "blackbg", "redbg", "greenbg", "bluebg", "purplebg", "pinkbg", "orangebg", "yellowbg"];
 
 // =================================================================================
 // On Load
@@ -26,10 +27,15 @@ $(document).on('ready', function() {
 						user: $("select[name='user']").val(),
 						v: 2
 					};
-		console.log('creating marble, sending', obj);
-		ws.send(JSON.stringify(obj));
-		$(".panel").hide();
-		$("#homePanel").show();
+		if(obj.user && obj.name && obj.color){
+			console.log('creating marble, sending', obj);
+			ws.send(JSON.stringify(obj));
+			$(".panel").hide();
+			$("#homePanel").show();
+			$(".colorValue").html('Color');											//reset
+			for(var i in bgcolors) $(".createball").removeClass(bgcolors[i]);			//reset
+			$(".createball").css("border", "2px dashed #fff");						//reset
+		}
 		return false;
 	});
 
@@ -49,14 +55,13 @@ $(document).on('ready', function() {
 		$(this).parent().find('.colorOptionsWrap').show();
 	});
 	$(document).on("click", ".colorOption", function(){
-		var colors = ["whitebg", "blackbg", "redbg", "greenbg", "bluebg", "purplebg", "pinkbg", "orangebg", "yellowbg"];
 		var color = $(this).attr('color');
 		var html = '<span class="fa fa-circle colorSelected ' + color + '" color="' + color +'"></span>';
 		
 		$(this).parent().parent().find('.colorValue').html(html);
 		$(this).parent().hide();
 
-		for(var i in colors) $(".createball").removeClass(colors[i]);			//remove prev color
+		for(var i in bgcolors) $(".createball").removeClass(bgcolors[i]);			//remove prev color
 		$(".createball").css("border", "0").addClass(color + 'bg');				//set new color
 	});
 	
@@ -117,6 +122,7 @@ $(document).on('ready', function() {
 		user.username = name.toLowerCase();
 		$("#userField").html("HI " + user.username.toUpperCase() + ' ');
 		$("#userSelect").fadeOut(300);
+		ws.send(JSON.stringify({type: "get_open_trades", v: 2}));
 		set_my_color_options(user.username);
 		build_trades(bag.trades);
 	});
@@ -155,7 +161,7 @@ $(document).on('ready', function() {
 					};
 					
 		$(".willingWrap").each(function(){
-			var q = $(this).find("select[name='will_quantity']").val();
+			//var q = $(this).find("select[name='will_quantity']").val();
 			var color = $(this).find(".colorSelected").attr('color');
 			var size = $(this).find("select[name='will_size']").val();
 			//console.log('!', q, color, size);
@@ -168,7 +174,9 @@ $(document).on('ready', function() {
 		
 		console.log('sending', msg);
 		ws.send(JSON.stringify(msg));
-		$("#notificationPanel").animate({width:'toggle'});
+		$(".panel").hide();
+		$("#homePanel").show();
+		$(".colorValue").html('Color');
 	});
 	
 	$(document).on("click", ".confirmTrade", function(){
@@ -192,6 +200,7 @@ $(document).on('ready', function() {
 						}
 					};
 		ws.send(JSON.stringify(msg));
+		$("#notificationPanel").animate({width:'toggle'});
 	});
 	
 	$(document).on("click", ".willingWrap .colorOption", function(){
@@ -233,8 +242,15 @@ function connect_to_server(){
 	
 	function onOpen(evt){
 		console.log("WS CONNECTED");
-		ws.send(JSON.stringify({type: "get", v:2}));
 		ws.send(JSON.stringify({type: "chainstats", v:2}));
+		
+		setTimeout(function(){
+			ws.send(JSON.stringify({type: "get_open_trades", v: 2}));
+		}, 600);
+		
+		setTimeout(function(){
+			ws.send(JSON.stringify({type: "get", v:2}));
+		}, 900);
 	}
 
 	function onClose(evt){
@@ -307,7 +323,7 @@ function build_ball(data){
 			$("#leroyswrap").append(html);
 		}
 	}
-	//console.log('marbles', bag.marbles);
+	console.log('marbles', bag.marbles);
 	
 	return html;
 }
@@ -315,7 +331,6 @@ function build_ball(data){
 
 function build_trades(trades){
 	var html = '';
-
 	
 	if(!bag.trades) bag.trades = trades;						//store the trades for posterity
 	
@@ -332,12 +347,13 @@ function build_trades(trades){
 					buttonStatus = 'disabled="disabled"';
 				}
 				html += '<tr class="' + style +'">';
-				html +=		'<td>' + formatDate(Number(trades[i].timestamp) / 1000 / 1000, '%M/%d %I:%m%P') + '</td>';
-				//html +=		'<td>' + trades[i].user + '</td>';
-				html +=		'<td>' + trades[i].want.color + '</td>';
-				html +=		'<td>' + trades[i].want.size + '</td>';
+				html +=		'<td>' + formatDate(Number(trades[i].timestamp), '%M/%d %I:%m%P') + ' (' + i + ', ' + x + ')</td>';
 				html +=		'<td>1</td>';
-				html +=		'<td>' + trades[i].willing[x].color + ' - ' + trades[i].willing[x].size + '</td>';
+				html +=		'<td><span class="fa fa-2x fa-circle ' + trades[i].want.color + '"></span></td>';
+				html +=		'<td>' + sizeMe(trades[i].want.size) + '</td>';
+				html +=		'<td>1</td>';
+				html +=		'<td><span class="fa fa-2x fa-circle ' + trades[i].willing[x].color + '"></span></td>';
+				html +=		'<td>' + sizeMe(trades[i].willing[x].size) + '</td>';
 				html +=		'<td>';
 				html +=			'<button type="button" class="confirmTrade altButton" ' + buttonStatus +' name="' + name + '" trade_pos="' + i + '" willing_pos="' + x + '">';
 				html +=				'<span class="fa fa-exchange"> &nbsp;&nbsp;TRADE</span>';
@@ -351,6 +367,12 @@ function build_trades(trades){
 	console.log('trades', bag.trades);
 	
 	return html;
+}
+
+function sizeMe(mm){
+	var size = 'Large';
+	if(Number(mm) == 16) size = 'Small';
+	return size;
 }
 
 function set_my_color_options(username){
@@ -391,8 +413,9 @@ function set_my_size_options(username, colorOption){
 		}
 	}
 	
+	console.log('valid sizes:', sizes);
 	for(var i in sizes){
-		html += '<option value="' + i + '">' + i + '</option>';					//build it
+		html += '<option value="' + i + '">' + sizeMe(i) + '</option>';					//build it
 	}
 	$(colorOption).parent().parent().next("select[name='will_size']").html(html);
 }
@@ -403,7 +426,7 @@ function set_my_size_options(username, colorOption){
 function find_valid_marble(user, color, size){				//return true if user owns marble of this color and size
 	for(var i in bag.marbles){
 		if(bag.marbles[i].user.toLowerCase() == user.toLowerCase()){
-			console.log('!', bag.marbles[i].color, color.toLowerCase(), bag.marbles[i].size, size);
+			//console.log('!', bag.marbles[i].color, color.toLowerCase(), bag.marbles[i].size, size);
 			if(bag.marbles[i].color.toLowerCase() == color.toLowerCase() && bag.marbles[i].size == size){
 				return bag.marbles[i].name;
 			}
