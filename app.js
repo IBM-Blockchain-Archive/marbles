@@ -132,46 +132,46 @@ var obc = new Obc1();
 // ==================================
 // load peers manually or from VCAP, VCAP will overwrite hardcoded list!
 // ==================================
-var peers =    [
+var peers =     [
       {
-        "discovery_host": "169.44.38.120",
-        "discovery_port": "33490",
-        "api_host": "169.44.38.120",
-        "api_port": "33491",
+        "discovery_host": "169.44.38.113",
+        "discovery_port": "33668",
+        "api_host": "169.44.38.113",
+        "api_port": "33669",
         "type": "peer",
-        "network_id": "2f2777bb-698c-4088-8fbf-bd48f22f1492",
-        "id": "2f2777bb-698c-4088-8fbf-bd48f22f1492_vp1",
-        "api_url": "http://169.44.38.120:33491"
+        "network_id": "46d54f75-9813-4deb-ab35-de7151f741a2",
+        "id": "46d54f75-9813-4deb-ab35-de7151f741a2_vp1",
+        "api_url": "http://169.44.38.113:33669"
+      },
+      {
+        "discovery_host": "169.44.38.114",
+        "discovery_port": "33477",
+        "api_host": "169.44.38.114",
+        "api_port": "33478",
+        "type": "peer",
+        "network_id": "46d54f75-9813-4deb-ab35-de7151f741a2",
+        "id": "46d54f75-9813-4deb-ab35-de7151f741a2_vp2",
+        "api_url": "http://169.44.38.114:33478"
       },
       {
         "discovery_host": "169.44.38.124",
-        "discovery_port": "33540",
+        "discovery_port": "33550",
         "api_host": "169.44.38.124",
-        "api_port": "33541",
+        "api_port": "33551",
         "type": "peer",
-        "network_id": "2f2777bb-698c-4088-8fbf-bd48f22f1492",
-        "id": "2f2777bb-698c-4088-8fbf-bd48f22f1492_vp4",
-        "api_url": "http://169.44.38.124:33541"
-      },
-      {
-        "discovery_host": "169.44.38.102",
-        "discovery_port": "33418",
-        "api_host": "169.44.38.102",
-        "api_port": "33419",
-        "type": "peer",
-        "network_id": "2f2777bb-698c-4088-8fbf-bd48f22f1492",
-        "id": "2f2777bb-698c-4088-8fbf-bd48f22f1492_vp3",
-        "api_url": "http://169.44.38.102:33419"
+        "network_id": "46d54f75-9813-4deb-ab35-de7151f741a2",
+        "id": "46d54f75-9813-4deb-ab35-de7151f741a2_vp4",
+        "api_url": "http://169.44.38.124:33551"
       },
       {
         "discovery_host": "169.44.38.120",
-        "discovery_port": "33492",
+        "discovery_port": "33512",
         "api_host": "169.44.38.120",
-        "api_port": "33493",
+        "api_port": "33513",
         "type": "peer",
-        "network_id": "2f2777bb-698c-4088-8fbf-bd48f22f1492",
-        "id": "2f2777bb-698c-4088-8fbf-bd48f22f1492_vp2",
-        "api_url": "http://169.44.38.120:33493"
+        "network_id": "46d54f75-9813-4deb-ab35-de7151f741a2",
+        "id": "46d54f75-9813-4deb-ab35-de7151f741a2_vp3",
+        "api_url": "http://169.44.38.120:33513"
       }
     ];
 console.log('loading hardcoded peers');
@@ -179,43 +179,43 @@ console.log('loading hardcoded peers');
 var users = [
       {
         "username": "peer1",
-        "secret": "65e0f0e68b"
+        "secret": "5bc1293a41"
       },
       {
         "username": "peer2",
-        "secret": "2eb48cf04f"
+        "secret": "c7d1e446b9"
       },
       {
         "username": "peer3",
-        "secret": "279ee05cef"
+        "secret": "42e724215d"
       },
       {
         "username": "peer4",
-        "secret": "5fc0a9b796"
+        "secret": "10a155d41b"
       },
       {
         "username": "peer5",
-        "secret": "409285cfdf"
+        "secret": "cd58003225"
       },
       {
         "username": "user1",
-        "secret": "d8b0303ee4"
+        "secret": "f9780651c4"
       },
       {
         "username": "user2",
-        "secret": "3915a873c9"
+        "secret": "1015d5f2df"
       },
       {
         "username": "user3",
-        "secret": "074c75c1dc"
+        "secret": "b0abf4a54d"
       },
       {
         "username": "user4",
-        "secret": "bd484bc0dc"
+        "secret": "3e14768ea7"
       },
       {
         "username": "user5",
-        "secret": "8e715c501b"
+        "secret": "b6cb13486c"
       }
     ];
 console.log('loading hardcoded users');
@@ -225,9 +225,12 @@ if(process.env.VCAP_SERVICES){															//load from vcap, search for servic
 	for(var i in servicesObject){
 		if(i.indexOf('ibm-blockchain') >= 0){											//looks close enough
 			if(servicesObject[i][0].credentials && servicesObject[i][0].credentials.peers){
-				console.log('overwritting peers & users, loading from a vcap service: ', i);
+				console.log('overwritting peers, loading from a vcap service: ', i);
 				peers = servicesObject[i][0].credentials.peers;
-				users = servicesObject[i][0].credentials.users;
+				if(servicesObject[i][0].credentials.users){
+					console.log('overwritting users, loading from a vcap service: ', i);
+					users = servicesObject[i][0].credentials.users;
+				} 
 				break;
 			}
 		}
@@ -248,12 +251,12 @@ obc.network(peers);																		//setup network connection for rest endpoin
 // configure obc-js sdk
 // ==================================
 var options = 	{
-					zip_url: 'https://github.com/dshuffma-ibm/simplestuff/archive/master.zip',
-					git_dir: 'simplestuff-master/phase2',												//subdirectroy name of chaincode after unzipped
-					git_url: 'https://github.com/dshuffma-ibm/simplestuff/phase2',						//git clone http url
+					zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip',
+					git_dir: 'marbles-chaincode-master/phase2',													//subdirectroy name of chaincode after unzipped
+					git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/phase2',						//git clone http url
 					
 					//hashed cc name from prev deployment
-					deployed_name: '4a237d1e7be8bb2fe61a9f00b7200c1f9a16f77ec2dc4045a540fd84da2327a80975d66394add22961544ea07dae943a1941f175d547b554a0b5d5d2fa8d7c93'
+					//deployed_name: '4a237d1e7be8bb2fe61a9f00b7200c1f9a16f77ec2dc4045a540fd84da2327a80975d66394add22961544ea07dae943a1941f175d547b554a0b5d5d2fa8d7c93'
 				};
 if(process.env.VCAP_SERVICES){
 	console.log('\n[!] looks like you are in bluemix, I am going to clear out the deploy_name so that it deploys new cc.\n[!] hope that is ok budddy\n');
@@ -264,7 +267,7 @@ obc.load(options, cb_ready);															//parse/load chaincode
 function cb_ready(err, cc){																//response has chaincode functions
 	async.each([0, 1, 2, 3], function(index, cb) {
 		obc.switchPeer(index, users[index].username);
-		obc.register(users[index].username, users[index].secret, cb);		
+		obc.register(users[index].username, users[index].secret, cb);
 	}, function(err) {
 		app1.setup(obc, cc);
 		app2.setup(obc, cc);

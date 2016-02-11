@@ -45,31 +45,47 @@ A JS library for easier interaction with Open Blockchain chaincode
 	// ==================================
 	var peers =     [
 		{
-			"discovery_host": "158.85.255.239",
-			"discovery_port": "33096",
-			"api_host": "158.85.255.239",
-			"api_port": "33097",
-			"id": "b6631eb8-9108-4d53-8202-8492d1d33a45_vp5",
-			"api_url": "http://158.85.255.239:33097"
+			"discovery_host": "xxx.xxx.xxx.xxx",
+			"discovery_port": "xxxxx",
+			"api_host": "xxx.xxx.xxx.xxx",
+			"api_port": "xxxxx",
+			"id": "xxxxxx-xxxx-xxx-xxx-xxxxxxxxxxxx_vpx",
+			"api_url": "http://xxx.xxx.xxx.xxx:xxxxx"
 		}
 		
 		];
+	var users = [
+			{
+				"username": "user1",
+				"secret": "xxxxxxxx"
+			}
+		];
 
-	if (process.env.VCAP_SERVICES){
-		console.log("We are running in Cloud Foundry!");
+	if(process.env.VCAP_SERVICES){															//load from vcap, search for service, 1 of the 3 should be found...
 		var servicesObject = JSON.parse(process.env.VCAP_SERVICES);
-		
-		//old
-		if(servicesObject && servicesObject['blockchain-staging'] && servicesObject['blockchain-staging'][0] && servicesObject['blockchain-staging'][0].credentials){
-			console.log('loading peers from env: blockchain-staging');
-			peers = servicesObject['blockchain-staging'][0].credentials.peers;
-		}
-		//new
-		else if(servicesObject && servicesObject['ibm-blockchain-3-staging'] && servicesObject['ibm-blockchain-3-staging'][0] && servicesObject['ibm-blockchain-3-staging'][0].credentials){
-			console.log('loading peers from env: ibm-blockchain-3-staging');
-			peers = servicesObject['ibm-blockchain-3-staging'][0].credentials.peers;
+		for(var i in servicesObject){
+			if(i.indexOf('ibm-blockchain') >= 0){											//looks close enough
+				if(servicesObject[i][0].credentials && servicesObject[i][0].credentials.peers){
+					console.log('overwritting peers, loading from a vcap service: ', i);
+					peers = servicesObject[i][0].credentials.peers;
+					if(servicesObject[i][0].credentials.users){
+						console.log('overwritting users, loading from a vcap service: ', i);
+						users = servicesObject[i][0].credentials.users;
+					} 
+					break;
+				}
+			}
 		}
 	}
+	// CATCH - We should only use 'user1-n', so deleting others
+	var valid_users = [];
+	for(var i = 0; i < users.length; i++) {
+		if(users[i].username.indexOf('user') == 0){
+			valid_users.push(users[i]);
+		}
+	}
+	users = valid_users;
+
 	// Step 2 ==================================
 	obc.network(peers);																		//setup network connection for rest endpoint
 
@@ -77,26 +93,35 @@ A JS library for easier interaction with Open Blockchain chaincode
 	// configure obc-js sdk
 	// ==================================
 	var options = 	{
-		zip_url: 'https://codeload.github.com/dshuffma-ibm/simplestuff/zip/master',
-		git_dir: 'simplestuff-master',																		//subdirectroy name of chaincode after unzipped
-		git_url: 'https://github.com/dshuffma-ibm/simplestuff',												//git clone http url
-		
-		//hashed cc name from prev deploy [IF YOU COMMENT LINE BELOW OUT IT WILL DEPLOY]
-		deployed_name: '31bfa10d161e6b10a460335f90787d305f5ae775d83cf20a49f6b187e5e1e253585d6e377cc5386977260ba6144f75e2e334a23dc2a32ab867122a548c3e57c4'
-	};
-	// Step 3 ==================================
-	obc.load(options, cb_ready);															//parse/load chaincode
+					zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip',
+					git_dir: 'simplestuff-master/phase2',												//subdirectroy name of chaincode after unzipped
+					git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/tree/master/phase2',						//git clone http url
+					
+					//hashed cc name from prev deployment
+					deployed_name: '4a237d1e7be8bb2fe61a9f00b7200c1f9a16f77ec2dc4045a540fd84da2327a80975d66394add22961544ea07dae943a1941f175d547b554a0b5d5d2fa8d7c93'
+				};
+	if(process.env.VCAP_SERVICES){
+		console.log('\n[!] looks like you are in bluemix, I am going to clear out the deploy_name so that it deploys new cc.\n[!] hope that is ok budddy\n');
+		options.deployed_name = "";
+	}
+	obc.load(options, cb_ready);
 
 	// Step 4 ==================================
 	function cb_ready(err, cc){																//response has chaincode functions
-		chaincode = cc;																		//copy to higher scope
-		if(chaincode.details.deployed_name === ""){										//decide if i need to deploy
-			chaincode.deploy('init', ['99'], './', cb_deployed);
-		}
-		else{
-			obc.save('./');
-			console.log('chaincode details indicates chaincode has been previously deployed');
-		}
+		async.each([0, 1, 2, 3], function(index, cb) {
+			obc.switchPeer(index, users[index].username);
+			obc.register(users[index].username, users[index].secret, cb);		
+		}, function(err) {
+			app1.setup(obc, cc);
+			app2.setup(obc, cc);
+			if(cc.details.deployed_name === ""){												//decide if i need to deploy
+				cc.deploy('init', ['99'], './cc_summaries', cb_deployed);
+			}
+			else{
+				console.log('chaincode summary file indicates chaincode has been previously deployed');
+				cb_deployed();
+			}
+		});
 	}
 
 	// Step 5 ==================================
@@ -118,7 +143,7 @@ The chaincode object will have dot notation to the functions in the chaincode.
 		git_url: 'https://github.com/dshuffma-ibm/simplestuff',												//git clone http url
 		
 		//hashed cc name from prev deploy [IF YOU COMMENT LINE BELOW OUT IT WILL DEPLOY]
-		deployed_name: '5e34bf5b51c51fbc8e1af98da8ad840c69ac9c9a8885e3e4d0e63b3b8074ee66669ac903588315a6c8d88683f563418e330747feafe7ef20a1cd54ff7685da19'
+		//deployed_name: '5e34bf5b51c51fbc8e1af98da8ad840c69ac9c9a8885e3e4d0e63b3b8074ee66669ac903588315a6c8d88683f563418e330747feafe7ef20a1cd54ff7685da19'
 	};
 	obc.load(options, cb_ready);
 

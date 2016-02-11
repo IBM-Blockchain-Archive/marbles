@@ -1,26 +1,27 @@
-#OBC - Node.js "SimpleStuff App 1" Demo
+#OBC - Node.js "Marbles Phase 1" Demo
 
 ##Doc Links
 - David's Main Readme Notes - [here](./README.md)
 - SDK Doc - [utils/obc-js](./utils/obc-js/README.md)
-- Tutorial for SimpleStuff App 1 - [here](./simplestuff1_tutorial.md)
-- Tutorial for SimpleStuff App 2 - coming
+- Tutorial for Marbles Phase 1 - [here](./phase1_tutorial.md)
+- Tutorial for Marbles Phase 2 - coming
 
 ##BEFORE YOU RUN
 - The expectations of this application are to test the JS SDK and help guide its development.  It will also double as an example to get developers familiar with our SDK + chaincode.
 - This is a very simple asset transfer demonstration.  Two users can create and exchange marbles with each other.
 - There will be multiple phases, only phase 1 is complete  [1/28/2016]
-- The chaincode is not included, it can be found here: [https://github.com/dshuffma-ibm/simplestuff](https://github.com/dshuffma-ibm/simplestuff)
+- The chaincode is not included, it can be found here: [https://github.com/ibm-blockchain/marbles-chaincode](hhttps://github.com/ibm-blockchain/marbles-chaincode)
 - As a "tutorial" this doc is incomplete.  As a "how do I run your marble thing" it should be sufficient.
 
 ***
 
-##App 1 Goals
+##Phase 1 Goals
 - User can create a marble and store it in the chaincode state
 - User can read and display all marbles in the chaincode state
 - User can transfer marble to another user
 - User can delete a marble
 - User can see when a new block is written to the ledger
+- Deployable on Bluemix
 
 ***
 
@@ -33,7 +34,7 @@
 
 #Application Background
 Our fancy pants application is going to blow minds by creating and transferring marbles between two users. 
-We are going to do this in Node.JS and a little bit of GoLang. 
+We are going to do this in Node.JS and a bit of GoLang. 
 The backend of this application will be the GoLang code running in our Open Blockchain Peer network. 
 From here on out the GoLang code will be referred to as 'Chaincode' or 'cc'. 
 The chaincode itself will create a marble by storing it to the chaincode state. 
@@ -62,7 +63,7 @@ This allow us to use dot notation to call our GoLang functions (such as `chainco
 1. The cc container will carry our the desired operation.
 
 #Chaincode
-To understand what is going on we need to start looking at the chaincode.  The complete cc code for this example can be found [here](https://github.com/dshuffma-ibm/simplestuff/blob/master/chaincode_ex.go)
+To understand what is going on we need to start looking at the chaincode.  The complete cc code for this example can be found [here](https://github.com/ibm-blockchain/marbles-chaincode/blob/master/phase1/chaincode_ex.go)
 	
 The first interesting place to look is the Run() function. 
 This is our entry point into chaincode. 
@@ -98,7 +99,17 @@ It will then give you a dot notation to use them in your Node.js application. ie
 	chaincode.read("abc")				//calls the Query() function which will read the value of "abc" from the cc state
 	chaincode.rule_the_world("tomrrow")	//invokes the chaincode function "rule_the_world" (assuming it exists)
 
-#Create Network
+
+# Setup Options:
+(1) Deploy locally using the [Manual] steps [here](#Network) 
+
+`OR`
+
+(2) Deploy to Bluemix using this button &nbsp;&nbsp; 
+[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/ibm-blockchain/marbles.git)
+
+
+#[Manual] Network:
 So the cc is great and all but first we need a blockchain network.
 We have a Bluemix tile that can create you your own personal network at the push of a button.
 
@@ -119,7 +130,7 @@ The network is all setup.  Now we need to copy the peer data and pass it to our 
 1. Click the "Service Credentials" link on the left
 1. Copy the value of the peer field to app.js at line 131ish. We only need the "peer" array data.
 
-#Setup Node.js
+#Setup Local Node.js
 Now we are ready to work on the application!
 
 1. First up we need to install our dependencies. Open a command prompt/terminal and browse to the root of this project.
@@ -136,44 +147,40 @@ Now we are ready to work on the application!
 1. Make sure you wait for the all clear message. 
 		
 		[obc-js] Deploying Chaincode - Complete
+		starting websocket
 		
-1. Open up your browser and browse to [http://localhost:3000/cci](http://localhost:3000/cci)
-1. This is a little tool to check on our chaincode. It will print important messages to the JavaScript console.  Open the console by right clicking anywhere in the page and selecting "Inspect" or "Inspect Element". Then open the console tab in the panel that appeared.
-1. We need to make sure the network is responsive before trying the marble application.
-	1. Cycle between reading and writing to the variable named "a".  If the value sticks, then we are good.  If the value is not sticking for all peers you will need to delete this network and try again... (the values will print out in the JS console)
-
 #Run Marbles App
 1. Open up your browser and browse to [http://localhost:3000](http://localhost:3000/)
 1. You should be staring at our Marble Demo application
-1. Finally we can test the application. Click the "Create" tab
-1. Fill out any fields you want, then click the "Create" button
-1. You should have auto flipped back to the "Admin" tab and see that a new marble has been created!
-	- If not click the "Admin" tab again
-	- If its stuck go back to chaincode investigator and check if your network is responsive (go to the last section, step 6)
-1. Next lets trade a marble.  Click one then click the corresponding arrow to transfer it to the other user. It should auto reload the marbles. 
+1. Finally we can test the application. Click the "Create" link
+1. Fill out all the fields, then click the "Create" button
+1. It should have flipped you back to "Home" and you should see that a new marble has been created
+	- If not click the "Home" tab again
+	- If its stuck go the the troubleshooting section
+1. Next lets trade a marble.  Click and drag one marble from one person's list to another. It should temporary become transulcent and then auto reload the marbles in their new state. 
 	- If not refresh the page
-	- If its stuck go back to chaincode investigator and check if your network is responsive (go to the last section, step 6)
+	- If its stuck go the the troubleshooting section
 
 
-#Run Marbles w/Bluemix
+#Run Marbles w/Bluemix (manually)
 1. This app is already ready to run on bluemix
 1. Create a new network from the Bluemix tile, and name it "myblockchain"
 1. Edit manifest.yml 
 	- change the sevice name to match your network's name, or remove the line if you don't want the app to bind to the service
-	- change the app name and host name
-	- remove the 'domain:' line if it is in your manifest.yml
+	- change the app name and host name since "marbles" is taken
 1. Push the application by opening a command prompt and browsing to this directory
 	
-	> cf login  
-	> cf push marbles
 	
-1. The application will bind to the service "myblockchain" and grab the peer data from VCAP_SERVICES. Code for this is in app.js line 141ish
+	> cf login 
+	> (follow the prompts)
+	> cf push YOUR_APP_NAME_HERE
+	
+1. The application will bind to the service "myblockchain" and grab the peer data from VCAP_SERVICES. Code for this is in app.js line 223ish
 
 
 #Trouble Shooting
-1. peers in the network appear to get stuck - known fabric issue. create a new network and start over =(
-1. peer drops requests (timeout) - known fabric issue. try submitting the query/invoke again, or having less marbles...
-1. post other issues to slack. org: bluechain, channel: ??? (dsh todo - make a channel)
+1. to do dsh - add things here
+1. Slack channel - Bluechain Team - #i_lost_my_marbles
 
 ***
 dsh todo - make images for things in this tutorial  

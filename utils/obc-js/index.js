@@ -481,6 +481,7 @@ function deploy(func, args, save_path, cb){
 					},
 					secureContext: obc.enrollId
 				};
+	console.log('!body', body);
 	options.success = function(statusCode, data){
 		console.log("\n\n\t deploy success [wait 1 more minute]");
 		chaincode.details.deployed_name = data.message;

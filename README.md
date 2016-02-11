@@ -1,9 +1,9 @@
-# SimpleStuff Demo Notes
+# Marbles Demo Notes
 
 ## Doc Links
 - obc.js SDK Doc - [utils/obc-js](./utils/obc-js/README.md)
-- Tutorial for SimpleStuff App 1 - [here](./simplestuff1_tutorial.md) (start here)
-- Tutorial for SimpleStuff App 2 - coming
+- Tutorial for Marbles Phase 1 - [here](./phase1_tutorial.md) (start here)
+- Tutorial for Marbles Phase 2 - coming
 
 ***
 
@@ -79,6 +79,7 @@
 - [ ] show open trades made by user
 - [ ] ability to remove open trades by user
 - [ ] make layout adaptive
+- [ ] sanitize git url to make sure it looks right... should not have .git
 
 
 - I changed a if(e != null) to if(e == null) and it didn't create a new hash...?
