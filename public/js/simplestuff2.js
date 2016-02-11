@@ -143,9 +143,15 @@ $(document).on('ready', function() {
 		$("#createTrade").fadeOut();
 	});
 	
+	$(".removeWilling:first").hide();
 	$("#addMarbleButton").click(function(){
 		var temp = $(".willingWrap:first").html();
 		$(".willingWrap:first").parent().append('<div class="willingWrap">' + temp + '</div>');
+		$(".removeWilling").show();
+		$(".removeWilling:first").hide();
+	});
+	$(document).on("click", ".removeWilling", function(){
+		$(this).parent().remove();
 	});
 	
 	$("#tradeSubmit").click(function(){

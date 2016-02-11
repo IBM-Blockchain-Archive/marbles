@@ -104,6 +104,15 @@ button:disabled, .inactiveButton{
 	text-align: center;
 	width:200px;
 }
+.removeWilling{
+	color: $acc_color2;
+	padding:5px;
+	font-size:13px;
+}
+.removeWilling:hover{
+	cursor: pointer;
+	color: $hi_color1;
+}
 
 
 // --------- cloes a trade ---------

@@ -709,6 +709,15 @@ button:disabled, .inactiveButton {
   text-align: center;
   width: 200px; }
 
+.removeWilling {
+  color: #646B73;
+  padding: 5px;
+  font-size: 13px; }
+
+.removeWilling:hover {
+  cursor: pointer;
+  color: orange; }
+
 #openTradesTable {
   margin-top: 20px; }
 
