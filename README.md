@@ -78,6 +78,7 @@
 - [ ] re-parallelize the queryies
 - [ ] show open trades made by user
 - [ ] ability to remove open trades by user
+- [ ] make layout adaptive
 
 
 - I changed a if(e != null) to if(e == null) and it didn't create a new hash...?

@@ -24,7 +24,7 @@ tr{margin-bottom:5px; background:$acc_color1-5; border-bottom: 6px $main_bg soli
 //tr:nth-child(even){background:$acc_color1-5; border:0;}
 tr:hover{background:$hi_color1;}
 //tr:nth-child(even):hover{background:$hi_color1; border:0;}
-td{padding:15px 10px;}
+td{padding:15px 10px; vertical-align: middle;}
 th{
 	padding:10px 5px; 
 	font-weight:normal; 

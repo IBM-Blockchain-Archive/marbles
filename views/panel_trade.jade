@@ -67,8 +67,20 @@
 	#openTrades(hidden)
 		br
 		label(style="line-height:18px;")
-			input(type="checkbox" style="vertical-align: bottom;")
+			input(type="checkbox" style="vertical-align: bottom;" name="showMyTrades")
 			span.hint(style="color:#fff;") SHOW MY ORDERS
+		
+		table#myTradesTable
+			thead
+				tr 
+					th TIME
+					th WANT
+					th
+					th
+					th WILLING
+					th &nbsp;
+			tbody#myTradesBody
+		
 		table#openTradesTable
 			thead
 				tr 

@@ -213,6 +213,15 @@ $(document).on('ready', function() {
 		set_my_size_options(user.username, this);
 	});
 	
+	$("input[name='showMyTrades']").change(function(){
+		if($(this).is(":checked")){
+			$("#myTradesTable").fadeIn();
+		}
+		else{
+			$("#myTradesTable").fadeOut();
+		}
+	});
+	
 	// =================================================================================
 	// Helper Fun
 	// =================================================================================
@@ -353,7 +362,7 @@ function build_trades(trades){
 					buttonStatus = 'disabled="disabled"';
 				}
 				html += '<tr class="' + style +'">';
-				html +=		'<td>' + formatDate(Number(trades[i].timestamp), '%M/%d %I:%m%P') + ' (' + i + ', ' + x + ')</td>';
+				html +=		'<td>' + formatDate(Number(trades[i].timestamp), '%M/%d %I:%m%P') + '</td>';
 				html +=		'<td>1</td>';
 				html +=		'<td><span class="fa fa-2x fa-circle ' + trades[i].want.color + '"></span></td>';
 				html +=		'<td>' + sizeMe(trades[i].want.size) + '</td>';
@@ -369,7 +378,41 @@ function build_trades(trades){
 			}
 		}
 	}
+	if(html == '') html = '<tr><td>nothing here...</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
 	$("#openTradesBody").html(html);
+	console.log('trades', bag.trades);
+	
+	build_my_trades(trades);
+	return html;
+}
+
+
+function build_my_trades(trades){
+	var html = '';
+	
+	if(!bag.trades) bag.trades = trades;						//store the trades for posterity
+	
+	for(var i in trades){
+		//console.log(trades[i]);
+		var style = ' ';
+		
+		if(user.username.toLowerCase() == trades[i].user.toLowerCase()){				//only show trades with myself
+			html += '<tr class="' + style +'">';
+			html +=		'<td>' + formatDate(Number(trades[i].timestamp), '%M/%d %I:%m%P') + '</td>';
+			html +=		'<td>1</td>';
+			html +=		'<td><span class="fa fa-2x fa-circle ' + trades[i].want.color + '"></span></td>';
+			html +=		'<td>' + sizeMe(trades[i].want.size) + '</td>';
+			html +=		'<td>';
+			for(var x in trades[i].willing){
+				html +=		'<p>1 <span class="fa fa-2x fa-circle ' + trades[i].willing[x].color + '"></span>&nbsp; &nbsp;' + sizeMe(trades[i].willing[x].size) + '</p>';
+			}
+			html += 	'</td>';
+			html +=		'<td><span class="fa fa-remove removeTrade"></span></td>';
+			html += '</tr>';
+		}
+	}
+	if(html == '') html = '<tr><td>nothing here...</td><td></td><td></td><td></td><td></td><td></td></tr>';
+	$("#myTradesBody").html(html);
 	console.log('trades', bag.trades);
 	
 	return html;
