@@ -1,17 +1,11 @@
 ---
-
-#declared-services:
-#  ibm-blockchain-3-dev:
-#    label: myblockchain
-#    plan: ibm-blockchain-plan-3-dev
-
 applications:
 - disk_quota: 1024M
   host: marbles
   name: marbles
   command: "node app.js"
   path: "."
-  domain: stage1.mybluemix.net
+  domain: mybluemix.net
   instances: 1
   memory: 512M
   services:

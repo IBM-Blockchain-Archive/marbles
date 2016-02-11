@@ -1,5 +1,7 @@
 # SimpleStuff Demo Notes
 
+[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/ibm-blockchain/marbles.git)
+
 ## Doc Links
 - obc.js SDK Doc - [utils/obc-js](./utils/obc-js/README.md)
 - Tutorial for SimpleStuff App 1 - [here](./simplestuff1_tutorial.md) (start here)
