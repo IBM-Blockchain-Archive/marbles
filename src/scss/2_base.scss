@@ -1,36 +1,75 @@
 @import 'color_theme';
 html{min-height:100%; position:relative;}
-body{margin:0 auto; 
+body{margin:0 auto;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	padding:0;
 	font-size:16px;
-	width:1175px;
+	width:100%;
 	text-align:left;
 	height:100%;
 	color:#555;
-	font-family: Roboto, sans-serif;
-	background:#fff;
+	background: $main_bg;
 }
-h1{font-size:26px; font-weight:normal; margin:0;}
+h1{font-size:44px; font-weight:normal; margin:0;}
 h2{font-size:22px; font-weight:normal; margin:0; display:inline;}
 h3{font-size:20pt; font-weight:normal; margin:0;}
 h4{font-size:16pt; font-weight:normal; margin:0;}
 h5{font-size:14px; font-weight:normal; margin:0;}
 h6{font-size:12px; font-weight:normal; margin:0;}
 ul,li{margin:0; padding:0;}
-tr,td,th{border:0; padding:3px; text-align:left; border-right:1px #ccc solid;}
-table{border-spacing:0; border:0; border-collapse:collapse; text-align:center;}
-tr{border-bottom:1px #ccc solid;}
-tr:nth-child(even){background:#F6F5F7; border:0;}
-tr:hover{background:#ccc;}
-tr:nth-child(even):hover{background:#ccc; border:0;}
-td{padding:5px 15px 5px 15px;}
-th{padding:4px; font-weight:normal; background:#555; color:#fff; text-align:center;}
+legend{text-align:left;}
+tr,td,th{border:0; padding:3px; text-align:center;}
+table{border-spacing:0; border:0; border-collapse:collapse; text-align:center; width:100%; font-size:15px;}
+tr{margin-bottom:5px; background:$acc_color1-5; border-bottom: 6px $main_bg solid;}
+//tr:nth-child(even){background:$acc_color1-5; border:0;}
+tr:hover{background:$hi_color1;}
+//tr:nth-child(even):hover{background:$hi_color1; border:0;}
+td{padding:15px 10px; vertical-align: middle;}
+th{
+	padding:10px 5px; 
+	font-weight:normal; 
+	font-size: 12px; 
+	background: $main_bg; 
+	color:$acc_color3; 
+	text-align:center; 
+	font-weight: bold;
+}
+thead tr{
+	border-top:1px $acc_color2 solid;
+	border-bottom:1px $acc_color2 solid;
+}
 p{margin:5px; padding:0;}
-hr{height:1px; border:none; background: #fff;}
+hr{height:1px; border:none; background: $acc_color2;}
+hr:first-of-type{height:2px;}
 pre{padding-left:15px;}
-input[type="submit"],input[type="button"], button{font-size:18px; cursor:pointer; padding:5px 10px; background:$main_bg; color:#fff; border:2px #fff solid; transition:background-color 0.2s ease; border-radius:5px;}
-input[type="submit"]:hover,input[type="button"]:hover, button:hover{background:#fff; color:$main_bg;}
-input[type="text"], input[type="password"], select{padding:5px 10px; margin:5px; color:#2e6da4;}
+input[type="submit"],input[type="button"], button{
+	font-size:11px; 
+	cursor:pointer; 
+	padding:5px 10px; 
+	background: $hi_color3; 
+	color:$acc_color1;
+	border:0; 
+	transition:background-color 0.2s ease;
+	border-radius:30px;
+	min-width:130px;
+	box-shadow: -1px 4px 2px -2px rgba(0,0,0,0.75);
+}
+input:focus, select:focus, button:focus{
+	outline: none !important;
+	border-color: #fff !important;
+}
+input[type="submit"]:hover,input[type="button"]:hover, button:hover{
+	background:$main_color;
+}
+input[type="text"], input[type="password"], select{
+	padding:3px 10px; 
+	margin:5px; 
+	color:$main_color;
+	border: 1px solid $acc_color3;
+	border-radius:30px;
+	background:$main_bg;
+	min-width:120px;
+}
 small{font-size:10pt;}
 img{border:0; max-width:100%;}
 a, a:visited{color:#2e6da4; cursor:pointer;}

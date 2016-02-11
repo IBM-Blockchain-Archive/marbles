@@ -23,22 +23,29 @@ var rest    = require("../utils/rest.js");
 // Home
 // ============================================================================================================================
 router.route("/").get(function(req, res){
-	res.redirect('/app1');
+	res.redirect('/p1');
 });
 
 // ============================================================================================================================
-// App 1
+// Phase 1
 // ============================================================================================================================
-router.route("/app1").get(function(req, res){
-	res.render('app1', {title: 'SimpleStuff App1', bag: {setup: setup}} );
+router.route("/p1").get(function(req, res){
+	res.render('phase1', {title: 'Simple Stuff P1', bag: {setup: setup}} );
+});
+router.route("/p1/:page?").get(function(req, res){
+	res.render('phase1', {title: 'Simple Stuff P1', bag: {setup: setup}} );
 });
 
 // ============================================================================================================================
-// App 2
+// Phase 2
 // ============================================================================================================================
-router.route("/app2").get(function(req, res){
-	res.render('app2', {title: 'SimpleStuff App2', bag: {setup: setup}} );
+router.route("/p2").get(function(req, res){
+	res.render('phase2', {title: 'Simple Stuff P2', bag: {setup: setup}} );
 });
+router.route("/p2/:page?").get(function(req, res){
+	res.render('phase2', {title: 'Simple Stuff P2', bag: {setup: setup}} );
+});
+
 
 
 // ============================================================================================================================
@@ -58,16 +65,13 @@ router.route("/cci/:filename?").get(function(req, res){
 	var cc = {};
 	if(req.params.filename){
 		try{
-			console.log('loading', req.params.filename);
-			//var temp = fs.readFileSync( path.join(__dirname,'../cc_summaries/' + req.params.filename + '.json'), 'utf8');
-			//cc = JSON.parse(temp);
+			console.log('loading cc summary:', req.params.filename);
 			cc = require('../cc_summaries/' + req.params.filename + '.json');
 		}
 		catch(e){
 			console.log('error loading chaincode summary file', e);
 		};
 	}
-	console.log('got', cc);
 	res.render('investigate', {title: 'Investigator', bag: {cc: cc, setup: setup}} );
 });
 

@@ -6,84 +6,78 @@
   margin-top:10px;
 }
 
+#navPanel{
+	height:60px;
+	line-height: 60px;
+	width:100%;
+	background: $acc_color1;
+	font-size: 15px;
+}
+
+#mainPanel{
+	color: $main_color;
+}
+
 #contentPanel {
 	min-height:500px;
-	color:#fff;
 	position: relative;
+	margin:30px 50px auto;
 }
 
-.adminview{
-	background: $main_bg;
-}
-
-.createview{
-	padding:0 20px;
-	background: orange;
-}
-
-.tradeview{
-	padding:0 20px;
-	background: yellowgreen;
+#footerPanel{
+	position: fixed;
+	bottom: 0;
+	width:100%;
 }
 
 
 
-
-#navPanel {
-	display:inline-block;
-}
 .nav {
-	background: #fff;
-	color:#fff;
-	padding: 15px 40px;
+	color:$acc_color3;
+	padding: 0px 30px;
 	display:inline-block;
-	}
+}
 .nav:hover{
 	text-decoration: underline;
 	cursor: pointer;
 }
-.selectednav{
-	background: $main_bg
+.selectedNav{
+	color: $main_color;
 }
-
-
-
-#logo{
-	color: $acc_color;
-	float:right;
-}
-#appName{
-	font-size: 24px;
-	padding-bottom:4px; 
-	font-weight:900;
-	display:inline-block;
-}
-#owner{
-	font-size:12px;
-	font-weight: 500;
+#linkWraps{
+	text-align:center;
+	width:100%;
 	position: absolute;
-	margin-left:88px;
-	color:#222;
+	top:0;
+	left:0;
+	z-index: 2;
+}
+#logo{
+	color: $acc_color3;
+	display:inline-block;
+	margin-left: 20px;
+	font-size: 18px;
+	font-weight: 600;
+	background: $acc_color1;
+	position: relative;
+	z-index:4;
 }
 
 
-.personWrap{
+// --------- Home ---------
+.marblesWrap{
 	width:42%;
 	display:inline-block;
-	text-align: left;
+	text-align: right;
 	color:#fff;
-	margin-left:2%;
 }
 .legend{
-	font-size:100px;
-	border-bottom: 1px #fff solid;
+	font-size:30px;
+	border-bottom: 1px $acc_color2 solid;
 	padding-bottom:5px;
+	text-align: left;
 }
 
-#transferright:hover, #transferleft:hover, #removemarble:hover{
-	cursor: pointer;
-	color:orange;
-}
 
 .ball{
 	display:inline-block;
@@ -95,44 +89,6 @@
 	cursor: pointer;
 	border-bottom:1px #fff solid;
 }
-.selectedball{
-	border:1px #fff solid;
-}
-
-.createball{
-	font-size:175px;
-	float:left;
-	margin-left:100px;
-}
-
-.borderMe{
-	border: 1px #41719C solid;
-}
-	
-#transferWrap{
-	position: absolute;
-	width:100%;
-	text-align: center;
-	top:30px;
-}
-
-#createform{
-	float:left;
-	margin-top:10px;
-	margin-left:20px;
-}
-
-#blockcounter{
-	position: absolute;
-	bottom:10px;
-	left:10px;
-}
-
-#blockdate{
-	position: absolute;
-	bottom:10px;
-	right:10px;
-}
 
 #description{
 	position: absolute;
@@ -140,78 +96,174 @@
 	width:100%;
 	text-align: center;
 }
+#toolWrap{
+	width:100%;
+	text-align: center;
+	position: fixed;
+	bottom:55px;
+	margin-left:-50px;
+}
+#trashbin{
+	width:200px;
+	height: 70px;
+	margin:auto;
+	text-align: center;
+	margin-top:-70px;
+}
 
+#bobswrap, #leroyswrap{
+	min-height:100px;
+}
+
+
+// --------- Create ---------
+.createball{
+	font-size:275px;
+	float:left;
+	color: transparent;
+	border: 2px dashed $main_color;
+	border-radius: 200px;
+	width: 270px;
+	height: 270px;
+}
+#createform{
+	float: left;
+	margin-left: 40px;
+	margin-top: 40px;
+}
 .createLegend{
 	width:45px;
 	display: inline-block;
 }
-
-
-#ccWrap{width:50%;}
-
-#submit{
-	text-align: center;
-	width:200px;
-	margin-top:20px;
-}
-
-
-
-// --------- app2 ---------
-#ownedMarbles{
-	width:100%;
-	text-align: center;
-	margin-top:90px;
-	min-height:200px;
-}
-.tradeTitle{
-	display:inline;
-	font-size:28px;
-}
-#tradeForm{
-	text-align: center;
-	width:100%;
-}
-#marbleBox{
-	border: 1px #fff solid;
-	width: 80%;
-	margin:5px auto;
-	padding: 15px 5px;
-	margin-top:15px;
-}
-#userSelect{
-	position: absolute;
-	top:45px;
-	z-index:2;
+#innerWrap{
+	width:800px;
+	margin:auto;
 	text-align: right;
-	margin-left:-40px;
-	padding-right:10px;
-	border-bottom-left-radius: 5px;
-	border-bottom-right-radius: 5px;
-	padding-bottom:5px;
-}
-.username:hover{
-	text-decoration: underline;
+	margin-top:50px;
 }
 
-#userWrap, #userSelect{
-	width:120px;
-	background:#fff;
+
+// --------- common ---------
+#blockdate{
+	position: absolute;
+	top:30px;
+	right:10px;
+	font-size:13px;
+	color: $hi_color1;
+	font-weight:bold;
 }
-.openTrades{
+
+.hint{
+	font-size:12px;
+	font-weight:bold;
+	color:$acc_color2;
+}
+#viewBCWrap{
+	color:$main_color;
+	padding:22px;
+	background: $acc_color1;
+	font-size:12px;
+	cursor:pointer;
+	width:180px;
+	text-align: center;
+	margin-left:25px;
+}
+#footerWrap{
+	height: 235px;
+	background: $acc_color0;
+	color: $acc_color2;
+	width:100%;
+	border-top:25px $acc_color1 solid;
+}
+
+#notificationPanel{
+	display:none;
+	width: 450px;
+	position: absolute;
+	right:0;
+	top: 90px;
+	color: $acc_color3;
+	background: $acc_color1;
+	padding: 30px 0;
+	border-left: 25px $hi_color3 solid;
+	border-top-left-radius: 10px;
+	border-bottom-left-radius: 10px;
+	text-align: center;
+}
+#noticeText{
 	margin-bottom:10px;
+	font-size:13px;
+	width:100%;
+	text-align: center;
 }
-.openTrades span{
-	vertical-align: middle;
-	margin-right:8px;
+
+#closeNotification{
+	background:initial;
+	color: $main_color;
 }
-.txt{font-size:20px;} 			//open trade text
-.large{font-size:80px;}
-.takeTradeButton{
-	position: relative;
-	font-size:30px;
+
+#noticeIcon{
+	position:absolute; 
+	left:-19px; 
+	top: 45px; 
+	color:$acc_color1;
 }
-.takeTradeButton:hover{
-	color:#555;
+
+
+// --------- marble colors ---------
+.white{color:#FFFEF3;}
+.black{color:#1C2026;}
+.red{color:#F15847;}
+.green{color:#68B369;}
+.blue{color:#3D76BA;}
+.purple{color:#634FA1;}
+.pink{color:#CC5AA2;}
+.orange{color:#ED8F30;}
+.yellow{color:#DAC94E;}
+
+.whitebg{background:#FFFEF3;}
+.blackbg{background:#1C2026}
+.redbg{background:#F15847}
+.greenbg{background:#68B369}
+.bluebg{background:#3D76BA}
+.purplebg{background:#634FA1}
+.pinkbg{background:#CC5AA2}
+.orangebg{background:#ED8F30}
+.yellowbg{background:#DAC94E}
+
+
+.colorSelectWrap{
+	text-align: left;
+	margin: 5px;
+	display: inline-block;
+}
+.colorInput{
+	width:105px;
+	border: 1px solid $acc_color3;
+	border-radius: 20px;
+	padding: 5px;
+	font-size: 13px;
+}
+.colorOptionsWrap{
+	display:none;
+	position:absolute;
+	background: $acc_color1;
+	padding: 10px 0;
+	width:105px;
+	border-radius: 10px;
+	text-align: left;
+	margin-top:1px;
+}
+.colorOption{
+	width: 85px;
+	display:block;
+	padding: 10px;
+	text-align: center;
 	cursor: pointer;
+}
+.colorOption:hover{
+	background: $acc_color0;
+}
+.colorValue{
+	margin-left:10px;
 }

@@ -3,6 +3,7 @@
 // ==================================
 var obc = {};
 var chaincode = {};
+var async = require('async');
 
 module.exports.setup = function(sdk, cc){
 	obc = sdk;
@@ -44,10 +45,27 @@ module.exports.process_msg = function(ws, data){
 		else{
 			try{
 				var json = JSON.parse(index);
-				for(var i in json){
+				var keys = Object.keys(json);
+				var concurrency = 1;
+
+				//TEST3: TESTING WITH CONCURRENCY, FAILS SOMETIMES MULTIPLE CALLS OVERLAP
+				async.eachLimit(keys, concurrency, function(key, cb) {
+					console.log('!', json[key]);
+					chaincode.read(json[key], function(e, marble) {
+						if(e != null) console.log('error:', e);
+						else {
+							sendMsg({msg: 'marbles', e: e, marble: marble});
+							cb(null);
+						}
+					});
+				}, function() {
+					sendMsg({msg: 'action', e: e, status: 'finished'});
+				});
+				
+				/*for(var i in json){
 					console.log('!', i, json[i]);
 					chaincode.read(json[i], cb_got_marble);												//iter over each, read their values
-				}
+				}*/
 			}
 			catch(e){
 				console.log('error:', e);

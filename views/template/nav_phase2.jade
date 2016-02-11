@@ -1,0 +1,21 @@
+#logo SIMPLE STUFF P2
+
+#linkWraps
+	// there is JS code that will show the corresponding panel to the clicked navigation div.
+	// ie: clicking <div class="nav">HOME</div> will show panel #homePanel
+	// this code is in layout.jade
+	.nav#homeLink HOME
+	.nav#createLink CREATE
+	.nav#tradeLink TRADE
+	
+#whoAmI
+	span.fa.fa-user#userIcon
+	span#userField HI BOB 
+	span &nbsp;
+	span.fa.fa-angle-down
+	
+	#userSelect
+		.userLine(name="bob")
+			span BOB &nbsp;&nbsp;
+		.userLine(name="leroy")
+			span LEROY&nbsp;&nbsp;

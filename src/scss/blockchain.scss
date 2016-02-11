@@ -1,0 +1,63 @@
+@import 'color_theme';
+
+//block thing
+#blockWrap{
+	position:relative;
+	margin: 15px 25px;
+}
+.block{
+	line-height: 30px;
+	color:$hi_color2;
+	text-align: center;
+	position: absolute;
+	top:0;
+	left:100%;
+	height:30px;
+	width:30px;
+	border-radius:4px;
+	opacity: 5;
+	border:$hi_color2 solid 1px;
+	font-size:12px;
+	transition: background-color 0.5s ease;
+	font-weight: bold;
+}
+/*
+.block:last-of-type{
+	background:#555;
+	color:#fff;
+	border-color:#555;
+}
+*/
+.lastblock{
+	transition: background-color 1s ease;
+	background: $hi_color2;
+	color: $acc_color1;
+	border-color: $hi_color2;
+}
+.block:hover{
+	border:#22697A solid 1px;
+	color: #22697A;
+}
+
+
+
+#details{
+	background: $acc_color1;
+	color: $acc_color2;
+	display:none;
+	position:relative;
+	top: 40px;
+	width: 400px;
+	border-radius:10px;
+	padding:15px 30px;
+	word-break: break-all;
+	font-size: 12px;
+}
+.blckLegend{
+	font-size: 16px;
+	font-weight: bold;
+}
+.line{
+	background: $main_color;
+	height: 1px !important;
+}

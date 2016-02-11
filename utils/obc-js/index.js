@@ -213,10 +213,30 @@ obc.prototype.network = function(arrayPeers){
 								"Accept": "application/json",
 							},
 					ssl: chaincode.details.peers[0].ssl,
+					timeout: 60000,
 					quiet: true
 		});
 	}
 };
+obc.prototype.switchPeer = function(index, enrollId) {
+	if(chaincode.details.peers[index]) {
+		rest.init({																	//load default values for rest call to peer
+					host: chaincode.details.peers[index].api_host,
+					port: chaincode.details.peers[index].api_port,
+					headers: {
+								"Content-Type": "application/json",
+								"Accept": "application/json",
+							},
+					ssl: chaincode.details.peers[0].ssl,
+					timeout: 60000,
+					quiet: true
+		});
+		obc.enrollId = enrollId;
+		return true;
+	} else {
+		return false;
+	}
+}
 
 // ============================================================================================================================
 // EXTERNAL - save() - write chaincode details to a json file
@@ -344,7 +364,8 @@ function read(name, cb, lvl){										//lvl is for reading past state blocks, t
 						ctorMsg: {
 							function: "query",
 							args: [name]
-						}
+						},
+						secureContext: obc.enrollId
 					}
 				};
 	//console.log('body', body);
@@ -375,7 +396,8 @@ function write(name, val, cb){
 						ctorMsg: {
 							function: 'write',
 							args: [name, val]
-						}
+						},
+						secureContext: obc.enrollId
 					}
 				};
 	
@@ -406,7 +428,8 @@ function remove(name, cb){
 						ctorMsg: {
 							function: 'delete',
 							args: [name]
-						}
+						},
+						secureContext: obc.enrollId
 					}
 				};
 
@@ -416,6 +439,25 @@ function remove(name, cb){
 	};
 	options.failure = function(statusCode, e){
 		console.log("[obc-js] Remove - failure:", statusCode);
+		if(cb) cb(eFmt('http error', statusCode, e), null);
+	};
+	rest.post(options, '', body);
+}
+obc.prototype.register = function(enrollID, enrollSecret, cb) {
+	console.log("[obc-js]  Chaincode - Registering enrollID - " + enrollID);
+	var options = {path: '/registrar'};
+	var body = 	{
+					enrollId: enrollID,
+					enrollSecret: enrollSecret
+				};
+	options.success = function(statusCode, data){
+		console.log("[obc-js] Registration success");
+		if(cb){
+			cb(null, data);
+		}
+	};
+	options.failure = function(statusCode, e){
+		console.log("[obc-js] register - failure:", statusCode);
 		if(cb) cb(eFmt('http error', statusCode, e), null);
 	};
 	rest.post(options, '', body);
@@ -436,8 +478,10 @@ function deploy(func, args, save_path, cb){
 					ctorMsg:{
 							"function": func,
 							"args": args
-					}
+					},
+					secureContext: obc.enrollId
 				};
+	console.log('!body', body);
 	options.success = function(statusCode, data){
 		console.log("\n\n\t deploy success [wait 1 more minute]");
 		chaincode.details.deployed_name = data.message;
@@ -489,7 +533,8 @@ function populate_go_chaincode(name){
 						ctorMsg: {
 							function: name,
 							args: args
-						}
+						},
+						secureContext: obc.enrollId
 					}
 			};
 

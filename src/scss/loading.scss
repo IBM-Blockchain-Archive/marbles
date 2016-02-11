@@ -19,11 +19,11 @@
 	display: inline-block;
 	vertical-align: middle;
 	width: 4px;
-	background: $cc_bg_color;
+	background: $main_bg;
 	border-radius: 3px;
 	-webkit-animation: loading 0.8s infinite alternate;
 	-moz-animation: loading 0.8s infinite alternate;
-	box-shadow:1px 1px 1px $cc_border_color;
+	box-shadow:1px 1px 1px $main_bg;
 }
 .loadingdiv div{
 	height:30px;

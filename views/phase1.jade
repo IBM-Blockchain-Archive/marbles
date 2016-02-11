@@ -1,0 +1,33 @@
+extends ./template/layout.jade
+	
+	
+// --------------- Header -------------- //
+block custom_header
+	script(src='/js/simplestuff1.js')
+	script(type='text/javascript').
+		$(document).ready(function(){
+			
+		});
+		
+		
+// --------------- Navigation Bar  -------------- //
+block navpanel
+	include ./template/nav_phase1.jade
+	
+	
+// --------------- Main Stuff  -------------- //
+block content
+	#contentPanel
+		
+		#blockdate(title="date of last block") loading...
+		
+		
+		// --------------- Home Panel
+		include ./panel_home.jade
+		
+		
+		// --------------- Create Panel
+		include ./panel_create.jade
+		
+block footer
+	include ./template/blockchain.jade

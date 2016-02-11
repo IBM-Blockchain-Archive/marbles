@@ -52,17 +52,17 @@ html {
 
 body {
   margin: 0 auto;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding: 0;
   font-size: 16px;
-  width: 1175px;
+  width: 100%;
   text-align: left;
   height: 100%;
   color: #555;
-  font-family: Roboto, sans-serif;
-  background: #fff; }
+  background: #343D48; }
 
 h1 {
-  font-size: 26px;
+  font-size: 44px;
   font-weight: normal;
   margin: 0; }
 
@@ -96,41 +96,46 @@ ul, li {
   margin: 0;
   padding: 0; }
 
+legend {
+  text-align: left; }
+
 tr, td, th {
   border: 0;
   padding: 3px;
-  text-align: left;
-  border-right: 1px #ccc solid; }
+  text-align: center; }
 
 table {
   border-spacing: 0;
   border: 0;
   border-collapse: collapse;
-  text-align: center; }
+  text-align: center;
+  width: 100%;
+  font-size: 15px; }
 
 tr {
-  border-bottom: 1px #ccc solid; }
-
-tr:nth-child(even) {
-  background: #F6F5F7;
-  border: 0; }
+  margin-bottom: 5px;
+  background: #39424D;
+  border-bottom: 6px #343D48 solid; }
 
 tr:hover {
-  background: #ccc; }
-
-tr:nth-child(even):hover {
-  background: #ccc;
-  border: 0; }
+  background: orange; }
 
 td {
-  padding: 5px 15px 5px 15px; }
+  padding: 15px 10px;
+  vertical-align: middle; }
 
 th {
-  padding: 4px;
+  padding: 10px 5px;
   font-weight: normal;
-  background: #555;
-  color: #fff;
-  text-align: center; }
+  font-size: 12px;
+  background: #343D48;
+  color: #7E90A0;
+  text-align: center;
+  font-weight: bold; }
+
+thead tr {
+  border-top: 1px #646B73 solid;
+  border-bottom: 1px #646B73 solid; }
 
 p {
   margin: 5px;
@@ -139,29 +144,41 @@ p {
 hr {
   height: 1px;
   border: none;
-  background: #fff; }
+  background: #646B73; }
+
+hr:first-of-type {
+  height: 2px; }
 
 pre {
   padding-left: 15px; }
 
 input[type="submit"], input[type="button"], button {
-  font-size: 18px;
+  font-size: 11px;
   cursor: pointer;
   padding: 5px 10px;
-  background: #68B7F0;
-  color: #fff;
-  border: 2px #fff solid;
+  background: #6CC284;
+  color: #222832;
+  border: 0;
   transition: background-color 0.2s ease;
-  border-radius: 5px; }
+  border-radius: 30px;
+  min-width: 130px;
+  box-shadow: -1px 4px 2px -2px rgba(0, 0, 0, 0.75); }
+
+input:focus, select:focus, button:focus {
+  outline: none !important;
+  border-color: #fff !important; }
 
 input[type="submit"]:hover, input[type="button"]:hover, button:hover {
-  background: #fff;
-  color: #68B7F0; }
+  background: #fff; }
 
 input[type="text"], input[type="password"], select {
-  padding: 5px 10px;
+  padding: 3px 10px;
   margin: 5px;
-  color: #2e6da4; }
+  color: #fff;
+  border: 1px solid #7E90A0;
+  border-radius: 30px;
+  background: #343D48;
+  min-width: 120px; }
 
 small {
   font-size: 10pt; }
@@ -203,112 +220,77 @@ label {
   background: #fff;
   margin-top: 10px; }
 
+#navPanel {
+  height: 60px;
+  line-height: 60px;
+  width: 100%;
+  background: #222832;
+  font-size: 15px; }
+
+#mainPanel {
+  color: #fff; }
+
 #contentPanel {
   min-height: 500px;
-  color: #fff;
-  position: relative; }
+  position: relative;
+  margin: 30px 50px auto; }
 
-.adminview {
-  background: #68B7F0; }
-
-.createview {
-  padding: 0 20px;
-  background: orange; }
-
-.tradeview {
-  padding: 0 20px;
-  background: yellowgreen; }
-
-#navPanel {
-  display: inline-block; }
+#footerPanel {
+  position: fixed;
+  bottom: 0;
+  width: 100%; }
 
 .nav {
-  background: #fff;
-  color: #fff;
-  padding: 15px 40px;
+  color: #7E90A0;
+  padding: 0px 30px;
   display: inline-block; }
 
 .nav:hover {
   text-decoration: underline;
   cursor: pointer; }
 
-.selectednav {
-  background: #68B7F0; }
+.selectedNav {
+  color: #fff; }
+
+#linkWraps {
+  text-align: center;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2; }
 
 #logo {
-  color: #47BC50;
-  float: right; }
+  color: #7E90A0;
+  display: inline-block;
+  margin-left: 20px;
+  font-size: 18px;
+  font-weight: 600;
+  background: #222832;
+  position: relative;
+  z-index: 4; }
 
-#appName {
-  font-size: 24px;
-  padding-bottom: 4px;
-  font-weight: 900;
-  display: inline-block; }
-
-#owner {
-  font-size: 12px;
-  font-weight: 500;
-  position: absolute;
-  margin-left: 88px;
-  color: #222; }
-
-.personWrap {
+.marblesWrap {
   width: 42%;
   display: inline-block;
-  text-align: left;
-  color: #fff;
-  margin-left: 2%; }
+  text-align: right;
+  color: #fff; }
 
 .legend {
-  font-size: 100px;
-  border-bottom: 1px #fff solid;
-  padding-bottom: 5px; }
-
-#transferright:hover, #transferleft:hover, #removemarble:hover {
-  cursor: pointer;
-  color: orange; }
+  font-size: 30px;
+  border-bottom: 1px #646B73 solid;
+  padding-bottom: 5px;
+  text-align: left; }
 
 .ball {
   display: inline-block;
   margin: 1px;
-  border: 1px #68B7F0 solid;
+  border: 1px #343D48 solid;
   padding: 0 3px; }
 
 .ball:hover {
   cursor: pointer;
   border-bottom: 1px #fff solid; }
-
-.selectedball {
-  border: 1px #fff solid; }
-
-.createball {
-  font-size: 175px;
-  float: left;
-  margin-left: 100px; }
-
-.borderMe {
-  border: 1px #41719C solid; }
-
-#transferWrap {
-  position: absolute;
-  width: 100%;
-  text-align: center;
-  top: 30px; }
-
-#createform {
-  float: left;
-  margin-top: 10px;
-  margin-left: 20px; }
-
-#blockcounter {
-  position: absolute;
-  bottom: 10px;
-  left: 10px; }
-
-#blockdate {
-  position: absolute;
-  bottom: 10px;
-  right: 10px; }
 
 #description {
   position: absolute;
@@ -316,77 +298,252 @@ label {
   width: 100%;
   text-align: center; }
 
+#toolWrap {
+  width: 100%;
+  text-align: center;
+  position: fixed;
+  bottom: 55px;
+  margin-left: -50px; }
+
+#trashbin {
+  width: 200px;
+  height: 70px;
+  margin: auto;
+  text-align: center;
+  margin-top: -70px; }
+
+#bobswrap, #leroyswrap {
+  min-height: 100px; }
+
+.createball {
+  font-size: 275px;
+  float: left;
+  color: transparent;
+  border: 2px dashed #fff;
+  border-radius: 200px;
+  width: 270px;
+  height: 270px; }
+
+#createform {
+  float: left;
+  margin-left: 40px;
+  margin-top: 40px; }
+
 .createLegend {
   width: 45px;
   display: inline-block; }
 
-#ccWrap {
-  width: 50%; }
-
-#submit {
-  text-align: center;
-  width: 200px;
-  margin-top: 20px; }
-
-#ownedMarbles {
-  width: 100%;
-  text-align: center;
-  margin-top: 90px;
-  min-height: 200px; }
-
-.tradeTitle {
-  display: inline;
-  font-size: 28px; }
-
-#tradeForm {
-  text-align: center;
-  width: 100%; }
-
-#marbleBox {
-  border: 1px #fff solid;
-  width: 80%;
-  margin: 5px auto;
-  padding: 15px 5px;
-  margin-top: 15px; }
-
-#userSelect {
-  position: absolute;
-  top: 45px;
-  z-index: 2;
+#innerWrap {
+  width: 800px;
+  margin: auto;
   text-align: right;
-  margin-left: -40px;
-  padding-right: 10px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  padding-bottom: 5px; }
+  margin-top: 50px; }
 
-.username:hover {
-  text-decoration: underline; }
+#blockdate {
+  position: absolute;
+  top: 30px;
+  right: 10px;
+  font-size: 13px;
+  color: orange;
+  font-weight: bold; }
 
-#userWrap, #userSelect {
-  width: 120px;
-  background: #fff; }
+.hint {
+  font-size: 12px;
+  font-weight: bold;
+  color: #646B73; }
 
-.openTrades {
-  margin-bottom: 10px; }
+#viewBCWrap {
+  color: #fff;
+  padding: 22px;
+  background: #222832;
+  font-size: 12px;
+  cursor: pointer;
+  width: 180px;
+  text-align: center;
+  margin-left: 25px; }
 
-.openTrades span {
-  vertical-align: middle;
-  margin-right: 8px; }
+#footerWrap {
+  height: 235px;
+  background: #181C22;
+  color: #646B73;
+  width: 100%;
+  border-top: 25px #222832 solid; }
 
-.txt {
-  font-size: 20px; }
+#notificationPanel {
+  display: none;
+  width: 450px;
+  position: absolute;
+  right: 0;
+  top: 90px;
+  color: #7E90A0;
+  background: #222832;
+  padding: 30px 0;
+  border-left: 25px #6CC284 solid;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  text-align: center; }
 
-.large {
-  font-size: 80px; }
+#noticeText {
+  margin-bottom: 10px;
+  font-size: 13px;
+  width: 100%;
+  text-align: center; }
 
-.takeTradeButton {
-  position: relative;
-  font-size: 30px; }
+#closeNotification {
+  background: initial;
+  color: #fff; }
 
-.takeTradeButton:hover {
-  color: #555;
+#noticeIcon {
+  position: absolute;
+  left: -19px;
+  top: 45px;
+  color: #222832; }
+
+.white {
+  color: #FFFEF3; }
+
+.black {
+  color: #1C2026; }
+
+.red {
+  color: #F15847; }
+
+.green {
+  color: #68B369; }
+
+.blue {
+  color: #3D76BA; }
+
+.purple {
+  color: #634FA1; }
+
+.pink {
+  color: #CC5AA2; }
+
+.orange {
+  color: #ED8F30; }
+
+.yellow {
+  color: #DAC94E; }
+
+.whitebg {
+  background: #FFFEF3; }
+
+.blackbg {
+  background: #1C2026; }
+
+.redbg {
+  background: #F15847; }
+
+.greenbg {
+  background: #68B369; }
+
+.bluebg {
+  background: #3D76BA; }
+
+.purplebg {
+  background: #634FA1; }
+
+.pinkbg {
+  background: #CC5AA2; }
+
+.orangebg {
+  background: #ED8F30; }
+
+.yellowbg {
+  background: #DAC94E; }
+
+.colorSelectWrap {
+  text-align: left;
+  margin: 5px;
+  display: inline-block; }
+
+.colorInput {
+  width: 105px;
+  border: 1px solid #7E90A0;
+  border-radius: 20px;
+  padding: 5px;
+  font-size: 13px; }
+
+.colorOptionsWrap {
+  display: none;
+  position: absolute;
+  background: #222832;
+  padding: 10px 0;
+  width: 105px;
+  border-radius: 10px;
+  text-align: left;
+  margin-top: 1px; }
+
+.colorOption {
+  width: 85px;
+  display: block;
+  padding: 10px;
+  text-align: center;
   cursor: pointer; }
+
+.colorOption:hover {
+  background: #181C22; }
+
+.colorValue {
+  margin-left: 10px; }
+
+#blockWrap {
+  position: relative;
+  margin: 15px 25px; }
+
+.block {
+  line-height: 30px;
+  color: #2EB9D6;
+  text-align: center;
+  position: absolute;
+  top: 0;
+  left: 100%;
+  height: 30px;
+  width: 30px;
+  border-radius: 4px;
+  opacity: 5;
+  border: #2EB9D6 solid 1px;
+  font-size: 12px;
+  transition: background-color 0.5s ease;
+  font-weight: bold; }
+
+/*
+.block:last-of-type{
+	background:#555;
+	color:#fff;
+	border-color:#555;
+}
+*/
+.lastblock {
+  transition: background-color 1s ease;
+  background: #2EB9D6;
+  color: #222832;
+  border-color: #2EB9D6; }
+
+.block:hover {
+  border: #22697A solid 1px;
+  color: #22697A; }
+
+#details {
+  background: #222832;
+  color: #646B73;
+  display: none;
+  position: relative;
+  top: 40px;
+  width: 400px;
+  border-radius: 10px;
+  padding: 15px 30px;
+  word-break: break-all;
+  font-size: 12px; }
+
+.blckLegend {
+  font-size: 16px;
+  font-weight: bold; }
+
+.line {
+  background: #fff;
+  height: 1px !important; }
 
 
 /* Example
@@ -408,11 +565,11 @@ label {
   display: inline-block;
   vertical-align: middle;
   width: 4px;
-  background: #5B9BD5;
+  background: #343D48;
   border-radius: 3px;
   -webkit-animation: loading 0.8s infinite alternate;
   -moz-animation: loading 0.8s infinite alternate;
-  box-shadow: 1px 1px 1px #41719C; }
+  box-shadow: 1px 1px 1px #343D48; }
 
 .loadingdiv div {
   height: 30px;
@@ -456,6 +613,121 @@ label {
   100% {
     height: 10px;
     -moz-transform: translateZ(0); } }
+
+#whoAmI {
+  position: absolute;
+  right: 20px;
+  z-index: 3;
+  top: 0;
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px; }
+
+#userIcon {
+  background: #7E90A0;
+  padding: 10px;
+  border-radius: 20px;
+  width: 20px;
+  text-align: center;
+  color: #343D48;
+  margin-right: 10px;
+  font-size: 20px; }
+
+#userSelect {
+  display: none;
+  position: absolute;
+  top: 65px;
+  z-index: 2;
+  right: -10px;
+  color: #646B73;
+  padding: 10px 0;
+  background: #222832;
+  border-radius: 10px;
+  width: 150px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: bold; }
+
+.userLine {
+  line-height: 40px;
+  height: 40px;
+  cursor: pointer; }
+
+.userLine:hover {
+  background: #181C22; }
+
+.invalid {
+  opacity: 0.3; }
+
+button:disabled {
+  cursor: default; }
+
+button:disabled:hover {
+  background: initial; }
+
+button:disabled, .inactiveButton {
+  opacity: 0.3; }
+
+.altButton {
+  background: #2EB9D6; }
+
+.leftButton {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-right: 2px; }
+
+.rightButton {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  margin: 0; }
+
+#wantTradeSide, #willingTradeSide {
+  position: relative;
+  display: inline-block;
+  width: 49%;
+  vertical-align: top;
+  text-align: left; }
+
+#tradeForm {
+  text-align: center;
+  width: 100%; }
+
+.openTrades {
+  margin-bottom: 10px; }
+
+.openTrades span {
+  vertical-align: middle;
+  margin-right: 8px; }
+
+#addMarbleButton {
+  float: left;
+  min-width: initial;
+  text-align: center;
+  margin-left: 5px; }
+
+#tradeSubmit {
+  float: right;
+  text-align: center;
+  width: 200px; }
+
+.removeWilling {
+  color: #646B73;
+  padding: 5px;
+  font-size: 13px; }
+
+.removeWilling:hover {
+  cursor: pointer;
+  color: orange; }
+
+#myTradesTable {
+  display: none; }
+
+#openTradesTable {
+  margin-top: 20px; }
+
+.confirmTrade {
+  min-width: 90px;
+  font-weight: bold; }
 
 @media (max-width: 600px) {
   /* Nav Links */

@@ -11,24 +11,97 @@ doctype html
 html
 	//Built by: Me
 	//ETI Labs
-	//Copyright 2015  - IBM
+	//Copyright 2016  - IBM
 	head
 		title #{title}
 		link(rel="icon", type="image/png", href="/imgs/favicon.ico")
-		link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css")
+		link(rel="stylesheet" href="/css/font-awesome-4.5.0/css/font-awesome.min.css")
 		link(type="text/css" rel="stylesheet" href="/css/main.min.css")
-		link(href='https://fonts.googleapis.com/css?family=Roboto:400,500,700,300' rel='stylesheet' type='text/css')
 		script(src='/js/util/jquery-1.11.1.min.js')
+		script(src='/js/util/jquery-ui-1.11.4/jquery-ui.min.js')
 		script(src='/js/funk.js')
+		script(src='/js/blockchain.js')
 		script(type='text/javascript').
 			var bag = !{JSON.stringify(bag)};						//throw jade json over to JS
 			console.log('bag', bag);
 			$(document).ready(function(){
 				
+				//Tab Navigation, show the corresponding panel
+				$(".nav").click(function(){
+					var show = $(this).html().trim().toLowerCase();
+					showPanel(show);
+				});
+				function showPanel(show){
+					if(show == '') show = 'home';										//default
+					console.log('changing view to: ', show, $("#" + show + "Panel").length);
+
+					var phase = window.location.pathname.substring(0,3);
+					window.history.pushState({},'', phase + '/' + show);								//put it in url so we can f5
+
+					$(".panel").hide();
+					if($("#" + show + "Panel").length == 0){
+						$("#error404").fadeIn();
+					}
+					else{
+						$("#" + show + "Panel").fadeIn(300);
+						$(".selectedNav").removeClass("selectedNav");
+						$(this).addClass("selectedNav");
+					}
+				}
+				
+				//Blockchain panel toggle
+				$("#viewBCWrap").click(function(){
+					if($("#footerWrap").is(":visible")){
+						$("#footerWrap").slideUp();
+					}
+					else{
+						$("#footerWrap").slideDown();
+					}
+				});
+				
+				//Notificatoin panel
+				$("#closeNotification").click(function(){
+					//$("#notificationPanel").animate({right:'-=450'}, 500, function(){
+					//	$(this).hide();
+					//});
+					$("#notificationPanel").animate({width:'toggle'});
+				});
+				
+				$(".backToHome").click(function(){
+					$(".panel").hide();
+					$("#homePanel").show();
+					$("#notificationPanel").animate({width:'toggle'});
+				});
+				
+				
+				//Page refresh show correct panel
+				var pos = window.location.pathname.substring(1).indexOf('/');			//skipping first char find first slash
+				if(pos >= 0){
+					showPanel(window.location.pathname.substring(2 + pos).toLowerCase());
+				}
+
 			});
 		block custom_header
 		
 		body
+			#navPanel
+				block navpanel
+			
 			#mainPanel
-				//Main Content Panel
+				#error404(hidden).panel 
+					br
+					center
+						p Error 404
+				
 				block content
+				
+				#notificationPanel
+					span.fa.fa-check#noticeIcon
+					#noticeText YOUR TRADE WAS SUBMITTED!
+					button(type="button").backToHome GO CHECK
+					span &nbsp;&nbsp;
+					button(type="button")#closeNotification OK
+				
+				
+			#footerPanel
+				block footer

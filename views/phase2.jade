@@ -1,0 +1,38 @@
+extends ./template/layout.jade
+	
+	
+// --------------- Header -------------- //
+block custom_header
+	script(src='/js/simplestuff2.js')
+	script(src='/js/blockchain.js')
+	script(type='text/javascript').
+		$(document).ready(function(){
+			
+		});
+		
+		
+// --------------- Navigation Bar  -------------- //
+block navpanel
+	include ./template/nav_phase2.jade
+	
+	
+// --------------- Main Stuff  -------------- //
+block content
+	#contentPanel
+		
+		#blockdate(title="date of last block") loading...
+			
+			
+		// --------------- Home Panel
+		include ./panel_home.jade
+		
+		
+		// --------------- Create Panel
+		include ./panel_create.jade
+		
+		
+		// --------------- Trade View
+		include ./panel_trade.jade
+		
+block footer
+	include ./template/blockchain.jade
