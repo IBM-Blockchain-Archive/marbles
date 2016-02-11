@@ -185,4 +185,4 @@ Now we are ready to work on the application!
 ***
 dsh todo - make images for things in this tutorial  
 dsh todo - add code walk throughs  
-dsh toto - a video would be better than this  
+dsh toto - a video would be better than this 
