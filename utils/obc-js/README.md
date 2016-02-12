@@ -91,7 +91,7 @@ Table Of Contents:
 This is a wrapper function that will run a typical startup setup. It will run in order:
 
 1. obc.network()
-2. obc.register() (only runs if options.network.users is != null)
+2. obc.register() for each peer (only runs if options.network.users is != null)
 3. obc.load_chaincode()
 4. cb()
 
@@ -134,7 +134,7 @@ Example
 		
 		deployed_name: null   //[optional] this is the hashed name of a deployed chaincode.  if you want to run with chaincode that is already deployed set it now, else it will be set when you deploy with the sdk
 	};
-	obc.load(options, cb_ready);
+	obc.load_chaincode(options, cb_ready);
 
 
 ### obc.network(arrayPeers)
@@ -270,7 +270,7 @@ Will invoke your Go function CUSTOM_FUNCTION_NAME and pass it 'arg'
 			}
 		};
 		
-### errors
+### Errors
 
 	{
 		name: "input error",
@@ -280,7 +280,7 @@ Will invoke your Go function CUSTOM_FUNCTION_NAME and pass it 'arg'
 	
 ### <a name="ccsf"></a>Chaincode Summary File
 This file is used internally. 
-It is created in obc.load() and updated with chaincode.deploy().
+It is created in obc.load_chaincode() and updated with chaincode.deploy().
 A copy can be saved elsewhere with obc.save(path)
 
 	{
