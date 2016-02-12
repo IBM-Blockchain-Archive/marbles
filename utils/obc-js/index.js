@@ -38,11 +38,61 @@ var chaincode = {
 				};
 
 function obc() {}
+obc.selectedPeer = 0;
+var tempDirectory = path.join(__dirname, "./temp");									//	./temp directory name
 
-var tempDirectory = path.join(__dirname, "./temp");									//	./temp
 
 // ============================================================================================================================
-// EXTERNAL - load() - load the chaincode and parssssssssse
+// EXTERNAL - load() - wrapper on a standard startup flow.
+// 1. load network peer data
+// 2. register users with security (if present)
+// 3. load chaincode and parse
+// ============================================================================================================================
+obc.prototype.load = function(options, cb){
+	var errors = [];
+	if(!options.network || !options.network.peers) errors.push("the option 'network.peers' is required");
+
+	if(!options.chaincode || !options.chaincode.zip_url) errors.push("the option 'chaincode.zip_url' is required");
+	if(!options.chaincode || !options.chaincode.git_dir) errors.push("the option 'chaincode.git_dir' is required");
+	if(!options.chaincode || !options.chaincode.git_url) errors.push("the option 'chaincode.git_url' is required");
+	if(errors.length > 0){															//check for input errors
+		console.log('[obc-js] Input Error - obc.load()', errors);
+		if(cb) cb(eFmt('input error', 400, errors));
+		return;																		//get out of dodge
+	}
+	
+	// Step 1
+	obc.prototype.network(options.network.peers);
+	
+	// Step 2 - optional
+	if(options.network.users){
+		options.network.users = filter_users(options.network.users);
+		
+		var arr = [];
+		for(var i in chaincode.details.peers){
+			arr.push(i);
+		}
+		async.each(arr, function(i, a_cb) {
+			if(options.network.users[i]){											//make sure we still have a user for this network
+				obc.prototype.register(i, options.network.users[i].username, options.network.users[i].secret, a_cb);
+			}
+			else a_cb();
+		}, function(err, data){
+			load_cc();
+		});
+	}
+	else{
+		load_cc();
+	}
+	
+	// Step 3
+	function load_cc(){
+		obc.prototype.load_chaincode(options.chaincode, cb);
+	}
+};
+
+// ============================================================================================================================
+// EXTERNAL - load_chaincode() - load the chaincode and parssssssssse
 // 0. Load the github or zip
 // 1. Unzip & scan directory for files
 // 2. Iter over go files
@@ -51,13 +101,13 @@ var tempDirectory = path.join(__dirname, "./temp");									//	./temp
 //		2c. Create JS function for golang function
 // 3. Call callback()
 // ============================================================================================================================
-obc.prototype.load = function(options, cb) {
+obc.prototype.load_chaincode = function(options, cb) {
 	var errors = [];
 	if(!options.zip_url) errors.push("the option 'zip_url' is required");
 	if(!options.git_dir) errors.push("the option 'git_dir' is required");
 	if(!options.git_url) errors.push("the option 'git_url' is required");
 	if(errors.length > 0){															//check for input errors
-		console.log('[obc-js] Input Error - obc.load()', errors);
+		console.log('[obc-js] Input Error - obc.load_chaincode()', errors);
 		if(cb) cb(eFmt('input error', 400, errors));
 		return;																		//get out of dodge
 	}
@@ -218,7 +268,12 @@ obc.prototype.network = function(arrayPeers){
 		});
 	}
 };
-obc.prototype.switchPeer = function(index, enrollId) {
+
+
+// ============================================================================================================================
+// EXTERNAL - switchPeer() - switch the default peer to hit
+// ============================================================================================================================
+obc.prototype.switchPeer = function(index) {
 	if(chaincode.details.peers[index]) {
 		rest.init({																	//load default values for rest call to peer
 					host: chaincode.details.peers[index].api_host,
@@ -231,12 +286,12 @@ obc.prototype.switchPeer = function(index, enrollId) {
 					timeout: 60000,
 					quiet: true
 		});
-		obc.enrollId = enrollId;
+		obc.selectedPeer = index;
 		return true;
 	} else {
 		return false;
 	}
-}
+};
 
 // ============================================================================================================================
 // EXTERNAL - save() - write chaincode details to a json file
@@ -365,7 +420,7 @@ function read(name, cb, lvl){										//lvl is for reading past state blocks, t
 							function: "query",
 							args: [name]
 						},
-						secureContext: obc.enrollId
+						secureContext: chaincode.details.peers[obc.selectedPeer].user
 					}
 				};
 	//console.log('body', body);
@@ -397,7 +452,7 @@ function write(name, val, cb){
 							function: 'write',
 							args: [name, val]
 						},
-						secureContext: obc.enrollId
+						secureContext: chaincode.details.peers[obc.selectedPeer].user
 					}
 				};
 	
@@ -429,7 +484,7 @@ function remove(name, cb){
 							function: 'delete',
 							args: [name]
 						},
-						secureContext: obc.enrollId
+						secureContext: chaincode.details.peers[obc.selectedPeer].user
 					}
 				};
 
@@ -443,25 +498,37 @@ function remove(name, cb){
 	};
 	rest.post(options, '', body);
 }
-obc.prototype.register = function(enrollID, enrollSecret, cb) {
-	console.log("[obc-js]  Chaincode - Registering enrollID - " + enrollID);
-	var options = {path: '/registrar'};
+
+//============================================================================================================================
+//register() - register a username with a peer (only for a secured blockchain network)
+//============================================================================================================================
+obc.prototype.register = function(index, enrollID, enrollSecret, cb) {
+	console.log("[obc-js] Registering ", chaincode.details.peers[index].name, " w/enrollID - " + enrollID);
+	var options = {
+		path: '/registrar',
+		host: chaincode.details.peers[index].api_host,
+		port: chaincode.details.peers[index].api_port,
+		ssl: chaincode.details.peers[index].ssl
+	};
+
 	var body = 	{
 					enrollId: enrollID,
 					enrollSecret: enrollSecret
 				};
+
 	options.success = function(statusCode, data){
-		console.log("[obc-js] Registration success");
+		console.log("[obc-js] Registration success:", enrollID);
+		chaincode.details.peers[index].user = enrollID;							//remember the user for this peer
 		if(cb){
 			cb(null, data);
 		}
 	};
 	options.failure = function(statusCode, e){
-		console.log("[obc-js] register - failure:", statusCode);
+		console.log("[obc-js] Register - failure:", enrollID, statusCode);
 		if(cb) cb(eFmt('http error', statusCode, e), null);
 	};
 	rest.post(options, '', body);
-}
+};
 
 //============================================================================================================================
 //deploy() - deploy chaincode and call a cc function
@@ -479,9 +546,9 @@ function deploy(func, args, save_path, cb){
 							"function": func,
 							"args": args
 					},
-					secureContext: obc.enrollId
+					secureContext: chaincode.details.peers[obc.selectedPeer].user
 				};
-	console.log('!body', body);
+	//console.log('!body', body);
 	options.success = function(statusCode, data){
 		console.log("\n\n\t deploy success [wait 1 more minute]");
 		chaincode.details.deployed_name = data.message;
@@ -491,7 +558,7 @@ function deploy(func, args, save_path, cb){
 			setTimeout(function(){
 				console.log("[obc-js] Deploying Chaincode - Complete");
 				cb(null, data);
-			}, 60000);														//wait extra long, not always ready yet
+			}, 45000);														//wait extra long, not always ready yet
 		}
 	};
 	options.failure = function(statusCode, e){
@@ -534,7 +601,7 @@ function populate_go_chaincode(name){
 							function: name,
 							args: args
 						},
-						secureContext: obc.enrollId
+						secureContext: chaincode.details.peers[obc.selectedPeer].user
 					}
 			};
 
@@ -549,6 +616,19 @@ function populate_go_chaincode(name){
 			rest.post(options, '', body);
 		};
 	}
+}
+
+//==================================================================
+//filter_users() - remove users that are for the peers
+//==================================================================
+function filter_users(users){
+	var valid_users = [];
+	for(var i = 0; i < users.length; i++) {
+		if(users[i].username.indexOf('user') == 0){
+			valid_users.push(users[i]);
+		}
+	}
+	return valid_users;
 }
 
 //==================================================================
