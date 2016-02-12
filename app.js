@@ -136,66 +136,74 @@ var manual = {
   "credentials": {
     "peers": [
       {
-        "discovery_host": "169.44.38.116",
-        "discovery_port": "33772",
-        "api_host": "169.44.38.116",
-        "api_port": "33773",
+        "discovery_host": "169.44.38.113",
+        "discovery_port": "33832",
+        "api_host": "169.44.38.113",
+        "api_port": "33833",
         "type": "peer",
-        "network_id": "b3b11837-5943-4f49-8f99-1d77360b12d5",
-        "id": "b3b11837-5943-4f49-8f99-1d77360b12d5_vp1",
-        "api_url": "http://169.44.38.116:33773"
+        "network_id": "6862f6da-9a67-4873-b68d-bd6c202ba743",
+        "id": "6862f6da-9a67-4873-b68d-bd6c202ba743_vp1",
+        "api_url": "http://169.44.38.113:33833"
       },
       {
-        "discovery_host": "169.44.63.207",
-        "discovery_port": "33700",
-        "api_host": "169.44.63.207",
-        "api_port": "33701",
+        "discovery_host": "169.44.38.113",
+        "discovery_port": "33836",
+        "api_host": "169.44.38.113",
+        "api_port": "33837",
         "type": "peer",
-        "network_id": "b3b11837-5943-4f49-8f99-1d77360b12d5",
-        "id": "b3b11837-5943-4f49-8f99-1d77360b12d5_vp2",
-        "api_url": "http://169.44.63.207:33701"
+        "network_id": "6862f6da-9a67-4873-b68d-bd6c202ba743",
+        "id": "6862f6da-9a67-4873-b68d-bd6c202ba743_vp2",
+        "api_url": "http://169.44.38.113:33837"
       }
     ],
     "users": [
       {
         "username": "peer1",
-        "secret": "57598483d3"
+        "secret": "f253fd74d7"
       },
       {
         "username": "peer2",
-        "secret": "03d1700316"
+        "secret": "5d35496cc1"
       },
       {
-        "username": "peer3",
-        "secret": "2108e55cab"
+        "username": "user_3448c2c979",
+        "secret": "b4e7cfe9c2"
       },
       {
-        "username": "peer4",
-        "secret": "57359e7d41"
+        "username": "user_97b5583bc4",
+        "secret": "1a9d6d2c0a"
       },
       {
-        "username": "peer5",
-        "secret": "1af51ef3d1"
+        "username": "user_d97e6fd667",
+        "secret": "533c03ef77"
       },
       {
-        "username": "user1",
-        "secret": "9cab181798"
+        "username": "user_99299d686f",
+        "secret": "12b029bfa1"
       },
       {
-        "username": "user2",
-        "secret": "d212772c83"
+        "username": "user_662b94ddd9",
+        "secret": "bd14f27805"
       },
       {
-        "username": "user3",
-        "secret": "05080d3f7e"
+        "username": "user_9fb09fb7f0",
+        "secret": "a85e73c7e1"
       },
       {
-        "username": "user4",
-        "secret": "b3f30c1de5"
+        "username": "user_64f78eb146",
+        "secret": "6d6f77f8b0"
       },
       {
-        "username": "user5",
-        "secret": "92b1616a9d"
+        "username": "user_90ec1907b4",
+        "secret": "eb6952d6ef"
+      },
+      {
+        "username": "user_31c461633a",
+        "secret": "304474639a"
+      },
+      {
+        "username": "user_15cab786db",
+        "secret": "0d01efbc3c"
       }
     ]
   }
@@ -265,7 +273,8 @@ function cb_ready(err, cc){																//response has chaincode functions
 // ============================================================================================================================
 function cb_deployed(e, d){
 	if(e != null){
-		console.log('looks like a deploy error, holding off on the socket');
+		//look at tutorial_part1.md in the trouble shooting section for help
+		console.log('! looks like a deploy error, holding off on the starting the socket\n', e);
 	}
 	else{
 		console.log('------------------------------------------ Websocket Up ------------------------------------------');
