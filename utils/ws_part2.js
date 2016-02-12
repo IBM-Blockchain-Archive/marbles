@@ -63,7 +63,7 @@ module.exports.process_msg = function(ws, data){
 		}
 		else if(data.type == 'perform_trade'){
 			console.log('perform_trade msg');
-			chaincode.perform_trade([data.id, data.closer.user, data.closer.name, data.opener.user, data.opener.color, data.opener.size], cb_test);
+			chaincode.perform_trade([data.id, data.closer.user, data.closer.name, data.opener.user, data.opener.color, data.opener.size]);
 			ledger_edit();
 		}
 		
@@ -75,10 +75,6 @@ module.exports.process_msg = function(ws, data){
 			}, 15000);
 		}
 		*/
-	}
-	
-	function cb_test(e, d){
-		console.log('?', e, d);
 	}
 	
 	function ledger_edit(skip_chainstats){																//there was a ledger edit action, lets refresh all the things
