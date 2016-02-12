@@ -16,8 +16,10 @@ module.exports.process_msg = function(ws, data){
 	if(data.v === 2){
 		if(data.type == 'create'){
 			console.log('its a create!');
-			chaincode.init_marble([data.name, data.color, data.size, data.user], cb_invoked);				//create a new marble
-			ledger_edit();
+			if(data.name && data.color && data.size && data.user){
+				chaincode.init_marble([data.name, data.color, data.size, data.user], cb_invoked);				//create a new marble
+				ledger_edit();
+			}
 		}
 		else if(data.type == 'get'){
 			console.log('get marbles msg');
@@ -25,13 +27,17 @@ module.exports.process_msg = function(ws, data){
 		}
 		else if(data.type == 'transfer'){
 			console.log('transfering msg');
-			chaincode.set_user([data.name, data.user]);
-			ledger_edit();
+			if(data.name && data.user){
+				chaincode.set_user([data.name, data.user]);
+				ledger_edit();
+			}
 		}
 		else if(data.type == 'remove'){
 			console.log('removing msg');
-			chaincode.remove(data.name);
-			ledger_edit();
+			if(data.name){
+				chaincode.remove(data.name);
+				ledger_edit();
+			}
 		}
 		else if(data.type == 'chainstats'){
 			console.log('chainstats msg');
@@ -39,8 +45,11 @@ module.exports.process_msg = function(ws, data){
 		}
 		else if(data.type == 'open_trade'){
 			console.log('open_trade msg');
-			if(data.willing.length < 0){
+			if(!data.willing || data.willing.length < 0){
 				console.log('error, "willing" is empty');
+			}
+			else if(!data.want){
+				console.log('error, "want" is empty');
 			}
 			else{
 				var args = [data.user, data.want.color, data.want.size, data.willing[0].color, data.willing[0].size];
