@@ -127,7 +127,7 @@ Options Parameter:
 
 ### obc.load_chaincode(options, [callback])
 Load the chaincode you want to use. 
-It wil be downloaded and parsed. 
+It will be downloaded and parsed. 
 The callback will receive (e, obj) where e is the error format and obj is the chaincode object.
 The chaincode object will have dot notation to the functions in the chaincode.  
 Example
@@ -181,7 +181,7 @@ Example Response:
 ```
 
 ### obc.block_stats(id, [callback])
-Get statsitics on a particular block in the chain.  
+Get statistics on a particular block in the chain.  
 Example Response:
 
 ```js
