@@ -11,8 +11,7 @@
 
 ## Projects Contents
 1. **JS sdk** - `./utils/obc-js`
-1. **SimpelStuff App1** (marbles demo)	-	http://localhost:3000
-1. **Chaincode Investigator** (tool)	-	http://localhost:3000/cci
+1. **Marbles Demo**   -	http://localhost:3000
 
 ***
 
@@ -26,7 +25,7 @@
 
 ## Demo Phase 2 Goals
 - [x] Server pushes block/marble updates to client when a new block event has occured for local user
-- [ ] User's can advertise to trade/exchange their marbles (ie willing to trade large red for large blue/yellow/green)
+- [x] User's can advertise to trade/exchange their marbles (ie willing to trade large red for large blue/yellow/green)
 - [ ] User can remove their open trades
 - [x] User identity (fake login as bob or leroy)
 - [x] Ability to see past blocks details and some sort of animation on new blocks
@@ -78,22 +77,7 @@
 - [ ] improve marble redraw so we don't have to blank the marble divs
 - [ ] tutorial for p2
 - [ ] re-parallelize the queryies
-- [ ] show open trades made by user
+- [x] show open trades made by user
 - [ ] ability to remove open trades by user
 - [ ] make layout adaptive
 - [ ] sanitize git url to make sure it looks right... should not have .git
-
-
-- I changed a if(e != null) to if(e == null) and it didn't create a new hash...?
-
-
-### ChainCode Notes:
-1. Due to performance issues, we probably want resuable chaincode contracts.  ie 1 chaincode describe/constrains multiple people assets. ie ie many people and cars exist in 1 chaincode
-1. Any functionality that parties need to agree on should be in the chaincode.  ie do not move it to the application b/c this then the moving parts become unenforceable.
-1. Chaincode should keep track of all key's that get their state saved.  Have init clear these
-
-### Junk Notes:
-- npm install git+ssh://git@github.ibm.com:openblockchain/obc-js.git
-- phase two changes websocket msg structure!
-	- UI no longer tracks ledger updates and sets a local timer to request the new marble states
-	- backend will send a clear msg and then the new marble states whenever a request was made that would touch the ledger
