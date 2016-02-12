@@ -64,13 +64,13 @@ obc.prototype.load = function(options, cb){
 	// Step 1
 	obc.prototype.network(options.network.peers);
 	
-	// Step 2 - optional
+	// Step 2 - optional - only for secure networks
 	if(options.network.users){
-		options.network.users = filter_users(options.network.users);
+		options.network.users = filter_users(options.network.users);				//do not use ids that are for the peers
 		
 		var arr = [];
 		for(var i in chaincode.details.peers){
-			arr.push(i);
+			arr.push(i);															//build the list of indexes
 		}
 		async.each(arr, function(i, a_cb) {
 			if(options.network.users[i]){											//make sure we still have a user for this network
@@ -87,7 +87,7 @@ obc.prototype.load = function(options, cb){
 	
 	// Step 3
 	function load_cc(){
-		obc.prototype.load_chaincode(options.chaincode, cb);
+		obc.prototype.load_chaincode(options.chaincode, cb);						//download/parse and load chaincode
 	}
 };
 
@@ -280,7 +280,7 @@ obc.prototype.switchPeer = function(index) {
 								"Content-Type": "application/json",
 								"Accept": "application/json",
 							},
-					ssl: chaincode.details.peers[0].ssl,
+					ssl: chaincode.details.peers[index].ssl,
 					timeout: 60000,
 					quiet: true
 		});
@@ -575,15 +575,13 @@ function readNames(cb, lvl){												//lvl is for reading past state blocks, 
 
 
 //============================================================================================================================
-//Helper Functions() 
+//													Helper Functions() 
 //============================================================================================================================
-
-//==================================================================
-//populate_chaincode() - create JS call for custom goLang function, store in chaincode!
+//populate_chaincode() - create JS call for custom goLang function, stored in chaincode var!
 //==================================================================
 function populate_go_chaincode(name){
 	if(chaincode[name] != null){
-		//console.log('[obc-js] \t skip, already exists');
+		//console.log('[obc-js] \t skip, already exists');					//skip
 	}
 	else {
 		console.log('[obc-js] Found cc function: ', name);
