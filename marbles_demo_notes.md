@@ -73,3 +73,4 @@
 - [ ] ability to remove open trades by user
 - [ ] make layout adaptive
 - [ ] sanitize git url to make sure it looks right... should not have .git
+- [ ] rename to jerry and ginni

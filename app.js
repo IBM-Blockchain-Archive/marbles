@@ -244,7 +244,7 @@ var options = 	{
 					chaincode:{
 						zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip',
 						git_dir: 'marbles-chaincode-master/phase2',													//subdirectroy name of chaincode after unzipped
-						git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/phase2',						//git clone http url
+						git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/phase2',						//git http url
 						
 						//hashed cc name from prev deployment
 						deployed_name: 'f6c084c42b3bde90c03f214ac6e0426e3e594807901fb1464287f2c3a18ade717bc495298958287594f81bb0d0cfdd3b4346d438d3b587d4fc73cf78ae8f7dfe'
