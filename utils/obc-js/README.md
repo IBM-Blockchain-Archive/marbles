@@ -1,7 +1,12 @@
 # obc-js
-=========
-
 A Node.js library for easier interaction with Open Blockchain chaincode
+
+Table Of Contents:
+
+1. [OBC Function Documentation](#obcjs)
+1. [Chaincode Functions](#ccfunc)
+1. [Object Formats](#formats)
+1. [Chaincode Summary File](#ccsf)
 
 ***
 
@@ -81,7 +86,7 @@ A Node.js library for easier interaction with Open Blockchain chaincode
 ***
 ***
 
-##OBC-JS Documentation
+## <a name="obcjs"></a>OBC-JS Documentation
 ### obc.load(options, [callback])
 This is a wrapper function that will run a typical startup setup. It will run in order:
 
@@ -213,7 +218,7 @@ Example:
 ***
 ***
 
-##Chaincode Functions
+##<a name="ccfunc"></a>Chaincode Functions
 - Chaincode functions are dependent on actually be found inside your Go chaincode
 - My advise is to build your chaincode off of the Marble Application one.  This way you get the basic CRUD functions below:
 
@@ -240,7 +245,7 @@ Will invoke your Go function CUSTOM_FUNCTION_NAME and pass it 'arg'
 ***
 ***
 
-##Formats
+##<a name="formats"></a>Formats
 ### Chaincode Object
 
 	chaincode = 
