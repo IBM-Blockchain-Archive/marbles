@@ -252,7 +252,7 @@ Optionally save [Chaincode Summary File](#ccsf) to 'save_path'.
 Return list of all known variables names in chaincode state
 
 ### chaincode.CUSTOM_FUNCTION_NAME(arg, [callback])
-Will invoke your Go function CUSTOM_FUNCTION_NAME and pass it 'arg'
+Will invoke your Go function CUSTOM_FUNCTION_NAME and pass it 'arg'.  **Note the name will be all lowercase**
 
 ***
 ***

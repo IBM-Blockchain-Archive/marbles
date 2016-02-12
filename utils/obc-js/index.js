@@ -212,7 +212,7 @@ obc.prototype.load_chaincode = function(options, cb) {
 					for(var i in res){
 						var pos = res[i].indexOf('.');
 						var temp = res[i].substring(pos + 1, res[i].length - 1);
-						console.log('[obc-js] Found cc function: ', temp);
+						//console.log('[obc-js] Found cc function: ', temp);
 						populate_go_chaincode(temp);
 					}
 					
@@ -585,9 +585,10 @@ function readNames(cb, lvl){												//lvl is for reading past state blocks, 
 //==================================================================
 function populate_go_chaincode(name){
 	if(chaincode[name] != null){
-		console.log('[obc-js] \t skip, already exists');
+		//console.log('[obc-js] \t skip, already exists');
 	}
 	else {
+		console.log('[obc-js] Found cc function: ', name);
 		chaincode.details.func.push(name);
 		chaincode[name] = function(args, cb){								//create the functions in chaincode obj
 			var options = {path: '/devops/invoke'};
