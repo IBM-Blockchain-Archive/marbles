@@ -212,12 +212,10 @@ obc.prototype.load_chaincode = function(options, cb) {
 					for(var i in res){
 						var pos = res[i].indexOf('.');
 						var temp = res[i].substring(pos + 1, res[i].length - 1);
-						//console.log('[obc-js] Found cc function: ', temp);
 						populate_go_chaincode(temp);
 					}
 					
 					// Step 3.
-					obc.prototype.save(tempDirectory);
 					chaincode.read = read;
 					chaincode.write = write;
 					chaincode.remove = remove;
@@ -304,7 +302,7 @@ obc.prototype.save =  function(dir, cb){
 		if(cb) cb(eFmt('input error', 400, errors));
 	}
 	else{
-		var fn = 'chaincode.json';
+		var fn = 'chaincode.json';														//default name
 		if(chaincode.details.deployed_name) fn = chaincode.details.deployed_name + '.json';
 		var dest = path.join(dir, fn);
 		fs.writeFile(dest, JSON.stringify({details: chaincode.details}), function(e){
