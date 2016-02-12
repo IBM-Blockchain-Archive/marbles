@@ -30,20 +30,20 @@ router.route("/").get(function(req, res){
 // Phase 1
 // ============================================================================================================================
 router.route("/p1").get(function(req, res){
-	res.render('phase1', {title: 'Simple Stuff P1', bag: {setup: setup}} );
+	res.render('phase1', {title: 'Marbles Phase 1', bag: {setup: setup}} );
 });
 router.route("/p1/:page?").get(function(req, res){
-	res.render('phase1', {title: 'Simple Stuff P1', bag: {setup: setup}} );
+	res.render('phase1', {title: 'Marbles Phase 1', bag: {setup: setup}} );
 });
 
 // ============================================================================================================================
 // Phase 2
 // ============================================================================================================================
 router.route("/p2").get(function(req, res){
-	res.render('phase2', {title: 'Simple Stuff P2', bag: {setup: setup}} );
+	res.render('phase2', {title: 'Marbles Phase 2', bag: {setup: setup}} );
 });
 router.route("/p2/:page?").get(function(req, res){
-	res.render('phase2', {title: 'Simple Stuff P2', bag: {setup: setup}} );
+	res.render('phase2', {title: 'Marbles Phase 2', bag: {setup: setup}} );
 });
 
 
