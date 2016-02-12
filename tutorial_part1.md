@@ -1,7 +1,7 @@
 #Marbles Part 1 - Demo
 
 ##BEFORE YOU RUN
-- The underlying network for this applicaiton is from the Linux Foundation's Hyperledger project.  They have extensive [Fabric Documentation](https://github.com/openblockchain/obc-docs),
+- The underlying network for this applicaiton is from the Linux Foundation's Hyperledger project.  They have extensive [Fabric Documentation](https://github.com/openblockchain/obc-docs)
 - The expectations of this application are to test the JS SDK, guide its development and to aid a developer become familiar with our SDK + chaincode.
 - This is a `very simple` asset transfer demonstration.  Two users can create and exchange marbles with each other.
 - There will be multiple parts. Part 1 and 2 are complete  [2/15/2016]
@@ -314,6 +314,10 @@ __/utils/ws_part1.js__
 
 The `chaincode.set_user([data.name, data.user]);` line is where we submit our request to run the chaincode function. 
 It is passing to our GoLang set_user function an array of strings argument containing the name of the marble and the name of it's new owner. 
+By "passing" I mean it is really sending a HTTP POST /devops/invoke request to one of the peers in our network. 
+This peer will in turn call the chaincode and actually pass the argument to the cc function. 
+The details of which peer and the exact rest call are taken care of in our obc-js SDK. 
+For your own curisoity the details of the Invoke API call can be found [here](https://github.com/openblockchain/obc-docs/blob/master/api/Openchain%20API.md#devops)
 This code itself was called in response to a websocket message that originated on our user's browser.
 
 Pretty simple, now lets look 1 more step up to how we sent this websocket message.
