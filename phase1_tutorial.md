@@ -52,8 +52,8 @@ This allow us to use dot notation to call our GoLang functions (such as `chainco
 1. The user will interact with our Node.js application
 1. This client side JS code will open a websocket to the backend Node.js application
 1. The backend Node.js will send HTTP requests (via the SDK) to a OBC Peer
-1. The peer will communicate to it's chaincode container at its lesiure. Note that the previouse HTTP request was really a 'submission' of chaincode to be run, it will actually run at a later date.
-1. The cc container will carry our the desired operation
+1. The peer will communicate to its chaincode container at its leisure. Note that the previous HTTP request was really a 'submission' of chaincode to be run, it will actually run at a later date.
+1. The cc container will carry out the desired operation
 
 #Chaincode
 To understand what is going on we need to start looking at the chaincode.  The complete cc code for this example can be found [here](https://github.com/ibm-blockchain/marbles-chaincode/blob/master/phase1/chaincode_ex.go)
@@ -127,7 +127,7 @@ __Query()__
 	}
 ```
 
-The `Query()` function gives us some insight to how variables are retreived from cc state. 
+The `Query()` function gives us some insight to how variables are retrieved from cc state. 
 It is a simple matter of using `stub.GetState()` to fetch the value from the key/value pair.
 It is given to us as an array of bytes which this function will return. 
 The REST API handler will receive the value and format it into a JSON string for the response.
@@ -179,7 +179,7 @@ then continue [here](#run)
 # <a name="network"></a>Manual Network Setup:
 We have a Bluemix tile that can create you your own personal network at the push of a button.
 
-1. First login to Bluemix [Bluexmix - stage1](https://console.stage1.ng.bluemix.net)
+1. First login to Bluemix [Bluemix - stage1](https://console.stage1.ng.bluemix.net)
 1. Click "Catalog" or click [here](https://console.stage1.ng.bluemix.net/catalog)
 1. Scroll to the bottom and click the experimental link or click [here](https://console.stage1.ng.bluemix.net/catalog/labs/)
 1. Click the IBM Blockchain - Experimental tile
@@ -225,14 +225,14 @@ Now we are ready to work on the application!
 1. Fill out all the fields, then click the "Create" button
 1. It should have flipped you back to "Home" and you should see that a new marble has been created
 	- If not click the "Home" tab again or refresh the page
-1. Next lets trade a marble.  Click and drag one marble from one person's list to another. It should temporary disapear and then auto reload the marbles in their new state. 
+1. Next lets trade a marble.  Click and drag one marble from one person's list to another. It should temporary disappear and then auto reload the marbles in their new state. 
 	- If not refresh the page
 
 #Run Marbles w/Bluemix (manually)
-1. This app is already ready to run on bluemix
+1. This app is already ready to run on Bluemix
 1. If you don't already have one, create a new network for the app
 1. Edit manifest.yml 
-	- change the sevice name to match your network's service name, or remove the line if you don't want the app to bind to the service
+	- change the service name to match your network's service name, or remove the line if you don't want the app to bind to the service
 	- change the app name and host name since "marbles" is taken
 1. Push the application by opening a command prompt and browsing to this directory
 	
@@ -244,7 +244,7 @@ Now we are ready to work on the application!
 1. The application will bind to the service "myblockchain" and grab the peer data from VCAP_SERVICES. Code for this is in app.js line 209ish
 
 #Deeper Dive
-Hopefully you have succesfully traded a marble or two between users. 
+Hopefully you have successfully traded a marble or two between users. 
 Lets look at how this was done by starting at the chaincode.
 
 __set_user()__
@@ -281,13 +281,13 @@ __set_user()__
 
 This `set_user()` function takes in an array of strings argument. 
 Within the array the first index should have the name of the marble key/value pair. 
-We retreive the marble's struct with `stub.GetState(args[0])` and then unmarshal it into a Marble structure. 
+We retrieve the marble's struct with `stub.GetState(args[0])` and then unmarshal it into a Marble structure. 
 From there we can index into the structure with `res.User` and overwrite the marble's owner with the new username.
 Next we Marshal the structure back up so that we can use `stub.PutState()` to overwrite the marble with its new details. 
 
 This is a `very` simplistic way to change ownership of an asset. 
 The concept of an "owner" is simply the value of a string inside the marble's structure. 
-We will explore more sophicsated methods in Marbles Phase 3.
+We will explore more sophisticated methods in Marbles Phase 3.
 
 
 Lets take 1 step up and look at how this chaincode was called from our node.js app. 
@@ -314,7 +314,7 @@ __/utils/ws_phase1.js__
 
 The `chaincode.set_user([data.name, data.user]);` line is where we submit our request to run the chaincode function. 
 It is passing to our GoLang set_user function an array of strings argument containing the name of the marble and the name of it's new owner. 
-This code itself was called in response to a websocket messsage that originated on our user's browser.
+This code itself was called in response to a websocket message that originated on our user's browser.
 
 Pretty simple, now lets look 1 more step up to how we sent this websocket message.
 
@@ -358,6 +358,6 @@ Thats it! Hope you had fun trading some marbles.
 
 #Trouble Shooting
 1. If you can't get the app to reflect a new change try refreshing the browser
-1. Use the dashabord on the Bluemix service tile to verify if the chaincode was deployed and that your peers are running. You may get into the chaincode/peer logs from here.
+1. Use the dashboard on the Bluemix service tile to verify if the chaincode was deployed and that your peers are running. You may get into the chaincode/peer logs from here.
 1. If it still doesn't work try deleting the current network and creating another one
 1. If it still doesn't work and you are an IBMer try reaching me on my Slack channel - Team `Bluechain` - `#i_lost_my_marbles`
