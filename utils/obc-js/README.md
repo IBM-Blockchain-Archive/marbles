@@ -1,38 +1,28 @@
-# obc-js.js
+# obc-js
 =========
-(dsh to do - terrible name, change to obc.js)
 
-A JS library for easier interaction with Open Blockchain chaincode
+A Node.js library for easier interaction with Open Blockchain chaincode
 
 ***
 
 ## Installation
-- <strike>npm install obc-js --save</strike>
-- for the time being manually download this directory to any projects, npm will be re-activated later - 1/27/2016
+- <strike>npm install obc-js --save</strike> [Update] for the time being manually download this directory to any projects, npm will be re-activated later - 1/27/2016
 
 ***
 
 ## Usage Steps!
-(example code in next section below should be glanced at as you read these instructions)
+(example code also provided below)
+1. Require this module
+1. Pass network + chaincode parameters to obc.load(options, my_cb):
+1. Receive chaincode obj from callback to obc.load(). ie: my_cb(e, chaincode)
+1. You can now deploy your chaincode (if needed) with chaincode.deploy(func, args, null, cb)
+1. Use dot notation on chaincode to call any of your chaincode functions ie:
 
-1. Load the module
-2. Pass the blockchain network JSON to obj.network() as an array of objects
-3. Pass chaincode parameters to obc.load()
-	###Option Fields: - obc.load(options, cb)
-	- zip_url = [string] http/https of a link to download zip (to do, change from zip download to git clone)
-	- git_dir = [string] name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
-	- git_url = [string] git https clone URL. should contain the desired chaincode
-	- deployed_name = [string] [optional] this is the hashed name of a deployed chaincode.  if you want to run with chaincode that is already deployed set it now, else it will be set when you deploy with the sdk
-4. receive chaincode obj from callback to obc.load(). ie: your_cb(e, chaincode)
-5. use dot notation on chaincode to call any of your chaincode functions ie:
-
-		chaincode.read('a', cb);						//will read variable "a" from current chaincode state
-		chaincode.write('a', "test", cb)				//will write to vairable "a"
-		chaincode.remove('a', cb)						//will delete variable "a"
-		chaincode.init_marbles(ARGS, cb);				//calls my custom chaincode function init_marbles() and passes it ARGS
+		chaincode.read('a', cb);			//will read variable "a" from current chaincode state
+		chaincode.write('a', "test", cb)	//will write to vairable "a"
+		chaincode.remove('a', cb)			//will delete variable "a"
+		chaincode.init_marbles(ARGS, cb);	//calls my custom chaincode function init_marbles() and passes it ARGS
 		
-***
-
 ## Example
 
 	// Step 1 ==================================
@@ -41,111 +31,104 @@ A JS library for easier interaction with Open Blockchain chaincode
 	var chaincode = {};
 
 	// ==================================
-	// load peers manually or from VCAP
-	// ==================================
-	var peers =     [
-		{
-			"discovery_host": "xxx.xxx.xxx.xxx",
-			"discovery_port": "xxxxx",
-			"api_host": "xxx.xxx.xxx.xxx",
-			"api_port": "xxxxx",
-			"id": "xxxxxx-xxxx-xxx-xxx-xxxxxxxxxxxx_vpx",
-			"api_url": "http://xxx.xxx.xxx.xxx:xxxxx"
-		}
-		
-		];
-	var users = [
-			{
-				"username": "user1",
-				"secret": "xxxxxxxx"
-			}
-		];
-
-	if(process.env.VCAP_SERVICES){															//load from vcap, search for service, 1 of the 3 should be found...
-		var servicesObject = JSON.parse(process.env.VCAP_SERVICES);
-		for(var i in servicesObject){
-			if(i.indexOf('ibm-blockchain') >= 0){											//looks close enough
-				if(servicesObject[i][0].credentials && servicesObject[i][0].credentials.peers){
-					console.log('overwritting peers, loading from a vcap service: ', i);
-					peers = servicesObject[i][0].credentials.peers;
-					if(servicesObject[i][0].credentials.users){
-						console.log('overwritting users, loading from a vcap service: ', i);
-						users = servicesObject[i][0].credentials.users;
-					} 
-					break;
-				}
-			}
-		}
-	}
-	// CATCH - We should only use 'user1-n', so deleting others
-	var valid_users = [];
-	for(var i = 0; i < users.length; i++) {
-		if(users[i].username.indexOf('user') == 0){
-			valid_users.push(users[i]);
-		}
-	}
-	users = valid_users;
-
-	// Step 2 ==================================
-	obc.network(peers);																		//setup network connection for rest endpoint
-
-	// ==================================
 	// configure obc-js sdk
 	// ==================================
 	var options = 	{
-					zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip',
-					git_dir: 'simplestuff-master/phase2',												//subdirectroy name of chaincode after unzipped
-					git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/tree/master/phase2',						//git clone http url
-					
-					//hashed cc name from prev deployment
-					deployed_name: '4a237d1e7be8bb2fe61a9f00b7200c1f9a16f77ec2dc4045a540fd84da2327a80975d66394add22961544ea07dae943a1941f175d547b554a0b5d5d2fa8d7c93'
-				};
-	if(process.env.VCAP_SERVICES){
-		console.log('\n[!] looks like you are in bluemix, I am going to clear out the deploy_name so that it deploys new cc.\n[!] hope that is ok budddy\n');
-		options.deployed_name = "";
-	}
+		network:{
+			peers:   [{
+				"api_host": "xxx.xxx.xxx.xxx",
+				"api_port": "xxxxx",
+				"id": "xxxxxx-xxxx-xxx-xxx-xxxxxxxxxxxx_vpx",
+				"api_url": "http://xxx.xxx.xxx.xxx:xxxxx"
+			}],
+			users:  [{
+				"username": "user1",
+				"secret": "xxxxxxxx"
+			}]
+		},
+		chaincode:{
+			zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip',
+			git_dir: 'marbles-chaincode-master/phase2',
+			git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/phase2'
+		}
+	};
+	
+	// Step 2 ==================================
 	obc.load(options, cb_ready);
 
-	// Step 4 ==================================
+	// Step 3 ==================================
 	function cb_ready(err, cc){																//response has chaincode functions
-		async.each([0, 1, 2, 3], function(index, cb) {
-			obc.switchPeer(index, users[index].username);
-			obc.register(users[index].username, users[index].secret, cb);		
-		}, function(err) {
-			app1.setup(obc, cc);
-			app2.setup(obc, cc);
-			if(cc.details.deployed_name === ""){												//decide if i need to deploy
-				cc.deploy('init', ['99'], './cc_summaries', cb_deployed);
-			}
-			else{
-				console.log('chaincode summary file indicates chaincode has been previously deployed');
-				cb_deployed();
-			}
-		});
+		app1.setup(obc, cc);
+		app2.setup(obc, cc);
+	
+	// Step 4 ==================================
+		if(cc.details.deployed_name === ""){												//decide if i need to deploy or not
+			cc.deploy('init', ['99'], './cc_summaries', cb_deployed);
+		}
+		else{
+			console.log('chaincode summary file indicates chaincode has been previously deployed');
+			cb_deployed();
+		}
 	}
 
 	// Step 5 ==================================
-	function cb_deployed(){
+	function cb_deployed(err){
 		console.log('sdk has deployed code and waited');
 		chaincode.read('a');
 	}
+	
+***
+***
 
-##OBC Functions
+##OBC-JS Documentation
 ### obc.load(options, [callback])
+This is a wrapper function that will run a typical startup setup. It will run in order:
+1. obc.network()
+2. obc.register() (only runs if options.network.users is != null)
+3. obc.load_chaincode()
+4. cb()
+
+Options Parameter:
+
+	var options = 	{
+		network:{
+			peers:   [{
+				"api_host": "xxx.xxx.xxx.xxx",
+				"api_port": "xxxxx",
+				"api_url": "http://xxx.xxx.xxx.xxx:xxxxx"
+				"id": "xxxxxx-xxxx-xxx-xxx-xxxxxxxxxxxx_vpx",
+			}],
+			users:  [{
+				"username": "user1",
+				"secret": "xxxxxxxx"
+			}]
+		},
+		chaincode:{
+			zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip', //http/https of a link to download zip (to do, change from zip download to git clone)
+			git_dir: 'marbles-chaincode-master/phase2',                                        //name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
+			git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/phase2',             //git https clone URL. should contain the desired chaincode
+			
+			deployed_name: null                                                                //[optional] this is the hashed name of a deployed chaincode.  if you want to run with chaincode that is already deployed set it now, else it will be set when you deploy with the sdk
+		}
+	};
+
+
+### obc.load_chaincode(options, [callback])
 Load the chaincode you want to use. 
 It wil be downloaded and parsed. 
 The callback will receive (e, obj) where e is the error format and obj is the chaincode object.
-The chaincode object will have dot notation to the functions in the chaincode.
-
+The chaincode object will have dot notation to the functions in the chaincode.  
+Example
+	
 	var options = 	{
-		zip_url: 'https://codeload.github.com/dshuffma-ibm/simplestuff/zip/master',
-		git_dir: 'simplestuff-master',																		//subdirectroy name of chaincode after unzipped
-		git_url: 'https://github.com/dshuffma-ibm/simplestuff',												//git clone http url
+		zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip', //http/https of a link to download zip (to do, change from zip download to git clone)
+		git_dir: 'marbles-chaincode-master/phase2',                                        //name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
+		git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/phase2',             //git https clone URL. should contain the desired chaincode
 		
-		//hashed cc name from prev deploy [IF YOU COMMENT LINE BELOW OUT IT WILL DEPLOY]
-		//deployed_name: '5e34bf5b51c51fbc8e1af98da8ad840c69ac9c9a8885e3e4d0e63b3b8074ee66669ac903588315a6c8d88683f563418e330747feafe7ef20a1cd54ff7685da19'
+		deployed_name: null                                                                //[optional] this is the hashed name of a deployed chaincode.  if you want to run with chaincode that is already deployed set it now, else it will be set when you deploy with the sdk
 	};
 	obc.load(options, cb_ready);
+
 
 ### obc.network(arrayPeers)
 Set the information about the peers in the network.
@@ -154,8 +137,6 @@ Example:
 
 		var peers = [
 			{
-				"discovery_host": "xxx.xxx.xxx.xxx",
-				"discovery_port": "xxxxx",
 				"api_host": "xxx.xxx.xxx.xxx",
 				"api_port": "xxxxx",
 				"id": "xxxxxx-xxxx-xxx-xxx-xxxxxxxxxxxx_vpx",
@@ -164,11 +145,14 @@ Example:
 		]
 		obc.network(peers);
 
+
 ### obc.save(path [callback])
 Save the [Chaincode Summary File](#ccsf) to a path.
 
+
 ### obc.clear([callback])
 Clear any loaded chaincode files including the downloaded chaincode repo, and [Chaincode Summary File](#ccsf).
+
 
 ### obc.chain_stats([callback])
 Get statistics on the network's chain.  
@@ -179,6 +163,7 @@ Example Response:
 		"currentBlockHash": "n7uMlNMiOSUM8s02cslTRzZQQlVfm8wKT9FtL54o0ywy6BkvPMwSzN5R1tpquvqOwFFHyLSoW44n6rkFyvAsBw==",
 		"previousBlockHash": "OESGPzacJO2Xc+5PB2zpmYVM8XlrwnEky0L2Ghok9oK1Lr/DWoxuBo2WwBca5zzJGq0fOeRQ7aOHgCjMupfL+Q=="
 	}
+
 
 ### obc.block_stats(id, [callback])
 Get statsitics on a particular block in the chain.  
@@ -207,6 +192,23 @@ Example Response:
 		}
 	}
 
+
+### obc.switchPeer(peerIndex)
+The SDK will default to use peer[0].  This function will switch the default peer to another index.  
+Example:
+	
+	obc.switchPeer(2);
+	
+	
+### obc.register(peerIndex, enrollID, enrollsecret, [callback])
+Only applicable oo a network with security enabled. 
+register() will register against peer[peerIndex] with the provided credentials.
+If successful the peer will now use this enrollID to perform any http requests.
+Example:
+	
+	obc.register(3, 'user1', 'xxxxxx', my_cb);
+
+***
 ***
 
 ##Chaincode Functions
@@ -233,6 +235,7 @@ Return list of all known variables names in chaincode state
 ### chaincode.CUSTOM_FUNCTION_NAME(arg, [callback])
 Will invoke your Go function CUSTOM_FUNCTION_NAME and pass it 'arg'
 
+***
 ***
 
 ##Formats
@@ -293,16 +296,3 @@ A copy can be saved elsewhere with obc.save(path)
 			"zip_url": "https://codeload.github.com/dshuffma-ibm/simplestuff/zip/master"
 		}
 	}
-
-
-## SDK ToDo:
-- [ ] need multi var read in sdk! ie read(["car1", "car2"]); ... what if we do a lot here, like SQL syntax?
-- [x] remember the name of all the saved vars in cc
-- [ ] ^^ and export this list so sdk can get it (needed?)
-- [x] make sdk proper npm module
-- [ ] change downloading zip to git clone
-- [ ] mocha test for sdk
-- [x] follow redirect on zip download...
-- [x] sdk, check inputs on load if they  dne, error
-- [x] add block stats to sdk
-- [ ] rethink chaincode in general to make more structured, template form?, pick and choose base functions? forced base inheritance?
