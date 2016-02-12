@@ -116,7 +116,7 @@ Options Parameter:
 			}]
 		},
 		chaincode:{
-			zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip', //http/https of a link to download zip (to do, change from zip download to git clone)
+			zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip', //http/https of a link to download zip
 			git_dir: 'marbles-chaincode-master/phase2',                                        //name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
 			git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/phase2',             //git https clone URL. should contain the desired chaincode
 			
@@ -134,7 +134,7 @@ Example
 	
 ```js
 	var options = 	{
-		zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip', //http/https of a link to download zip (to do, change from zip download to git clone)
+		zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip', //http/https of a link to download zip
 		git_dir: 'marbles-chaincode-master/phase2',                                        //name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
 		git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/phase2',             //git https clone URL. should contain the desired chaincode
 		

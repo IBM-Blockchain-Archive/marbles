@@ -1,15 +1,15 @@
-#Marbles Phase 1 - Demo
+#Marbles Part 1 - Demo
 
 ##BEFORE YOU RUN
 - The underlying network for this applicaiton is from the Linux Foundation's Hyperledger project.  They have extensive [Fabric Documentation](https://github.com/openblockchain/obc-docs),
 - The expectations of this application are to test the JS SDK, guide its development and to aid a developer become familiar with our SDK + chaincode.
 - This is a `very simple` asset transfer demonstration.  Two users can create and exchange marbles with each other.
-- There will be multiple phases. Phase 1 and 2 are complete  [2/15/2016]
+- There will be multiple parts. Part 1 and 2 are complete  [2/15/2016]
 - The chaincode is not in this repo, it can be found here: [https://github.com/ibm-blockchain/marbles-chaincode](hhttps://github.com/ibm-blockchain/marbles-chaincode)
 
 ***
 
-##Phase 1 Goals
+##Part 1 Goals
 - User can create a marble and store it in the chaincode state
 - User can read and display all marbles in the chaincode state
 - User can transfer marble to another user
@@ -20,7 +20,7 @@
 ***
 
 #Prereq:
-1. Bluemix ID https://console.ng.bluemix.net/ (needed to create your OBC network) (stage1 or production)
+1. Bluemix ID https://console.ng.bluemix.net/ (needed to create your OBC network)
 1. Node JS 0.12+ (only needed if you want to run the app locally)
 1. GoLang Environment (only needed to build your own chaincode, not needed if you just run the marbles app as is)
 1. You are at least partially aware of the term 'chaincode', 'ledger', and 'peer' in a blockchain context. [Term Help](https://github.com/openblockchain/obc-docs/blob/master/glossary.md)
@@ -179,9 +179,9 @@ then continue [here](#run)
 # <a name="network"></a>Manual Network Setup:
 We have a Bluemix tile that can create you your own personal network at the push of a button.
 
-1. First login to Bluemix [Bluemix - stage1](https://console.stage1.ng.bluemix.net)
-1. Click "Catalog" or click [here](https://console.stage1.ng.bluemix.net/catalog)
-1. Scroll to the bottom and click the experimental link or click [here](https://console.stage1.ng.bluemix.net/catalog/labs/)
+1. First login to Bluemix [Bluemix](https://console.ng.bluemix.net)
+1. Click "Catalog" or click [here](https://console.ng.bluemix.net/catalog)
+1. Scroll to the bottom and click the experimental link or click [here](https://console.ng.bluemix.net/catalog/labs/)
 1. Click the IBM Blockchain - Experimental tile
 1. Change the "Service name" to "myblockchain" without the quotes
 1. Click the "CREATE" button
@@ -287,7 +287,7 @@ Next we Marshal the structure back up so that we can use `stub.PutState()` to ov
 
 This is a `very` simplistic way to change ownership of an asset. 
 The concept of an "owner" is simply the value of a string inside the marble's structure. 
-We will explore more sophisticated methods in Marbles Phase 3.
+We will explore more sophisticated methods in Marbles Part 3.
 
 
 Lets take 1 step up and look at how this chaincode was called from our node.js app. 
@@ -360,4 +360,3 @@ Thats it! Hope you had fun trading some marbles.
 1. If you can't get the app to reflect a new change try refreshing the browser
 1. Use the dashboard on the Bluemix service tile to verify if the chaincode was deployed and that your peers are running. You may get into the chaincode/peer logs from here.
 1. If it still doesn't work try deleting the current network and creating another one
-1. If it still doesn't work and you are an IBMer try reaching me on my Slack channel - Team `Bluechain` - `#i_lost_my_marbles`
