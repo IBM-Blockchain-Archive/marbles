@@ -57,8 +57,8 @@ app.use(cors());
 ///////////  Configure Webserver  ///////////
 app.use(function(req, res, next){
 	var keys;
-	console.log('silly', '------------------------------------------ incoming request ------------------------------------------');
-	console.log('info', 'New ' + req.method + ' request for', req.url);
+	console.log('------------------------------------------ incoming request ------------------------------------------');
+	console.log('New ' + req.method + ' request for', req.url);
 	req.bag = {};											//create my object for my stuff
 	req.session.count = eval(req.session.count) + 1;
 	req.bag.session = req.session;
@@ -99,7 +99,7 @@ var server = http.createServer(app).listen(port, function() {});
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 process.env.NODE_ENV = 'production';
 server.timeout = 240000;																							// Ta-da.
-console.log('info', '------------------------------------------ Server Up - ' + host + ':' + port + ' ------------------------------------------');
+console.log('------------------------------------------ Server Up - ' + host + ':' + port + ' ------------------------------------------');
 if(process.env.PRODUCTION) console.log('Running using Production settings');
 else console.log('Running using Developer settings');
 
@@ -122,8 +122,8 @@ else console.log('Running using Developer settings');
 // ============================================================================================================================
 // 														Test Area
 // ============================================================================================================================
-var app1 = require('./utils/ws_app1');
-var app2 = require('./utils/ws_app2');
+var phase1 = require('./utils/ws_phase1');
+var phase2 = require('./utils/ws_phase2');
 var ws = require('ws');
 var wss = {};
 var Obc1 = require('./utils/obc-js/index');
@@ -132,92 +132,78 @@ var obc = new Obc1();
 // ==================================
 // load peers manually or from VCAP, VCAP will overwrite hardcoded list!
 // ==================================
-var peers =     [
+var manual = {
+  "credentials": {
+    "peers": [
       {
-        "discovery_host": "169.44.38.113",
-        "discovery_port": "33668",
-        "api_host": "169.44.38.113",
-        "api_port": "33669",
+        "discovery_host": "169.44.38.116",
+        "discovery_port": "33772",
+        "api_host": "169.44.38.116",
+        "api_port": "33773",
         "type": "peer",
-        "network_id": "46d54f75-9813-4deb-ab35-de7151f741a2",
-        "id": "46d54f75-9813-4deb-ab35-de7151f741a2_vp1",
-        "api_url": "http://169.44.38.113:33669"
+        "network_id": "b3b11837-5943-4f49-8f99-1d77360b12d5",
+        "id": "b3b11837-5943-4f49-8f99-1d77360b12d5_vp1",
+        "api_url": "http://169.44.38.116:33773"
       },
       {
-        "discovery_host": "169.44.38.114",
-        "discovery_port": "33477",
-        "api_host": "169.44.38.114",
-        "api_port": "33478",
+        "discovery_host": "169.44.63.207",
+        "discovery_port": "33700",
+        "api_host": "169.44.63.207",
+        "api_port": "33701",
         "type": "peer",
-        "network_id": "46d54f75-9813-4deb-ab35-de7151f741a2",
-        "id": "46d54f75-9813-4deb-ab35-de7151f741a2_vp2",
-        "api_url": "http://169.44.38.114:33478"
-      },
-      {
-        "discovery_host": "169.44.38.124",
-        "discovery_port": "33550",
-        "api_host": "169.44.38.124",
-        "api_port": "33551",
-        "type": "peer",
-        "network_id": "46d54f75-9813-4deb-ab35-de7151f741a2",
-        "id": "46d54f75-9813-4deb-ab35-de7151f741a2_vp4",
-        "api_url": "http://169.44.38.124:33551"
-      },
-      {
-        "discovery_host": "169.44.38.120",
-        "discovery_port": "33512",
-        "api_host": "169.44.38.120",
-        "api_port": "33513",
-        "type": "peer",
-        "network_id": "46d54f75-9813-4deb-ab35-de7151f741a2",
-        "id": "46d54f75-9813-4deb-ab35-de7151f741a2_vp3",
-        "api_url": "http://169.44.38.120:33513"
+        "network_id": "b3b11837-5943-4f49-8f99-1d77360b12d5",
+        "id": "b3b11837-5943-4f49-8f99-1d77360b12d5_vp2",
+        "api_url": "http://169.44.63.207:33701"
       }
-    ];
-console.log('loading hardcoded peers');
-
-var users = [
+    ],
+    "users": [
       {
         "username": "peer1",
-        "secret": "5bc1293a41"
+        "secret": "57598483d3"
       },
       {
         "username": "peer2",
-        "secret": "c7d1e446b9"
+        "secret": "03d1700316"
       },
       {
         "username": "peer3",
-        "secret": "42e724215d"
+        "secret": "2108e55cab"
       },
       {
         "username": "peer4",
-        "secret": "10a155d41b"
+        "secret": "57359e7d41"
       },
       {
         "username": "peer5",
-        "secret": "cd58003225"
+        "secret": "1af51ef3d1"
       },
       {
         "username": "user1",
-        "secret": "f9780651c4"
+        "secret": "9cab181798"
       },
       {
         "username": "user2",
-        "secret": "1015d5f2df"
+        "secret": "d212772c83"
       },
       {
         "username": "user3",
-        "secret": "b0abf4a54d"
+        "secret": "05080d3f7e"
       },
       {
         "username": "user4",
-        "secret": "3e14768ea7"
+        "secret": "b3f30c1de5"
       },
       {
         "username": "user5",
-        "secret": "b6cb13486c"
+        "secret": "92b1616a9d"
       }
-    ];
+    ]
+  }
+};
+var peers = manual.credentials.peers;
+console.log('loading hardcoded peers');
+var users = null;																		//users are only found if security is on
+if(manual.credentials.users) users = manual.credentials.users;
 console.log('loading hardcoded users');
 
 if(process.env.VCAP_SERVICES){															//load from vcap, search for service, 1 of the 3 should be found...
@@ -231,32 +217,30 @@ if(process.env.VCAP_SERVICES){															//load from vcap, search for servic
 					console.log('overwritting users, loading from a vcap service: ', i);
 					users = servicesObject[i][0].credentials.users;
 				} 
+				else users = null;														//no security
 				break;
 			}
 		}
 	}
 }
-// CATCH - We should only use 'user1-n', so deleting others
-var valid_users = [];
-for(var i = 0; i < users.length; i++) {
-	if(users[i].username.indexOf('user') == 0){
-		valid_users.push(users[i]);
-	}
-}
 
-users = valid_users;
-obc.network(peers);																		//setup network connection for rest endpoint
 
 // ==================================
 // configure obc-js sdk
 // ==================================
 var options = 	{
-					zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip',
-					git_dir: 'marbles-chaincode-master/phase2',													//subdirectroy name of chaincode after unzipped
-					git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/phase2',						//git clone http url
-					
-					//hashed cc name from prev deployment
-					//deployed_name: '4a237d1e7be8bb2fe61a9f00b7200c1f9a16f77ec2dc4045a540fd84da2327a80975d66394add22961544ea07dae943a1941f175d547b554a0b5d5d2fa8d7c93'
+					network:{
+						peers: peers,
+						users: users,
+					},
+					chaincode:{
+						zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip',
+						git_dir: 'marbles-chaincode-master/phase2',													//subdirectroy name of chaincode after unzipped
+						git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/phase2',						//git clone http url
+						
+						//hashed cc name from prev deployment
+						deployed_name: 'f6c084c42b3bde90c03f214ac6e0426e3e594807901fb1464287f2c3a18ade717bc495298958287594f81bb0d0cfdd3b4346d438d3b587d4fc73cf78ae8f7dfe'
+					}
 				};
 if(process.env.VCAP_SERVICES){
 	console.log('\n[!] looks like you are in bluemix, I am going to clear out the deploy_name so that it deploys new cc.\n[!] hope that is ok budddy\n');
@@ -265,71 +249,39 @@ if(process.env.VCAP_SERVICES){
 obc.load(options, cb_ready);															//parse/load chaincode
 
 function cb_ready(err, cc){																//response has chaincode functions
-	async.each([0, 1, 2, 3], function(index, cb) {
-		obc.switchPeer(index, users[index].username);
-		obc.register(users[index].username, users[index].secret, cb);
-	}, function(err) {
-		app1.setup(obc, cc);
-		app2.setup(obc, cc);
-		if(cc.details.deployed_name === ""){												//decide if i need to deploy
-			cc.deploy('init', ['99'], './cc_summaries', cb_deployed);
-		}
-		else{
-			console.log('chaincode summary file indicates chaincode has been previously deployed');
-			cb_deployed();
-		}
-	});
+	phase1.setup(obc, cc);
+	phase2.setup(obc, cc);
+	if(cc.details.deployed_name === ""){												//decide if i need to deploy
+		cc.deploy('init', ['99'], './cc_summaries', cb_deployed);
+	}
+	else{
+		console.log('chaincode summary file indicates chaincode has been previously deployed');
+		cb_deployed();
+	}
 }
 
 // ============================================================================================================================
 // 												WebSocket Communication Madness
 // ============================================================================================================================
 function cb_deployed(e, d){
-	console.log('!', e);
-	console.log('starting websocket');
-	obc.save('./cc_summaries');															//save it here for chaincode investigator
-	wss = new ws.Server({server: server});												//start the websocket now
-	wss.on('connection', function connection(ws) {
-		//ws_cons.push(ws);
-		ws.on('message', function incoming(message) {
-			console.log('received ws msg:', message);
-			var data = JSON.parse(message);
-			app1.process_msg(ws, data);
-			app2.process_msg(ws, data);
-		});
-		
-		ws.on('close', function(){
-			app2.close();																//close peridic poll that phase 2 does
-		});
-	});
-}
-
-/* ignore this code - 2/1/2016
-var ws_cons = [];
-function broadcast(data){
-	for(var i in ws_cons){
-		try{
-			console.log('sending', i);//, ws);
-			ws_cons[i].send(JSON.stringify(data));
-		}
-		catch(e){
-			console.log('error ws', e);
-		}
+	if(e != null){
+		console.log('looks like a deploy error, holding off on the socket');
 	}
-}*/
-
-
-/*
-CCI improvements
-- [x] simpilify chaincode.json, remove discovery and api_url
-- [x] save chaincode.json as cc_<hash>.json
-- [x] have GET API that retruns all cc_<hash>.json file names
-- [x] have GET API that returns the cc_<hash>.json file
-- [x] allow cci to take in <hash> as url parameter
-- [ ] deploy on CCI actually runs through flow
-- [ ] 
-	- load spin icon
-	- poll on new chaincode.json file name API
-	- finally fade spin and rebuild UI from file
-	- (depending on how this works maybe remove HTML5 local storage)
-*/
+	else{
+		console.log('------------------------------------------ Websocket Up ------------------------------------------');
+		obc.save('./cc_summaries');															//save it here for chaincode investigator
+		wss = new ws.Server({server: server});												//start the websocket now
+		wss.on('connection', function connection(ws) {
+			ws.on('message', function incoming(message) {
+				console.log('received ws msg:', message);
+				var data = JSON.parse(message);
+				phase1.process_msg(ws, data);
+				phase2.process_msg(ws, data);
+			});
+			
+			ws.on('close', function(){
+				phase2.close();																//close peridic poll that phase 2 does
+			});
+		});
+	}
+}
