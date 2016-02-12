@@ -120,7 +120,7 @@ $(document).on('ready', function() {
 		setTimeout(function(){
 			$("#bobswrap").html('');
 			$("#leroyswrap").html('');
-			ws.send(JSON.stringify({type: "get", v: 1}));						//need to wait a bit - dsh to do, tap into new block event
+			ws.send(JSON.stringify({type: "get", v: 1}));						//need to wait a bit
 			ws.send(JSON.stringify({type: "chainstats", v: 1}));
 		}, 300);
 	}

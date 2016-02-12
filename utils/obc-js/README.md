@@ -277,22 +277,20 @@ It is created in obc.load() and updated with chaincode.deploy().
 A copy can be saved elsewhere with obc.save(path)
 
 	{
-		"details": {
-			"deployed_name": "5e34bf5b51c51fbc8e1af98da8ad840c69ac9c9a8885e3e4d0e63b3b8074ee66669ac903588315a6c8d88683f563418e330747feafe7ef20a1cd54ff7685da19",
-			"func": ["init", "Delete", "Write", "ReadNames", "init_marble", "set_user", "remember_me"],
-			"git_dir": "simplestuff-master",
-			"git_url": "https://github.com/dshuffma-ibm/simplestuff",
-			"peers": [
-				{
-					"discovery_host": "xxx.xxx.xxx.xxx",
-					"discovery_port": "xxxxx",
-					"api_host": "xxx.xxx.xxx.xxx",
-					"api_port": "xxxxx",
-					"id": "xxxxxx-xxxx-xxx-xxx-xxxxxxxxxxxx_vpx",
-					"api_url": "http://xxx.xxx.xxx.xxx:xxxxx"
-				}
-			]
-			"vars": [],
-			"zip_url": "https://codeload.github.com/dshuffma-ibm/simplestuff/zip/master"
+	"details": {
+		"deployed_name": "f6c084c42b3bde90c03f214ac6e0426e3e594807901fb1464287f2c3a18ade717bc495298958287594f81bb0d0cfdd3b4346d438d3b587d4fc73cf78ae8f7dfe",
+		"func": ["init", "Delete", "Write", "init_marble", "set_user", "open_trade", "perform_trade", "remember_me"],
+		"git_dir": 'marbles-chaincode-master/phase2',
+		"git_url": 'https://github.com/ibm-blockchain/marbles-chaincode/phase2'
+		"peers": [{
+			"name": "vp1-xxx.xxx.xxx.xxx",
+			"api_host": "xxx.xxx.xxx.xxx",
+			"api_port": "xxx",
+			"id": "xxxxx_vp1",
+			"ssl": false,
+			"user": "user1"
+		}],
+		"vars": [],
+		"zip_url": 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip',
 		}
 	}
