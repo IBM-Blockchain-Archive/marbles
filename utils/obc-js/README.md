@@ -12,6 +12,7 @@ A Node.js library for easier interaction with Open Blockchain chaincode
 
 ## Usage Steps!
 (example code also provided below)
+
 1. Require this module
 1. Pass network + chaincode parameters to obc.load(options, my_cb):
 1. Receive chaincode obj from callback to obc.load(). ie: my_cb(e, chaincode)
@@ -57,12 +58,12 @@ A Node.js library for easier interaction with Open Blockchain chaincode
 	obc.load(options, cb_ready);
 
 	// Step 3 ==================================
-	function cb_ready(err, cc){																//response has chaincode functions
+	function cb_ready(err, cc){								//response has chaincode functions
 		app1.setup(obc, cc);
 		app2.setup(obc, cc);
 	
 	// Step 4 ==================================
-		if(cc.details.deployed_name === ""){												//decide if i need to deploy or not
+		if(cc.details.deployed_name === ""){				//decide if i need to deploy or not
 			cc.deploy('init', ['99'], './cc_summaries', cb_deployed);
 		}
 		else{
@@ -83,6 +84,7 @@ A Node.js library for easier interaction with Open Blockchain chaincode
 ##OBC-JS Documentation
 ### obc.load(options, [callback])
 This is a wrapper function that will run a typical startup setup. It will run in order:
+
 1. obc.network()
 2. obc.register() (only runs if options.network.users is != null)
 3. obc.load_chaincode()
@@ -108,7 +110,7 @@ Options Parameter:
 			git_dir: 'marbles-chaincode-master/phase2',                                        //name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
 			git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/phase2',             //git https clone URL. should contain the desired chaincode
 			
-			deployed_name: null                                                                //[optional] this is the hashed name of a deployed chaincode.  if you want to run with chaincode that is already deployed set it now, else it will be set when you deploy with the sdk
+			deployed_name: null    //[optional] this is the hashed name of a deployed chaincode.  if you want to run with chaincode that is already deployed set it now, else it will be set when you deploy with the sdk
 		}
 	};
 
@@ -125,7 +127,7 @@ Example
 		git_dir: 'marbles-chaincode-master/phase2',                                        //name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
 		git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/phase2',             //git https clone URL. should contain the desired chaincode
 		
-		deployed_name: null                                                                //[optional] this is the hashed name of a deployed chaincode.  if you want to run with chaincode that is already deployed set it now, else it will be set when you deploy with the sdk
+		deployed_name: null   //[optional] this is the hashed name of a deployed chaincode.  if you want to run with chaincode that is already deployed set it now, else it will be set when you deploy with the sdk
 	};
 	obc.load(options, cb_ready);
 
