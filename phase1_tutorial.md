@@ -1,11 +1,11 @@
 #Marbles Phase 1 - Demo
 
 ##BEFORE YOU RUN
-- As a "tutorial" this doc is incomplete.  As a "how do I run your marble thing" it is sufficient.
+- The underlying network for this applicaiton is from the Linux Foundation's Hyperledger project.  They have extensive [Fabric Documentation](https://github.com/openblockchain/obc-docs),
 - The expectations of this application are to test the JS SDK, guide its development and to aid a developer become familiar with our SDK + chaincode.
 - This is a `very simple` asset transfer demonstration.  Two users can create and exchange marbles with each other.
 - There will be multiple phases. Phase 1 and 2 are complete  [2/15/2016]
-- The chaincode is not included, it can be found here: [https://github.com/ibm-blockchain/marbles-chaincode](hhttps://github.com/ibm-blockchain/marbles-chaincode)
+- The chaincode is not in this repo, it can be found here: [https://github.com/ibm-blockchain/marbles-chaincode](hhttps://github.com/ibm-blockchain/marbles-chaincode)
 
 ***
 
@@ -21,9 +21,9 @@
 
 #Prereq:
 1. Bluemix ID https://console.ng.bluemix.net/ (needed to create your OBC network) (stage1 or production)
-1. Node JS 0.12+ (needed for this application)
+1. Node JS 0.12+ (only needed if you want to run the app locally)
 1. GoLang Environment (only needed to build your own chaincode, not needed if you just run the marbles app as is)
-1. You are at least partially aware of the term 'chaincode', 'ledger', and 'peer' in a blockchain context. [Blockchain Docs](https://github.com/openblockchain/obc-docs), [Term Help](https://github.com/openblockchain/obc-docs/blob/master/glossary.md)
+1. You are at least partially aware of the term 'chaincode', 'ledger', and 'peer' in a blockchain context. [Term Help](https://github.com/openblockchain/obc-docs/blob/master/glossary.md)
 
 
 #Application Background
@@ -310,7 +310,7 @@ __/utils/ws_phase1.js__
 				chaincode.set_user([data.name, data.user]);
 			}
 		...
-	```
+```
 
 The `chaincode.set_user([data.name, data.user]);` line is where we submit our request to run the chaincode function. 
 It is passing to our GoLang set_user function an array of strings argument containing the name of the marble and the name of it's new owner. 
