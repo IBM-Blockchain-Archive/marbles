@@ -292,7 +292,7 @@ We will explore more sophisticated methods in Marbles Part 3.
 
 Lets take 1 step up and look at how this chaincode was called from our node.js app. 
 
-__/utils/ws_phase1.js__
+__/utils/ws_part1.js__
 
 ```js
 	module.exports.process_msg = function(ws, data){
@@ -318,7 +318,7 @@ This code itself was called in response to a websocket message that originated o
 
 Pretty simple, now lets look 1 more step up to how we sent this websocket message.
 
-__/public/js/phase1.js__
+__/public/js/part1.js__
 
 ```js
 	$("#leroyswrap").droppable({drop:

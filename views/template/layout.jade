@@ -35,8 +35,8 @@ html
 					if(show == '') show = 'home';										//default
 					console.log('changing view to: ', show, $("#" + show + "Panel").length);
 
-					var phase = window.location.pathname.substring(0,3);
-					window.history.pushState({},'', phase + '/' + show);								//put it in url so we can f5
+					var part = window.location.pathname.substring(0,3);
+					window.history.pushState({},'', part + '/' + show);								//put it in url so we can f5
 
 					$(".panel").hide();
 					if($("#" + show + "Panel").length == 0){

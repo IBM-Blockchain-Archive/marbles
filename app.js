@@ -122,8 +122,8 @@ else console.log('Running using Developer settings');
 // ============================================================================================================================
 // 														Test Area
 // ============================================================================================================================
-var phase1 = require('./utils/ws_phase1');
-var phase2 = require('./utils/ws_phase2');
+var part1 = require('./utils/ws_part1');
+var part2 = require('./utils/ws_part2');
 var ws = require('ws');
 var wss = {};
 var Obc1 = require('./utils/obc-js/index');
@@ -249,8 +249,8 @@ if(process.env.VCAP_SERVICES){
 obc.load(options, cb_ready);															//parse/load chaincode
 
 function cb_ready(err, cc){																//response has chaincode functions
-	phase1.setup(obc, cc);
-	phase2.setup(obc, cc);
+	part1.setup(obc, cc);
+	part2.setup(obc, cc);
 	if(cc.details.deployed_name === ""){												//decide if i need to deploy
 		cc.deploy('init', ['99'], './cc_summaries', cb_deployed);
 	}
@@ -275,12 +275,12 @@ function cb_deployed(e, d){
 			ws.on('message', function incoming(message) {
 				console.log('received ws msg:', message);
 				var data = JSON.parse(message);
-				phase1.process_msg(ws, data);
-				phase2.process_msg(ws, data);
+				part1.process_msg(ws, data);
+				part2.process_msg(ws, data);
 			});
 			
 			ws.on('close', function(){
-				phase2.close();																//close peridic poll that phase 2 does
+				part2.close();																//close peridic poll that part 2 does
 			});
 		});
 	}
