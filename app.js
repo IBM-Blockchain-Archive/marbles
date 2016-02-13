@@ -256,15 +256,20 @@ if(process.env.VCAP_SERVICES){
 }
 obc.load(options, cb_ready);															//parse/load chaincode
 
-function cb_ready(err, cc){																//response has chaincode functions
-	part1.setup(obc, cc);
-	part2.setup(obc, cc);
-	if(cc.details.deployed_name === ""){												//decide if i need to deploy
-		cc.deploy('init', ['99'], './cc_summaries', cb_deployed);
+function cb_ready(err, cc){															//response has chaincode functions
+	if(err != null){
+		console.log('! looks like an error loading the chaincode, app will fail\n', err);
 	}
 	else{
-		console.log('chaincode summary file indicates chaincode has been previously deployed');
-		cb_deployed();
+		part1.setup(obc, cc);
+		part2.setup(obc, cc);
+		if(cc.details.deployed_name === ""){												//decide if i need to deploy
+			cc.deploy('init', ['99'], './cc_summaries', cb_deployed);
+		}
+		else{
+			console.log('chaincode summary file indicates chaincode has been previously deployed');
+			cb_deployed();
+		}
 	}
 }
 

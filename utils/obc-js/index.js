@@ -56,7 +56,7 @@ obc.prototype.load = function(options, cb){
 	if(!options.chaincode || !options.chaincode.git_dir) errors.push("the option 'chaincode.git_dir' is required");
 	if(!options.chaincode || !options.chaincode.git_url) errors.push("the option 'chaincode.git_url' is required");
 	if(errors.length > 0){															//check for input errors
-		console.log('[obc-js] Input Error - obc.load()', errors);
+		console.log('! [obc-js] Input Error - obc.load()', errors);
 		if(cb) cb(eFmt('input error', 400, errors));
 		return;																		//get out of dodge
 	}
@@ -107,7 +107,7 @@ obc.prototype.load_chaincode = function(options, cb) {
 	if(!options.git_dir) errors.push("the option 'git_dir' is required");
 	if(!options.git_url) errors.push("the option 'git_url' is required");
 	if(errors.length > 0){															//check for input errors
-		console.log('[obc-js] Input Error - obc.load_chaincode()', errors);
+		console.log('! [obc-js] Input Error - obc.load_chaincode()', errors);
 		if(cb) cb(eFmt('input error', 400, errors));
 		return;																		//get out of dodge
 	}
@@ -130,7 +130,7 @@ obc.prototype.load_chaincode = function(options, cb) {
 			download_it(options.zip_url);											//nope
 		}
 		else{
-			console.log('[obc-js] found chaincode in local file system');
+			console.log('[obc-js] Found chaincode in local file system');
 			fs.readdir(unzip_cc_dest, cb_got_names);								//yeppers
 		}
 	}
@@ -138,7 +138,7 @@ obc.prototype.load_chaincode = function(options, cb) {
 
 	// Step 0.
 	function download_it(download_url){
-		console.log('[obc-js] downloading zip');
+		console.log('[obc-js] Downloading zip');
 		var file = fs.createWriteStream(zip_dest);
 		https.get(download_url, function(response) {
 			response.pipe(file);
@@ -153,7 +153,7 @@ obc.prototype.load_chaincode = function(options, cb) {
 				}
 			});
 		}).on('error', function(err) {
-			console.log('[obc-js] download error');
+			console.log('! [obc-js] Download error');
 			fs.unlink(zip_dest); 													//delete the file async
 			if (cb) cb(eFmt('fs error', 500, err.message), chaincode);
 		});
@@ -161,41 +161,47 @@ obc.prototype.load_chaincode = function(options, cb) {
 	
 	// Step 1.
 	function cb_downloaded(){
-		console.log('[obc-js] unzipping zip');
+		console.log('[obc-js] Unzipping zip');
 		var zip = new AdmZip(zip_dest);
 		zip.extractAllTo(unzip_dest, /*overwrite*/true);
-		console.log('[obc-js] unzip done');
+		console.log('[obc-js] Unzip done');
 		fs.readdir(unzip_cc_dest, cb_got_names);
 		fs.unlink(zip_dest, function(err) {});										//remove zip file, never used again
 	}
 
 	// Step 2.
 	function cb_got_names(err, obj){
-		console.log('[obc-js] scanning files', obj);
-		if(err != null) console.log('[obc-js] fs readdir Error', err);
+		console.log('[obc-js] Scanning files', obj);
+		var foundGo = false;
+		if(err != null) console.log('! [obc-js] fs readdir Error', err);
 		else{
 			for(var i in obj){
-				//console.log(i, obj[i]);
-				
-				//GO FILES
-				if(obj[i].indexOf('.go') >= 0){
+				if(obj[i].indexOf('.go') >= 0){										//look for GoLang files
 					if(keep_looking){
+						foundGo = true;
 						fs.readFile(path.join(unzip_cc_dest, obj[i]), 'utf8', cb_read_go_file);
 					}
 				}
 			}
 		}
+		if(!foundGo){
+			var msg = 'did not find any *.go files, cannot continue';
+			console.log('! [obc-js] Error - ', msg);
+			if(cb) cb(eFmt('no chaincode', 400, msg), null);
+		}
 	}
 	
 	function cb_read_go_file(err, str){
-		if(err != null) console.log('[obc-js] fs readfile Error', err);
+		if(err != null) console.log('! [obc-js] fs readfile Error', err);
 		else{
 			
 			// Step 2a.
 			var regex = /func\s+\((\w+)\s+\*SimpleChaincode\)\s+Run/i;					//find the variable name that Run is using for simplechaincode pointer
 			var res = str.match(regex);
-			if(res[1] == null){
-				console.log('[obc-js] error did not find variable name in chaincode');
+			if(!res || !res[1]){
+				var msg = 'did not find Run() function in chaincode, cannot continue';
+				console.log('! [obc-js] Error -', msg);
+				if(cb) cb(eFmt('missing run', 400, msg), null);
 			}
 			else{
 				keep_looking = false;
@@ -235,7 +241,7 @@ obc.prototype.network = function(arrayPeers){
 	if(!arrayPeers) errors.push("network input arg should be array of peer objects");
 	else if(arrayPeers.constructor !== Array) errors.push("network input arg should be array of peer objects");
 	if(errors.length > 0){															//check for input errors
-		console.log('[obc-js] Input Error - obc.network()', errors);
+		console.log('! [obc-js] Input Error - obc.network()', errors);
 	}
 	else{
 		for(var i in arrayPeers){
