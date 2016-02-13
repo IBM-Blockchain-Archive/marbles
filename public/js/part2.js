@@ -130,6 +130,7 @@ $(document).on('ready', function() {
 	
 	//trade events
 	$("#setupTradeButton").click(function(){
+		build_trades(bag.trades);
 		$(".inactiveButton").removeClass("inactiveButton");
 		$("#viewTradeButton").addClass("inactiveButton");
 		$("#openTrades").fadeOut();
@@ -137,6 +138,7 @@ $(document).on('ready', function() {
 	});
 	
 	$("#viewTradeButton").click(function(){
+		build_trades(bag.trades);
 		$(".inactiveButton").removeClass("inactiveButton");
 		$("#setupTradeButton").addClass("inactiveButton");
 		$("#openTrades").fadeIn();
@@ -385,6 +387,7 @@ function build_ball(data){
 function build_trades(trades){
 	var html = '';
 	
+	console.log('trades', bag.trades);
 	if(!bag.trades) bag.trades = trades;						//store the trades for posterity
 	
 	for(var i in trades){
@@ -418,7 +421,6 @@ function build_trades(trades){
 	}
 	if(html == '') html = '<tr><td>nothing here...</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
 	$("#openTradesBody").html(html);
-	console.log('trades', bag.trades);
 	
 	build_my_trades(trades);
 }
@@ -446,7 +448,6 @@ function build_my_trades(trades){
 	}
 	if(html == '') html = '<tr><td>nothing here...</td><td></td><td></td><td></td><td></td><td></td></tr>';
 	$("#myTradesBody").html(html);
-	console.log('trades', bag.trades);
 }
 
 function set_my_color_options(username){
