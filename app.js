@@ -243,8 +243,8 @@ var options = 	{
 					},
 					chaincode:{
 						zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip',
-						git_dir: 'marbles-chaincode-master/phase2',													//subdirectroy name of chaincode after unzipped
-						git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/phase2',						//git http url
+						unzip_dir: 'marbles-chaincode-master/phase2',											//subdirectroy name of chaincode after unzipped
+						git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/phase2',					//git http url
 						
 						//hashed cc name from prev deployment
 						deployed_name: 'f6c084c42b3bde90c03f214ac6e0426e3e594807901fb1464287f2c3a18ade717bc495298958287594f81bb0d0cfdd3b4346d438d3b587d4fc73cf78ae8f7dfe'
@@ -254,9 +254,9 @@ if(process.env.VCAP_SERVICES){
 	console.log('\n[!] looks like you are in bluemix, I am going to clear out the deploy_name so that it deploys new cc.\n[!] hope that is ok budddy\n');
 	options.deployed_name = "";
 }
-obc.load(options, cb_ready);															//parse/load chaincode
+obc.load(options, cb_ready);																//parse/load chaincode
 
-function cb_ready(err, cc){															//response has chaincode functions
+function cb_ready(err, cc){																	//response has chaincode functions
 	if(err != null){
 		console.log('! looks like an error loading the chaincode, app will fail\n', err);
 	}

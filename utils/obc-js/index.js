@@ -29,10 +29,10 @@ var chaincode = {
 					details:{
 								deployed_name: '',
 								func: [],
-								git_dir: '',
 								git_url: '',
 								peers: [],
 								vars: [],
+								unzip_dir: '',
 								zip_url: '',
 					}
 				};
@@ -53,7 +53,7 @@ obc.prototype.load = function(options, cb){
 	if(!options.network || !options.network.peers) errors.push("the option 'network.peers' is required");
 
 	if(!options.chaincode || !options.chaincode.zip_url) errors.push("the option 'chaincode.zip_url' is required");
-	if(!options.chaincode || !options.chaincode.git_dir) errors.push("the option 'chaincode.git_dir' is required");
+	if(!options.chaincode || !options.chaincode.unzip_dir) errors.push("the option 'chaincode.unzip_dir' is required");
 	if(!options.chaincode || !options.chaincode.git_url) errors.push("the option 'chaincode.git_url' is required");
 	if(errors.length > 0){															//check for input errors
 		console.log('! [obc-js] Input Error - obc.load()', errors);
@@ -104,7 +104,7 @@ obc.prototype.load = function(options, cb){
 obc.prototype.load_chaincode = function(options, cb) {
 	var errors = [];
 	if(!options.zip_url) errors.push("the option 'zip_url' is required");
-	if(!options.git_dir) errors.push("the option 'git_dir' is required");
+	if(!options.unzip_dir) errors.push("the option 'unzip_dir' is required");
 	if(!options.git_url) errors.push("the option 'git_url' is required");
 	if(errors.length > 0){															//check for input errors
 		console.log('! [obc-js] Input Error - obc.load_chaincode()', errors);
@@ -115,9 +115,9 @@ obc.prototype.load_chaincode = function(options, cb) {
 	var keep_looking = true;
 	var zip_dest = path.join(tempDirectory,  '/file.zip');							//	./temp/file.zip
 	var unzip_dest = path.join(tempDirectory,  '/unzip');							//	./temp/unzip
-	var unzip_cc_dest = path.join(unzip_dest, '/', options.git_dir);				//	./temp/unzip/DIRECTORY
+	var unzip_cc_dest = path.join(unzip_dest, '/', options.unzip_dir);				//	./temp/unzip/DIRECTORY
 	chaincode.details.zip_url = options.zip_url;
-	chaincode.details.git_dir = options.git_dir;
+	chaincode.details.unzip_dir = options.unzip_dir;
 	chaincode.details.git_url = options.git_url;
 	if(options.deployed_name) chaincode.details.deployed_name = options.deployed_name;
 	

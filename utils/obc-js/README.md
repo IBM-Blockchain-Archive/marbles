@@ -57,7 +57,7 @@ Table Of Contents:
 		},
 		chaincode:{
 			zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip',
-			git_dir: 'marbles-chaincode-master/phase2',
+			unzip_dir: 'marbles-chaincode-master/phase2',
 			git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/phase2'
 		}
 	};
@@ -117,7 +117,7 @@ Options Parameter:
 		},
 		chaincode:{
 			zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip', //http/https of a link to download zip
-			git_dir: 'marbles-chaincode-master/phase2',                                        //name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
+			unzip_dir: 'marbles-chaincode-master/phase2',                                        //name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
 			git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/phase2',             //git https URL. should point to the desired chaincode repo AND directory
 			
 			deployed_name: null    //[optional] this is the hashed name of a deployed chaincode.  if you want to run with chaincode that is already deployed set it now, else it will be set when you deploy with the sdk
@@ -135,7 +135,7 @@ Example
 ```js
 	var options = 	{
 		zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip', //http/https of a link to download zip
-		git_dir: 'marbles-chaincode-master/phase2',                                        //name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
+		unzip_dir: 'marbles-chaincode-master/phase2',                                        //name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
 		git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/phase2',             //git https URL. should point to the desired chaincode repo AND directory
 		
 		deployed_name: null   //[optional] this is the hashed name of a deployed chaincode.  if you want to run with chaincode that is already deployed set it now, else it will be set when you deploy with the sdk
@@ -275,7 +275,7 @@ Will invoke your Go function CUSTOM_FUNCTION_NAME and pass it 'arg'.  **Note the
 			details:{
 						deployed_name: '',
 						func: [],
-						git_dir: '',
+						unzip_dir: '',
 						git_url: '',
 						peers: [],
 						vars: [],
@@ -304,7 +304,7 @@ A copy can be saved elsewhere with obc.save(path)
 	"details": {
 		"deployed_name": "f6c084c42b3bde90c03f214ac6e0426e3e594807901fb1464287f2c3a18ade717bc495298958287594f81bb0d0cfdd3b4346d438d3b587d4fc73cf78ae8f7dfe",
 		"func": ["init", "Delete", "Write", "init_marble", "set_user", "open_trade", "perform_trade", "remember_me"],
-		"git_dir": 'marbles-chaincode-master/phase2',
+		"unzip_dir": 'marbles-chaincode-master/phase2',
 		"git_url": 'https://github.com/ibm-blockchain/marbles-chaincode/phase2'
 		"peers": [{
 			"name": "vp1-xxx.xxx.xxx.xxx",

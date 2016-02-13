@@ -592,7 +592,7 @@ block custom_header
 				var data = 	{
 								zip_url: '',
 								git_url: '',
-								git_dir: ''
+								unzip_dir: ''
 							};
 				$.ajax({
 					method: 'POST',
@@ -685,7 +685,7 @@ block content
 		p
 			input(type="text" placeholder="Git Zip URL" name="zip_url").newInput
 		p
-			input(type="text" placeholder="Unzipped Directory/Path" name="git_dir").newInput
+			input(type="text" placeholder="Unzipped Directory/Path" name="unzip_dir").newInput
 		center
 			button(type="button" style="float:none")#parsecc SDK Parse CC 
 			span &nbsp;&nbsp;

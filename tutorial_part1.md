@@ -370,5 +370,5 @@ Thats it! Hope you had fun trading some marbles.
 #Node.js Console Error Solutions
 1. "500 - ECONNREFUSED": Check the peers in your options.network.peers.  They likely do not exist / are wrong
 1. "400 - Must supply username for chaincode": Check if you see a "Register - failure: userx 401" message.  if so delete and remake the network
-1. "400 - Error gettin chaincode package bytes:...": Check the optioins.chaincode.git_url, it is likely incorrect
-1. "fs readdir Error": Check the `options.chaincode.git_dir` and `zip_url`. Manually download the git repo using the `options.chaincode.zip_url` then extract it.  the `gir_dir` var should be the exact relative path to get to the desired cc folder
+1. "400 - Error gettin chaincode package bytes:...": Check the options.chaincode.git_url, it is likely incorrect
+1. "fs readdir Error": Check the `options.chaincode.unzip_dir` and `zip_url`. Manually download the git repo using the `options.chaincode.zip_url` then extract it.  the `gir_dir` var should be the exact relative path to get to the desired cc folder
