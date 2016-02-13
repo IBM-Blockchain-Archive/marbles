@@ -56,7 +56,7 @@ This allow us to use dot notation to call our GoLang functions (such as `chainco
 1. The cc container will carry out the desired operation
 
 #Chaincode
-To understand what is going on we need to start looking at the chaincode.  The complete cc code for this example can be found [here](https://github.com/ibm-blockchain/marbles-chaincode/blob/master/phase1/chaincode_ex.go)
+To understand what is going on we need to start looking at the chaincode.  The complete cc code for this example can be found [here](https://github.com/ibm-blockchain/marbles-chaincode/blob/master/part1/chaincode_ex.go)
 	
 The first interesting place to look is the `Run()` function. 
 This is our entry point into chaincode. 

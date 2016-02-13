@@ -562,7 +562,7 @@ function deploy(func, args, save_path, cb){
 			setTimeout(function(){
 				console.log("[obc-js] Deploying Chaincode - Complete");
 				cb(null, data);
-			}, 45000);														//wait extra long, not always ready yet
+			}, 35000);														//wait extra long, not always ready yet
 		}
 	};
 	options.failure = function(statusCode, e){
