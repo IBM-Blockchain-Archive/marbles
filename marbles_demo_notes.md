@@ -18,7 +18,7 @@
 ## Demo Part 2 Goals
 - [x] Server pushes block/marble updates to client when a new block event has occured for local user
 - [x] User's can advertise to trade/exchange their marbles (ie willing to trade large red for large blue/yellow/green)
-- [ ] User can remove their open trades
+- [x] User can remove their open trades
 - [x] User identity (fake login as bob or leroy)
 - [x] Ability to see past blocks details and some sort of animation on new blocks
 
@@ -64,7 +64,7 @@
 - [ ] remove/edit trades that are no longer possible in CC
 - [ ] remove named marble argument on perform_trade message/golang func, replace with color/size thing
 - [ ] check requirments of trade before exe, in CC
-- [ ] error checking on arguements before invoking... do not let e blank named marble in
+- [x] error checking on arguements before invoking... do not let e blank named marble in (in CC)
 - [x] url routing mapper
 - [ ] improve marble redraw so we don't have to blank the marble divs
 - [ ] tutorial for p2
@@ -72,5 +72,5 @@
 - [x] show open trades made by user
 - [ ] ability to remove open trades by user
 - [ ] make layout adaptive
-- [ ] sanitize git url to make sure it looks right... should not have .git
+- [x] better error messages
 - [ ] rename to jerry and ginni

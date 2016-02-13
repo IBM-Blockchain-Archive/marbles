@@ -58,12 +58,17 @@ module.exports.process_msg = function(ws, data){
 			ledger_edit();
 		}
 		else if(data.type == 'get_open_trades'){
-			console.log('get_open_trades msg');
+			console.log('get open trades msg');
 			chaincode.read('_opentrades', cb_got_trades);
 		}
 		else if(data.type == 'perform_trade'){
-			console.log('perform_trade msg');
+			console.log('perform trade msg');
 			chaincode.perform_trade([data.id, data.closer.user, data.closer.name, data.opener.user, data.opener.color, data.opener.size]);
+			ledger_edit();
+		}
+		else if(data.type == 'remove_trade'){
+			console.log('remove trade msg');
+			chaincode.remove_trade([data.id]);
 			ledger_edit();
 		}
 		

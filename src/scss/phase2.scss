@@ -116,6 +116,13 @@ button:disabled, .inactiveButton{
 #myTradesTable{
 	display:none;
 }
+.removeTrade{
+	padding: 5px;
+	cursor: pointer;
+}
+.removeTrade:hover{
+	color: $main_bg;
+}
 
 
 // --------- cloes a trade ---------

@@ -222,23 +222,62 @@ $(document).on('ready', function() {
 		}
 	});
 	
-	// =================================================================================
-	// Helper Fun
-	// =================================================================================
-	//transfer selected ball to user
-	function transfer(marbleName, user){
-		if(marbleName){
-			console.log('transfering', marbleName);
-			var obj = 	{
-							type: "transfer",
-							name: marbleName,
-							user: user,
-							v: 2
-						};
-			ws.send(JSON.stringify(obj));
+	$(document).on("click", ".removeTrade", function(){
+		var trade = find_trade($(this).attr('trade_timestamp'));
+		console.log('trade', trade);
+		var msg = 	{
+						type: 'remove_trade',
+						v: 2,
+						id: trade.timestamp.toString(),
+					};
+		ws.send(JSON.stringify(msg));
+	});
+});
+
+
+// =================================================================================
+// Helper Fun
+// =================================================================================
+//transfer selected ball to user
+function transfer(marbleName, user){
+	if(marbleName){
+		console.log('transfering', marbleName);
+		var obj = 	{
+						type: "transfer",
+						name: marbleName,
+						user: user,
+						v: 2
+					};
+		ws.send(JSON.stringify(obj));
+	}
+}
+
+function sizeMe(mm){
+	var size = 'Large';
+	if(Number(mm) == 16) size = 'Small';
+	return size;
+}
+
+function find_trade(timestamp){
+	for(var i in bag.trades){
+		if(bag.trades[i].timestamp){
+			return bag.trades[i];
 		}
 	}
-});
+	return null;
+}
+
+function find_valid_marble(user, color, size){				//return true if user owns marble of this color and size
+	for(var i in bag.marbles){
+		if(bag.marbles[i].user.toLowerCase() == user.toLowerCase()){
+			//console.log('!', bag.marbles[i].color, color.toLowerCase(), bag.marbles[i].size, size);
+			if(bag.marbles[i].color.toLowerCase() == color.toLowerCase() && bag.marbles[i].size == size){
+				return bag.marbles[i].name;
+			}
+		}
+	}
+	return null;
+}
 
 
 // =================================================================================
@@ -343,7 +382,6 @@ function build_ball(data){
 	return html;
 }
 
-
 function build_trades(trades){
 	var html = '';
 	
@@ -383,15 +421,10 @@ function build_trades(trades){
 	console.log('trades', bag.trades);
 	
 	build_my_trades(trades);
-	return html;
 }
-
 
 function build_my_trades(trades){
 	var html = '';
-	
-	if(!bag.trades) bag.trades = trades;						//store the trades for posterity
-	
 	for(var i in trades){
 		//console.log(trades[i]);
 		var style = ' ';
@@ -407,21 +440,13 @@ function build_my_trades(trades){
 				html +=		'<p>1 <span class="fa fa-2x fa-circle ' + trades[i].willing[x].color + '"></span>&nbsp; &nbsp;' + sizeMe(trades[i].willing[x].size) + '</p>';
 			}
 			html += 	'</td>';
-			html +=		'<td><span class="fa fa-remove removeTrade"></span></td>';
+			html +=		'<td><span class="fa fa-remove removeTrade" trade_timestamp="' + trades[i].timestamp + '"></span></td>';
 			html += '</tr>';
 		}
 	}
 	if(html == '') html = '<tr><td>nothing here...</td><td></td><td></td><td></td><td></td><td></td></tr>';
 	$("#myTradesBody").html(html);
 	console.log('trades', bag.trades);
-	
-	return html;
-}
-
-function sizeMe(mm){
-	var size = 'Large';
-	if(Number(mm) == 16) size = 'Small';
-	return size;
 }
 
 function set_my_color_options(username){
@@ -467,19 +492,4 @@ function set_my_size_options(username, colorOption){
 		html += '<option value="' + i + '">' + sizeMe(i) + '</option>';					//build it
 	}
 	$(colorOption).parent().parent().next("select[name='will_size']").html(html);
-}
-
-
-
-
-function find_valid_marble(user, color, size){				//return true if user owns marble of this color and size
-	for(var i in bag.marbles){
-		if(bag.marbles[i].user.toLowerCase() == user.toLowerCase()){
-			//console.log('!', bag.marbles[i].color, color.toLowerCase(), bag.marbles[i].size, size);
-			if(bag.marbles[i].color.toLowerCase() == color.toLowerCase() && bag.marbles[i].size == size){
-				return bag.marbles[i].name;
-			}
-		}
-	}
-	return null;
 }
