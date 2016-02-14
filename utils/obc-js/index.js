@@ -42,7 +42,7 @@ obc.selectedPeer = 0;
 obc.q = [];
 obc.lastPoll = 0;
 obc.lastBlock = 0;
-var tempDirectory = path.join(__dirname, "./temp");									//	./temp directory name
+var tempDirectory = path.join(__dirname, "./temp");									//	=./temp - temp directory name
 
 
 // ============================================================================================================================
@@ -116,9 +116,9 @@ obc.prototype.load_chaincode = function(options, cb) {
 	}
 	
 	var keep_looking = true;
-	var zip_dest = path.join(tempDirectory,  '/file.zip');								//	./temp/file.zip
-	var unzip_dest = path.join(tempDirectory,  '/unzip');								//	./temp/unzip
-	var unzip_cc_dest = path.join(unzip_dest, '/', options.unzip_dir);					//	./temp/unzip/DIRECTORY
+	var zip_dest = path.join(tempDirectory,  '/file.zip');								//	=./temp/file.zip
+	var unzip_dest = path.join(tempDirectory,  '/unzip');								//	=./temp/unzip
+	var unzip_cc_dest = path.join(unzip_dest, '/', options.unzip_dir);					//	=./temp/unzip/DIRECTORY
 	chaincode.details.zip_url = options.zip_url;
 	chaincode.details.unzip_dir = options.unzip_dir;
 	chaincode.details.git_url = options.git_url;
@@ -138,15 +138,14 @@ obc.prototype.load_chaincode = function(options, cb) {
 		fs.access(unzip_cc_dest, cb_file_exists);										//check if files exist yet
 		function cb_file_exists(e){
 			if(e != null){
-				download_it(options.zip_url);											//nope
+				download_it(options.zip_url);											//nope, go download it
 			}
 			else{
 				console.log('[obc-js] Found chaincode in local file system');
-				fs.readdir(unzip_cc_dest, cb_got_names);								//yeppers
+				fs.readdir(unzip_cc_dest, cb_got_names);								//yeppers, go use it
 			}
 		}
 	}
-	
 
 	// Step 0.
 	function download_it(download_url){
@@ -196,7 +195,7 @@ obc.prototype.load_chaincode = function(options, cb) {
 				}
 			}
 		}
-		if(!foundGo){
+		if(!foundGo){																//error
 			var msg = 'did not find any *.go files, cannot continue';
 			console.log('! [obc-js] Error - ', msg);
 			if(cb) cb(eFmt('no chaincode', 400, msg), null);
@@ -208,7 +207,7 @@ obc.prototype.load_chaincode = function(options, cb) {
 		else{
 			
 			// Step 2a.
-			var regex = /func\s+\((\w+)\s+\*SimpleChaincode\)\s+Run/i;					//find the variable name that Run is using for simplechaincode pointer
+			var regex = /func\s+\((\w+)\s+\*SimpleChaincode\)\s+Run/i;				//find the variable name that Run is using for simplechaincode pointer
 			var res = str.match(regex);
 			if(!res || !res[1]){
 				var msg = 'did not find Run() function in chaincode, cannot continue';
@@ -219,7 +218,7 @@ obc.prototype.load_chaincode = function(options, cb) {
 				keep_looking = false;
 				
 				// Step 2b.
-				var re = new RegExp('\\s' + res[1] + '\\.(\\w+)\\(', "gi");
+				var re = new RegExp('\\s' + res[1] + '\\.(\\w+)\\(', "gi");			//find the function names in Run()
 				res = str.match(re);
 				if(res[1] == null){
 					console.log('[obc-js] error did not find function names in chaincode');
@@ -227,7 +226,7 @@ obc.prototype.load_chaincode = function(options, cb) {
 				else{
 					
 					// Step 2c.
-					for(var i in res){
+					for(var i in res){												//build the rest call for each function
 						var pos = res[i].indexOf('.');
 						var temp = res[i].substring(pos + 1, res[i].length - 1);
 						populate_go_chaincode(temp);
@@ -238,7 +237,7 @@ obc.prototype.load_chaincode = function(options, cb) {
 					chaincode.write = write;
 					chaincode.remove = remove;
 					chaincode.deploy = deploy;
-					if(cb) cb(null, chaincode);
+					if(cb) cb(null, chaincode);										//all done, send it to callback
 				}
 			}
 		}
@@ -361,7 +360,7 @@ function removeThing(dir, cb){
 					//console.log('!', dir);
 					fs.unlink(file, function(err) {
 						if (err) {
-							//console.log('error', err);			//dsh - need to rethink this??/ does not always work - to do
+							//console.log('error', err);
 							if(cb) cb(err);
 							return;
 						}
@@ -589,7 +588,7 @@ function deploy(func, args, save_path, cb){
 //============================================================================================================================
 //readNames() - read all variable names in chaincode state
 //============================================================================================================================
-function readNames(cb, lvl){												//lvl is for reading past state blocks, tbd exactly
+function readNames(cb, lvl){
 	read('_all', cb, lvl);
 }
 
