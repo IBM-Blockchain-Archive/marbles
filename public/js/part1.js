@@ -28,7 +28,7 @@ $(document).on('ready', function() {
 						v: 1
 					};
 		if(obj.user && obj.name && obj.color){
-			console.log('sending', obj);
+			console.log('creating marble, sending', obj);
 			ws.send(JSON.stringify(obj));
 			showHomePanel();
 			$(".colorValue").html('Color');											//reset
@@ -49,6 +49,7 @@ $(document).on('ready', function() {
 	
 	//marble color picker
 	$(document).on("click", ".colorInput", function(){
+		$('.colorOptionsWrap').hide();											//hide any others
 		$(this).parent().find('.colorOptionsWrap').show();
 	});
 	$(document).on("click", ".colorOption", function(){
@@ -153,11 +154,8 @@ function connect_to_server(){
 	
 	function onOpen(evt){
 		console.log("WS CONNECTED");
-		//ws.send(JSON.stringify({type: "get", v:1}));
+		ws.send(JSON.stringify({type: "get", v:1}));
 		ws.send(JSON.stringify({type: "chainstats", v:1}));
-		setTimeout(function(){
-			ws.send(JSON.stringify({type: "get", v:1}));
-		}, 800);
 	}
 
 	function onClose(evt){

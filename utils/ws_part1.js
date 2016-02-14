@@ -11,7 +11,7 @@ module.exports.setup = function(sdk, cc){
 };
 
 module.exports.process_msg = function(ws, data){
-	if(data.v == 1){
+	if(data.v === 1){
 		if(data.type == 'create'){
 			console.log('its a create!');
 			if(data.name && data.color && data.size && data.user){
@@ -73,7 +73,7 @@ module.exports.process_msg = function(ws, data){
 	function cb_got_marble(e, marble){
 		if(e != null) console.log('error:', e);
 		else {
-			sendMsg({msg: 'marbles', e: e, marble: marble});
+			sendMsg({msg: 'marbles', marble: marble});
 		}
 	}
 	

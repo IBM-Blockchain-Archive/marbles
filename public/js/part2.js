@@ -313,14 +313,8 @@ function connect_to_server(){
 	function onOpen(evt){
 		console.log("WS CONNECTED");
 		ws.send(JSON.stringify({type: "chainstats", v:2}));
-		
-		setTimeout(function(){
-			ws.send(JSON.stringify({type: "get_open_trades", v: 2}));
-		}, 600);
-		
-		setTimeout(function(){
-			ws.send(JSON.stringify({type: "get", v:2}));
-		}, 900);
+		ws.send(JSON.stringify({type: "get_open_trades", v: 2}));
+		ws.send(JSON.stringify({type: "get", v:2}));
 	}
 
 	function onClose(evt){
