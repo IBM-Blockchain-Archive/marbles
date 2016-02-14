@@ -30,7 +30,7 @@
 
 ***
 
-## ChainCode / SDK ToDo:
+## ToDos:
 - [x] Write("name", "val", cb);
 - [x] ReadNames(cb)
 - [x] init_marble(json);
@@ -45,6 +45,7 @@
 - [ ] mocha test for sdk
 - [ ] browsify sdk and tie cci into it (not sure if i want to)
 - [ ] change downloading zip to git clone
+- [ ] the regex to find golang functions needs improving, has false positives
 - [x] follow redirect on zip download
 - [x] auto deploy, correctly!
 - [x] get delete to update marbleIndex
@@ -73,3 +74,5 @@
 - [x] make layout adaptive
 - [x] better error messages
 - [ ] rename to jerry and ginni
+- [ ] point out that there is individual chaincode for part 1 and part2 in the tutorial
+- [x] delete the temp dir if no deploy_name in sdk

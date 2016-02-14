@@ -109,32 +109,41 @@ obc.prototype.load_chaincode = function(options, cb) {
 	if(!options.zip_url) errors.push("the option 'zip_url' is required");
 	if(!options.unzip_dir) errors.push("the option 'unzip_dir' is required");
 	if(!options.git_url) errors.push("the option 'git_url' is required");
-	if(errors.length > 0){															//check for input errors
+	if(errors.length > 0){																//check for input errors
 		console.log('! [obc-js] Input Error - obc.load_chaincode()', errors);
 		if(cb) cb(eFmt('input error', 400, errors));
-		return;																		//get out of dodge
+		return;																			//get out of dodge
 	}
 	
 	var keep_looking = true;
-	var zip_dest = path.join(tempDirectory,  '/file.zip');							//	./temp/file.zip
-	var unzip_dest = path.join(tempDirectory,  '/unzip');							//	./temp/unzip
-	var unzip_cc_dest = path.join(unzip_dest, '/', options.unzip_dir);				//	./temp/unzip/DIRECTORY
+	var zip_dest = path.join(tempDirectory,  '/file.zip');								//	./temp/file.zip
+	var unzip_dest = path.join(tempDirectory,  '/unzip');								//	./temp/unzip
+	var unzip_cc_dest = path.join(unzip_dest, '/', options.unzip_dir);					//	./temp/unzip/DIRECTORY
 	chaincode.details.zip_url = options.zip_url;
 	chaincode.details.unzip_dir = options.unzip_dir;
 	chaincode.details.git_url = options.git_url;
-	if(options.deployed_name) chaincode.details.deployed_name = options.deployed_name;
+
+	if(!options.deployed_name || options.deployed_name == ''){							//lets clear and re-download
+		obc.prototype.clear(cb_ready);
+	}
+	else{
+		chaincode.details.deployed_name = options.deployed_name;
+		cb_ready();
+	}
 	
-	// Preflight checklist
-	try{fs.mkdirSync(tempDirectory);}
-	catch(e){ }
-	fs.access(unzip_cc_dest, cb_file_exists);										//check if files exist yet
-	function cb_file_exists(e){
-		if(e != null){
-			download_it(options.zip_url);											//nope
-		}
-		else{
-			console.log('[obc-js] Found chaincode in local file system');
-			fs.readdir(unzip_cc_dest, cb_got_names);								//yeppers
+	// check if we already have the chaincode in the local filesystem, else download it
+	function cb_ready(){
+		try{fs.mkdirSync(tempDirectory);}
+		catch(e){ }
+		fs.access(unzip_cc_dest, cb_file_exists);										//check if files exist yet
+		function cb_file_exists(e){
+			if(e != null){
+				download_it(options.zip_url);											//nope
+			}
+			else{
+				console.log('[obc-js] Found chaincode in local file system');
+				fs.readdir(unzip_cc_dest, cb_got_names);								//yeppers
+			}
 		}
 	}
 	
@@ -331,7 +340,7 @@ obc.prototype.save =  function(dir, cb){
 // EXTERNAL - clear() - clear the temp directory
 // ============================================================================================================================
 obc.prototype.clear =  function(cb){
-	console.log('[obc-js] removing temp');
+	console.log('[obc-js] removing temp dir');
 	removeThing(tempDirectory, cb);
 };
 
@@ -356,7 +365,7 @@ function removeThing(dir, cb){
 							if(cb) cb(err);
 							return;
 						}
-						console.log('good', dir);
+						//console.log('good', dir);
 						if(cb) cb();
 						return;
 					});
