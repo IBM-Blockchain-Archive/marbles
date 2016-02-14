@@ -63,7 +63,7 @@
 - [x] restyle marbles to match new design
 - [x] multi marble on willing list
 - [ ] marble quanity in trade
-- [ ] remove/edit trades that are no longer possible in CC
+- [x] remove/edit trades that are no longer possible in CC
 - [ ] remove named marble argument on perform_trade message/golang func, replace with color/size thing
 - [x] check requirments of trade before exe, in CC
 - [x] error checking on arguements before invoking... do not let e blank named marble in (in CC)

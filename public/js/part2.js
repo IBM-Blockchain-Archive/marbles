@@ -239,6 +239,7 @@ $(document).on('ready', function() {
 	
 	$(document).on("click", ".removeTrade", function(){
 		var trade = find_trade($(this).attr('trade_timestamp'));
+		$(this).parent().parent().addClass("invalid");
 		console.log('trade', trade);
 		var msg = 	{
 						type: 'remove_trade',
