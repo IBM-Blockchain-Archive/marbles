@@ -295,23 +295,24 @@ function cb_deployed(e, d){
 				part2.process_msg(ws, data);
 			});
 			
-			ws.on('close', function(){
-
-			});
+			ws.on('close', function(){});
 		});
 		
-		wss.broadcast = function broadcast(data) {
+		wss.broadcast = function broadcast(data) {											//send to all connections
 			wss.clients.forEach(function each(client) {
 				try{
 					client.send(JSON.stringify(data));
 				}
 				catch(e){
-					console.log('error ws', e);
+					console.log('error broadcast ws', e);
 				}
 			});
 		};
 		
-		obc.monitor_blockheight(function(chain_stats){														//there is a new block, lets refresh everything that has a state
+		// ========================================================
+		// Part 2 - Monitor the height of the blockchain
+		// =======================================================
+		obc.monitor_blockheight(function(chain_stats){										//there is a new block, lets refresh everything that has a state
 			if(chain_stats && chain_stats.height){
 				console.log('hey new block, lets refresh and broadcast to all');
 				obc.block_stats(chain_stats.height - 1, cb_blockstats);
@@ -320,10 +321,12 @@ function cb_deployed(e, d){
 				chaincode.read('_opentrades', cb_got_trades);
 			}
 			
+			//got the block's stats, lets send the statistics
 			function cb_blockstats(e, stats){
 				wss.broadcast({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
 			}
 			
+			//got the marble index, lets get each marble
 			function cb_got_index(e, index){
 				if(e != null) console.log('error:', e);
 				else{
@@ -331,7 +334,7 @@ function cb_deployed(e, d){
 						var json = JSON.parse(index);
 						for(var i in json){
 							console.log('!', i, json[i]);
-							chaincode.read(json[i], cb_got_marble);												//iter over each, read their values
+							chaincode.read(json[i], cb_got_marble);							//iter over each, read their values
 						}
 					}
 					catch(e){

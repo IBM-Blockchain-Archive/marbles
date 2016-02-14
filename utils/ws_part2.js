@@ -1,5 +1,5 @@
 // ==================================
-// APP 1 - incoming messages, look for type
+// Part 2 - incoming messages, look for type
 // ==================================
 var obc = {};
 var chaincode = {};
@@ -63,31 +63,15 @@ module.exports.process_msg = function(ws, data){
 			console.log('remove trade msg');
 			chaincode.remove_trade([data.id]);
 		}
-		
-
 	}
 	
+	
+	//got the marble index, lets get each marble
 	function cb_got_index(e, index){
 		if(e != null) console.log('error:', e);
 		else{
 			try{
 				var json = JSON.parse(index);
-				/* serialized verison
-				var keys = Object.keys(json);
-				var concurrency = 1;
-				async.eachLimit(keys, concurrency, function(key, cb) {
-					console.log('!', json[key]);
-					chaincode.read(json[key], function(e, marble) {
-						if(e != null) console.log('error:', e);
-						else {
-							sendMsg({msg: 'marbles', e: e, marble: marble});
-							cb(null);
-						}
-					});
-				}, function() {
-					sendMsg({msg: 'action', e: e, status: 'finished'});
-				});
-				*/
 				for(var i in json){
 					console.log('!', i, json[i]);
 					chaincode.read(json[i], cb_got_marble);												//iter over each, read their values

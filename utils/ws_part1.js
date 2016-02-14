@@ -1,5 +1,5 @@
 // ==================================
-// APP 1 - incoming messages, look for type
+// Part 1 - incoming messages, look for type
 // ==================================
 var obc = {};
 var chaincode = {};
@@ -20,7 +20,7 @@ module.exports.process_msg = function(ws, data){
 		}
 		else if(data.type == 'get'){
 			console.log('get marbles msg');
-			get_marbles();
+			chaincode.read('marbleIndex', cb_got_index);
 		}
 		else if(data.type == 'transfer'){
 			console.log('transfering msg');
@@ -39,13 +39,8 @@ module.exports.process_msg = function(ws, data){
 			obc.chain_stats(cb_chainstats);
 		}
 	}
-	
-	function get_marbles(){
-		console.log('fetching all marble data');
-		chaincode.read('marbleIndex', cb_got_index);
-	
-	}
-	
+
+	//got the marble index, lets get each marble
 	function cb_got_index(e, index){
 		if(e != null) console.log('error:', e);
 		else{
@@ -54,7 +49,7 @@ module.exports.process_msg = function(ws, data){
 				var keys = Object.keys(json);
 				var concurrency = 1;
 
-				//TEST3: TESTING WITH CONCURRENCY, FAILS SOMETIMES MULTIPLE CALLS OVERLAP
+				//serialized version
 				async.eachLimit(keys, concurrency, function(key, cb) {
 					console.log('!', json[key]);
 					chaincode.read(json[key], function(e, marble) {
@@ -67,11 +62,6 @@ module.exports.process_msg = function(ws, data){
 				}, function() {
 					sendMsg({msg: 'action', e: e, status: 'finished'});
 				});
-				
-				/*for(var i in json){
-					console.log('!', i, json[i]);
-					chaincode.read(json[i], cb_got_marble);												//iter over each, read their values
-				}*/
 			}
 			catch(e){
 				console.log('error:', e);
@@ -79,6 +69,7 @@ module.exports.process_msg = function(ws, data){
 		}
 	}
 	
+	//call back for getting a marble, lets send a message
 	function cb_got_marble(e, marble){
 		if(e != null) console.log('error:', e);
 		else {
@@ -90,26 +81,27 @@ module.exports.process_msg = function(ws, data){
 		console.log('response: ', e, a);
 	}
 	
+	//call back for getting the blockchain stats, lets get the block height now
 	var chain_stats = {};
 	function cb_chainstats(e, stats){
-		//console.log('stats', stats.height);
 		chain_stats = stats;
 		if(stats && stats.height) obc.block_stats(stats.height - 1, cb_blockstats);
 	}
 	
+	//call bacak for getting a block's stats, lets send the chain/block stats
 	function cb_blockstats(e, stats){
-		//console.log('replying', stats);
 		sendMsg({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
 	}
 	
-	
-	
+	//send a message, socket might be closed...
 	function sendMsg(json){
-		try{
-			ws.send(JSON.stringify(json));
-		}
-		catch(e){
-			console.log('error ws', e);
+		if(ws){
+			try{
+				ws.send(JSON.stringify(json));
+			}
+			catch(e){
+				console.log('error ws', e);
+			}
 		}
 	}
 };
