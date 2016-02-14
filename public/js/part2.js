@@ -40,6 +40,10 @@ $(document).on('ready', function() {
 		return false;
 	});
 
+	$("#homeLink").click(function(){
+		console.log('marbles:', bag.marbles);
+	});
+	
 	$("#createLink").click(function(){
 		$("input[name='name']").val('r' + randStr(6));
 	});
@@ -387,7 +391,7 @@ function build_ball(data){
 			$("#leroyswrap").append(html);
 		}
 	}
-	console.log('marbles', bag.marbles);
+	//console.log('marbles', bag.marbles);
 	
 	return html;
 }
@@ -395,7 +399,7 @@ function build_ball(data){
 function build_trades(trades){
 	var html = '';
 	bag.trades = trades;						//store the trades for posterity
-	console.log('trades', bag.trades);
+	console.log('trades:', bag.trades);
 	
 	for(var i in trades){
 		for(var x in trades[i].willing){
