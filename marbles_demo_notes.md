@@ -65,7 +65,7 @@
 - [ ] marble quanity in trade
 - [ ] remove/edit trades that are no longer possible in CC
 - [ ] remove named marble argument on perform_trade message/golang func, replace with color/size thing
-- [ ] check requirments of trade before exe, in CC
+- [x] check requirments of trade before exe, in CC
 - [x] error checking on arguements before invoking... do not let e blank named marble in (in CC)
 - [x] url routing mapper
 - [ ] improve marble redraw so we don't have to blank the marble divs
