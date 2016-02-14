@@ -1,10 +1,44 @@
+@import 'color_theme';
+
+@media (max-width: 750px) {
+	#innerWrap{
+		width: initial;
+	}
+}
+
 @media (max-width: 600px) {
 	/* Nav Links */
 	#headerPanel{padding:10px;}
-	#navWrap{width:100%; top:45px;}
-	.navOption{padding:15px;}
 	
-	/* Form Inputs */
-	.formHeader, .mainForm{width:inherit;}
-	.formInput, .formLabel{float:none; display:block; margin:auto !important;}
+	#linkWraps{
+		background: $acc_color1;
+		top: initial;
+	}
+	#mainPanel{
+		margin-top:100px;
+	}
+	#blockdate{
+		display:none;
+	}
+	#tradeSubmit{
+		margin-top:10px;
+	}
+	
+	.altButton{
+		width: 100%;
+		border-radius: 5px;
+		margin-bottom:5px;
+	}
+	button{
+		width:100%;
+		margin-top:5px;
+	}
+}
+
+
+@media (max-width: 475px) {
+	/* Nav Links */
+	#description{
+		position: initial;
+	}
 }

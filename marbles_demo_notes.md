@@ -67,9 +67,9 @@
 - [x] url routing mapper
 - [ ] improve marble redraw so we don't have to blank the marble divs
 - [ ] tutorial for p2
-- [ ] re-parallelize the queryies
+- [x] re-parallelize the queryies
 - [x] show open trades made by user
 - [x] ability to remove open trades by user
-- [ ] make layout adaptive
+- [x] make layout adaptive
 - [x] better error messages
 - [ ] rename to jerry and ginni

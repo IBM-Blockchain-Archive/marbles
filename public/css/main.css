@@ -48,7 +48,8 @@ table {
 
 html {
   min-height: 100%;
-  position: relative; }
+  position: relative;
+  min-width: 350px; }
 
 body {
   margin: 0 auto;
@@ -473,7 +474,8 @@ label {
   width: 105px;
   border-radius: 10px;
   text-align: left;
-  margin-top: 1px; }
+  margin-top: 1px;
+  z-index: 4; }
 
 .colorOption {
   width: 85px;
@@ -736,19 +738,32 @@ button:disabled, .inactiveButton {
   min-width: 90px;
   font-weight: bold; }
 
+@media (max-width: 750px) {
+  #innerWrap {
+    width: initial; } }
+
 @media (max-width: 600px) {
   /* Nav Links */
   #headerPanel {
     padding: 10px; }
-  #navWrap {
+  #linkWraps {
+    background: #222832;
+    top: initial; }
+  #mainPanel {
+    margin-top: 100px; }
+  #blockdate {
+    display: none; }
+  #tradeSubmit {
+    margin-top: 10px; }
+  .altButton {
     width: 100%;
-    top: 45px; }
-  .navOption {
-    padding: 15px; }
-  /* Form Inputs */
-  .formHeader, .mainForm {
-    width: inherit; }
-  .formInput, .formLabel {
-    float: none;
-    display: block;
-    margin: auto !important; } }
+    border-radius: 5px;
+    margin-bottom: 5px; }
+  button {
+    width: 100%;
+    margin-top: 5px; } }
+
+@media (max-width: 475px) {
+  /* Nav Links */
+  #description {
+    position: initial; } }
