@@ -14,6 +14,7 @@ var bgcolors = ["whitebg", "blackbg", "redbg", "greenbg", "bluebg", "purplebg", 
 $(document).on('ready', function() {
 	connect_to_server();
 	$("input[name='name']").val('r' + randStr(6));
+	$("select option[value='bob']").attr('selected', true);
 	
 	// =================================================================================
 	// jQuery UI Events
@@ -118,11 +119,11 @@ $(document).on('ready', function() {
 	
 	$(".userLine").click(function(){												//log in as someone else
 		var name = $(this).attr("name");
-		//user.username = name.toLowerCase().charAt(0).toUpperCase() + name.slice(1);	//title case username
 		user.username = name.toLowerCase();
 		$("#userField").html("HI " + user.username.toUpperCase() + ' ');
 		$("#userSelect").fadeOut(300);
-		ws.send(JSON.stringify({type: "get_open_trades", v: 2}));
+		$("select option[value='" + user.username +"']").attr('selected', true);
+		//ws.send(JSON.stringify({type: "get_open_trades", v: 2}));
 		set_my_color_options(user.username);
 		build_trades(bag.trades);
 	});
