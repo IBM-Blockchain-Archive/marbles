@@ -30,7 +30,7 @@ $(document).on('ready', function() {
 		if(obj.user && obj.name && obj.color){
 			console.log('sending', obj);
 			ws.send(JSON.stringify(obj));
-			showAdminPanel();
+			showHomePanel();
 			$(".colorValue").html('Color');											//reset
 			for(var i in bgcolors) $(".createball").removeClass(bgcolors[i]);			//reset
 			$(".createball").css("border", "2px dashed #fff");						//reset
@@ -39,7 +39,7 @@ $(document).on('ready', function() {
 	});
 	
 	$("#homeLink").click(function(){
-		showAdminPanel();
+		showHomePanel();
 	});
 
 	$("#createLink").click(function(){
@@ -98,7 +98,7 @@ $(document).on('ready', function() {
 				setTimeout(function(){
 					$(ui.draggable).remove();
 				}, 300);
-				showAdminPanel(true);
+				showHomePanel();
 			}
 		}
 	});
@@ -108,22 +108,16 @@ $(document).on('ready', function() {
 	// Helper Fun
 	// ================================================================================
 	//show admin panel page
-	function showAdminPanel(reset){
+	function showHomePanel(){
 		$("#homePanel").fadeIn(300);
 		$("#createPanel").hide();
-		if(reset === true){
-			setTimeout(function(){
-				$("#bobswrap").html('');
-				$("#leroyswrap").html('');
-			}, 800);
-		}
 		console.log('getting new balls');
 		setTimeout(function(){
-			$("#bobswrap").html('');
+			$("#bobswrap").html('');											//reset the panel
 			$("#leroyswrap").html('');
 			ws.send(JSON.stringify({type: "get", v: 1}));						//need to wait a bit
 			ws.send(JSON.stringify({type: "chainstats", v: 1}));
-		}, 800);
+		}, 1000);
 	}
 	
 	//transfer selected ball to user
@@ -137,7 +131,7 @@ $(document).on('ready', function() {
 							v: 1
 						};
 			ws.send(JSON.stringify(obj));
-			showAdminPanel(true);
+			showHomePanel();
 		}
 	}
 });

@@ -345,7 +345,7 @@ __/public/js/part1.js__
 							v: 1
 						};
 			ws.send(JSON.stringify(obj));
-			showAdminPanel(true);
+			showHomePanel();
 		}
 	}
 ```
