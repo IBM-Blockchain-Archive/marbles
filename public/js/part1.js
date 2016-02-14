@@ -1,3 +1,4 @@
+/* global new_block */
 /* global formatDate */
 /* global nDig */
 /* global randStr */
@@ -114,7 +115,7 @@ $(document).on('ready', function() {
 			setTimeout(function(){
 				$("#bobswrap").html('');
 				$("#leroyswrap").html('');
-			}, 300);
+			}, 800);
 		}
 		console.log('getting new balls');
 		setTimeout(function(){
@@ -122,7 +123,7 @@ $(document).on('ready', function() {
 			$("#leroyswrap").html('');
 			ws.send(JSON.stringify({type: "get", v: 1}));						//need to wait a bit
 			ws.send(JSON.stringify({type: "chainstats", v: 1}));
-		}, 300);
+		}, 800);
 	}
 	
 	//transfer selected ball to user
@@ -162,7 +163,7 @@ function connect_to_server(){
 		ws.send(JSON.stringify({type: "chainstats", v:1}));
 		setTimeout(function(){
 			ws.send(JSON.stringify({type: "get", v:1}));
-		}, 300);
+		}, 800);
 	}
 
 	function onClose(evt){
@@ -173,18 +174,20 @@ function connect_to_server(){
 	function onMessage(msg){
 		try{
 			var data = JSON.parse(msg.data);
-			console.log('rec', data);
-			if(data.marble){
-				build_ball(data.marble);
-			}
-			else if(data.msg === 'chainstats'){
-				var e = formatDate(data.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
-				$("#blockdate").html('<span style="color:#fff">TIME</span>&nbsp;&nbsp;' + e + ' UTC');
-				var temp = { 
-								id: nDig((data.chainstats.height - 1), 3), 
-								blockstats: data.blockstats
-							};
-				new_block(temp);									//send to blockchain.js
+			if(data.v != '2'){
+				console.log('rec', data);
+				if(data.marble){
+					build_ball(data.marble);
+				}
+				else if(data.msg === 'chainstats'){
+					var e = formatDate(data.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
+					$("#blockdate").html('<span style="color:#fff">TIME</span>&nbsp;&nbsp;' + e + ' UTC');
+					var temp = { 
+									id: nDig((data.chainstats.height - 1), 3), 
+									blockstats: data.blockstats
+								};
+					new_block(temp);									//send to blockchain.js
+				}
 			}
 		}
 		catch(e){
