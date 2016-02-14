@@ -252,7 +252,7 @@ var options = 	{
 				};
 if(process.env.VCAP_SERVICES){
 	console.log('\n[!] looks like you are in bluemix, I am going to clear out the deploy_name so that it deploys new cc.\n[!] hope that is ok budddy\n');
-	options.deployed_name = "";
+	options.chaincode.deployed_name = "";
 }
 obc.load(options, cb_ready);																//parse/load chaincode
 
