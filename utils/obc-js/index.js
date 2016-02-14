@@ -591,7 +591,7 @@ function readNames(cb, lvl){												//lvl is for reading past state blocks, 
 var slow_mode = 10000;
 var fast_mode = 500;
 function heart_beat(){
-	if(obc.lastPoll + slow_mode < Date.now()){										//slow mode poll
+	if(obc.lastPoll + slow_mode < Date.now()){								//slow mode poll
 		//console.log('[obc-js] Its been awhile, time to poll');
 		obc.lastPoll = Date.now();
 		obc.prototype.chain_stats(cb_got_stats);
@@ -599,36 +599,35 @@ function heart_beat(){
 	else{
 		for(var i in obc.q){
 			var elasped = Date.now() - obc.q[i];
-			if(elasped <= 3000){												//fresh unresolved action, fast mode!
+			if(elasped <= 3000){											//fresh unresolved action, fast mode!
 				console.log('[obc-js] Unresolved action, must poll');
 				obc.lastPoll = Date.now();
 				obc.prototype.chain_stats(cb_got_stats);
 			}
 			else{
 				//console.log('[obc-js] Expired, removing');
-				obc.q.pop();													//expired action, remove it
+				obc.q.pop();												//expired action, remove it
 			}
 		}
 	}
 }
 
 function cb_got_stats(e, stats){
-	if(stats && stats.height){
-		if(obc.lastBlock != stats.height) {										//this is a new block!
-			console.log('[obc-js] New block!', stats.height);
-			obc.lastBlock  = stats.height;
-			obc.q.pop();														//action is resolved, remove
-			if(obc.monitorFunction) obc.monitorFunction(stats);					//call the user's callback
-		}
-		else{
-			//console.log('[obc-js] Same block...');
+	if(e == null){
+		if(stats && stats.height){
+			if(obc.lastBlock != stats.height) {									//this is a new block!
+				console.log('[obc-js] New block!', stats.height);
+				obc.lastBlock  = stats.height;
+				obc.q.pop();													//action is resolved, remove
+				if(obc.monitorFunction) obc.monitorFunction(stats);				//call the user's callback
+			}
 		}
 	}
 }
 
-obc.prototype.monitor_blockheight = function(cb) {
+obc.prototype.monitor_blockheight = function(cb) {							//hook in your own function, triggers when chain grows
 	setInterval(function(){heart_beat();}, fast_mode);
-	obc.monitorFunction = cb;													//store it
+	obc.monitorFunction = cb;												//store it
 };
 
 

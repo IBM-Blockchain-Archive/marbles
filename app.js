@@ -310,7 +310,7 @@ function cb_deployed(e, d){
 		};
 		
 		// ========================================================
-		// Part 2 - Monitor the height of the blockchain
+		// Part 2 Code - Monitor the height of the blockchain
 		// =======================================================
 		obc.monitor_blockheight(function(chain_stats){										//there is a new block, lets refresh everything that has a state
 			if(chain_stats && chain_stats.height){
