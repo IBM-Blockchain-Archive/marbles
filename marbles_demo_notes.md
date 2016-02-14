@@ -16,14 +16,14 @@
 - [x] Deployable on bluemix
 
 ## Demo Part 2 Goals
-- [x] Server pushes block/marble updates to client when a new block event has occured for local user
+- [x] Server pushes block/marble updates to client when a new block event has occured (polling based)
 - [x] User's can advertise to trade/exchange their marbles (ie willing to trade large red for large blue/yellow/green)
 - [x] User can remove their open trades
 - [x] User identity (fake login as bob or leroy)
 - [x] Ability to see past blocks details and some sort of animation on new blocks
 
 ## Demo Part 3 Goals
-- [ ] Server pushes block/marble updates to client when any new block event has occured
+- [ ] Server pushes block/marble updates to client when any new block event has occured (push based)
 - [ ] User autentication (crypto signing of transactions)
 - [ ] User registration
 - [ ] Transacation privacy
@@ -52,7 +52,6 @@
 - [o] poll after chain deploy for cc up in peer [can't, future auth will prevent]
 - [x] add block stats to sdk
 - [x] write tutorial on part 1
-- [ ] move to socket.io (unsure, postpone)
 - [x] change test var "a" to "abc" in cc
 - [x] make advanced link in cci and hide ip/port fields, hide all things under tool like categories
 - [x] make CCI work for multiple apps, pick which cc to load (even custom functions)
@@ -70,7 +69,7 @@
 - [ ] tutorial for p2
 - [ ] re-parallelize the queryies
 - [x] show open trades made by user
-- [ ] ability to remove open trades by user
+- [x] ability to remove open trades by user
 - [ ] make layout adaptive
 - [x] better error messages
 - [ ] rename to jerry and ginni

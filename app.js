@@ -256,11 +256,13 @@ if(process.env.VCAP_SERVICES){
 }
 obc.load(options, cb_ready);																//parse/load chaincode
 
+var chaincode = null;
 function cb_ready(err, cc){																	//response has chaincode functions
 	if(err != null){
 		console.log('! looks like an error loading the chaincode, app will fail\n', err);
 	}
 	else{
+		chaincode = cc;
 		part1.setup(obc, cc);
 		part2.setup(obc, cc);
 		if(cc.details.deployed_name === ""){												//decide if i need to deploy
@@ -294,8 +296,67 @@ function cb_deployed(e, d){
 			});
 			
 			ws.on('close', function(){
-				part2.close();																//close peridic poll that part 2 does
+
 			});
+		});
+		
+		wss.broadcast = function broadcast(data) {
+			wss.clients.forEach(function each(client) {
+				try{
+					client.send(JSON.stringify(data));
+				}
+				catch(e){
+					console.log('error ws', e);
+				}
+			});
+		};
+		
+		obc.monitor_blockheight(function(chain_stats){														//there is a new block, lets refresh everything that has a state
+			if(chain_stats && chain_stats.height){
+				console.log('hey new block, lets refresh and broadcast to all');
+				obc.block_stats(chain_stats.height - 1, cb_blockstats);
+				wss.broadcast({msg: 'reset'});
+				chaincode.read('marbleIndex', cb_got_index);
+				chaincode.read('_opentrades', cb_got_trades);
+			}
+			
+			function cb_blockstats(e, stats){
+				wss.broadcast({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
+			}
+			
+			function cb_got_index(e, index){
+				if(e != null) console.log('error:', e);
+				else{
+					try{
+						var json = JSON.parse(index);
+						for(var i in json){
+							console.log('!', i, json[i]);
+							chaincode.read(json[i], cb_got_marble);												//iter over each, read their values
+						}
+					}
+					catch(e){
+						console.log('error:', e);
+					}
+				}
+			}
+			
+			//call back for getting a marble, lets send a message
+			function cb_got_marble(e, marble){
+				if(e != null) console.log('error:', e);
+				else {
+					wss.broadcast({msg: 'marbles', marble: marble});
+				}
+			}
+			
+			//call back for getting open trades, lets send the trades
+			function cb_got_trades(e, trades){
+				if(e != null) console.log('error:', e);
+				else {
+					if(trades && trades.open_trades){
+						wss.broadcast({msg: 'open_trades', open_trades: trades.open_trades});
+					}
+				}
+			}
 		});
 	}
 }

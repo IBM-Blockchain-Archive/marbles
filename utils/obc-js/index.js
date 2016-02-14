@@ -39,6 +39,9 @@ var chaincode = {
 
 function obc() {}
 obc.selectedPeer = 0;
+obc.q = [];
+obc.lastPoll = 0;
+obc.lastBlock = 0;
 var tempDirectory = path.join(__dirname, "./temp");									//	./temp directory name
 
 
@@ -462,6 +465,7 @@ function write(name, val, cb){
 	
 	options.success = function(statusCode, data){
 		console.log("[obc-js] Write - success:", data);
+		obc.q.push(Date.now());
 		if(cb) cb(null, data);
 	};
 	options.failure = function(statusCode, e){
@@ -494,6 +498,7 @@ function remove(name, cb){
 
 	options.success = function(statusCode, data){
 		console.log("[obc-js] Remove - success:", data);
+		obc.q.push(Date.now());
 		if(cb) cb(null, data);
 	};
 	options.failure = function(statusCode, e){
@@ -581,6 +586,54 @@ function readNames(cb, lvl){												//lvl is for reading past state blocks, 
 
 
 //============================================================================================================================
+//heart_beat() - interval function to poll against blockchain height (has fast and slow mode)
+//============================================================================================================================
+var slow_mode = 10000;
+var fast_mode = 500;
+function heart_beat(){
+	if(obc.lastPoll + slow_mode < Date.now()){										//slow mode poll
+		//console.log('[obc-js] Its been awhile, time to poll');
+		obc.lastPoll = Date.now();
+		obc.prototype.chain_stats(cb_got_stats);
+	}
+	else{
+		for(var i in obc.q){
+			var elasped = Date.now() - obc.q[i];
+			if(elasped <= 3000){												//fresh unresolved action, fast mode!
+				console.log('[obc-js] Unresolved action, must poll');
+				obc.lastPoll = Date.now();
+				obc.prototype.chain_stats(cb_got_stats);
+			}
+			else{
+				//console.log('[obc-js] Expired, removing');
+				obc.q.pop();													//expired action, remove it
+			}
+		}
+	}
+}
+
+function cb_got_stats(e, stats){
+	if(stats && stats.height){
+		if(obc.lastBlock != stats.height) {										//this is a new block!
+			console.log('[obc-js] New block!', stats.height);
+			obc.lastBlock  = stats.height;
+			obc.q.pop();														//action is resolved, remove
+			if(obc.monitorFunction) obc.monitorFunction(stats);					//call the user's callback
+		}
+		else{
+			//console.log('[obc-js] Same block...');
+		}
+	}
+}
+
+obc.prototype.monitor_blockheight = function(cb) {
+	setInterval(function(){heart_beat();}, fast_mode);
+	obc.monitorFunction = cb;													//store it
+};
+
+
+
+//============================================================================================================================
 //													Helper Functions() 
 //============================================================================================================================
 //populate_chaincode() - create JS call for custom goLang function, stored in chaincode var!
@@ -610,6 +663,7 @@ function populate_go_chaincode(name){
 
 			options.success = function(statusCode, data){
 				console.log("[obc-js]", name, " - success:", data);
+				obc.q.push(Date.now());
 				if(cb) cb(null, data);
 			};
 			options.failure = function(statusCode, e){
