@@ -346,43 +346,47 @@ obc.prototype.clear =  function(cb){
 function removeThing(dir, cb){
 	//console.log('!', dir);
 	fs.readdir(dir, function (err, files) {
-		async.each(files, function (file, cb) {						//over each thing
-			file = path.join(dir, file);
-			fs.stat(file, function(err, stat) {
-				if (err) {
+		if(err != null || !files || files.length == 0){
+			cb();
+		}
+		else{
+			async.each(files, function (file, cb) {						//over each thing
+				file = path.join(dir, file);
+				fs.stat(file, function(err, stat) {
+					if (err) {
+						if(cb) cb(err);
+						return;
+					}
+					if (stat.isDirectory()) {
+						removeThing(file, cb);							//keep going
+					}
+					else {
+						//console.log('!', dir);
+						fs.unlink(file, function(err) {
+							if (err) {
+								//console.log('error', err);
+								if(cb) cb(err);
+								return;
+							}
+							//console.log('good', dir);
+							if(cb) cb();
+							return;
+						});
+					}
+				});
+			}, function (err) {
+				if(err){
 					if(cb) cb(err);
 					return;
 				}
-				if (stat.isDirectory()) {
-					removeThing(file, cb);							//keep going
-				}
-				else {
-					//console.log('!', dir);
-					fs.unlink(file, function(err) {
-						if (err) {
-							//console.log('error', err);
-							if(cb) cb(err);
-							return;
-						}
-						//console.log('good', dir);
-						if(cb) cb();
-						return;
-					});
-				}
+				fs.rmdir(dir, function (err) {
+					if(cb) cb(err);
+					return;
+				});
 			});
-		}, function (err) {
-			if(err){
-				if(cb) cb(err);
-				return;
-			}
-			fs.rmdir(dir, function (err) {
-				if(cb) cb(err);
-				return;
-			});
-		});
+		}
 	});
 }
-module.exports = obc;
 
 //============================================================================================================================
 // EXTERNAL chain_stats() - get blockchain stats
@@ -705,3 +709,7 @@ function eFmt(name, code, details){
 		details: details
 	};
 }
+
+
+
+module.exports = obc;
