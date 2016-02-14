@@ -1,7 +1,7 @@
 #Marbles Part 1 - Demo
 
 ##BEFORE YOU RUN
-- The underlying network for this applicaiton is from the Linux Foundation's Hyperledger project.  They have extensive [Fabric Documentation](https://github.com/openblockchain/obc-docs)
+- The underlying network for this applicaiton is the open blockchain fabric code that was contributed by IBM to the Linux Foundation's Hyperledger project. They have extensive [Fabric Documentation](https://github.com/openblockchain/obc-docs)
 - The expectations of this application are to test the JS SDK, guide its development and to aid a developer become familiar with our SDK + chaincode.
 - This is a `very simple` asset transfer demonstration.  Two users can create and exchange marbles with each other.
 - There will be multiple parts. Part 1 and 2 are complete  [2/15/2016]
@@ -20,7 +20,7 @@
 ***
 
 #Prereq:
-1. Bluemix ID https://console.ng.bluemix.net/ (needed to create your OBC network)
+1. Bluemix ID https://console.ng.bluemix.net/ (needed to create your IBM Blockchain network)
 1. Node JS 0.12+ (only needed if you want to run the app locally)
 1. GoLang Environment (only needed to build your own chaincode, not needed if you just run the marbles app as is)
 1. You are at least partially aware of the term 'chaincode', 'ledger', and 'peer' in a blockchain context. [Term Help](https://github.com/openblockchain/obc-docs/blob/master/glossary.md)
@@ -51,7 +51,7 @@ This allow us to use dot notation to call our GoLang functions (such as `chainco
 
 1. The user will interact with our Node.js application
 1. This client side JS code will open a websocket to the backend Node.js application
-1. The backend Node.js will send HTTP requests (via the SDK) to a OBC Peer
+1. The backend Node.js will send HTTP requests (via the SDK) to a blockchain peer
 1. The peer will communicate to its chaincode container at its leisure. Note that the previous HTTP request was really a 'submission' of chaincode to be run, it will actually run at a later date.
 1. The cc container will carry out the desired operation
 
