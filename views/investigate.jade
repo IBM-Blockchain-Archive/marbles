@@ -76,6 +76,7 @@ block custom_header
 			vertical-align:middle;
 			text-align: center;
 			line-height:85px;
+			color:#000;
 		}
 		.sel, .ccSummary:hover{
 			cursor:pointer;
@@ -174,7 +175,8 @@ block custom_header
 									"ctorMsg": {
 										"function": func,
 										"args": temp
-									}
+									},
+									"secureContext": bag.cc.details.peers[sel].user
 								}
 							};
 				
@@ -304,7 +306,8 @@ block custom_header
 									"ctorMsg": {
 										"function": "query",
 										"args": [name]
-									}
+									},
+									"secureContext": bag.cc.details.peers[sel].user
 								}
 							};
 				//console.log(data);
@@ -338,7 +341,8 @@ block custom_header
 									"ctorMsg": {
 										"function": "write",
 										"args": [name, value]
-									}
+									},
+									"secureContext": bag.cc.details.peers[sel].user
 								}
 							};
 				$.ajax({
@@ -370,7 +374,8 @@ block custom_header
 									"ctorMsg": {
 										"function": "readnames",
 										"args": []
-									}
+									},
+									"secureContext": bag.cc.details.peers[sel].user
 								}
 							};
 				setTimeout(function(){ cb(null, ["hardcoded", "test", "a", "b"]); }, 1000);
@@ -402,7 +407,8 @@ block custom_header
 								ctorMsg: {
 									function: "init",
 									"args": JSON.parse("[" + $("input[name='init_args']").val() + "]")
-								}
+								},
+								"secureContext": bag.cc.details.peers[sel].user
 							};
 				console.log(data);
 				
@@ -437,7 +443,8 @@ block custom_header
 									"ctorMsg": {
 										"function": "query",
 										"args": [name]
-									}
+									},
+									"secureContext": bag.cc.details.peers[sel].user
 								}
 							};
 				//console.log(data);
@@ -474,7 +481,8 @@ block custom_header
 									"ctorMsg": {
 										"function": 'delete',
 										"args": [$("input[name='remove_name']").val()]
-									}
+									},
+									"secureContext": bag.cc.details.peers[sel].user
 								}
 							};
 
@@ -505,7 +513,8 @@ block custom_header
 									"ctorMsg": {
 										"function": "init",
 										"args": [name]
-									}
+									},
+									"secureContext": bag.cc.details.peers[sel].user
 								}
 							};
 				
@@ -535,7 +544,8 @@ block custom_header
 									"ctorMsg": {
 										"function": $("input[name='func_name']").val(),
 										"args": JSON.parse($("input[name='func_val']").val())
-									}
+									},
+									"secureContext": bag.cc.details.peers[sel].user
 								}
 							};
 

@@ -23,6 +23,7 @@
 - [x] Ability to see past blocks details and some sort of animation on new blocks
 
 ## Demo Part 3 Goals
+- [ ] User can see history of trades
 - [ ] Server pushes block/marble updates to client when any new block event has occured (push based)
 - [ ] User autentication (crypto signing of transactions)
 - [ ] User registration
@@ -60,7 +61,8 @@
 - [ ] CCI video
 - [ ] CCI screens with filled out info
 - [x] restyle marbles to match new design
-- [ ] multi marble on willing list
+- [x] multi marble on willing list
+- [ ] marble quanity in trade
 - [ ] remove/edit trades that are no longer possible in CC
 - [ ] remove named marble argument on perform_trade message/golang func, replace with color/size thing
 - [ ] check requirments of trade before exe, in CC

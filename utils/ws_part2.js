@@ -47,7 +47,11 @@ module.exports.process_msg = function(ws, data){
 				console.log('error, "want" is empty');
 			}
 			else{
-				var args = [data.user, data.want.color, data.want.size, data.willing[0].color, data.willing[0].size];
+				var args = [data.user, data.want.color, data.want.size];
+				for(var i in data.willing){
+					args.push(data.willing[i].color);
+					args.push(data.willing[i].size);
+				}
 				chaincode.open_trade(args);
 			}
 		}

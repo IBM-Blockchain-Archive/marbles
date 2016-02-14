@@ -147,10 +147,22 @@ $(document).on('ready', function() {
 	
 	$(".removeWilling:first").hide();
 	$("#addMarbleButton").click(function(){
-		var temp = $(".willingWrap:first").html();
-		$(".willingWrap:first").parent().append('<div class="willingWrap">' + temp + '</div>');
-		$(".removeWilling").show();
-		$(".removeWilling:first").hide();
+		var count = 0;
+		var marble_count = 0;
+		$(".willingWrap").each(function(){
+			count++;
+		});
+		for(var i in bag.marbles){
+			if(bag.marbles[i].user.toLowerCase() == user.username.toLowerCase()){
+				marble_count++;
+			}
+		}
+		if(count+1 <= marble_count && count <= 3){									//lets limit the total number... might get out of hand
+			var temp = $(".willingWrap:first").html();
+			$(".willingWrap:first").parent().append('<div class="willingWrap">' + temp + '</div>');
+			$(".removeWilling").show();
+			$(".removeWilling:first").hide();
+		}
 	});
 	$(document).on("click", ".removeWilling", function(){
 		$(this).parent().remove();
@@ -386,9 +398,8 @@ function build_ball(data){
 
 function build_trades(trades){
 	var html = '';
-	
+	bag.trades = trades;						//store the trades for posterity
 	console.log('trades', bag.trades);
-	if(!bag.trades) bag.trades = trades;						//store the trades for posterity
 	
 	for(var i in trades){
 		for(var x in trades[i].willing){
