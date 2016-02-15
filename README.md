@@ -27,7 +27,7 @@ Start the tutorial below to have your own marbles blockchain demo.
 
 ## Doc Links
 - Tutorial for Marbles Part 1 - [here](./tutorial_part1.md) (start here)
-- Tutorial for Marbles Part 2 - coming
+- Tutorial for Marbles Part 2 - [here](./tutorial_part2.md) 
 - obc.js SDK Doc - [utils/obc-js](./utils/obc-js/README.md)
 
 ***
