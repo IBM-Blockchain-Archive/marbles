@@ -218,6 +218,9 @@ if(process.env.VCAP_SERVICES){															//load from vcap, search for servic
 	var servicesObject = JSON.parse(process.env.VCAP_SERVICES);
 	for(var i in servicesObject){
 		if(i.indexOf('ibm-blockchain') >= 0){											//looks close enough
+			if(servicesObject[i][0].credentials.error){
+				console.log('!\n!\n! Error from Bluemix: \n', servicesObject[i][0].credentials.error, '!\n!\n');
+			}
 			if(servicesObject[i][0].credentials && servicesObject[i][0].credentials.peers){
 				console.log('overwritting peers, loading from a vcap service: ', i);
 				peers = servicesObject[i][0].credentials.peers;
