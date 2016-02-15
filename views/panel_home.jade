@@ -5,13 +5,13 @@
 		
 		#description.hint DRAG AND DROP A MARBLE TO TRANSFER IT
 		.marblesWrap
-			.legend(style="text-align:right;") Bob's
-			ul#bobswrap.sortable &nbsp;
+			.legend(style="text-align:right;") #{bag.setup.USER1.substring(0,1).toUpperCase() + bag.setup.USER1.substring(1)}'s
+			ul#user1wrap.sortable &nbsp;
 
 		
 		.marblesWrap(style="float:right;")
-			.legend Leroy's
-			ul#leroyswrap(style="text-align:left;").sortable &nbsp;
+			.legend #{bag.setup.USER2.substring(0,1).toUpperCase() + bag.setup.USER2.substring(1)}'s
+			ul#user2wrap(style="text-align:left;").sortable &nbsp;
 			
 		#toolWrap
 			span.fa.fa-trash-o.fa-2x

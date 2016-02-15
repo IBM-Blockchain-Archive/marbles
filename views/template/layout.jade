@@ -57,7 +57,7 @@ html
 					}
 				});
 				
-				//Notificatoin panel
+				//Notification panel
 				$("#closeNotification").click(function(){
 					//$("#notificationPanel").animate({right:'-=450'}, 500, function(){
 					//	$(this).hide();
@@ -71,13 +71,11 @@ html
 					$("#notificationPanel").animate({width:'toggle'});
 				});
 				
-				
 				//Page refresh show correct panel
 				var pos = window.location.pathname.substring(1).indexOf('/');			//skipping first char find first slash
 				if(pos >= 0){
 					showPanel(window.location.pathname.substring(2 + pos).toLowerCase());
 				}
-
 			});
 		block custom_header
 		

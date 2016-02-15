@@ -10,12 +10,12 @@
 	
 #whoAmI
 	span.fa.fa-user#userIcon
-	span#userField HI BOB 
+	span#userField HI #{bag.setup.USER1.toUpperCase()} 
 	span &nbsp;
 	span.fa.fa-angle-down
 	
 	#userSelect
-		.userLine(name="bob")
-			span BOB &nbsp;&nbsp;
-		.userLine(name="leroy")
-			span LEROY&nbsp;&nbsp;
+		.userLine(name="#{bag.setup.USER1}")
+			span #{bag.setup.USER1.toUpperCase()} &nbsp;&nbsp;
+		.userLine(name="#{bag.setup.USER2}")
+			span #{bag.setup.USER2.toUpperCase()}&nbsp;&nbsp;

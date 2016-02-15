@@ -13,19 +13,7 @@
 			br
 			legend
 				include ./template/color_options.jade
-			//br
-				legend 
-					select(name="color")
-						option(value="white" disabled="disabled" selected="selected") Color
-						option(value="white").white 	White
-						option(value="black").black		Black
-						option(value="red").red			Red
-						option(value="green").green		Green
-						option(value="blue").blue 		Blue
-						option(value="purple").purple 	Purple
-						option(value="pink").pink		Pink
-						option(value="orange").orange	Orange
-						option(value="yellow").yellow	Yellow
+				
 			br
 			legend 
 				select(name="size")
@@ -35,9 +23,9 @@
 			br
 			legend 
 				select(name="user")
-					option(value="bob" disabled="disabled" selected="selected") User
-					option(value="bob") Bob
-					option(value="leroy") Leroy
+					option(value="#{bag.setup.USER1}" disabled="disabled" selected="selected") User
+					option(value="#{bag.setup.USER1}") #{bag.setup.USER1.substring(0,1).toUpperCase() + bag.setup.USER1.substring(1)}
+					option(value="#{bag.setup.USER2}") #{bag.setup.USER2.substring(0,1).toUpperCase() + bag.setup.USER2.substring(1)}
 			button(type="button")#submit
 				span.fa.fa-check &nbsp;&nbsp;
 				span CREATE

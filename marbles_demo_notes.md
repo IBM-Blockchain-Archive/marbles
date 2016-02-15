@@ -19,7 +19,7 @@
 - [x] Server pushes block/marble updates to client when a new block event has occured (polling based)
 - [x] User's can advertise to trade/exchange their marbles (ie willing to trade large red for large blue/yellow/green)
 - [x] User can remove their open trades
-- [x] User identity (fake login as bob or leroy)
+- [x] User identity (fake login as user1 or user2)
 - [x] Ability to see past blocks details and some sort of animation on new blocks
 
 ## Demo Part 3 Goals

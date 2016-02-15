@@ -65,22 +65,22 @@ $(document).on('ready', function() {
 	
 	
 	//drag and drop marble
-	$("#leroyswrap, #bobswrap, #trashbin").sortable({connectWith: ".sortable"}).disableSelection();
-	$("#leroyswrap").droppable({drop:
+	$("#user2wrap, #user1wrap, #trashbin").sortable({connectWith: ".sortable"}).disableSelection();
+	$("#user2wrap").droppable({drop:
 		function( event, ui ) {
 			var user = $(ui.draggable).attr('user');
-			if(user.toLowerCase() != 'leroy'){
+			if(user.toLowerCase() != bag.setup.USER2){
 				$(ui.draggable).addClass("invalid");
-				transfer($(ui.draggable).attr('id'), 'leroy');
+				transfer($(ui.draggable).attr('id'), bag.setup.USER2);
 			}
 		}
 	});
-	$("#bobswrap").droppable({drop:
+	$("#user1wrap").droppable({drop:
 		function( event, ui ) {
 			var user = $(ui.draggable).attr('user');
-			if(user.toLowerCase() != 'bob'){
+			if(user.toLowerCase() != bag.setup.USER1){
 				$(ui.draggable).addClass("invalid");
-				transfer($(ui.draggable).attr('id'), 'bob');
+				transfer($(ui.draggable).attr('id'), bag.setup.USER1);
 			}
 		}
 	});
@@ -114,8 +114,8 @@ $(document).on('ready', function() {
 		$("#createPanel").hide();
 		console.log('getting new balls');
 		setTimeout(function(){
-			$("#bobswrap").html('');											//reset the panel
-			$("#leroyswrap").html('');
+			$("#user1wrap").html('');											//reset the panel
+			$("#user2wrap").html('');
 			ws.send(JSON.stringify({type: "get", v: 1}));						//need to wait a bit
 			ws.send(JSON.stringify({type: "chainstats", v: 1}));
 		}, 1000);
@@ -212,11 +212,11 @@ function build_ball(data){
 		if(data.color) colorClass = data.color.toLowerCase();
 		
 		html += '<span id="' + data.name +'" class=" fa fa-circle ' + size + ' ball ' + colorClass + '" title="' + data.name +'" user="' + data.user + '"></span>';
-		if((data.user && data.user.toLowerCase() == 'bob') || (data.owner && data.owner.toLowerCase() == 'bob')){
-			$("#bobswrap").append(html);
+		if(data.user && data.user.toLowerCase() == bag.setup.USER1){
+			$("#user1wrap").append(html);
 		}
 		else{
-			$("#leroyswrap").append(html);
+			$("#user2wrap").append(html);
 		}
 	}
 	return html;

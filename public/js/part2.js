@@ -5,7 +5,7 @@
 /* global bag */
 /* global $ */
 var ws = {};
-var user = {username: 'bob'};
+var user = {username: bag.setup.USER1};
 var bgcolors = ["whitebg", "blackbg", "redbg", "greenbg", "bluebg", "purplebg", "pinkbg", "orangebg", "yellowbg"];
 
 // =================================================================================
@@ -14,7 +14,7 @@ var bgcolors = ["whitebg", "blackbg", "redbg", "greenbg", "bluebg", "purplebg", 
 $(document).on('ready', function() {
 	connect_to_server();
 	$("input[name='name']").val('r' + randStr(6));
-	$("select option[value='bob']").attr('selected', true);
+	$("select option[value='" + bag.setup.USER1 + "']").attr('selected', true);
 	
 	// =================================================================================
 	// jQuery UI Events
@@ -66,28 +66,28 @@ $(document).on('ready', function() {
 		$(this).parent().parent().find('.colorValue').html(html);
 		$(this).parent().hide();
 
-		for(var i in bgcolors) $(".createball").removeClass(bgcolors[i]);			//remove prev color
+		for(var i in bgcolors) $(".createball").removeClass(bgcolors[i]);		//remove prev color
 		$(".createball").css("border", "0").addClass(color + 'bg');				//set new color
 	});
 	
 	
 	//drag and drop marble
-	$("#leroyswrap, #bobswrap, #trashbin").sortable({connectWith: ".sortable"}).disableSelection();
-	$("#leroyswrap").droppable({drop:
+	$("#user2wrap, #user1wrap, #trashbin").sortable({connectWith: ".sortable"}).disableSelection();
+	$("#user2wrap").droppable({drop:
 		function( event, ui ) {
 			var user = $(ui.draggable).attr('user');
-			if(user.toLowerCase() != 'leroy'){
+			if(user.toLowerCase() != bag.setup.USER2){
 				$(ui.draggable).addClass("invalid");
-				transfer($(ui.draggable).attr('id'), 'leroy');
+				transfer($(ui.draggable).attr('id'), bag.setup.USER2);
 			}
 		}
 	});
-	$("#bobswrap").droppable({drop:
+	$("#user1wrap").droppable({drop:
 		function( event, ui ) {
 			var user = $(ui.draggable).attr('user');
-			if(user.toLowerCase() != 'bob'){
+			if(user.toLowerCase() != bag.setup.USER1){
 				$(ui.draggable).addClass("invalid");
-				transfer($(ui.draggable).attr('id'), 'bob');
+				transfer($(ui.draggable).attr('id'), bag.setup.USER1);
 			}
 		}
 	});
@@ -344,8 +344,8 @@ function connect_to_server(){
 				new_block(temp);									//send to blockchain.js
 			}
 			else if(data.msg === 'reset'){							//clear marble knowledge, prepare of incoming marble states
-				$("#leroyswrap").html('');
-				$("#bobswrap").html('');
+				$("#user2wrap").html('');
+				$("#user1wrap").html('');
 			}
 			else if(data.msg === 'open_trades'){
 				build_trades(data.open_trades);
@@ -384,11 +384,11 @@ function build_ball(data){
 		if(data.color) colorClass = data.color.toLowerCase();
 		
 		html += '<span id="' + data.name +'" class=" fa fa-circle ' + size + ' ball ' + colorClass + '" title="' + data.name +'" user="' + data.user + '"></span>';
-		if((data.user && data.user.toLowerCase() == 'bob') || (data.owner && data.owner.toLowerCase() == 'bob')){
-			$("#bobswrap").append(html);
+		if(data.user && data.user.toLowerCase() == bag.setup.USER1){
+			$("#user1wrap").append(html);
 		}
 		else{
-			$("#leroyswrap").append(html);
+			$("#user2wrap").append(html);
 		}
 	}
 	//console.log('marbles', bag.marbles);

@@ -325,12 +325,12 @@ Pretty simple, now lets look 1 more step up to how we sent this websocket messag
 __/public/js/part1.js__
 
 ```js
-	$("#leroyswrap").droppable({drop:
+	$("#user2wrap").droppable({drop:
 		function( event, ui ) {
 			var user = $(ui.draggable).attr('user');
-			if(user.toLowerCase() != 'leroy'){
+			if(user.toLowerCase() != bag.setup.USER2){
 				$(ui.draggable).addClass("invalid");		//make the marble transparent to reflect a pending action
-				transfer($(ui.draggable).attr('id'), 'leroy');
+				transfer($(ui.draggable).attr('id'), bag.setup.USER2);
 			}
 		}
 	});
@@ -352,7 +352,7 @@ __/public/js/part1.js__
 
 We used jQuery and jQuery-UI to implement the drag and drop functionality. 
 With these tools we get a droppable event trigger. 
-In the above code we have attached it to #leroryswrap and #bobswrap div elements. 
+In the above code we have attached it to #leroryswrap and #user1wrap div elements. 
 When the event fires we first check to see if this marble actually moved owners, or if it was just picked up and dropped back down. 
 If its owner has changed we go off to the `transfer()` function.
 This function creates a json message with all the needed data and uses our websocket to send it with `ws.send()`.
