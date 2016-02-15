@@ -27,7 +27,7 @@
 
 
 #Application Background
-Our fancy pants application is going to blow minds by creating and transferring marbles between two users. 
+This sample app is meant to demonstrate how to create and transfer marbles between two users. 
 We are going to do this in Node.JS and a bit of GoLang. 
 The backend of this application will be the GoLang code running in our blockchain network. 
 From here on out the GoLang code will be referred to as 'chaincode' or 'cc'. 
