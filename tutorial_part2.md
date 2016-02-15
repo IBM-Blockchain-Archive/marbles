@@ -1,12 +1,5 @@
 #Marbles Part 2 - Demo
 
-***
-<center>
-! __Work in progress__ !  
-Please use [Part 1](./tutorial_part1.md) until this message is gone
-</center>
-***
-
 ##BEFORE YOU RUN
 - This tutorial assumes you have completed [Part 1](./tutorial_part1.md)
 - The underlying network for this application is the open blockchain fabric code that was contributed by IBM to the Linux Foundation's Hyperledger project. They have extensive [Fabric Documentation](https://github.com/openblockchain/obc-docs)
