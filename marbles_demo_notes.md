@@ -75,6 +75,6 @@
 - [x] ability to remove open trades by user
 - [x] make layout adaptive
 - [x] better error messages
-- [ ] rename to jerry and ginni
-- [ ] point out that there is individual chaincode for part 1 and part2 in the tutorial
+- [x] rename to jerry and ginni
+- [x] point out that there is individual chaincode for part 1 and part2 in the tutorial
 - [x] delete the temp dir if no deploy_name in sdk
