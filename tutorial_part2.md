@@ -48,6 +48,7 @@ To use it we just pass it what function we want to be called whenever the SDK no
 The plan is to use this event as a trigger to redraw the marble states. 
 
 __The Plan__
+
 1. User trades a marble
 1. At somepoint that event will be written to a block
 1. The SDK detects a new block has been written
@@ -96,7 +97,7 @@ __./app.js__ (abbreviated)
 	}
 ```
 The code above should look familiar. 
-Its the same strategy as before just this time wrapped inside our monitor_blockheight function and using `wss.brodcast()` instead of `ws.send()`
+Its the same strategy as before just this time wrapped inside our `monitor_blockheight()` function and using `wss.brodcast()` instead of `ws.send()`
 The client side code doesn't even need to change. 
 Well except now we can remove the setTimeout() staggering we used before. 
 Test it out yourself at [http://localhost:3000/p2](http://localhost:3000/p2).
@@ -123,6 +124,7 @@ The open trades themself will be a struct of things like the username, timestamp
 The whole layout is below and I think its easiest to read from the bottom of the code upwards.
 
 __Open Trade Internal Structure__
+
 ```js
 	type Description struct{
 		Color string `json:"color"`
@@ -148,6 +150,7 @@ To setup trades we need a chaincode function, lets call it `open_trade`.
 First things first we need to list this in the bottom of our `Run()` function like so:
 
 __Run()__
+
 ```js
 	func (t *SimpleChaincode) Run(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 		fmt.Println("run is running " + function)
