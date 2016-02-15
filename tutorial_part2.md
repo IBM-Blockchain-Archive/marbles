@@ -118,9 +118,9 @@ The JS that controls this is in `/public/part2.js`.
 Ok lets do some real work again. 
 Now last time we created stuff to be stored we created individual key/value pairs for each marble. 
 Lets try something different this time and use 1 key/value pair to track all known trades. 
-To setup trades we need a chaincode function, lets call it `open_trade`. 
-At the top is going to be an array of open trades. 
-Open trades themself will be a structure of things like the username, timestamp, what they are willing to trade away and what they want in return.
+This will be an array of open trade structs. 
+The open trades themself will be a struct of things like the username, timestamp, what they are willing to trade away and what they want in return. 
+The whole layout is below and I think its easiest to read from the bottom of the code upwards.
 
 __Open Trade Internal Structure__
 ```js
@@ -143,8 +143,6 @@ __Open Trade Internal Structure__
 	var trades AllTrades
 
 ```
-
-I think it is easier to read the above code from the bottom up.
 
 To setup trades we need a chaincode function, lets call it `open_trade`. 
 First things first we need to list this in the bottom of our `Run()` function like so:
@@ -181,69 +179,146 @@ __Run()__
 Next build up the function itself.
 
 **open_trade()**
+
 ```js
-// ============================================================================================================================
-// Open Trade - create an open trade for a marble you want with marbles you have 
-// ============================================================================================================================
-func (t *SimpleChaincode) open_trade(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
-	var err error
-	var will_size int
-	var trade_away Description
-	
-	//	0        1      2     3      4      5       6
-	//["bob", "blue", "16", "red", "16"] *"blue", "35*
-	if len(args) < 5 {
-		return nil, errors.New("Incorrect number of arguments. Expecting like 5?")
-	}
-	if len(args)%2 == 0{
-		return nil, errors.New("Incorrect number of arguments. Expecting an odd number")
-	}
+	// ============================================================================================================================
+	// Open Trade - create an open trade for a marble you want with marbles you have 
+	// ============================================================================================================================
+	func (t *SimpleChaincode) open_trade(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+		var err error
+		var will_size int
+		var trade_away Description
+		
+		//	0        1      2     3      4      5       6
+		//["bob", "blue", "16", "red", "16"] *"blue", "35*
+		if len(args) < 5 {
+			return nil, errors.New("Incorrect number of arguments. Expecting like 5?")
+		}
+		if len(args)%2 == 0{
+			return nil, errors.New("Incorrect number of arguments. Expecting an odd number")
+		}
 
-	size1, err := strconv.Atoi(args[2])
-	if err != nil {
-		return nil, errors.New("3rd argument must be a numeric string")
-	}
-
-	open := AnOpenTrade{}
-	open.User = args[0]
-	open.Timestamp = makeTimestamp()                      //use timestamp as an ID
-	open.Want.Color = args[1]
-	open.Want.Size =  size1
-	fmt.Println("- start open trade")
-	jsonAsBytes, _ := json.Marshal(open)
-	err = stub.PutState("_debug1", jsonAsBytes)
-
-	for i:=3; i < len(args); i++ {                       //create and append each willing trade
-		will_size, err = strconv.Atoi(args[i + 1])
+		size1, err := strconv.Atoi(args[2])
 		if err != nil {
-			msg := "is not a numeric string " + args[i + 1]
-			fmt.Println(msg)
-			return nil, errors.New(msg)
+			return nil, errors.New("3rd argument must be a numeric string")
+		}
+
+		open := AnOpenTrade{}
+		open.User = args[0]
+		open.Timestamp = makeTimestamp()                      //use timestamp as an ID
+		open.Want.Color = args[1]
+		open.Want.Size =  size1
+		fmt.Println("- start open trade")
+		jsonAsBytes, _ := json.Marshal(open)
+		err = stub.PutState("_debug1", jsonAsBytes)
+
+		for i:=3; i < len(args); i++ {                       //create and append each willing trade
+			will_size, err = strconv.Atoi(args[i + 1])
+			if err != nil {
+				msg := "is not a numeric string " + args[i + 1]
+				fmt.Println(msg)
+				return nil, errors.New(msg)
+			}
+			
+			trade_away = Description{}
+			trade_away.Color = args[i]
+			trade_away.Size =  will_size
+			fmt.Println("! created trade_away: " + args[i])
+			jsonAsBytes, _ = json.Marshal(trade_away)
+			err = stub.PutState("_debug2", jsonAsBytes)
+			
+			open.Willing = append(open.Willing, trade_away)
+			fmt.Println("! appended willing to open")
+			i++;
 		}
 		
-		trade_away = Description{}
-		trade_away.Color = args[i]
-		trade_away.Size =  will_size
-		fmt.Println("! created trade_away: " + args[i])
-		jsonAsBytes, _ = json.Marshal(trade_away)
-		err = stub.PutState("_debug2", jsonAsBytes)
-		
-		open.Willing = append(open.Willing, trade_away)
-		fmt.Println("! appended willing to open")
-		i++;
+		trades.OpenTrades = append(trades.OpenTrades, open);    //append to open trades
+		fmt.Println("! appended open to trades")
+		jsonAsBytes, _ = json.Marshal(trades)
+		err = stub.PutState("_opentrades", jsonAsBytes)         //rewrite open orders
+		if err != nil {
+			return nil, err
+		}
+		fmt.Println("- end open trade")
+		return nil, nil
 	}
-	
-	trades.OpenTrades = append(trades.OpenTrades, open);    //append to open trades
-	fmt.Println("! appended open to trades")
-	jsonAsBytes, _ = json.Marshal(trades)
-	err = stub.PutState("_opentrades", jsonAsBytes)         //rewrite open orders
-	if err != nil {
-		return nil, err
-	}
-	fmt.Println("- end open trade")
-	return nil, nil
-}
 ```
 
 I've left  a lot of debug prints and even some debug key/value pairs so you can inspect the code flow yourself. 
 Its essential the same as our `init_marble()` function just this one has nested structures. 
+We build up each individual struct and then append them into the array name `trades`. 
+One non-obviouse decision I made here is that we will find trades again by looking at its timestamp field. 
+ie. a unix timestamp in milliseconds is my unique ID for this trade.
+
+The last thing we need to do is close a trade. 
+I created another GoLang function named `perform_trade`. 
+This function will take in the ID of a trade (its timestamp), the user who is closing the trade, the name of a marble they are willing to give up and finally the color/size marble they would like in return. 
+
+
+**perform_trade()**
+
+```js
+	// ============================================================================================================================
+	// Perform Trade - close an open trade and move ownership
+	// ============================================================================================================================
+	func (t *SimpleChaincode) perform_trade(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+		var err error
+		
+		//	0		1					2					3				4					5
+		//[data.id, data.closer.user, data.closer.name, data.opener.user, data.opener.color, data.opener.size]
+		if len(args) < 6 {
+			return nil, errors.New("Incorrect number of arguments. Expecting 6")
+		}
+		
+		fmt.Println("- start close trade")
+		timestamp, err := strconv.ParseInt(args[0], 10, 64)
+		if err != nil {
+			return nil, errors.New("1st argument must be a numeric string")
+		}
+		
+		size, err := strconv.Atoi(args[5])
+		if err != nil {
+			return nil, errors.New("6th argument must be a numeric string")
+		}
+		
+		for i := range trades.OpenTrades{                                                        //look for the trade
+			fmt.Println("looking at " + strconv.FormatInt(trades.OpenTrades[i].Timestamp, 10) + " for " + strconv.FormatInt(timestamp, 10))
+			if trades.OpenTrades[i].Timestamp == timestamp{
+				fmt.Println("found the trade");
+				
+				marble, e := findMarble4Trade(stub, trades.OpenTrades[i].User, args[4], size)    //find a marble that is suitable from opener
+				if(e == nil){
+					fmt.Println("! no errors, proceeding")
+
+					t.set_user(stub, []string{args[2], trades.OpenTrades[i].User})	             //change owner of selected marble, closer -> opener
+					t.set_user(stub, []string{marble.Name, args[1]})                             //change owner of selected marble, opener -> closer
+				
+					trades.OpenTrades = append(trades.OpenTrades[:i], trades.OpenTrades[i+1:]...)//remove trade
+					jsonAsBytes, _ := json.Marshal(trades)
+					err = stub.PutState("_opentrades", jsonAsBytes)                              //rewrite open orders
+					if err != nil {
+						return nil, err
+					}
+				}
+			}
+		}
+		fmt.Println("- end close trade")
+		return nil, nil
+	}
+```
+
+One of the first thing this function does is find the trade based on its timestamp. 
+Next it trys to find a marble that matches what the person that closed the trade desires. 
+It does this with the function `findMarble4Trade`. 
+`findMarble4Trade` will return the marble itself if it found one. 
+We then feed this marble into our previousely created `set_user` function and complete the trade. 
+Lastly we close out the trade by removing it from the array of open trades.
+
+Thats it! Now we can call this cc code from our Node.js like we did in Part 1. 
+Simply use `chaincode.open_trade(args)` in our server side JS to create the trade and `chaincode.perform_trade(args)` to close it out. 
+This code can be found in `/utils/ws_part2.js`.
+
+With these new additions we can close out Part 2. 
+There are a few more 'niceities' that I created such as removing open trades or options from an open trade if the user no longer has such a marble. 
+There is also a `remove_trade()` cc function to allow the user to cancel his trade. 
+The code for this is included.
