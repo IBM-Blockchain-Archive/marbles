@@ -54,10 +54,10 @@ __./app.js__ (abbreviated)
 
 ```js
 	//there is a new block, lets refresh everything that has a state
-	obc.monitor_blockheight(function(chain_stats){
+	ibc.monitor_blockheight(function(chain_stats){
 		if(chain_stats && chain_stats.height){
 			console.log('hey new block, lets refresh and broadcast to all');
-			obc.block_stats(chain_stats.height - 1, cb_blockstats);
+			ibc.block_stats(chain_stats.height - 1, cb_blockstats);
 			wss.broadcast({msg: 'reset'});
 			chaincode.read('marbleIndex', cb_got_index);
 		}

@@ -44,7 +44,7 @@ Attributes of a marble:
 	
 We are going to create a Web UI that can set these values and pass them to the chaincode. 
 Interacting with the cc is done with a HTTP REST call to a peer on the network. 
-The obc-js SDK will abstract the details of the REST calls away.
+The ibc-js SDK will abstract the details of the REST calls away.
 This allow us to use dot notation to call our GoLang functions (such as `chaincode.init_marble(args)`).
 
 #Application Communication Flow
@@ -227,7 +227,7 @@ Now we are ready to work on the application!
  
 1. Make sure you wait for this all clear message. 
 		
-		[obc-js] Deploying Chaincode - Complete
+		[ibc-js] Deploying Chaincode - Complete
 		---------------------------------------- Websocket Up ------------------------------------------
 		
 #Run Marbles on Bluemix (command line)
@@ -258,7 +258,7 @@ Now we are ready to work on the application!
 
 #SDK / IBM Blockchain Deeper Dive
 Before we examine how marbles works lets examine what the SDK did to get our cc onto the network.
-The options argument for `obc.load(options)` contains many important things. 
+The options argument for `ibc.load(options)` contains many important things. 
 An abreviated version is below:
 
 ```js
@@ -282,7 +282,7 @@ An abreviated version is below:
 			git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/part2',           //git https URL. should point to the desired chaincode repo AND directory
 		}
 	};
-	obc.load(options, cb);
+	ibc.load(options, cb);
 ```
 
 This network has membership security; we can tell because there are usernames/secrets in the network.users list. 
@@ -371,7 +371,7 @@ The `chaincode.set_user([data.name, data.user]);` line is where we submit our re
 It is passing to our GoLang set_user function an array of strings argument containing the name of the marble and the name of it's new owner. 
 By "passing" I mean it is really sending a HTTP POST /devops/invoke request to one of the peers in our network. 
 This peer will in turn call the chaincode and actually pass the argument to the cc function. 
-The details of which peer and the exact rest call are taken care of in our obc-js SDK. 
+The details of which peer and the exact rest call are taken care of in our ibc-js SDK. 
 For your own curisoity the details of the Invoke API call can be found [here](https://github.com/openblockchain/obc-docs/blob/master/api/Openchain%20API.md#devops)
 This code itself was called in response to a websocket message that originated on our user's browser.
 

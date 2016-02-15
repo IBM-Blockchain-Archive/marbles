@@ -1,7 +1,7 @@
 # Marbles Demo Notes
 
 ## Doc Links
-- obc.js SDK Doc - [utils/obc-js](./utils/obc-js/README.md)
+- IBM Blockchain JS SDK Doc - [https://github.com/IBM-Blockchain/ibm-blockchain-js](https://github.com/IBM-Blockchain/ibm-blockchain-js)
 - Tutorial for Marbles Part 1 - [here](./tutorial_part1.md) (start here)
 - Tutorial for Marbles Part 2 - coming
 

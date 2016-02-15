@@ -1,12 +1,12 @@
 // ==================================
 // Part 2 - incoming messages, look for type
 // ==================================
-var obc = {};
+var ibc = {};
 var chaincode = {};
 var async = require('async');
 
 module.exports.setup = function(sdk, cc){
-	obc = sdk;
+	ibc = sdk;
 	chaincode = cc;
 };
 
@@ -36,7 +36,7 @@ module.exports.process_msg = function(ws, data){
 		}
 		else if(data.type == 'chainstats'){
 			console.log('chainstats msg');
-			obc.chain_stats(cb_chainstats);
+			ibc.chain_stats(cb_chainstats);
 		}
 		else if(data.type == 'open_trade'){
 			console.log('open_trade msg');
@@ -104,7 +104,7 @@ module.exports.process_msg = function(ws, data){
 	function cb_chainstats(e, stats){
 		chain_stats = stats;
 		if(stats && stats.height){
-			obc.block_stats(stats.height - 1, cb_blockstats);
+			ibc.block_stats(stats.height - 1, cb_blockstats);
 		}
 	}
 

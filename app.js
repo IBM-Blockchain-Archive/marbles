@@ -126,8 +126,8 @@ var part1 = require('./utils/ws_part1');
 var part2 = require('./utils/ws_part2');
 var ws = require('ws');
 var wss = {};
-var Obc1 = require('./utils/obc-js/index');
-var obc = new Obc1();
+var Ibc1 = require('ibm-blockchain-js');
+var ibc = new Ibc1();
 
 // ==================================
 // load peers manually or from VCAP, VCAP will overwrite hardcoded list!
@@ -237,7 +237,7 @@ if(process.env.VCAP_SERVICES){															//load from vcap, search for servic
 
 
 // ==================================
-// configure obc-js sdk
+// configure ibm-blockchain-js sdk
 // ==================================
 var options = 	{
 					network:{
@@ -257,7 +257,7 @@ if(process.env.VCAP_SERVICES){
 	console.log('\n[!] looks like you are in bluemix, I am going to clear out the deploy_name so that it deploys new cc.\n[!] hope that is ok budddy\n');
 	options.chaincode.deployed_name = "";
 }
-obc.load(options, cb_ready);																//parse/load chaincode
+ibc.load(options, cb_ready);																//parse/load chaincode
 
 var chaincode = null;
 function cb_ready(err, cc){																	//response has chaincode functions
@@ -266,8 +266,8 @@ function cb_ready(err, cc){																	//response has chaincode functions
 	}
 	else{
 		chaincode = cc;
-		part1.setup(obc, cc);
-		part2.setup(obc, cc);
+		part1.setup(ibc, cc);
+		part2.setup(ibc, cc);
 		if(cc.details.deployed_name === ""){												//decide if i need to deploy
 			cc.deploy('init', ['99'], './cc_summaries', cb_deployed);
 		}
@@ -288,7 +288,7 @@ function cb_deployed(e, d){
 	}
 	else{
 		console.log('------------------------------------------ Websocket Up ------------------------------------------');
-		obc.save('./cc_summaries');															//save it here for chaincode investigator
+		ibc.save('./cc_summaries');															//save it here for chaincode investigator
 		wss = new ws.Server({server: server});												//start the websocket now
 		wss.on('connection', function connection(ws) {
 			ws.on('message', function incoming(message) {
@@ -316,10 +316,10 @@ function cb_deployed(e, d){
 		// ========================================================
 		// Part 2 Code - Monitor the height of the blockchain
 		// =======================================================
-		obc.monitor_blockheight(function(chain_stats){										//there is a new block, lets refresh everything that has a state
+		ibc.monitor_blockheight(function(chain_stats){										//there is a new block, lets refresh everything that has a state
 			if(chain_stats && chain_stats.height){
 				console.log('hey new block, lets refresh and broadcast to all');
-				obc.block_stats(chain_stats.height - 1, cb_blockstats);
+				ibc.block_stats(chain_stats.height - 1, cb_blockstats);
 				wss.broadcast({msg: 'reset'});
 				chaincode.read('marbleIndex', cb_got_index);
 				chaincode.read('_opentrades', cb_got_trades);

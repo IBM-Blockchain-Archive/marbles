@@ -1,7 +1,7 @@
 {
-	"name": "obc-js-demo",
+	"name": "marbles",
 	"version": "0.0.1",
-	"description": "A Node.js web application that demonstrates utilizing obc.js to call REST APIs on the blockchain.",
+	"description": "A Node.js web application that demonstrates utilizing IBM Blockchain JS to call REST APIs on the blockchain.",
 	"main":"app.js",
 	"scripts": {
 		"start": "node app.js"
@@ -19,7 +19,8 @@
 		"cors":"2.5.3",
 		"async": "0.9.0",
 		"adm-zip": "0.4.7",
-		"ws": "1.0.1"
+		"ws": "1.0.1",
+		"ibm-blockchain-js": "*"
 	},
 	"engines": {
 		"node": "0.12.0"

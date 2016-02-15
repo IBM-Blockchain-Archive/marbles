@@ -1,12 +1,12 @@
 // ==================================
 // Part 1 - incoming messages, look for type
 // ==================================
-var obc = {};
+var ibc = {};
 var chaincode = {};
 var async = require('async');
 
 module.exports.setup = function(sdk, cc){
-	obc = sdk;
+	ibc = sdk;
 	chaincode = cc;
 };
 
@@ -36,7 +36,7 @@ module.exports.process_msg = function(ws, data){
 		}
 		else if(data.type == 'chainstats'){
 			console.log('chainstats msg');
-			obc.chain_stats(cb_chainstats);
+			ibc.chain_stats(cb_chainstats);
 		}
 	}
 
@@ -85,7 +85,7 @@ module.exports.process_msg = function(ws, data){
 	var chain_stats = {};
 	function cb_chainstats(e, stats){
 		chain_stats = stats;
-		if(stats && stats.height) obc.block_stats(stats.height - 1, cb_blockstats);
+		if(stats && stats.height) ibc.block_stats(stats.height - 1, cb_blockstats);
 	}
 	
 	//call bacak for getting a block's stats, lets send the chain/block stats

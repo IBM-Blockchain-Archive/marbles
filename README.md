@@ -20,7 +20,7 @@ Attributes of a marble:
 	
 We are going to create a Web UI that can set these values and pass them to the chaincode. 
 Interacting with the cc is done with a HTTP REST call to a peer on the network. 
-The obc-js SDK will abstract the details of the REST calls away.
+The ibc-js SDK will abstract the details of the REST calls away.
 This allow us to use dot notation to call our GoLang functions (such as `chaincode.init_marble(args)`). 
 
 Start the tutorial below to have your own marbles blockchain demo.
@@ -28,11 +28,10 @@ Start the tutorial below to have your own marbles blockchain demo.
 ## Doc Links
 - Tutorial for Marbles Part 1 - [here](./tutorial_part1.md) (start here)
 - Tutorial for Marbles Part 2 - [here](./tutorial_part2.md) 
-- obc.js SDK Doc - [utils/obc-js](./utils/obc-js/README.md)
+- IBM Blockchain JS Doc - [https://github.com/IBM-Blockchain/ibm-blockchain-js](https://github.com/IBM-Blockchain/ibm-blockchain-js)
 
 ***
 
 ## Projects Contents
-1. **OBC-JS SDK** - `./utils/obc-js`
 1. **Marbles Part 1**   -	http://localhost:3000/p1
 1. **Marbles Part 2**   -	http://localhost:3000/p2
