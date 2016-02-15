@@ -9,7 +9,7 @@ Please use [Part 1](./tutorial_part1.md) until this message is gone
 
 ##BEFORE YOU RUN
 - This tutorial assumes you have completed [Part 1](./tutorial_part1.md)
-- The underlying network for this applicaiton is the open blockchain fabric code that was contributed by IBM to the Linux Foundation's Hyperledger project. They have extensive [Fabric Documentation](https://github.com/openblockchain/obc-docs)
+- The underlying network for this application is the open blockchain fabric code that was contributed by IBM to the Linux Foundation's Hyperledger project. They have extensive [Fabric Documentation](https://github.com/openblockchain/obc-docs)
 - The expectations of this application are to test the JS SDK, guide its development and to aid a developer become familiar with our SDK + chaincode.
 - This is a `very simple` asset transfer demonstration.  Two users can create and exchange marbles with each other.
 - The chaincode is not in this repo, it can be found here: [https://github.com/ibm-blockchain/marbles-chaincode](hhttps://github.com/ibm-blockchain/marbles-chaincode)
@@ -17,7 +17,7 @@ Please use [Part 1](./tutorial_part1.md) until this message is gone
 ***
 
 ##Part 2 Goals
-- Server pushes block/marble updates to client when a new block event has occured (polling based)
+- Server pushes block/marble updates to client when a new block event has occurred (polling based)
 - User's can advertise to trade/exchange their marbles (ie willing to trade large red for large blue/yellow/green)
 - User can remove their pending open trades
 - User identity (fake login as user1 or user2)
@@ -35,7 +35,7 @@ Please use [Part 1](./tutorial_part1.md) until this message is gone
 #Summary
 Wow great so you completed [Part 1](./tutorial_part1.md) and you came back to try part 2. 
 Now I know there are 4 goals listed above, but really there are only 2 major changes we are going to do this time around. 
-We are going to (1) leverge the SDK to monitor when a new block gets written. 
+We are going to (1) leverage the SDK to monitor when a new block gets written. 
 This will allows us to push an update to our clients via the websocket, no more setTimeout(). 
 (2) Users can now create an 'open trade'. Meaning they can create a contract of sorts that says "I am willing to give up my Large Blue marble for a Large Green marble". 
 Another user can "login" our app and execute the trade if he has a green marble and wants a blue one.
@@ -50,9 +50,9 @@ The plan is to use this event as a trigger to redraw the marble states.
 __The Plan__
 
 1. User trades a marble
-1. At somepoint that event will be written to a block
+1. At some point that event will be written to a block
 1. The SDK detects a new block has been written
-1. Lets assume this new block contains our user's trade action, therefore lets read all marble states
+1. Let’s assume this new block contains our user's trade action, therefore let’s read all marble states
 	- this assumption is temporary
 1. Broadcast the marble states to any connected peers
 1. Clients receive the new marble states and redraw them
@@ -97,13 +97,13 @@ __./app.js__ (abbreviated)
 	}
 ```
 The code above should look familiar. 
-Its the same strategy as before just this time wrapped inside our `monitor_blockheight()` function and using `wss.brodcast()` instead of `ws.send()`
+It’s the same strategy as before just this time wrapped inside our `monitor_blockheight()` function and using `wss.brodcast()` instead of `ws.send()`
 The client side code doesn't even need to change. 
 Well except now we can remove the setTimeout() staggering we used before. 
 Test it out yourself at [http://localhost:3000/p2](http://localhost:3000/p2).
 
 #Identity
-If you tried out the link above you've probably seen the new "Trade" navigation link and the new login section. 
+If you tried out the link above, you've probably seen the new "Trade" navigation link and the new login section. 
 The trading example we are building to requires knowing which user we are impersonating so we have built a fake login. 
 Click the HI USER part in the top right and you can select which user you want to be. 
 We will not be building any type of security mechanism yet. 
@@ -116,34 +116,33 @@ The JS that controls this is in `/public/part2.js`.
 ```
 
 #Trading
-Ok lets do some real work again. 
+Ok let’s do some real work again. 
 Now last time we created stuff to be stored we created individual key/value pairs for each marble. 
-Lets try something different this time and use 1 key/value pair to track all known trades. 
+Let’s try something different this time and use 1 key/value pair to track all known trades. 
 This will be an array of open trade structs. 
-The open trades themself will be a struct of things like the username, timestamp, what they are willing to trade away and what they want in return. 
-The whole layout is below and I think its easiest to read from the bottom of the code upwards.
+The open trades themselves will be a struct of things like the username, timestamp, what they are willing to trade away and what they want in return. 
+The whole data layout is below.
 
 __Open Trade Internal Structure__
 
 ```js
-	type Description struct{
-		Color string `json:"color"`
-		Size int `json:"size"`
+	var trades AllTrades
+	
+	type AllTrades struct{
+		OpenTrades []AnOpenTrade `json:"open_trades"`
 	}
-
+	
 	type AnOpenTrade struct{
 		User string `json:"user"`					//user who created the open trade order
 		Timestamp int64 `json:"timestamp"`			//utc timestamp of creation
 		Want Description  `json:"want"`				//description of desired marble
 		Willing []Description `json:"willing"`		//array of marbles willing to trade away
 	}
-
-	type AllTrades struct{
-		OpenTrades []AnOpenTrade `json:"open_trades"`
+	
+	type Description struct{
+		Color string `json:"color"`
+		Size int `json:"size"`
 	}
-
-	var trades AllTrades
-
 ```
 
 To setup trades we need a chaincode function, lets call it `open_trade`. 
@@ -247,8 +246,8 @@ Next build up the function itself.
 	}
 ```
 
-I've left  a lot of debug prints and even some debug key/value pairs so you can inspect the code flow yourself. 
-Its essential the same as our `init_marble()` function just this one has nested structures. 
+I've left a lot of debug prints and even some debug key/value pairs so you can inspect the code flow yourself. 
+Its essentialy the same as our `init_marble()` function just this one has nested structures. 
 We build up each individual struct and then append them into the array name `trades`. 
 One non-obviouse decision I made here is that we will find trades again by looking at its timestamp field. 
 ie. a unix timestamp in milliseconds is my unique ID for this trade.
@@ -311,17 +310,19 @@ This function will take in the ID of a trade (its timestamp), the user who is cl
 ```
 
 One of the first thing this function does is find the trade based on its timestamp. 
-Next it trys to find a marble that matches what the person that closed the trade desires. 
+Next it tries to find a marble that matches what the person that closed the trade desires. 
 It does this with the function `findMarble4Trade`. 
 `findMarble4Trade` will return the marble itself if it found one. 
-We then feed this marble into our previousely created `set_user` function and complete the trade. 
+We then feed this marble into our previously created `set_user` function and complete the trade. 
 Lastly we close out the trade by removing it from the array of open trades.
 
-Thats it! Now we can call this cc code from our Node.js like we did in Part 1. 
+That’s it! Now we can call this cc code from our Node.js like we did in Part 1. 
 Simply use `chaincode.open_trade(args)` in our server side JS to create the trade and `chaincode.perform_trade(args)` to close it out. 
 This code can be found in `/utils/ws_part2.js`.
 
 With these new additions we can close out Part 2. 
-There are a few more 'niceities' that I created such as removing open trades or options from an open trade if the user no longer has such a marble. 
+There are a few more 'niceties' that I created such as removing open trades or options from an open trade if the user no longer has such a marble. 
 There is also a `remove_trade()` cc function to allow the user to cancel his trade. 
-The code for this is included.
+The code for this is included in this repo.
+
+In part 3 we will discuss authentication/authorization, but in the meantime feel free to build off this demo and share your results!
