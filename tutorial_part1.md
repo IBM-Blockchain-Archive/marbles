@@ -1,7 +1,7 @@
 #Marbles Part 1 - Demo
 
 ##BEFORE YOU RUN
-- The underlying network for this applicaiton is the open blockchain fabric code that was contributed by IBM to the Linux Foundation's Hyperledger project. They have extensive [Fabric Documentation](https://github.com/openblockchain/obc-docs)
+- The underlying network for this application is the open blockchain fabric code that was contributed by IBM to the Linux Foundation's Hyperledger project. They have extensive [Fabric Documentation](https://github.com/openblockchain/obc-docs)
 - The expectations of this application are to test the JS SDK, guide its development and to aid a developer become familiar with our SDK + chaincode.
 - This is a `very simple` asset transfer demonstration.  Two users can create and exchange marbles with each other.
 - There will be multiple parts. Part 1 and 2 are complete  [2/15/2016]
