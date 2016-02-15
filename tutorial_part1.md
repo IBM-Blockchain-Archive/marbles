@@ -164,7 +164,12 @@ The `Write()` function is equally simple but unlike query, write is found in our
 `Write()` uses `stub.PutState(name, value)` to store the key/value pair. 
 Note that the name is a string, and that value is an array of bytes. 
 
-We will use `PutState()` and `GetState()` as the basic constructs for any chaincode we need to create.
+We will use `PutState()` and `GetState()` as the basic building blocks for any cc functions we need to create. 
+Marbles is going to use something that I'm going to call a "monolithic chaincode model". 
+It just means we will have 1 chaincode for the entire app. 
+Marbles and anything else we need will live inside this single chaincode’s state space. 
+Of course there are much more complicated architectures you can create with a blockchain network. 
+I wanted to start here with the simplest one I could think of.
 
 # Setup Options:
 So the cc is great and all but first we need a blockchain network. 
