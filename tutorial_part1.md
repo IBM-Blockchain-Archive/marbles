@@ -425,13 +425,15 @@ Thats it! Hope you had fun trading some marbles.
 
 
 #General Trouble Shooting
+Plleeease try each trouble shooting method below!
 1. If you can't get the app to reflect a new change try refreshing the browser
 1. Use the dashboard on the Bluemix service tile to verify if the chaincode was deployed and that your peers are running. You may get into the chaincode/peer logs from here.
-1. If it still doesn't work try deleting the current network and creating another one
-1. Look at the node.js console logs for clues/errors (if using bluemix do cf logs YOUR_APP_NAME, if localhost look at your screen buddy)
+	- If there is no chaincode listed, get into the logs and figure out what happened
+1. Look at the node.js console logs for clues/errors (if using Bluemix do cf logs YOUR_APP_NAME, if localhost look at your screen buddy)
 	- If you want to see recent but historic logs when using Bluemix type cf logs YOUR_APP_NAME --recent in your command line/terminal
-	- The logs that are most helpful are right at the begining. AFter the ------------ Server Up - x.x.x.x:xxxx ------------ line.
+	- The logs that are most helpful are right at the begining. After the ------------ Server Up - x.x.x.x:xxxx ------------ line.
 1. Open the console in your browser (right click the page, inspect element, open console tab). There are lots of debug prints to help give you clues.
+1. If it still doesn't work try deleting the current network and creating another one
 
 #Node.js Console Error Solutions
 1. **500 - ECONNREFUSED** - Check the peers in your options.network.peers.  They likely do not exist / are wrong
