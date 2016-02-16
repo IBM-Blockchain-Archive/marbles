@@ -33,5 +33,7 @@ Start the tutorial below to have your own marbles blockchain demo.
 ***
 
 ## Projects Contents
-1. **Marbles Part 1**   -	http://localhost:3000/p1
-1. **Marbles Part 2**   -	http://localhost:3000/p2
+See tutorial above to get started.
+
+1. **Marbles Part 1**   -	[http://localhost:3000/p1](http://localhost:3000/p1)
+1. **Marbles Part 2**   -	[http://localhost:3000/p2](http://localhost:3000/p2)
