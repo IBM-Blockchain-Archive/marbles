@@ -64,12 +64,11 @@
 - [x] multi marble on willing list
 - [ ] marble quanity in trade
 - [x] remove/edit trades that are no longer possible in CC
-- [ ] remove named marble argument on perform_trade message/golang func, replace with color/size thing
 - [x] check requirments of trade before exe, in CC
 - [x] error checking on arguements before invoking... do not let e blank named marble in (in CC)
 - [x] url routing mapper
 - [ ] improve marble redraw so we don't have to blank the marble divs
-- [ ] tutorial for p2
+- [x] tutorial for p2
 - [x] re-parallelize the queryies
 - [x] show open trades made by user
 - [x] ability to remove open trades by user
