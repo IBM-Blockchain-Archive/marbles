@@ -26,7 +26,7 @@
 
 
 #Summary
-Wow great so you completed [Part 1](./tutorial_part1.md) and you came back to try part 2. 
+Wow so you completed [Part 1](./tutorial_part1.md) and you came back to try part 2? Great stuff. 
 Now I know there are 4 goals listed above, but really there are only 2 major changes we are going to do this time around. 
 We are going to (1) leverage the SDK to monitor when a new block gets written. 
 This will allows us to push an update to our clients via the websocket, no more setTimeout(). 
