@@ -426,6 +426,7 @@ Thats it! Hope you had fun trading some marbles.
 
 #General Trouble Shooting
 Plleeease try each trouble shooting method below!
+
 1. If you can't get the app to reflect a new change try refreshing the browser
 1. Use the dashboard on the Bluemix service tile to verify if the chaincode was deployed and that your peers are running. You may get into the chaincode/peer logs from here.
 	- If there is no chaincode listed, get into the logs and figure out what happened
@@ -436,6 +437,7 @@ Plleeease try each trouble shooting method below!
 1. If it still doesn't work try deleting the current network and creating another one
 
 #Node.js Console Error Solutions
+
 1. **500 - ECONNREFUSED** - Check the peers in your options.network.peers.  They likely do not exist / are wrong
 1. **400 - Must supply username for chaincode** - Check if you see a "Register - failure: userx 401" message.  if so delete and remake the network
 1. **401 - Register - failure** - Check the logs of the CA / peer.  If they mention something about an expired certificate delete and remake the network. Logs can be found on the dashboard for the network on Bluemix.
