@@ -168,7 +168,12 @@ $(document).on('ready', function() {
 			$(".removeWilling").show();
 			$(".removeWilling:first").hide();
 		}
+		else{
+			$("#cannotAdd").fadeIn();
+			setTimeout(function(){ $("#cannotAdd").fadeOut(); }, 1500);
+		}
 	});
+	
 	$(document).on("click", ".removeWilling", function(){
 		$(this).parent().remove();
 	});

@@ -229,7 +229,8 @@ label {
   font-size: 15px; }
 
 #mainPanel {
-  color: #fff; }
+  color: #fff;
+  min-height: 750px; }
 
 #contentPanel {
   min-height: 500px;
@@ -740,12 +741,22 @@ button:disabled, .inactiveButton {
 
 @media (max-width: 750px) {
   #innerWrap {
-    width: initial; } }
+    width: initial; }
+  .createball {
+    width: 200px;
+    height: 200px;
+    margin-left: 50px; }
+  .colorInput {
+    margin: 15px 0; } }
 
 @media (max-width: 600px) {
   /* Nav Links */
   #headerPanel {
     padding: 10px; }
+  .createball {
+    width: 200px;
+    height: 200px;
+    margin-left: 10px; }
   #linkWraps {
     background: #222832;
     top: initial; }
@@ -761,7 +772,9 @@ button:disabled, .inactiveButton {
     margin-bottom: 5px; }
   button {
     width: 100%;
-    margin-top: 5px; } }
+    margin-top: 5px; }
+  #viewBCWrap {
+    padding: 10px; } }
 
 @media (max-width: 475px) {
   /* Nav Links */

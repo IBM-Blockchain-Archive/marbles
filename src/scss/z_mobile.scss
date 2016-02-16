@@ -4,11 +4,26 @@
 	#innerWrap{
 		width: initial;
 	}
+	.createball{
+		width: 200px;
+		height: 200px;
+		margin-left:50px;
+	}
+	
+	.colorInput{
+		margin:15px 0;
+	}
 }
 
 @media (max-width: 600px) {
 	/* Nav Links */
 	#headerPanel{padding:10px;}
+	
+	.createball{
+		width: 200px;
+		height: 200px;
+		margin-left:10px;
+	}
 	
 	#linkWraps{
 		background: $acc_color1;
@@ -32,6 +47,9 @@
 	button{
 		width:100%;
 		margin-top:5px;
+	}
+	#viewBCWrap{
+		padding:10px;
 	}
 }
 
