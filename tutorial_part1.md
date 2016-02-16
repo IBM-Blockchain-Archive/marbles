@@ -58,10 +58,10 @@ This allow us to use dot notation to call our GoLang functions (such as `chainco
 #Chaincode
 To understand what is going on we need to start looking at the chaincode.  The complete cc code for this example can be found [here](https://github.com/ibm-blockchain/marbles-chaincode/blob/master/part1/chaincode_ex.go). 
 Marbles Part 1 and Marbles Part 2 will use different chaincode, but Part 2 will include everything from Part 1. 
-Part 1 is just nicer to look since it has less lines of code, and hopefully less things to confuse you on. 
+Part 1 is just nicer to look at since it has less lines of code, and hopefully less things to confuse you on. 
 It is perfectly fine to use Part 2's chaincode with the Marbles Part 1 web application.
 	
-The first interesting place to look is the `Run()` function. 
+The first interesting place in the cc is the `Run()` function. 
 This is our entry point into chaincode. 
 IE the peer will call this function for any type of "invocation". 
 "Invoking" a function simply means we are attempting to run a cc function and that this event will be recorded to the blockchain ledger.
@@ -103,8 +103,8 @@ It will then give you a dot notation to use them in your Node.js application. ie
 ```
 
 Note that the `chaincode.read()` will call the `Query()` function in our chaincode. 
-This function is not listed in `Run()` because it is a special primitive function. 
-The code for `Query()` is listed below:
+This function is not listed in `Run()` because it is a special function. 
+The code for my `Query()` is listed below:
 
 __Query()__
 ```js
@@ -132,8 +132,10 @@ __Query()__
 
 The `Query()` function gives us some insight to how variables are retrieved from cc state. 
 It is a simple matter of using `stub.GetState()` to fetch the value from the key/value pair.
-It is given to us as an array of bytes which this function will return. 
-The REST API handler will receive the value and format it into a JSON string for the response.
+The return value of query is an array of bytes. 
+This array gets passed to the peer's REST API code which will format it into a JSON string for the response. 
+Please note that all chaincode must have a Query() function. 
+I would suggest you simply copy this one if you plan to build your own cc. 
 
 
 __Write()__
@@ -163,13 +165,15 @@ __Write()__
 The `Write()` function is equally simple but unlike query, write is found in our `Run()` list. 
 `Write()` uses `stub.PutState(name, value)` to store the key/value pair. 
 Note that the name is a string, and that value is an array of bytes. 
+Most of the chaincode we will create will mimic parts of query or parts of write. 
 
-We will use `PutState()` and `GetState()` as the basic building blocks for any cc functions we need to create. 
+What I mean by that is that we will use `PutState()` and `GetState()` as the basic building blocks for any cc functions we need to create. 
 Marbles is going to use something that I'm going to call a "monolithic chaincode model". 
 It just means we will have 1 chaincode for the entire app. 
-Marbles and anything else we need will live inside this single chaincode’s state space. 
+Individual marbles and anything else we need will live inside this single chaincode’s state space. 
 Of course there are much more complicated architectures you can create with a blockchain network. 
-I wanted to start here with the simplest one I could think of.
+I wanted to start here with the simplest one I could think of. 
+We will take a look at writting more specific chaincode after we get an environment setup. 
 
 # Setup Options:
 So the cc is great and all but first we need a blockchain network. 
@@ -208,9 +212,14 @@ The network is all setup.  Now we need to copy the peer data and pass it to our 
 1. Click the "myblockchain" tile in you Bluemix Dashboard
 1. Click the "Service Credentials" link on the left
 1. Copy the value of the whole JSON object to the `manual` var in app.js at line 135ish.
+	1. If for some reason you don't see any credentials click the "ADD CREDENTIALS" button and let the page refresh
 
 #Run Marbles on Local Machine
-Now we are ready to work on the application!
+Now we are ready to work on the application! 
+The app is setup to either grab network data from Bluemix via VCAP Service's environmental variable OR to load the hard coded list in `./app.js`. 
+Since we are running the app locally it will not find VCAP and will use the hard coded list. 
+You should have replaced the hard coded data with your personal network data in the last section. 
+If you haven't, go ahead and do it now (instuctions are [above](#network)).
 
 1. First up we need to install our dependencies. Open a command prompt/terminal and browse to the root of this project.
 1. In the command prompt type:
@@ -239,9 +248,9 @@ Now we are ready to work on the application!
 1. Push the application by opening a command prompt and browsing to this directory
 	
 	
-	> cf login 
-	> (follow the prompts)
-	> cf push YOUR_APP_NAME_HERE
+	> cf login  
+	> (follow the prompts)  
+	> cf push YOUR_APP_NAME_HERE  
 	
 1. The application will bind to the service "myblockchain" and grab the peer data from VCAP_SERVICES. Code for this is in app.js line 209ish
 
@@ -293,7 +302,7 @@ At the end of this step we are ready to deploy our chaincode.
 
 Before we deploy though, the SDK will download and parse the chaincode. 
 This is when it builds up the dot notation we can use to ultimately call cc functions from JS. 
-Once its down downloading/parsing it runs the /devops/deploy HTTP request. 
+Once its done downloading/parsing it runs the /devops/deploy HTTP request. 
 We should receive a hash in the response that is unique to this chaincode. 
 This hash will be used along with the registered username in all future invocations / queries against this cc. 
 
@@ -407,7 +416,7 @@ __/public/js/part1.js__
 
 We used jQuery and jQuery-UI to implement the drag and drop functionality. 
 With these tools we get a droppable event trigger. 
-In the above code we have attached it to #leroryswrap and #user1wrap div elements. 
+In the above code we have attached it to #user2wrap and #user1wrap div elements. 
 When the event fires we first check to see if this marble actually moved owners, or if it was just picked up and dropped back down. 
 If its owner has changed we go off to the `transfer()` function.
 This function creates a json message with all the needed data and uses our websocket to send it with `ws.send()`.
@@ -423,7 +432,8 @@ Thats it! Hope you had fun trading some marbles.
 1. Open the console in your browser (right click the page, inspect element, open console tab). There are lots of debug prints to help give you clues.
 
 #Node.js Console Error Solutions
-1. "500 - ECONNREFUSED": Check the peers in your options.network.peers.  They likely do not exist / are wrong
-1. "400 - Must supply username for chaincode": Check if you see a "Register - failure: userx 401" message.  if so delete and remake the network
-1. "400 - Error gettin chaincode package bytes:...": Check the options.chaincode.git_url, it is likely incorrect
-1. "fs readdir Error": Check the `options.chaincode.unzip_dir` and `zip_url`. Manually download the git repo using the `options.chaincode.zip_url` then extract it.  the `gir_dir` var should be the exact relative path to get to the desired cc folder
+1. **500 - ECONNREFUSED** - Check the peers in your options.network.peers.  They likely do not exist / are wrong
+1. **400 - Must supply username for chaincode** - Check if you see a "Register - failure: userx 401" message.  if so delete and remake the network
+1. **401 - Register - failure** - Check the logs of the CA / peer.  If they mention something about an expired certificate delete and remake the network. Logs can be found on the dashboard for the network on Bluemix.
+1. **400 - Error gettin chaincode package bytes:...** - Check the options.chaincode.git_url, it is likely incorrect
+1. **fs readdir Error** - Check the `options.chaincode.unzip_dir` and `zip_url`. Manually download the git repo using the `options.chaincode.zip_url` then extract it.  the `gir_dir` var should be the exact relative path to get to the desired cc folder
