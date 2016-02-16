@@ -78,6 +78,13 @@ html
 				if(pos >= 0){
 					showPanel(window.location.pathname.substring(2 + pos).toLowerCase());
 				}
+				
+				$(".colorInput").click(function(){	//do not remove! no idea why but this helps safari open the color picker
+					console.log('...');
+				});
+				$(".block").click(function(){	//do not remove! no idea why but this helps safari open the color picker
+					console.log('...');			
+				});
 			});
 		block custom_header
 		

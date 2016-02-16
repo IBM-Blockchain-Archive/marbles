@@ -154,6 +154,7 @@ function connect_to_server(){
 	
 	function onOpen(evt){
 		console.log("WS CONNECTED");
+		clear_blocks();
 		ws.send(JSON.stringify({type: "get", v:1}));
 		ws.send(JSON.stringify({type: "chainstats", v:1}));
 	}
@@ -175,7 +176,7 @@ function connect_to_server(){
 					var e = formatDate(data.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
 					$("#blockdate").html('<span style="color:#fff">TIME</span>&nbsp;&nbsp;' + e + ' UTC');
 					var temp = { 
-									id: nDig((data.chainstats.height - 1), 3), 
+									id: data.blockstats.height, 
 									blockstats: data.blockstats
 								};
 					new_block(temp);									//send to blockchain.js

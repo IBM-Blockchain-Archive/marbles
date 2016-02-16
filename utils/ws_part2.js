@@ -104,12 +104,29 @@ module.exports.process_msg = function(ws, data){
 	function cb_chainstats(e, stats){
 		chain_stats = stats;
 		if(stats && stats.height){
-			ibc.block_stats(stats.height - 1, cb_blockstats);
+			var list = [];
+			for(var i = stats.height - 1; i >= 1; i--){										//create a list of heights we need
+				list.push(i);
+				if(list.length >= 8) break;
+			}
+			list.reverse();																//flip it so order is correct in UI
+			console.log(list);
+			async.eachLimit(list, 1, function(key, cb) {								//iter through each one, and send it
+				ibc.block_stats(key, function(e, stats){
+					if(e == null){
+						stats.height = key;
+						sendMsg({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
+					}
+					cb(null);
+				});
+			}, function() {
+			});
 		}
 	}
 
 	//call bacak for getting a block's stats, lets send the chain/block stats
 	function cb_blockstats(e, stats){
+		if(chain_stats.height) stats.height = chain_stats.height - 1;
 		sendMsg({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
 	}
 	

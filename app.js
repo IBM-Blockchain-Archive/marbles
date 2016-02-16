@@ -136,74 +136,66 @@ var manual = {
   "credentials": {
     "peers": [
       {
-        "discovery_host": "169.44.38.114",
-        "discovery_port": "33641",
-        "api_host": "169.44.38.114",
-        "api_port": "33642",
+        "discovery_host": "169.44.63.207",
+        "discovery_port": "32812",
+        "api_host": "169.44.63.207",
+        "api_port": "32813",
         "type": "peer",
-        "network_id": "7f204b2d-9663-49d2-9c9c-889bab178dc0",
-        "id": "7f204b2d-9663-49d2-9c9c-889bab178dc0_vp1",
-        "api_url": "http://169.44.38.114:33642"
+        "network_id": "0176f42a-1ab8-47b9-ba80-23bb990a9667",
+        "id": "0176f42a-1ab8-47b9-ba80-23bb990a9667_vp1",
+        "api_url": "http://169.44.63.207:32813"
       },
       {
-        "discovery_host": "169.44.38.114",
-        "discovery_port": "33643",
-        "api_host": "169.44.38.114",
-        "api_port": "33644",
+        "discovery_host": "169.44.63.207",
+        "discovery_port": "32814",
+        "api_host": "169.44.63.207",
+        "api_port": "32815",
         "type": "peer",
-        "network_id": "7f204b2d-9663-49d2-9c9c-889bab178dc0",
-        "id": "7f204b2d-9663-49d2-9c9c-889bab178dc0_vp2",
-        "api_url": "http://169.44.38.114:33644"
+        "network_id": "0176f42a-1ab8-47b9-ba80-23bb990a9667",
+        "id": "0176f42a-1ab8-47b9-ba80-23bb990a9667_vp2",
+        "api_url": "http://169.44.63.207:32815"
       }
     ],
     "users": [
       {
-        "username": "peer1",
-        "secret": "de716f4358"
+        "username": "user_68aca46c66",
+        "secret": "18c6382b24"
       },
       {
-        "username": "peer2",
-        "secret": "d4c0fbe381"
+        "username": "user_61c743adcf",
+        "secret": "dae6afc99e"
       },
       {
-        "username": "user_ed1cfd91c6",
-        "secret": "8f94e02858"
+        "username": "user_3b5692c3f8",
+        "secret": "5290c6b9b0"
       },
       {
-        "username": "user_f200bfa36d",
-        "secret": "714eb7abd7"
+        "username": "user_7a2f737aac",
+        "secret": "2d01964e85"
       },
       {
-        "username": "user_d1a3223d85",
-        "secret": "a2470498c1"
+        "username": "user_d227c79ff5",
+        "secret": "1d7bb15e2d"
       },
       {
-        "username": "user_2188d524fc",
-        "secret": "717ffe1045"
+        "username": "user_e70dd07c9c",
+        "secret": "1f3c551580"
       },
       {
-        "username": "user_e5abfaa27a",
-        "secret": "ecdf7a3662"
+        "username": "user_9190a04164",
+        "secret": "dfa3831d8b"
       },
       {
-        "username": "user_ad071cb86d",
-        "secret": "ff919ef7d1"
+        "username": "user_35d8259e09",
+        "secret": "d57662037d"
       },
       {
-        "username": "user_de866d72f9",
-        "secret": "8542dc08be"
+        "username": "user_64badf39dd",
+        "secret": "c41ef22c24"
       },
       {
-        "username": "user_c7df4fb621",
-        "secret": "4e470da410"
-      },
-      {
-        "username": "user_a10546fdd5",
-        "secret": "9519b3b7a6"
-      },
-      {
-        "username": "user_ca7370515e",
-        "secret": "dba9f5c561"
+        "username": "user_0f747466a6",
+        "secret": "fc6e3787d4"
       }
     ]
   }
@@ -327,6 +319,7 @@ function cb_deployed(e, d){
 			
 			//got the block's stats, lets send the statistics
 			function cb_blockstats(e, stats){
+				if(chain_stats.height) stats.height = chain_stats.height - 1;
 				wss.broadcast({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
 			}
 			
