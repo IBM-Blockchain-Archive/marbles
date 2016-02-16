@@ -41,7 +41,7 @@ function new_block(newblck){
 		if(!last) last = 0;
 		last++;
 		//console.log('last', last, Number(newblck.id));
-		if(block > 0){											//skip initial load
+		if(block > 0){											//never fake blocks on an initial load
 			for(var i=last; i < Number(newblck.id); i++){		//build fake blocks for ones we missed out on
 				console.log('run?');
 				blocks[Number(i)] = newblck;
