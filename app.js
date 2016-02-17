@@ -212,6 +212,10 @@ if(process.env.VCAP_SERVICES){															//load from vcap, search for servic
 		if(i.indexOf('ibm-blockchain') >= 0){											//looks close enough
 			if(servicesObject[i][0].credentials.error){
 				console.log('!\n!\n! Error from Bluemix: \n', servicesObject[i][0].credentials.error, '!\n!\n');
+				peers = null;
+				users = null;
+				manual.error = "Due to overwhelming demand the IBM Blockchain Network service is at maximum capacity.  Please try recreating this service at a later date.";
+				process.start_error = manual.error;
 			}
 			if(servicesObject[i][0].credentials && servicesObject[i][0].credentials.peers){
 				console.log('overwritting peers, loading from a vcap service: ', i);

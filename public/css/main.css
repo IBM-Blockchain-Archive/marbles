@@ -385,21 +385,43 @@ label {
   border-bottom-left-radius: 10px;
   text-align: center; }
 
-#noticeText {
+#noticeText, #errorNoticeText {
   margin-bottom: 10px;
   font-size: 13px;
-  width: 100%;
+  width: 88%;
   text-align: center; }
 
 #closeNotification {
   background: initial;
   color: #fff; }
 
-#noticeIcon {
+#noticeIcon, #errorNoticeIcon {
   position: absolute;
   left: -19px;
   top: 45px;
   color: #222832; }
+
+#errorNotificationPanel {
+  display: none;
+  width: 450px;
+  position: absolute;
+  right: 0;
+  top: 90px;
+  color: #7E90A0;
+  background: #222832;
+  padding: 30px 0;
+  border-left: 25px orange solid;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  text-align: center; }
+
+#errorNoticeText {
+  margin-top: 10px;
+  text-align: left;
+  margin-left: 10px; }
+
+#errorNoticeIcon {
+  top: 42%; }
 
 .white {
   color: #FFFEF3; }

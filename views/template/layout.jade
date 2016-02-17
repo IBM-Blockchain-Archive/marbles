@@ -27,6 +27,11 @@ html
 			var bag = !{JSON.stringify(bag)};						//throw jade json over to JS
 			console.log('bag', bag);
 			$(document).ready(function(){
+				if(bag.e) {
+					$("#errorName").html("Start Up Error");
+					$("#errorNoticeText").html(bag.e);
+					$("#errorNotificationPanel").show();							//show the error/warning
+				}
 				
 				//Tab Navigation, show the corresponding panel
 				$(".nav").click(function(){
@@ -104,6 +109,11 @@ html
 					span &nbsp;&nbsp;
 					button(type="button")#closeNotification OK
 				
+				#errorNotificationPanel
+					span.fa.fa-minus-circle#errorNoticeIcon
+					h2#errorName Error
+					#errorNoticeText &nbsp;
+					p.hint This application cannot run without the network :(
 				
 			#footerPanel
 				block footer

@@ -155,12 +155,20 @@ function connect_to_server(){
 	function onOpen(evt){
 		console.log("WS CONNECTED");
 		clear_blocks();
+		$("#errorNotificationPanel").fadeOut();
 		ws.send(JSON.stringify({type: "get", v:1}));
 		ws.send(JSON.stringify({type: "chainstats", v:1}));
 	}
 
 	function onClose(evt){
 		console.log("WS DISCONNECTED", evt);
+		if(bag.e == null){											//don't overwrite an error message
+			$("#errorName").html("Warning");
+			$("#errorNoticeText").html("Waiting for the server to open the websocket so we can talk to the network.");
+			$("#errorNoticeText").append("This app is either starting up, or has gone down.");
+			$("#errorNoticeText").append("Check the server logs if this message does not go away.");
+			$("#errorNotificationPanel").fadeIn();
+		}
 		setTimeout(function(){ connect(); }, 5000);					//try again one more time, server restarts are quick
 	}
 
