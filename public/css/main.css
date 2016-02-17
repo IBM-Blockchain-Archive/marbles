@@ -769,7 +769,10 @@ button:disabled, .inactiveButton {
     height: 200px;
     margin-left: 50px; }
   .colorInput {
-    margin: 15px 0; } }
+    margin: 15px 0; }
+  #errorNotificationPanel {
+    top: 160px;
+    width: 300px; } }
 
 @media (max-width: 600px) {
   /* Nav Links */

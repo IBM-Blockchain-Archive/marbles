@@ -142,7 +142,9 @@ $(document).on('ready', function() {
 // Socket Stuff
 // =================================================================================
 function connect_to_server(){
+	var connected = false;
 	connect();
+	
 	function connect(){
 		var wsUri = "ws://" + bag.setup.SERVER.EXTURI;
 		ws = new WebSocket(wsUri);
@@ -153,7 +155,8 @@ function connect_to_server(){
 	}
 	
 	function onOpen(evt){
-		console.log("WS CONNECTED");
+		console.log("WS CONNECTED", ws);
+		connected = true;
 		clear_blocks();
 		$("#errorNotificationPanel").fadeOut();
 		ws.send(JSON.stringify({type: "get", v:1}));
@@ -162,13 +165,7 @@ function connect_to_server(){
 
 	function onClose(evt){
 		console.log("WS DISCONNECTED", evt);
-		if(bag.e == null){											//don't overwrite an error message
-			$("#errorName").html("Warning");
-			$("#errorNoticeText").html("Waiting for the server to open the websocket so we can talk to the network.");
-			$("#errorNoticeText").append("This app is either starting up, or has gone down.");
-			$("#errorNoticeText").append("Check the server logs if this message does not go away.");
-			$("#errorNotificationPanel").fadeIn();
-		}
+		connected = false;
 		setTimeout(function(){ connect(); }, 5000);					//try again one more time, server restarts are quick
 	}
 
@@ -187,18 +184,24 @@ function connect_to_server(){
 									id: data.blockstats.height, 
 									blockstats: data.blockstats
 								};
-					new_block(temp);									//send to blockchain.js
+					new_block(temp);								//send to blockchain.js
 				}
 			}
 		}
 		catch(e){
 			console.log('ERROR', e);
-			//ws.close();
 		}
 	}
 
 	function onError(evt){
-		console.log('ERROR ', evt.data);
+		console.log('ERROR ', evt);
+		if(!connected && bag.e == null){											//don't overwrite an error message
+			$("#errorName").html("Warning");
+			$("#errorNoticeText").html("Waiting for the server to open the websocket so we can talk to the network.");
+			$("#errorNoticeText").append("This app is either starting up, or has gone down.");
+			$("#errorNoticeText").append("Check the server logs if this message does not go away in 1 minute.");
+			$("#errorNotificationPanel").fadeIn();
+		}
 	}
 
 	function sendMessage(message){

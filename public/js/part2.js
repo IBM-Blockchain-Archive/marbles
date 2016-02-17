@@ -309,7 +309,9 @@ function find_valid_marble(user, color, size){				//return true if user owns mar
 // Socket Stuff
 // =================================================================================
 function connect_to_server(){
+	var connected = false;
 	connect();
+		
 	function connect(){
 		var wsUri = "ws://" + bag.setup.SERVER.EXTURI;
 		ws = new WebSocket(wsUri);
@@ -321,6 +323,7 @@ function connect_to_server(){
 	
 	function onOpen(evt){
 		console.log("WS CONNECTED");
+		connected = true;
 		clear_blocks();
 		$("#errorNotificationPanel").fadeOut();
 		ws.send(JSON.stringify({type: "chainstats", v:2}));
@@ -330,13 +333,7 @@ function connect_to_server(){
 
 	function onClose(evt){
 		console.log("WS DISCONNECTED", evt);
-		if(bag.e == null){											//don't overwrite an error message
-			$("#errorName").html("Warning");
-			$("#errorNoticeText").html("Waiting for the server to open the websocket so we can talk to the network.");
-			$("#errorNoticeText").append("This app is either starting up, or has gone down.");
-			$("#errorNoticeText").append("Check the server logs if this message does not go away.");
-			$("#errorNotificationPanel").fadeIn();
-		}
+		connected = false;
 		setTimeout(function(){ connect(); }, 5000);					//try again one more time, server restarts are quick
 	}
 
@@ -372,7 +369,14 @@ function connect_to_server(){
 	}
 
 	function onError(evt){
-		console.log('ERROR ', evt.data);
+		console.log('ERROR ', evt);
+		if(!connected && bag.e == null){											//don't overwrite an error message
+			$("#errorName").html("Warning");
+			$("#errorNoticeText").html("Waiting for the server to open the websocket so we can talk to the network.");
+			$("#errorNoticeText").append("This app is either starting up, or has gone down.");
+			$("#errorNoticeText").append("Check the server logs if this message does not go away in 1 minute.");
+			$("#errorNotificationPanel").fadeIn();
+		}
 	}
 
 	function sendMessage(message){
