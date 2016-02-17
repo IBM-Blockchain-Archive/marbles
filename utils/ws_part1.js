@@ -20,7 +20,7 @@ module.exports.process_msg = function(ws, data){
 		}
 		else if(data.type == 'get'){
 			console.log('get marbles msg');
-			chaincode.read('marbleIndex', cb_got_index);
+			chaincode.read('_marbleindex', cb_got_index);
 		}
 		else if(data.type == 'transfer'){
 			console.log('transfering msg');

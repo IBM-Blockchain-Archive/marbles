@@ -246,7 +246,7 @@ var options = 	{
 						git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/part2',					//git http url
 						
 						//hashed cc name from prev deployment
-						deployed_name: '5f7878af77704cd67ad5e68bb2bae30f000e818ecd6b4b360374048d88679d3ea4deea44127b4937517e6988f8de5086e941b349057fd24459041513d23ef363'
+						//deployed_name: '5f7878af77704cd67ad5e68bb2bae30f000e818ecd6b4b360374048d88679d3ea4deea44127b4937517e6988f8de5086e941b349057fd24459041513d23ef363'
 					}
 				};
 if(process.env.VCAP_SERVICES){
@@ -317,7 +317,7 @@ function cb_deployed(e, d){
 				console.log('hey new block, lets refresh and broadcast to all');
 				ibc.block_stats(chain_stats.height - 1, cb_blockstats);
 				wss.broadcast({msg: 'reset'});
-				chaincode.read('marbleIndex', cb_got_index);
+				chaincode.read('_marbleindex', cb_got_index);
 				chaincode.read('_opentrades', cb_got_trades);
 			}
 			

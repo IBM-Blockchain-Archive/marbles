@@ -59,7 +59,7 @@ __./app.js__ (abbreviated)
 			console.log('hey new block, lets refresh and broadcast to all');
 			ibc.block_stats(chain_stats.height - 1, cb_blockstats);
 			wss.broadcast({msg: 'reset'});
-			chaincode.read('marbleIndex', cb_got_index);
+			chaincode.read('_marbleindex', cb_got_index);
 		}
 			
 		//got the marble index, lets get each marble
