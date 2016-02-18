@@ -246,7 +246,7 @@ var options = 	{
 						git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/part2',					//git http url
 						
 						//hashed cc name from prev deployment
-						//deployed_name: '5f7878af77704cd67ad5e68bb2bae30f000e818ecd6b4b360374048d88679d3ea4deea44127b4937517e6988f8de5086e941b349057fd24459041513d23ef363'
+						deployed_name: '52f88fef718f88636c0b10e0606b40fcd1bb504a2cc2a11266be3dfeb1cdcd8deafa086d75a1c5f6a9ebeb83496d9ac4c594cf7cfbae7d180763e447e55e0ec9'
 					}
 				};
 if(process.env.VCAP_SERVICES){
