@@ -72,26 +72,29 @@ Looking at the example code it should be clear that we can invoke our GoLang fun
 __Run()__
 
 ```js
+	// ============================================================================================================================
+	// Run - Our entry point
+	// ============================================================================================================================
 	func (t *SimpleChaincode) Run(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 		fmt.Println("run is running " + function)
 
 		// Handle different functions
-		if function == "init" {	                       //initialize the chaincode state, used as reset
+		if function == "init" {               //initialize the chaincode state, used as reset
 			return t.init(stub, args)
-		} else if function == "delete" {               //deletes an entity from its state
+		} else if function == "delete" {      //deletes an entity from its state
 			return t.Delete(stub, args)
-		} else if function == "write" {                //writes a value to the chaincode state
+		} else if function == "write" {       //writes a value to the chaincode state
 			return t.Write(stub, args)
-		} else if function == "init_marble" {          //create a new marble
+		} else if function == "init_marble" { //create a new marble
 			return t.init_marble(stub, args)
-		} else if function == "set_user" {             //change owner of a marble
+		} else if function == "set_user" {    //change owner of a marble
 			return t.set_user(stub, args)
 		}
 		fmt.Println("run did not find func: " + function) //error
 
 		return nil, errors.New("Received unknown function invocation")
 	}
-```	
+```
 
 The SDK we have built will be able to find the names of the functions listed in Run(). 
 It will then give you a dot notation to use them in your Node.js application. ie:
@@ -107,7 +110,11 @@ This function is not listed in `Run()` because it is a special function.
 The code for my `Query()` is listed below:
 
 __Query()__
+
 ```js
+	// ============================================================================================================================
+	// Query - read a variable from chaincode state - (aka read)
+	// ============================================================================================================================
 	func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 		if function != "query" {
 			return nil, errors.New("Invalid query function name. Expecting \"query\"")
@@ -116,17 +123,17 @@ __Query()__
 		var err error
 
 		if len(args) != 1 {
-			return nil, errors.New("Incorrect number of arguments. Expecting name of the var to query")
+			return nil, errors.New("Incorrect number of arguments. Expecting name of the person to query")
 		}
 
 		name = args[0]
-		valAsbytes, err := stub.GetState(name)									//get the var from chaincode state
+		valAsbytes, err := stub.GetState(name)              //get the var from chaincode state
 		if err != nil {
 			jsonResp = "{\"Error\":\"Failed to get state for " + name + "\"}"
 			return nil, errors.New(jsonResp)
 		}
 
-		return valAsbytes, nil													//send it onward
+		return valAsbytes, nil                              //send it onward
 	}
 ```
 
@@ -141,6 +148,9 @@ I would suggest you simply copy this one if you plan to build your own cc.
 __Write()__
 
 ```js
+	// ============================================================================================================================
+	// Write - write variable into chaincode state
+	// ============================================================================================================================
 	func (t *SimpleChaincode) Write(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 		var name, value string
 		var err error
@@ -150,14 +160,12 @@ __Write()__
 			return nil, errors.New("Incorrect number of arguments. Expecting 2. name of the variable and value to set")
 		}
 
-		name = args[0]									//rename for funsies
+		name = args[0]                            //rename for funsies
 		value = args[1]
-		err = stub.PutState(name, []byte(value))		//write the variable into the chaincode state
+		err = stub.PutState(name, []byte(value))  //write the variable into the chaincode state
 		if err != nil {
 			return nil, err
 		}
-		t.remember_me(stub, name)
-
 		return nil, nil
 	}
 ```
@@ -321,24 +329,35 @@ __set_user()__
 		User string `json:"user"`
 	}
 
+	// ============================================================================================================================
+	// Set User Permission on Marble
+	// ============================================================================================================================
 	func (t *SimpleChaincode) set_user(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 		var err error
 		
+		//   0       1
+		// "name", "bob"
+		if len(args) < 2 {
+			return nil, errors.New("Incorrect number of arguments. Expecting 2")
+		}
+		
+		fmt.Println("- start set user")
+		fmt.Println(args[0] + " - " + args[1])
 		marbleAsBytes, err := stub.GetState(args[0])
 		if err != nil {
 			return nil, errors.New("Failed to get thing")
 		}
 		res := Marble{}
-		json.Unmarshal(marbleAsBytes, &res)				//un stringify it aka JSON.parse()
-		fmt.Println(res)
-		res.User = args[1]								//change the user
+		json.Unmarshal(marbleAsBytes, &res)       //un stringify it aka JSON.parse()
+		res.User = args[1]                        //change the user
 		
 		jsonAsBytes, _ := json.Marshal(res)
-		err = stub.PutState(args[0], jsonAsBytes)		//rewrite the marble with id as key
+		err = stub.PutState(args[0], jsonAsBytes) //rewrite the marble with id as key
 		if err != nil {
 			return nil, err
 		}
 		
+		fmt.Println("- end set user")
 		return nil, nil
 	}
 ```

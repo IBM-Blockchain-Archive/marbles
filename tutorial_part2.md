@@ -119,8 +119,6 @@ The whole data layout is below.
 __Open Trade Internal Structure__
 
 ```js
-	var trades AllTrades
-	
 	type AllTrades struct{
 		OpenTrades []AnOpenTrade `json:"open_trades"`
 	}
@@ -200,7 +198,7 @@ Next build up the function itself.
 
 		open := AnOpenTrade{}
 		open.User = args[0]
-		open.Timestamp = makeTimestamp()                      //use timestamp as an ID
+		open.Timestamp = makeTimestamp()                     //use timestamp as an ID
 		open.Want.Color = args[1]
 		open.Want.Size =  size1
 		fmt.Println("- start open trade")
@@ -227,10 +225,18 @@ Next build up the function itself.
 			i++;
 		}
 		
-		trades.OpenTrades = append(trades.OpenTrades, open);    //append to open trades
+		//get the open trade struct
+		tradesAsBytes, err := stub.GetState(openTradesStr)
+		if err != nil {
+			return nil, errors.New("Failed to get opentrades")
+		}
+		var trades AllTrades
+		json.Unmarshal(tradesAsBytes, &trades)                 //un stringify it aka JSON.parse()
+		
+		trades.OpenTrades = append(trades.OpenTrades, open);   //append to open trades
 		fmt.Println("! appended open to trades")
 		jsonAsBytes, _ = json.Marshal(trades)
-		err = stub.PutState("_opentrades", jsonAsBytes)         //rewrite open orders
+		err = stub.PutState(openTradesStr, jsonAsBytes)        //rewrite open orders
 		if err != nil {
 			return nil, err
 		}
@@ -276,21 +282,29 @@ This function will take in the ID of a trade (its timestamp), the user who is cl
 			return nil, errors.New("6th argument must be a numeric string")
 		}
 		
-		for i := range trades.OpenTrades{                                                        //look for the trade
+		//get the open trade struct
+		tradesAsBytes, err := stub.GetState(openTradesStr)
+		if err != nil {
+			return nil, errors.New("Failed to get opentrades")
+		}
+		var trades AllTrades
+		json.Unmarshal(tradesAsBytes, &trades)																//un stringify it aka JSON.parse()
+		
+		for i := range trades.OpenTrades{																		//look for the trade
 			fmt.Println("looking at " + strconv.FormatInt(trades.OpenTrades[i].Timestamp, 10) + " for " + strconv.FormatInt(timestamp, 10))
 			if trades.OpenTrades[i].Timestamp == timestamp{
 				fmt.Println("found the trade");
 				
-				marble, e := findMarble4Trade(stub, trades.OpenTrades[i].User, args[4], size)    //find a marble that is suitable from opener
+				marble, e := findMarble4Trade(stub, trades.OpenTrades[i].User, args[4], size)					//find a marble that is suitable from opener
 				if(e == nil){
 					fmt.Println("! no errors, proceeding")
 
-					t.set_user(stub, []string{args[2], trades.OpenTrades[i].User})	             //change owner of selected marble, closer -> opener
-					t.set_user(stub, []string{marble.Name, args[1]})                             //change owner of selected marble, opener -> closer
+					t.set_user(stub, []string{args[2], trades.OpenTrades[i].User})								//change owner of selected marble, closer -> opener
+					t.set_user(stub, []string{marble.Name, args[1]})											//change owner of selected marble, opener -> closer
 				
-					trades.OpenTrades = append(trades.OpenTrades[:i], trades.OpenTrades[i+1:]...)//remove trade
+					trades.OpenTrades = append(trades.OpenTrades[:i], trades.OpenTrades[i+1:]...)				//remove trade
 					jsonAsBytes, _ := json.Marshal(trades)
-					err = stub.PutState("_opentrades", jsonAsBytes)                              //rewrite open orders
+					err = stub.PutState(openTradesStr, jsonAsBytes)												//rewrite open orders
 					if err != nil {
 						return nil, err
 					}
