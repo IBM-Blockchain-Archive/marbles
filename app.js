@@ -136,66 +136,58 @@ var manual = {
   "credentials": {
     "peers": [
       {
-        "discovery_host": "169.44.63.207",
-        "discovery_port": "32812",
-        "api_host": "169.44.63.207",
-        "api_port": "32813",
+        "discovery_host": "169.44.38.113",
+        "discovery_port": "32846",
+        "api_host": "169.44.38.113",
+        "api_port": "32847",
         "type": "peer",
-        "network_id": "0176f42a-1ab8-47b9-ba80-23bb990a9667",
-        "id": "0176f42a-1ab8-47b9-ba80-23bb990a9667_vp1",
-        "api_url": "http://169.44.63.207:32813"
+        "network_id": "2ea35830-0aa2-47f3-8a84-80249d18e26d",
+        "id": "2ea35830-0aa2-47f3-8a84-80249d18e26d_vp1",
+        "api_url": "http://169.44.38.113:32847"
       },
       {
-        "discovery_host": "169.44.63.207",
-        "discovery_port": "32814",
-        "api_host": "169.44.63.207",
-        "api_port": "32815",
+        "discovery_host": "169.44.38.120",
+        "discovery_port": "32872",
+        "api_host": "169.44.38.120",
+        "api_port": "32873",
         "type": "peer",
-        "network_id": "0176f42a-1ab8-47b9-ba80-23bb990a9667",
-        "id": "0176f42a-1ab8-47b9-ba80-23bb990a9667_vp2",
-        "api_url": "http://169.44.63.207:32815"
+        "network_id": "2ea35830-0aa2-47f3-8a84-80249d18e26d",
+        "id": "2ea35830-0aa2-47f3-8a84-80249d18e26d_vp2",
+        "api_url": "http://169.44.38.120:32873"
       }
     ],
     "users": [
       {
-        "username": "user_68aca46c66",
-        "secret": "18c6382b24"
+        "username": "user_type1_80c8b1c170",
+        "secret": "6781bbe70f"
       },
       {
-        "username": "user_61c743adcf",
-        "secret": "dae6afc99e"
+        "username": "user_type1_c2a76f6b4b",
+        "secret": "8f8c1edcec"
       },
       {
-        "username": "user_3b5692c3f8",
-        "secret": "5290c6b9b0"
+        "username": "user_type2_396e79e898",
+        "secret": "5679d071b6"
       },
       {
-        "username": "user_7a2f737aac",
-        "secret": "2d01964e85"
+        "username": "user_type2_b1c8ee6257",
+        "secret": "8fe9c0ae3e"
       },
       {
-        "username": "user_d227c79ff5",
-        "secret": "1d7bb15e2d"
+        "username": "user_type4_56a2dc4def",
+        "secret": "92d63625c8"
       },
       {
-        "username": "user_e70dd07c9c",
-        "secret": "1f3c551580"
+        "username": "user_type4_05d3411fa2",
+        "secret": "b7810b2247"
       },
       {
-        "username": "user_9190a04164",
-        "secret": "dfa3831d8b"
+        "username": "user_type8_5cd7cccd49",
+        "secret": "0976a14b86"
       },
       {
-        "username": "user_35d8259e09",
-        "secret": "d57662037d"
-      },
-      {
-        "username": "user_64badf39dd",
-        "secret": "c41ef22c24"
-      },
-      {
-        "username": "user_0f747466a6",
-        "secret": "fc6e3787d4"
+        "username": "user_type8_df67ef3bfd",
+        "secret": "076363fb1b"
       }
     ]
   }
@@ -241,10 +233,10 @@ var options = 	{
 					chaincode:{
 						zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip',
 						unzip_dir: 'marbles-chaincode-master/part2',											//subdirectroy name of chaincode after unzipped
-						git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/part2',					//git http url
-						
+						git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/part2',					//GO git http url
+					
 						//hashed cc name from prev deployment
-						deployed_name: '52f88fef718f88636c0b10e0606b40fcd1bb504a2cc2a11266be3dfeb1cdcd8deafa086d75a1c5f6a9ebeb83496d9ac4c594cf7cfbae7d180763e447e55e0ec9'
+						deployed_name: '8fe7b3d9a3d43c5b6b91d65b0585366fa3d560d5362e11f0eea11ff614a296fdec8607b17de429c919975d5386953e4dac486a09ce6c965f5844d7d183825efb'
 					}
 				};
 if(process.env.VCAP_SERVICES){
