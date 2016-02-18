@@ -197,9 +197,9 @@ function connect_to_server(){
 		console.log('ERROR ', evt);
 		if(!connected && bag.e == null){											//don't overwrite an error message
 			$("#errorName").html("Warning");
-			$("#errorNoticeText").html("Waiting on the node server to open up so we can talk to the blockchain.");
-			$("#errorNoticeText").append("This app is likely still starting up.");
-			$("#errorNoticeText").append("Check the server logs if this message does not go away in 1 minute.");
+			$("#errorNoticeText").html("Waiting on the node server to open up so we can talk to the blockchain. ");
+			$("#errorNoticeText").append("This app is likely still starting up. ");
+			$("#errorNoticeText").append("Check the server logs if this message does not go away in 1 minute. ");
 			$("#errorNotificationPanel").fadeIn();
 		}
 	}
