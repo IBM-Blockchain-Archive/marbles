@@ -214,8 +214,7 @@ if(process.env.VCAP_SERVICES){															//load from vcap, search for servic
 				console.log('!\n!\n! Error from Bluemix: \n', servicesObject[i][0].credentials.error, '!\n!\n');
 				peers = null;
 				users = null;
-				manual.error = "Due to overwhelming demand the IBM Blockchain Network service is at maximum capacity.  Please try recreating this service at a later date.";
-				process.start_error = manual.error;
+				process.error = {type: 'network', msg: "Due to overwhelming demand the IBM Blockchain Network service is at maximum capacity.  Please try recreating this service at a later date."};
 			}
 			if(servicesObject[i][0].credentials && servicesObject[i][0].credentials.peers){
 				console.log('overwritting peers, loading from a vcap service: ', i);
@@ -230,7 +229,6 @@ if(process.env.VCAP_SERVICES){															//load from vcap, search for servic
 		}
 	}
 }
-
 
 // ==================================
 // configure ibm-blockchain-js sdk
@@ -259,6 +257,7 @@ var chaincode = null;
 function cb_ready(err, cc){																	//response has chaincode functions
 	if(err != null){
 		console.log('! looks like an error loading the chaincode, app will fail\n', err);
+		process.error = {type: 'load', msg: err.details};
 	}
 	else{
 		chaincode = cc;
@@ -281,6 +280,7 @@ function cb_deployed(e, d){
 	if(e != null){
 		//look at tutorial_part1.md in the trouble shooting section for help
 		console.log('! looks like a deploy error, holding off on the starting the socket\n', e);
+		process.error = {type: 'deploy', msg: e.details};
 	}
 	else{
 		console.log('------------------------------------------ Websocket Up ------------------------------------------');

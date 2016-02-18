@@ -30,20 +30,20 @@ router.route("/").get(function(req, res){
 // Part 1
 // ============================================================================================================================
 router.route("/p1").get(function(req, res){
-	res.render('part1', {title: 'Marbles Part 1', bag: {setup: setup, e: process.start_error}} );
+	res.render('part1', {title: 'Marbles Part 1', bag: {setup: setup, e: process.error}} );
 });
 router.route("/p1/:page?").get(function(req, res){
-	res.render('part1', {title: 'Marbles Part 1', bag: {setup: setup, e: process.start_error}} );
+	res.render('part1', {title: 'Marbles Part 1', bag: {setup: setup, e: process.error}} );
 });
 
 // ============================================================================================================================
 // Part 2
 // ============================================================================================================================
 router.route("/p2").get(function(req, res){
-	res.render('part2', {title: 'Marbles Part 2', bag: {setup: setup, e: process.start_error}} );
+	res.render('part2', {title: 'Marbles Part 2', bag: {setup: setup, e: process.error}} );
 });
 router.route("/p2/:page?").get(function(req, res){
-	res.render('part2', {title: 'Marbles Part 2', bag: {setup: setup, e: process.start_error}} );
+	res.render('part2', {title: 'Marbles Part 2', bag: {setup: setup, e: process.error}} );
 });
 
 
