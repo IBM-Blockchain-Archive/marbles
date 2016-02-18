@@ -257,7 +257,7 @@ var chaincode = null;
 function cb_ready(err, cc){																	//response has chaincode functions
 	if(err != null){
 		console.log('! looks like an error loading the chaincode, app will fail\n', err);
-		process.error = {type: 'load', msg: err.details};
+		if(!process.error) process.error = {type: 'load', msg: err.details};				//if it already exist, keep the last error
 	}
 	else{
 		chaincode = cc;
@@ -280,7 +280,7 @@ function cb_deployed(e, d){
 	if(e != null){
 		//look at tutorial_part1.md in the trouble shooting section for help
 		console.log('! looks like a deploy error, holding off on the starting the socket\n', e);
-		process.error = {type: 'deploy', msg: e.details};
+		if(!process.error) process.error = {type: 'deploy', msg: e.details};
 	}
 	else{
 		console.log('------------------------------------------ Websocket Up ------------------------------------------');
