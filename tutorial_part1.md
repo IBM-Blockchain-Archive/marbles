@@ -296,7 +296,7 @@ An abreviated version is below:
 		chaincode:{
 			zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip', //http/https of a link to download zip
 			unzip_dir: 'marbles-chaincode-master/part2',                                    //name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
-			git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/part2',           //git https URL. should point to the desired chaincode repo AND directory
+			git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/part2',           //GO git https URL. should point to the desired chaincode repo AND directory
 		}
 	};
 	ibc.load(options, cb);
