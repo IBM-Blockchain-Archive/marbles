@@ -22,7 +22,7 @@ $(document).on('ready', function() {
 	$("#submit").click(function(){
 		var obj = 	{
 						type: "create",
-						name: $("input[name='name']").val(),
+						name: $("input[name='name']").val().replace(" ", ""),
 						color: $(".colorSelected").attr('color'),
 						size: $("select[name='size']").val(),
 						user: $("select[name='user']").val(),
