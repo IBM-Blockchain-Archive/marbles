@@ -132,62 +132,62 @@ var ibc = new Ibc1();
 // ==================================
 // load peers manually or from VCAP, VCAP will overwrite hardcoded list!
 // ==================================
-var manual = {
+var manual ={
   "credentials": {
     "peers": [
       {
-        "discovery_host": "169.44.38.113",
-        "discovery_port": "32846",
-        "api_host": "169.44.38.113",
-        "api_port": "32847",
+        "discovery_host": "169.44.63.197",
+        "discovery_port": "33953",
+        "api_host": "169.44.63.197",
+        "api_port": "33954",
         "type": "peer",
-        "network_id": "2ea35830-0aa2-47f3-8a84-80249d18e26d",
-        "id": "2ea35830-0aa2-47f3-8a84-80249d18e26d_vp1",
-        "api_url": "http://169.44.38.113:32847"
+        "network_id": "3fc3b557-312b-4bbe-bae7-cb08228e5935",
+        "id": "3fc3b557-312b-4bbe-bae7-cb08228e5935_vp1",
+        "api_url": "http://169.44.63.197:33954"
       },
       {
-        "discovery_host": "169.44.38.120",
-        "discovery_port": "32872",
-        "api_host": "169.44.38.120",
-        "api_port": "32873",
+        "discovery_host": "169.44.63.220",
+        "discovery_port": "33866",
+        "api_host": "169.44.63.220",
+        "api_port": "33867",
         "type": "peer",
-        "network_id": "2ea35830-0aa2-47f3-8a84-80249d18e26d",
-        "id": "2ea35830-0aa2-47f3-8a84-80249d18e26d_vp2",
-        "api_url": "http://169.44.38.120:32873"
+        "network_id": "3fc3b557-312b-4bbe-bae7-cb08228e5935",
+        "id": "3fc3b557-312b-4bbe-bae7-cb08228e5935_vp2",
+        "api_url": "http://169.44.63.220:33867"
       }
     ],
     "users": [
       {
-        "username": "user_type1_80c8b1c170",
-        "secret": "6781bbe70f"
+        "username": "user_type1_c47eedf754",
+        "secret": "d7b78b8c03"
       },
       {
-        "username": "user_type1_c2a76f6b4b",
-        "secret": "8f8c1edcec"
+        "username": "user_type1_40045976d9",
+        "secret": "bd6a6587e4"
       },
       {
-        "username": "user_type2_396e79e898",
-        "secret": "5679d071b6"
+        "username": "user_type2_d58eb3b711",
+        "secret": "9eaf089c11"
       },
       {
-        "username": "user_type2_b1c8ee6257",
-        "secret": "8fe9c0ae3e"
+        "username": "user_type2_998ad40820",
+        "secret": "5261aef4ee"
       },
       {
-        "username": "user_type4_56a2dc4def",
-        "secret": "92d63625c8"
+        "username": "user_type4_362ecc0417",
+        "secret": "7e1bffa9da"
       },
       {
-        "username": "user_type4_05d3411fa2",
-        "secret": "b7810b2247"
+        "username": "user_type4_1623c53aa2",
+        "secret": "0facdd104f"
       },
       {
-        "username": "user_type8_5cd7cccd49",
-        "secret": "0976a14b86"
+        "username": "user_type8_f371b789ff",
+        "secret": "ea489351db"
       },
       {
-        "username": "user_type8_df67ef3bfd",
-        "secret": "076363fb1b"
+        "username": "user_type8_7030d7e668",
+        "secret": "3957fae6da"
       }
     ]
   }
