@@ -394,6 +394,10 @@ function build_ball(data){
 	var colorClass = '';
 	var size = 'fa-5x';
 	
+	data.name = escapeHtml(data.name);
+	data.color = escapeHtml(data.color);
+	data.user = escapeHtml(data.user);
+	
 	if(!bag.marbles) bag.marbles = {};
 	bag.marbles[data.name] = data;								//store the marble for posterity
 	
@@ -401,7 +405,7 @@ function build_ball(data){
 		if(data.size == 16) size = 'fa-3x';
 		if(data.color) colorClass = data.color.toLowerCase();
 		
-		html += '<span id="' + data.name +'" class=" fa fa-circle ' + size + ' ball ' + colorClass + '" title="' + data.name +'" user="' + data.user + '"></span>';
+		html += '<span id="' + data.name +'" class=" fa fa-circle ' + size + ' ball ' + colorClass + '" title="' + data.name + '" user="' + data.user + '"></span>';
 		if(data.user && data.user.toLowerCase() == bag.setup.USER1){
 			$("#user1wrap").append(html);
 		}

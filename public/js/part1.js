@@ -219,6 +219,10 @@ function build_ball(data){
 	var colorClass = '';
 	var size = 'fa-5x';
 	
+	data.name = escapeHtml(data.name);
+	data.color = escapeHtml(data.color);
+	data.user = escapeHtml(data.user);
+	
 	if(!$("#" + data.name).length){								//only populate if it doesn't exists
 		if(data.size == 16) size = 'fa-3x';
 		if(data.color) colorClass = data.color.toLowerCase();

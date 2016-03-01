@@ -92,3 +92,10 @@ function nDig(n, digits){								//zero left pad to number of digits
 	ret = ret.substring(ret.length - digits);			//cut off what you don't need
 	return ret;
 }
+
+function escapeHtml(str) {
+	str = str.replace(new RegExp('[<,>]', 'g'), '');
+	var div = document.createElement('div');
+	div.appendChild(document.createTextNode(str));
+	return div.innerHTML;
+};
