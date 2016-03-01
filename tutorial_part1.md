@@ -201,7 +201,7 @@ Don't fret, "manual" setup means I will guide you to click on a particular butto
 We have created a Bluemix tile that will create you your own personal blockchain network. 
 All you have to do is find the tile and give the network a name. 
 
-1. First login to Bluemix [Bluemix](https://console.ng.bluemix.net)
+1. First login to [Bluemix](https://console.ng.bluemix.net)
 1. Click the "Catalog" link on the top navigation bar
 1. Scroll to the very bottom and click the experimental catalog link "Bluemix Labs Catalog"
 1. Find and click the "Blockchain - Experimental" tile (you can use the navgiation on the left to filter the list: Services > Network)
@@ -442,11 +442,13 @@ When the event fires we first check to see if this marble actually moved owners,
 If its owner has changed we go off to the `transfer()` function.
 This function creates a json message with all the needed data and uses our websocket to send it with `ws.send()`.
 
-Thats it! Hope you had fun trading some marbles.
+Thats it! Hope you had fun trading some marbles in part 1. 
+Next up is [Marbles Part 2](./tutorial_part2.md). 
+Part 2 adds some new chaincode functions making it a little more nifty.
 
 
 #General Trouble Shooting
-Plleeease try each trouble shooting method below!
+Stuck? Lost your marbles? Try each trouble shooting method below!
 
 1. If you can't get the app to reflect a new change try refreshing the browser
 1. Use the dashboard on the Bluemix service tile to verify if the chaincode was deployed and that your peers are running. You may get into the chaincode/peer logs from here.
@@ -457,7 +459,7 @@ Plleeease try each trouble shooting method below!
 1. Open the console in your browser (right click the page, inspect element, open console tab). There are lots of debug prints to help give you clues.
 1. If it still doesn't work try deleting the current network and creating another one
 
-#Node.js Console Error Solutions
+#Common  Node Console Errors & Solutions
 
 1. **500 - ECONNREFUSED** - Check the peers in your options.network.peers.  They likely do not exist / are wrong
 1. **400 - Must supply username for chaincode** - Check if you see a "Register - failure: userx 401" message.  if so delete and remake the network
