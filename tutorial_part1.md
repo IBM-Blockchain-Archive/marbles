@@ -187,7 +187,7 @@ We will take a look at writting more specific chaincode after we get an environm
 So the cc is great and all but first we need a blockchain network. 
 Choose 1 option below:
 
-(1) Deploy the app on my local machine and create a network [manually](#Network) 
+(1) Deploy the app on my local machine and setup a network [manually](#network) 
 
 `OR`
 
@@ -197,23 +197,25 @@ then continue [here](#run)
 
 
 # <a name="network"></a>Manual Network Setup:
-We have a Bluemix tile that can create you your own personal network at the push of a button.
+Don't fret, "manual" setup means I will guide you to click on a particular button and fill out a text input field or two. 
+We have created a Bluemix tile that will create you your own personal blockchain network. 
+All you have to do is find the tile and give the network a name. 
 
 1. First login to Bluemix [Bluemix](https://console.ng.bluemix.net)
-1. Click "Catalog" or click [here](https://console.ng.bluemix.net/catalog)
-1. Scroll to the bottom and click the experimental link or click [here](https://console.ng.bluemix.net/catalog/labs/)
-1. Find and click the IBM Blockchain - Experimental tile (you can use the navgiation on the left to filter the list: Services > Network)
+1. Click the "Catalog" link on the top navigation bar
+1. Scroll to the very bottom and click the experimental catalog link "Bluemix Labs Catalog"
+1. Find and click the "Blockchain - Experimental" tile (you can use the navgiation on the left to filter the list: Services > Network)
 1. Choose any space from the "Space:" dropdown (dealers choice)
 1. Leave the "App:" field as "Leave unbound" (unless you already have an application, but you probably don't yet)
 1. Change the "Service name" to "myblockchain" without the quotes
 1. Leave the "Credential name" field as its default value
 1. Leave the "Selected Plan" as its default value
 1. Click the "CREATE" button
-1. Wait for it to bring up your network, if all goes well you should be on the manage screen for your new service
-1. Click the "LAUNCH" button to see the dashboard for your network. You should see a few peers.
-	- from here you can monitor if your peers crash, if the chaincode containers are running, and logs for all
+1. If all goes well you should be on the manage screen for your new service. Click the "LAUNCH" button to see the dashboard for your network. 
+	- You should see a few peers listed in the first table
+	- from here you can monitor if your peers crash, if the chaincode containers are running, and view logs for all
 
-(Note if you find yourself on the Bluemix Dashboard and want to get back to the service screen just click the tile name "myblockchain" in the "Services" section)
+(Note if you find yourself on the Bluemix Dashboard and want to get back to this service screen just click the tile name "myblockchain" in the "Services" section)
 
 The network is all setup.  Now we need to copy the peer data and pass it to our application (only need this step if we run the app locally).
 
