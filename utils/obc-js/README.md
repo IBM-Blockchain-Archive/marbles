@@ -1,9 +1,12 @@
 # ibm-blockchain-js
-A Node.js library for easier interaction with IBM Blockchain chaincode
+This is a Node.js library for easier interaction IBM Blockchain chaincode. 
+This is strictly documentation on the SDK.
+
+** Are you looking for the Marbles app demo?  Thats not here, head to the [marbles example](https://github.com/IBM-Blockchain/marbles) * 
 
 Table Of Contents:
 
-1. [IBC Function Documentation](#ibcjs)
+1. [IBC-js Function Documentation](#ibcjs)
 1. [Chaincode Functions](#ccfunc)
 1. [Object Formats](#formats)
 1. [Chaincode Summary File](#ccsf)
@@ -316,20 +319,22 @@ Usualy "args" is an array of strings.
 
 ##<a name="formats"></a>Formats
 ### Chaincode Object
+This is the main guy.
+It is returned in the callback to load_chaincode() and contains all your cc functions + some of the setup/input data.
 
 ```js
 	chaincode = 
 		{
-			CUSTOM_FUNCTION_NAME1: function(args, cb){etc...};		//call chaincode function and pass it args
+			CUSTOM_FUNCTION_NAME1: function(args, cb){etc...};	//call chaincode function and pass it args
 			CUSTOM_FUNCTION_NAME2: function(args, cb){etc...};
 			CUSTOM_FUNCTION_NAME3: function(args, cb){etc...};
 			^^ etc...
 			read: function(name, cb),							//read variable
-			query: function(name, cb),							//^^
+			query: function(args, cb),							//^^
 			write: function(name, value, cb),					//write/create variable
 			remove: function(name, cb),							//delete variable
-			deploy: function(func, arg, path, cb),				//deploy loaded chaincode
-			details:{
+			deploy: function(func, args, path, cb),				//deploy loaded chaincode
+			details:{											//input options get stored here, sometimes handy
 						deployed_name: '',
 						func: [],
 						unzip_dir: '',
@@ -353,8 +358,9 @@ Usualy "args" is an array of strings.
 	
 ### <a name="ccsf"></a>Chaincode Summary File
 This file is used internally. 
-It is created in ibc.load_chaincode() and updated with chaincode.deploy().
-A copy can be saved elsewhere with ibc.save(path)
+It is created in ibc.load_chaincode() and updated with chaincode.deploy(). 
+A copy can be saved else where with ibc.save(path). 
+I found it handy in niche cases, but it will probably be unhelpful to most developers. 
 
 ```js
 	{
