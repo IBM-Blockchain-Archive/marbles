@@ -234,7 +234,8 @@ If you haven't, go ahead and do it now (instuctions are [above](#network)).
 1. First up we need to install our dependencies. Open a command prompt/terminal and browse to the root of this project.
 1. In the command prompt type:
 	
-		> npm install  
+		> npm install
+		> npm install gulp -g
 		> gulp
 		
 1. If all goes well you should see this message in the console:
