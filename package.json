@@ -18,7 +18,6 @@
 		"debug": "0.7.4",
 		"cors":"2.5.3",
 		"async": "0.9.0",
-		"adm-zip": "0.4.7",
 		"ws": "1.0.1",
 		"ibm-blockchain-js": "0.0.7"
 	},
