@@ -255,7 +255,7 @@ function cb_ready(err, cc){																	//response has chaincode functions
 		chaincode = cc;
 		part1.setup(ibc, cc);
 		part2.setup(ibc, cc);
-		if(cc.details.deployed_name === ""){												//decide if i need to deploy
+		if(!cc.details.deployed_name || cc.details.deployed_name === ""){												//decide if i need to deploy
 			cc.deploy('init', ['99'], './cc_summaries', cb_deployed);
 		}
 		else{

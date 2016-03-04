@@ -77,3 +77,6 @@
 - [x] rename to jerry and ginni
 - [x] point out that there is individual chaincode for part 1 and part2 in the tutorial
 - [x] delete the temp dir if no deploy_name in sdk
+- [ ] add check transID in sdk, like monitor_height
+- [ ] redesign CCI
+- [ ] move cci into its own repo, uses the SDK
