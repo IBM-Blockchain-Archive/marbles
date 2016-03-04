@@ -49,11 +49,11 @@ This allow us to use dot notation to call our GoLang functions (such as `chainco
 
 #Application Communication Flow
 
-1. The user will interact with our Node.js application
-1. This client side JS code will open a websocket to the backend Node.js application
-1. The backend Node.js will send HTTP requests (via the SDK) to a blockchain peer
-1. The peer will communicate to its chaincode container at its leisure. Note that the previous HTTP request was really a 'submission' of chaincode to be run, it will actually run at a later date.
-1. The cc container will carry out the desired operation
+1. The user will interact with our Node.js application in their browser.
+1. This client side JS code will open a websocket to the backend Node.js application. The client JS will send msgs to the backend when the user interacts with the site.
+1. The backend Node.js will send HTTP requests (via the SDK) to a blockchain peer to carry out the user's actions.
+1. The peer will communicate to its chaincode container at its leisure. Note that the previous HTTP request was really a 'submission' of chaincode to be run, it will actually run at a later date (usually miliseconds).
+1. The cc container will carry out the desired operation and record it to the ledger. ie create/transfer a marble.
 
 #Chaincode
 To understand what is going on we need to start looking at the chaincode.  The complete cc code for this example can be found [here](https://github.com/ibm-blockchain/marbles-chaincode/blob/master/part1/chaincode_ex.go). 
