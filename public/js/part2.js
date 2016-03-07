@@ -72,16 +72,6 @@ $(document).on('ready', function() {
 		$(".createball").css("border", "0").addClass(color + 'bg');				//set new color
 	});
 	
-	function move_back(dragged){
-		console.log('move it back');
-		$(dragged).remove();
-		var name = $(dragged).attr('id');
-		build_ball({name: name, user: bag.marbles[name].user, color:bag.marbles[name].color, size: bag.marbles[name].size});
-		
-		$("#whoAmI").addClass("flash");
-		setTimeout(function(){$("#whoAmI").removeClass("flash");}, 1500);
-	}
-	
 	//drag and drop marble
 	$("#user2wrap, #user1wrap, #trashbin").sortable({connectWith: ".sortable"}).disableSelection();
 	$("#user2wrap").droppable({drop:
@@ -116,21 +106,36 @@ $(document).on('ready', function() {
 	$("#trashbin").droppable({drop:
 		function( event, ui ) {
 			var id = $(ui.draggable).attr('id');
-			if(id){
-				console.log('removing marble', id);
-				var obj = 	{
-								type: "remove",
-								name: id,
-								v: 2
-							};
-				ws.send(JSON.stringify(obj));
-				$(ui.draggable).fadeOut();
-				setTimeout(function(){
-					$(ui.draggable).remove();
-				}, 300);
+			var marble_user = $(ui.draggable).attr('user');
+			if(marble_user.toLowerCase() != user.username.toLowerCase()){			//do not let users delete other user's marbles
+				move_back(ui.draggable);
+			}
+			else{
+				if(id){
+					console.log('removing marble', id);
+					var obj = 	{
+									type: "remove",
+									name: id,
+									v: 2
+								};
+					ws.send(JSON.stringify(obj));
+					$(ui.draggable).fadeOut();
+					setTimeout(function(){
+						$(ui.draggable).remove();
+					}, 300);
+				}
 			}
 		}
 	});
+	function move_back(dragged){
+		console.log('move it back');
+		$(dragged).remove();
+		var name = $(dragged).attr('id');
+		build_ball({name: name, user: bag.marbles[name].user, color:bag.marbles[name].color, size: bag.marbles[name].size});
+		
+		$("#whoAmI").addClass("flash");
+		setTimeout(function(){$("#whoAmI").removeClass("flash");}, 1500);
+	}
 	
 	
 	//login events
