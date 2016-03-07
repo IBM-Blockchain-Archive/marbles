@@ -23,7 +23,7 @@ $(document).on('ready', function() {
 	});
 });
 
-function show_details(id){
+function show_details(id){										//build the block details html
 	var left = event.pageX - $('#details').parent().offset().left - 50;
 	if(left < 0) left = 0;
 	var ccid = formatCCID(blocks[id].blockstats.transactions[0].type, blocks[id].blockstats.transactions[0].uuid, atob(blocks[id].blockstats.transactions[0].chaincodeID));
@@ -38,7 +38,7 @@ function show_details(id){
 	$("#details").html(html).css("left", left).fadeIn();
 }
 
-function new_block(newblck){
+function new_block(newblck){									//rec a new block
 	if(!blocks[Number(newblck.id)]){
 		for(var last in blocks);								//find the id of the last known block
 		if(!last) last = 0;
@@ -56,7 +56,7 @@ function new_block(newblck){
 	}
 }
 
-function build_block(id){
+function build_block(id){										//build and append the block html
 	$("#blockWrap").append('<div class="block">' +  nDig(id, 3) + '</div>');
 	$(".block:last").animate({opacity: 1, left: (block * 36)}, 600, function(){
 		$(".lastblock").removeClass("lastblock");
@@ -65,7 +65,7 @@ function build_block(id){
 	block++;
 }
 
-function move_on_down(){
+function move_on_down(){										//move the blocks left
 	if(block > 10){
 		$(".block:first").animate({opacity: 0}, 800, function(){$(".block:first").remove();});
 		$(".block").animate({left: "-=36"}, 800, function(){});
@@ -73,7 +73,7 @@ function move_on_down(){
 	}
 }
 
-function clear_blocks(){
+function clear_blocks(){										//empty blocks
 	block = 0;
 	blocks = [];
 	$(".block").remove();
