@@ -23,11 +23,16 @@
 - [x] Ability to see past blocks details and some sort of animation on new blocks
 
 ## Demo Part 3 Goals
-- [ ] User can see history of trades
+- [ ] User can see more block stats
 - [ ] Server pushes block/marble updates to client when any new block event has occured (push based)
 - [ ] User autentication (crypto signing of transactions)
+- [ ] All operations prove ownership ^^ before exe
 - [ ] User registration
-- [ ] Transacation privacy
+- [ ] Drop down on leroy's panel to switch to any user (just a view)
+
+## Demo Part 4 Goals
+- [ ] Transaction privacy
+
 
 ***
 
