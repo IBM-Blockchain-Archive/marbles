@@ -26,12 +26,15 @@ $(document).on('ready', function() {
 function show_details(id){
 	var left = event.pageX - $('#details').parent().offset().left - 50;
 	if(left < 0) left = 0;
+	var ccid = formatCCID(blocks[id].blockstats.transactions[0].type, blocks[id].blockstats.transactions[0].uuid, atob(blocks[id].blockstats.transactions[0].chaincodeID));
+	var payload = atob(blocks[id].blockstats.transactions[0].payload);
 
 	var html = '<p class="blckLegend"> Block Height: ' + blocks[id].id + '</p>';
 	html += '<hr class="line"/><p>Created: &nbsp;' + formatDate(blocks[id].blockstats.transactions[0].timestamp.seconds * 1000, '%M-%d-%Y %I:%m%p') + ' UTC</p>';
-	html += '<p> UUID: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + blocks[id].blockstats.transactions[0].uuid + '</p>';
-	html += '<p> Type:  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + blocks[id].blockstats.transactions[0].type + '</p>';
-	html += '<p> CC ID:  &nbsp;&nbsp;&nbsp;&nbsp;' + atob(blocks[id].blockstats.transactions[0].chaincodeID) + '</p>';
+	html += '<p> UUID: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + formatUUID(blocks[id].blockstats.transactions[0].type, blocks[id].blockstats.transactions[0].uuid) + '</p>';
+	html += '<p> Type:  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + formatType(blocks[id].blockstats.transactions[0].type) + '</p>';
+	html += '<p> CC ID:  &nbsp;&nbsp;&nbsp;&nbsp;' + ccid + '</p>';
+	html += '<p> Payload:  &nbsp;' + formatPayload(payload, ccid) + '</p>';
 	$("#details").html(html).css("left", left).fadeIn();
 }
 
@@ -74,4 +77,32 @@ function clear_blocks(){
 	block = 0;
 	blocks = [];
 	$(".block").remove();
+}
+
+
+function formatCCID(i, uuid, ccid){								//flip uuid and ccid if deploy, weird i know
+	if(i == 1) return uuid;
+	return ccid;
+}
+
+function formatUUID(i, uuid){									//blank uuid if deploy, its just ccid again
+	if(i == 1) return '-';
+	return uuid;
+}
+
+function formatType(i){											//spell out deploy or invoke
+	if(i == 1) return 'deploy';
+	if(i == 3) return 'invoke';
+	return i;
+}
+
+function formatPayload(str, ccid){								//create a sllliiiggghhhtttlllllyyy better payload name from decoded payload
+	var func = ["init", "Delete", "Write", "init_marble", "set_user", "open_trade", "perform_trade", "remove_trade"];
+	str =  str.substring(str.indexOf(ccid) + ccid.length + 4);
+	for(var i in func){
+		if(str.indexOf(func[i]) >= 0){
+			return func[i] + ': ' + str.substr(func[i].length);
+		}
+	}
+	return str;
 }
