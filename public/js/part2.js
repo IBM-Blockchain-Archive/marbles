@@ -72,6 +72,15 @@ $(document).on('ready', function() {
 		$(".createball").css("border", "0").addClass(color + 'bg');				//set new color
 	});
 	
+	function move_back(dragged){
+		console.log('move it back');
+		$(dragged).remove();
+		var name = $(dragged).attr('id');
+		build_ball({name: name, user: bag.marbles[name].user, color:bag.marbles[name].color, size: bag.marbles[name].size});
+		
+		$("#whoAmI").addClass("flash");
+		setTimeout(function(){$("#whoAmI").removeClass("flash");}, 1500);
+	}
 	
 	//drag and drop marble
 	$("#user2wrap, #user1wrap, #trashbin").sortable({connectWith: ".sortable"}).disableSelection();
@@ -80,10 +89,7 @@ $(document).on('ready', function() {
 			var marble_user = $(ui.draggable).attr('user');
 			if(marble_user.toLowerCase() != bag.setup.USER2){						//marble transfered users
 				if(marble_user.toLowerCase() != user.username.toLowerCase()){		//do not let users steal marbles
-					console.log('move it back');
-					$(ui.draggable).remove();
-					var name = $(ui.draggable).attr('id');
-					build_ball({name: name, user: bag.marbles[name].user, color:bag.marbles[name].color, size: bag.marbles[name].size});
+					move_back(ui.draggable);
 				}
 				else{
 					$(ui.draggable).addClass("invalid");
@@ -97,10 +103,7 @@ $(document).on('ready', function() {
 			var marble_user = $(ui.draggable).attr('user');
 			if(marble_user.toLowerCase() != bag.setup.USER1){						//marble transfered users
 				if(marble_user.toLowerCase() != user.username.toLowerCase()){		//do not let users steal marbles
-					console.log('move it back');
-					$(ui.draggable).remove();
-					var name = $(ui.draggable).attr('id');
-					build_ball({name: name, user: bag.marbles[name].user, color:bag.marbles[name].color, size: bag.marbles[name].size});
+					move_back(ui.draggable);
 				}
 				else{
 					$(ui.draggable).addClass("invalid");

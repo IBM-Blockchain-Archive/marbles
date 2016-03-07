@@ -646,7 +646,9 @@ label {
   top: 0;
   color: #fff;
   cursor: pointer;
-  font-size: 13px; }
+  font-size: 13px;
+  transition: background-color 0.3s ease;
+  padding: 0 15px; }
 
 #userIcon {
   background: #7E90A0;
@@ -760,6 +762,9 @@ button:disabled, .inactiveButton {
 .confirmTrade {
   min-width: 90px;
   font-weight: bold; }
+
+.flash {
+  background: orange !important; }
 
 @media (max-width: 750px) {
   #innerWrap {

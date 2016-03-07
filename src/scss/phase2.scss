@@ -9,6 +9,8 @@
 	color: $main_color;
 	cursor: pointer;
 	font-size: 13px;
+	transition: background-color 0.3s ease;
+	padding: 0 15px;
 }
 #userIcon{
 	background:$acc_color3;
@@ -132,4 +134,10 @@ button:disabled, .inactiveButton{
 .confirmTrade{
 	min-width: 90px;
 	font-weight: bold;
+}
+
+
+
+.flash{
+	background:$hi_color1 !important;
 }
