@@ -1,3 +1,5 @@
+/* global clear_blocks */
+/* global escapeHtml */
 /* global new_block */
 /* global formatDate */
 /* global nDig */
@@ -75,20 +77,37 @@ $(document).on('ready', function() {
 	$("#user2wrap, #user1wrap, #trashbin").sortable({connectWith: ".sortable"}).disableSelection();
 	$("#user2wrap").droppable({drop:
 		function( event, ui ) {
-			var user = $(ui.draggable).attr('user');
-			if(user.toLowerCase() != bag.setup.USER2){
-				$(ui.draggable).addClass("invalid");
-				transfer($(ui.draggable).attr('id'), bag.setup.USER2);
+			var marble_user = $(ui.draggable).attr('user');
+			if(marble_user.toLowerCase() != bag.setup.USER2){						//marble transfered users
+				if(marble_user.toLowerCase() != user.username.toLowerCase()){		//do not let users steal marbles
+					console.log('move it back');
+					$(ui.draggable).remove();
+					var name = $(ui.draggable).attr('id');
+					build_ball({name: name, user: bag.marbles[name].user, color:bag.marbles[name].color, size: bag.marbles[name].size});
+				}
+				else{
+					$(ui.draggable).addClass("invalid");
+					transfer($(ui.draggable).attr('id'), bag.setup.USER2);
+				}
 			}
 		}
 	});
 	$("#user1wrap").droppable({drop:
 		function( event, ui ) {
-			var user = $(ui.draggable).attr('user');
-			if(user.toLowerCase() != bag.setup.USER1){
-				$(ui.draggable).addClass("invalid");
-				transfer($(ui.draggable).attr('id'), bag.setup.USER1);
+			var marble_user = $(ui.draggable).attr('user');
+			if(marble_user.toLowerCase() != bag.setup.USER1){						//marble transfered users
+				if(marble_user.toLowerCase() != user.username.toLowerCase()){		//do not let users steal marbles
+					console.log('move it back');
+					$(ui.draggable).remove();
+					var name = $(ui.draggable).attr('id');
+					build_ball({name: name, user: bag.marbles[name].user, color:bag.marbles[name].color, size: bag.marbles[name].size});
+				}
+				else{
+					$(ui.draggable).addClass("invalid");
+					transfer($(ui.draggable).attr('id'), bag.setup.USER1);
+				}
 			}
+			return false;
 		}
 	});
 	$("#trashbin").droppable({drop:
@@ -393,6 +412,7 @@ function build_ball(data){
 	var html = '';
 	var colorClass = '';
 	var size = 'fa-5x';
+	var notYours = 'notyours';
 	
 	data.name = escapeHtml(data.name);
 	data.color = escapeHtml(data.color);
@@ -401,11 +421,13 @@ function build_ball(data){
 	if(!bag.marbles) bag.marbles = {};
 	bag.marbles[data.name] = data;								//store the marble for posterity
 	
+	if(data.user.toLowerCase() == user.username.toLowerCase()) notYours = '';
+	
 	if(!$("#" + data.name).length){								//only populate if it doesn't exists
 		if(data.size == 16) size = 'fa-3x';
 		if(data.color) colorClass = data.color.toLowerCase();
 		
-		html += '<span id="' + data.name +'" class=" fa fa-circle ' + size + ' ball ' + colorClass + '" title="' + data.name + '" user="' + data.user + '"></span>';
+		html += '<span id="' + data.name +'" class=" fa fa-circle ' + size + ' ball ' + colorClass + ' ' + notYours + '" title="' + data.name + '" user="' + data.user + '"></span>';
 		if(data.user && data.user.toLowerCase() == bag.setup.USER1){
 			$("#user1wrap").append(html);
 		}
@@ -414,8 +436,6 @@ function build_ball(data){
 		}
 	}
 	//console.log('marbles', bag.marbles);
-	
-	return html;
 }
 
 function build_trades(trades){
