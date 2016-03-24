@@ -309,8 +309,8 @@ function cb_deployed(e, d){
 		};
 		
 		// ========================================================
-		// Part 2 Code - Monitor the height of the blockchain
-		// =======================================================
+		// Monitor the height of the blockchain
+		// ========================================================
 		ibc.monitor_blockheight(function(chain_stats){										//there is a new block, lets refresh everything that has a state
 			if(chain_stats && chain_stats.height){
 				console.log('hey new block, lets refresh and broadcast to all');
