@@ -14,7 +14,7 @@
 - User can read and display all marbles in the chaincode state
 - User can transfer marble to another user
 - User can delete a marble
-- User can see when a new block is written to the ledger
+- Server pushes block/marble updates to client when a new block event has occurred
 - Deployable on Bluemix
 
 ***
@@ -52,7 +52,7 @@ This allow us to use dot notation to call our GoLang functions (such as `chainco
 1. The user will interact with our Node.js application in their browser.
 1. This client side JS code will open a websocket to the backend Node.js application. The client JS will send msgs to the backend when the user interacts with the site.
 1. The backend Node.js will send HTTP requests (via the SDK) to a blockchain peer to carry out the user's actions.
-1. The peer will communicate to its chaincode container at its leisure. Note that the previous HTTP request was really a 'submission' of chaincode to be run, it will actually run at a later date (usually miliseconds).
+1. The peer will communicate to its chaincode container at its leisure. Note that the previous HTTP request was really a 'submission' of chaincode to be run, it will actually run at a later date (usually milliseconds).
 1. The cc container will carry out the desired operation and record it to the ledger. ie create/transfer a marble.
 
 #Chaincode
@@ -181,7 +181,7 @@ It just means we will have 1 chaincode for the entire app.
 Individual marbles and anything else we need will live inside this single chaincode’s state space. 
 Of course there are much more complicated architectures you can create with a blockchain network. 
 I wanted to start here with the simplest one I could think of. 
-We will take a look at writting more specific chaincode after we get an environment setup. 
+We will take a look at writing more specific chaincode after we get an environment setup. 
 
 # Setup Options:
 So the cc is great and all but first we need a blockchain network. 
@@ -204,7 +204,7 @@ All you have to do is find the tile and give the network a name.
 1. First login to [Bluemix](https://console.ng.bluemix.net)
 1. Click the "Catalog" link on the top navigation bar
 1. Scroll to the very bottom and click the experimental catalog link "Bluemix Labs Catalog"
-1. Find and click the "Blockchain - Experimental" tile (you can use the navgiation on the left to filter the list: Services > Network)
+1. Find and click the "Blockchain - Experimental" tile (you can use the navigation on the left to filter the list: Services > Network)
 1. Choose any space from the "Space:" dropdown (dealers choice)
 1. Leave the "App:" field as "Leave unbound" (unless you already have an application, but you probably don't yet)
 1. Change the "Service name" to "myblockchain" without the quotes
@@ -221,7 +221,7 @@ The network is all setup.  Now we need to copy the peer data and pass it to our 
 
 1. Click the "myblockchain" tile in you Bluemix Dashboard
 1. Click the "Service Credentials" link on the left
-1. Copy the value of the whole JSON object to the `manual` var in app.js at line 135ish.
+1. Copy the value of the whole JSON object to the `manual` var in app.js at line 134ish.
 	1. If for some reason you don't see any credentials click the "ADD CREDENTIALS" button and let the page refresh
 
 #Run Marbles on Local Machine
@@ -229,7 +229,7 @@ Now we are ready to work on the application!
 The app is setup to either grab network data from Bluemix via VCAP Service's environmental variable OR to load the hard coded list in `./app.js`. 
 Since we are running the app locally it will not find VCAP and will use the hard coded list. 
 You should have replaced the hard coded data with your personal network data in the last section. 
-If you haven't, go ahead and do it now (instuctions are [above](#network)).
+If you haven't, go ahead and do it now (instructions are [above](#network)).
 
 1. First up we need to install our dependencies. Open a command prompt/terminal and browse to the root of this project.
 1. In the command prompt type:
@@ -263,7 +263,7 @@ If you haven't, go ahead and do it now (instuctions are [above](#network)).
 	> (follow the prompts)  
 	> cf push YOUR_APP_NAME_HERE  
 	
-1. The application will bind to the service "myblockchain" and grab the peer data from VCAP_SERVICES. Code for this is in app.js line 209ish
+1. The application will bind to the service "myblockchain" and grab the peer data from VCAP_SERVICES. Code for this is in app.js line 208ish
 
 #<a name="run"></a>Use Marbles App
 1. Open up your browser and browse to [http://localhost:3000](http://localhost:3000) or your Bluemix www route.
@@ -279,7 +279,7 @@ If you haven't, go ahead and do it now (instuctions are [above](#network)).
 #SDK / IBM Blockchain Deeper Dive
 Before we examine how marbles works lets examine what the SDK did to get our cc onto the network.
 The options argument for `ibc.load(options)` contains many important things. 
-An abreviated version is below:
+An abbreviated version is below:
 
 ```js
 	//note the marbles code will populates network.peers & network.users from VCAP Services (an env variable when running the app in Bluemix)
@@ -403,7 +403,7 @@ It is passing to our GoLang set_user function an array of strings argument conta
 By "passing" I mean it is really sending a HTTP POST /devops/invoke request to one of the peers in our network. 
 This peer will in turn call the chaincode and actually pass the argument to the cc function. 
 The details of which peer and the exact rest call are taken care of in our ibc-js SDK. 
-For your own curisoity the details of the Invoke API call can be found [here](https://github.com/openblockchain/obc-docs/blob/master/api/Openchain%20API.md#devops)
+For your own curiosity the details of the Invoke API call can be found [here](https://github.com/openblockchain/obc-docs/blob/master/api/Openchain%20API.md#devops)
 This code itself was called in response to a websocket message that originated on our user's browser.
 
 Pretty simple, now lets look 1 more step up to how we sent this websocket message.
@@ -443,7 +443,84 @@ When the event fires we first check to see if this marble actually moved owners,
 If its owner has changed we go off to the `transfer()` function.
 This function creates a json message with all the needed data and uses our websocket to send it with `ws.send()`.
 
-Thats it! Hope you had fun trading some marbles in part 1. 
+__Monitor-Blockheight__
+
+Our Node.js SDK has a handy function called. `monitor_blockheight(cb)`. 
+To use it we just pass it what function we want to be called whenever the SDK notices a new block has been written to the network. 
+The plan is to use this event as a trigger to redraw the marble states. 
+
+The Plan:
+
+1. User trades a marble
+1. At some point that event will be written to a block
+1. The SDK detects a new block has been written
+1. Let’s assume this new block contains our user's trade action, therefore let’s read all marble states
+	- this assumption is temporary
+1. Broadcast the marble states to any connected peers
+1. Clients (aka browsers) receive the new marble states and redraw them
+
+__./app.js__ (abbreviated)
+
+```js
+	// ========================================================
+	// Monitor the height of the blockchain
+	// ========================================================
+	ibc.monitor_blockheight(function(chain_stats){
+		if(chain_stats && chain_stats.height){
+			console.log('hey new block, lets refresh and broadcast to all');
+			ibc.block_stats(chain_stats.height - 1, cb_blockstats);
+			wss.broadcast({msg: 'reset'});
+			chaincode.read('_marbleindex', cb_got_index);
+			chaincode.read('_opentrades', cb_got_trades);
+		}
+		
+		//got the block's stats, lets send the statistics
+		function cb_blockstats(e, stats){
+			if(chain_stats.height) stats.height = chain_stats.height - 1;
+			wss.broadcast({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
+		}
+		
+		//got the marble index, lets get each marble
+		function cb_got_index(e, index){
+			if(e != null) console.log('error:', e);
+			else{
+				try{
+					var json = JSON.parse(index);
+					for(var i in json){
+						console.log('!', i, json[i]);
+						chaincode.read(json[i], cb_got_marble);							//iter over each, read their values
+					}
+				}
+				catch(e){
+					console.log('error:', e);
+				}
+			}
+		}
+		
+		//call back for getting a marble, lets send a message
+		function cb_got_marble(e, marble){
+			if(e != null) console.log('error:', e);
+			else {
+				wss.broadcast({msg: 'marbles', marble: marble});
+			}
+		}
+		...
+	}
+```
+
+So this code is using the SDK's function `monitor_blockheight()`. 
+It’s a pretty straight forward function in that its only argument is a callback function you want called when the SDK notices a new block. 
+Our code then goes off and starts 4 things.
+
+1. It fires off a request to the peer to read the block's stats
+1. It sends a reset UI message to all clients through the websocket
+1. It fires off a request to the cc to read marble index and then reads each marble
+1. It fires off a request to the cc to read the open trades
+
+The results will then be sent to the clients via the websocket (in indivdual messages).
+
+
+That’s it! Hope you had fun trading some marbles in part 1. 
 Next up is [Marbles Part 2](./tutorial_part2.md). 
 Part 2 adds some new chaincode functions making it a little more nifty.
 
@@ -456,7 +533,7 @@ Stuck? Lost your marbles? Try each trouble shooting method below!
 	- If there is no chaincode listed, get into the logs and figure out what happened
 1. Look at the node.js console logs for clues/errors (if using Bluemix do cf logs YOUR_APP_NAME, if localhost look at your screen buddy)
 	- If you want to see recent but historic logs when using Bluemix type cf logs YOUR_APP_NAME --recent in your command line/terminal
-	- The logs that are most helpful are right at the begining. After the ------------ Server Up - x.x.x.x:xxxx ------------ line.
+	- The logs that are most helpful are right at the beginning. After the ------------ Server Up - x.x.x.x:xxxx ------------ line.
 1. Open the console in your browser (right click the page, inspect element, open console tab). There are lots of debug prints to help give you clues.
 1. If it still doesn't work try deleting the current network and creating another one
 
@@ -465,5 +542,5 @@ Stuck? Lost your marbles? Try each trouble shooting method below!
 1. **500 - ECONNREFUSED** - Check the peers in your options.network.peers.  They likely do not exist / are wrong
 1. **400 - Must supply username for chaincode** - Check if you see a "Register - failure: userx 401" message.  if so delete and remake the network
 1. **401 - Register - failure** - Check the logs of the CA / peer.  If they mention something about an expired certificate delete and remake the network. Logs can be found on the dashboard for the network on Bluemix.
-1. **400 - Error gettin chaincode package bytes:...** - Check the options.chaincode.git_url, it is likely incorrect
+1. **400 - Error getting chaincode package bytes:...** - Check the options.chaincode.git_url, it is likely incorrect
 1. **fs readdir Error** - Check the `options.chaincode.unzip_dir` and `zip_url`. Manually download the git repo using the `options.chaincode.zip_url` then extract it.  the `gir_dir` var should be the exact relative path to get to the desired cc folder
