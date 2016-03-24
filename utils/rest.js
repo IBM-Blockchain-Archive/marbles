@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 /* global Buffer */
 /*******************************************************************************
  * Copyright (c) 2015 IBM Corp.
@@ -18,20 +18,20 @@
 				host: HOST_HERE,
 				path: PATH HERE,
 				headers: {
-							"Content-Type": "application/json",
-							"Accept": "application/json"
+							'Content-Type': 'application/json',
+							'Accept': 'application/json'
 						}
 			};
 			options.success = function(statusCode, data){
-				console.log("Get - success");
+				console.log('Get - success');
 			}
 			options.failure = function(statusCode, e){
-				console.log("Get - failure", e);
+				console.log('Get - failure', e);
 			}
 			rest.get(options, {'user':'david'});
 	-----------------------------------------------------------------
 	
-	Valid "options" values: (these are default ones that come from requests module)
+	Valid 'options' values: (these are default ones that come from requests module)
 	-----------------------------------------------------------------
 	host: A domain name or IP address of the server to issue the request to. Defaults to 'localhost'.
 	hostname: To support url.parse() hostname is preferred over host
@@ -49,7 +49,7 @@
 	keepAlive: {Boolean} Keep sockets around in a pool to be used by other requests in the future. Default = false
 	keepAliveMsecs: {Integer} When using HTTP KeepAlive, how often to send TCP KeepAlive packets over sockets being kept alive. Default = 1000. Only relevant if keepAlive is set to true.
 	
-	Plus my "options" values:
+	Plus my 'options' values:
 	-----------------------------------------------------------------
 	quiet: If true will not print to console. Defaults false.
 	ssl: Iff false will use http instead of https. Defaults true.
@@ -57,11 +57,11 @@
 	cb: Node.js call back style of cb(error_obj, response).
 	success: jQuery call back style of success(statusCode, response)
 	failure: jQuery call back style of failure(statusCode, response)
-	include_headers: If true the response argument will be {"response":<response>, "headers":<headers>} 
+	include_headers: If true the response argument will be {'response':<response>, 'headers':<headers>} 
 */
 
-var https_mod = require("https");
-var http_mod = require("http");
+var https_mod = require('https');
+var http_mod = require('http');
 var default_options = 	{
 							quiet: false,
 							ssl: true,
@@ -148,7 +148,7 @@ function http(options, parameters, body){
 	//// Handle Request ////
 	if(typeof parameters == 'object') options.path += '?' + querystring.stringify(parameters);		//should be a json object
 	var request = http.request(options, function(resp) {
-		var str = "", temp, chunks = 0;
+		var str = '', temp, chunks = 0;
 		if(!options.quiet) console.log(http_txt + ' Status code: ' + resp.statusCode);
 		
 		resp.setEncoding('utf8');
@@ -207,7 +207,7 @@ function http(options, parameters, body){
 		request.destroy();
 	});
 	
-	if(body && body != '' && !isEmpty(body)){
+	if(body && body !== '' && !isEmpty(body)){
 		request.write(body);
 	}
 	request.end();																					//send the request

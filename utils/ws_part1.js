@@ -69,14 +69,6 @@ module.exports.process_msg = function(ws, data){
 		}
 	}
 	
-	//call back for getting a marble, lets send a message
-	function cb_got_marble(e, marble){
-		if(e != null) console.log('error:', e);
-		else {
-			sendMsg({msg: 'marbles', marble: marble});
-		}
-	}
-	
 	function cb_invoked(e, a){
 		console.log('response: ', e, a);
 	}
@@ -105,11 +97,6 @@ module.exports.process_msg = function(ws, data){
 			}, function() {
 			});
 		}
-	}
-	
-	//call bacak for getting a block's stats, lets send the chain/block stats
-	function cb_blockstats(e, stats){
-		sendMsg({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
 	}
 	
 	//send a message, socket might be closed...

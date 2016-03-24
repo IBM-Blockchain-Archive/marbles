@@ -1,80 +1,73 @@
-/* global clear_blocks */
-/* global escapeHtml */
-/* global new_block */
-/* global formatDate */
-/* global nDig */
-/* global randStr */
-/* global bag */
-/* global $ */
+/* global new_block,formatDate, randStr, bag, $, clear_blocks, document, WebSocket, escapeHtml */
 var ws = {};
 var user = {username: bag.setup.USER1};
-var bgcolors = ["whitebg", "blackbg", "redbg", "greenbg", "bluebg", "purplebg", "pinkbg", "orangebg", "yellowbg"];
+var bgcolors = ['whitebg', 'blackbg', 'redbg', 'greenbg', 'bluebg', 'purplebg', 'pinkbg', 'orangebg', 'yellowbg'];
 
 // =================================================================================
 // On Load
 // =================================================================================
 $(document).on('ready', function() {
 	connect_to_server();
-	$("input[name='name']").val('r' + randStr(6));
-	$("select option[value='" + bag.setup.USER1 + "']").attr('selected', true);
+	$('input[name="name"]').val('r' + randStr(6));
+	$('select option[value="' + bag.setup.USER1 + '"]').attr('selected', true);
 	
 	// =================================================================================
 	// jQuery UI Events
 	// =================================================================================
-	$("#submit").click(function(){
+	$('#submit').click(function(){
 		var obj = 	{
-						type: "create",
-						name: $("input[name='name']").val().replace(" ", ""),
-						color: $(".colorSelected").attr('color'),
-						size: $("select[name='size']").val(),
-						user: $("select[name='user']").val(),
+						type: 'create',
+						name: $('input[name="name"]').val().replace(' ', ''),
+						color: $('.colorSelected').attr('color'),
+						size: $('select[name="size"]').val(),
+						user: $('select[name="user"]').val(),
 						v: 2
 					};
 		if(obj.user && obj.name && obj.color){
 			console.log('creating marble, sending', obj);
 			ws.send(JSON.stringify(obj));
-			$(".panel").hide();
-			$("#homePanel").show();
-			$(".colorValue").html('Color');											//reset
-			for(var i in bgcolors) $(".createball").removeClass(bgcolors[i]);			//reset
-			$(".createball").css("border", "2px dashed #fff");						//reset
+			$('.panel').hide();
+			$('#homePanel').show();
+			$('.colorValue').html('Color');											//reset
+			for(var i in bgcolors) $('.createball').removeClass(bgcolors[i]);			//reset
+			$('.createball').css('border', '2px dashed #fff');						//reset
 		}
 		return false;
 	});
 
-	$("#homeLink").click(function(){
+	$('#homeLink').click(function(){
 		console.log('marbles:', bag.marbles);
 	});
 	
-	$("#createLink").click(function(){
-		$("input[name='name']").val('r' + randStr(6));
+	$('#createLink').click(function(){
+		$('input[name="name"]').val('r' + randStr(6));
 	});
 	
-	$("#tradeLink").click(function(){
+	$('#tradeLink').click(function(){
 		set_my_color_options(user.username);
-		ws.send(JSON.stringify({type: "get_open_trades", v: 2}));
+		ws.send(JSON.stringify({type: 'get_open_trades', v: 2}));
 	});
 	
 	
 	//marble color picker
-	$(document).on("click", ".colorInput", function(){
+	$(document).on('click', '.colorInput', function(){
 		$('.colorOptionsWrap').hide();											//hide any others
 		$(this).parent().find('.colorOptionsWrap').show();
 	});
-	$(document).on("click", ".colorOption", function(){
+	$(document).on('click', '.colorOption', function(){
 		var color = $(this).attr('color');
-		var html = '<span class="fa fa-circle colorSelected ' + color + '" color="' + color +'"></span>';
+		var html = '<span class="fa fa-circle colorSelected ' + color + '" color="' + color + '"></span>';
 		
 		$(this).parent().parent().find('.colorValue').html(html);
 		$(this).parent().hide();
 
-		for(var i in bgcolors) $(".createball").removeClass(bgcolors[i]);		//remove prev color
-		$(".createball").css("border", "0").addClass(color + 'bg');				//set new color
+		for(var i in bgcolors) $('.createball').removeClass(bgcolors[i]);		//remove prev color
+		$('.createball').css('border', '0').addClass(color + 'bg');				//set new color
 	});
 	
 	//drag and drop marble
-	$("#user2wrap, #user1wrap, #trashbin").sortable({connectWith: ".sortable"}).disableSelection();
-	$("#user2wrap").droppable({drop:
+	$('#user2wrap, #user1wrap, #trashbin').sortable({connectWith: '.sortable'}).disableSelection();
+	$('#user2wrap').droppable({drop:
 		function( event, ui ) {
 			var marble_user = $(ui.draggable).attr('user');
 			if(marble_user.toLowerCase() != bag.setup.USER2){						//marble transfered users
@@ -82,13 +75,13 @@ $(document).on('ready', function() {
 					move_back(ui.draggable);
 				}
 				else{
-					$(ui.draggable).addClass("invalid");
+					$(ui.draggable).addClass('invalid');
 					transfer($(ui.draggable).attr('id'), bag.setup.USER2);
 				}
 			}
 		}
 	});
-	$("#user1wrap").droppable({drop:
+	$('#user1wrap').droppable({drop:
 		function( event, ui ) {
 			var marble_user = $(ui.draggable).attr('user');
 			if(marble_user.toLowerCase() != bag.setup.USER1){						//marble transfered users
@@ -96,14 +89,14 @@ $(document).on('ready', function() {
 					move_back(ui.draggable);
 				}
 				else{
-					$(ui.draggable).addClass("invalid");
+					$(ui.draggable).addClass('invalid');
 					transfer($(ui.draggable).attr('id'), bag.setup.USER1);
 				}
 			}
 			return false;
 		}
 	});
-	$("#trashbin").droppable({drop:
+	$('#trashbin').droppable({drop:
 		function( event, ui ) {
 			var id = $(ui.draggable).attr('id');
 			var marble_user = $(ui.draggable).attr('user');
@@ -114,7 +107,7 @@ $(document).on('ready', function() {
 				if(id){
 					console.log('removing marble', id);
 					var obj = 	{
-									type: "remove",
+									type: 'remove',
 									name: id,
 									v: 2
 								};
@@ -133,55 +126,55 @@ $(document).on('ready', function() {
 		var name = $(dragged).attr('id');
 		build_ball({name: name, user: bag.marbles[name].user, color:bag.marbles[name].color, size: bag.marbles[name].size});
 		
-		$("#whoAmI").addClass("flash");
-		setTimeout(function(){$("#whoAmI").removeClass("flash");}, 1500);
+		$('#whoAmI').addClass('flash');
+		setTimeout(function(){$('#whoAmI').removeClass('flash');}, 1500);
 	}
 	
 	
 	//login events
-	$("#whoAmI").click(function(){													//drop down for login
-		if($("#userSelect").is(":visible")){
-			$("#userSelect").fadeOut();
+	$('#whoAmI').click(function(){													//drop down for login
+		if($('#userSelect').is(':visible')){
+			$('#userSelect').fadeOut();
 		}
 		else{
-			$("#userSelect").fadeIn();
+			$('#userSelect').fadeIn();
 		}
 	});
 	
-	$(".userLine").click(function(){												//log in as someone else
-		var name = $(this).attr("name");
+	$('.userLine').click(function(){												//log in as someone else
+		var name = $(this).attr('name');
 		user.username = name.toLowerCase();
-		$("#userField").html("HI " + user.username.toUpperCase() + ' ');
-		$("#userSelect").fadeOut(300);
-		$("select option[value='" + user.username +"']").attr('selected', true);
-		//ws.send(JSON.stringify({type: "get_open_trades", v: 2}));
+		$('#userField').html('HI ' + user.username.toUpperCase() + ' ');
+		$('#userSelect').fadeOut(300);
+		$('select option[value="' + user.username + '"]').attr('selected', true);
+		//ws.send(JSON.stringify({type: 'get_open_trades', v: 2}));
 		set_my_color_options(user.username);
 		build_trades(bag.trades);
 	});
 	
 	
 	//trade events
-	$("#setupTradeButton").click(function(){
+	$('#setupTradeButton').click(function(){
 		build_trades(bag.trades);
-		$(".inactiveButton").removeClass("inactiveButton");
-		$("#viewTradeButton").addClass("inactiveButton");
-		$("#openTrades").fadeOut();
-		$("#createTrade").fadeIn();
+		$('.inactiveButton').removeClass('inactiveButton');
+		$('#viewTradeButton').addClass('inactiveButton');
+		$('#openTrades').fadeOut();
+		$('#createTrade').fadeIn();
 	});
 	
-	$("#viewTradeButton").click(function(){
+	$('#viewTradeButton').click(function(){
 		build_trades(bag.trades);
-		$(".inactiveButton").removeClass("inactiveButton");
-		$("#setupTradeButton").addClass("inactiveButton");
-		$("#openTrades").fadeIn();
-		$("#createTrade").fadeOut();
+		$('.inactiveButton').removeClass('inactiveButton');
+		$('#setupTradeButton').addClass('inactiveButton');
+		$('#openTrades').fadeIn();
+		$('#createTrade').fadeOut();
 	});
 	
-	$(".removeWilling:first").hide();
-	$("#addMarbleButton").click(function(){
+	$('.removeWilling:first').hide();
+	$('#addMarbleButton').click(function(){
 		var count = 0;
 		var marble_count = 0;
-		$(".willingWrap").each(function(){
+		$('.willingWrap').each(function(){
 			count++;
 		});
 		for(var i in bag.marbles){
@@ -190,37 +183,37 @@ $(document).on('ready', function() {
 			}
 		}
 		if(count+1 <= marble_count && count <= 3){									//lets limit the total number... might get out of hand
-			var temp = $(".willingWrap:first").html();
-			$(".willingWrap:first").parent().append('<div class="willingWrap">' + temp + '</div>');
-			$(".removeWilling").show();
-			$(".removeWilling:first").hide();
+			var temp = $('.willingWrap:first').html();
+			$('.willingWrap:first').parent().append('<div class="willingWrap">' + temp + '</div>');
+			$('.removeWilling').show();
+			$('.removeWilling:first').hide();
 		}
 		else{
-			$("#cannotAdd").fadeIn();
-			setTimeout(function(){ $("#cannotAdd").fadeOut(); }, 1500);
+			$('#cannotAdd').fadeIn();
+			setTimeout(function(){ $('#cannotAdd').fadeOut(); }, 1500);
 		}
 	});
 	
-	$(document).on("click", ".removeWilling", function(){
+	$(document).on('click', '.removeWilling', function(){
 		$(this).parent().remove();
 	});
 	
-	$("#tradeSubmit").click(function(){
+	$('#tradeSubmit').click(function(){
 		var msg = 	{
 						type: 'open_trade',
 						v: 2,
 						user: user.username,
 						want: {
-							color: $("#wantColorWrap").find(".colorSelected").attr("color"),
-							size: $("select[name='want_size']").val()
+							color: $('#wantColorWrap').find('.colorSelected').attr('color'),
+							size: $('select[name="want_size"]').val()
 						},
 						willing: []
 					};
 					
-		$(".willingWrap").each(function(){
-			//var q = $(this).find("select[name='will_quantity']").val();
-			var color = $(this).find(".colorSelected").attr('color');
-			var size = $(this).find("select[name='will_size']").val();
+		$('.willingWrap').each(function(){
+			//var q = $(this).find('select[name='will_quantity']').val();
+			var color = $(this).find('.colorSelected').attr('color');
+			var size = $(this).find('select[name="will_size"]').val();
 			//console.log('!', q, color, size);
 			var temp = 	{
 							color: color,
@@ -231,12 +224,12 @@ $(document).on('ready', function() {
 		
 		console.log('sending', msg);
 		ws.send(JSON.stringify(msg));
-		$(".panel").hide();
-		$("#homePanel").show();
-		$(".colorValue").html('Color');
+		$('.panel').hide();
+		$('#homePanel').show();
+		$('.colorValue').html('Color');
 	});
 	
-	$(document).on("click", ".confirmTrade", function(){
+	$(document).on('click', '.confirmTrade', function(){
 		console.log('trading...');
 		var i = $(this).attr('trade_pos');
 		var x = $(this).attr('willing_pos');
@@ -257,25 +250,25 @@ $(document).on('ready', function() {
 						}
 					};
 		ws.send(JSON.stringify(msg));
-		$("#notificationPanel").animate({width:'toggle'});
+		$('#notificationPanel').animate({width:'toggle'});
 	});
 	
-	$(document).on("click", ".willingWrap .colorOption", function(){
+	$(document).on('click', '.willingWrap .colorOption', function(){
 		set_my_size_options(user.username, this);
 	});
 	
-	$("input[name='showMyTrades']").change(function(){
-		if($(this).is(":checked")){
-			$("#myTradesTable").fadeIn();
+	$('input[name="showMyTrades"]').change(function(){
+		if($(this).is(':checked')){
+			$('#myTradesTable').fadeIn();
 		}
 		else{
-			$("#myTradesTable").fadeOut();
+			$('#myTradesTable').fadeOut();
 		}
 	});
 	
-	$(document).on("click", ".removeTrade", function(){
+	$(document).on('click', '.removeTrade', function(){
 		var trade = find_trade($(this).attr('trade_timestamp'));
-		$(this).parent().parent().addClass("invalid");
+		$(this).parent().parent().addClass('invalid');
 		console.log('trade', trade);
 		var msg = 	{
 						type: 'remove_trade',
@@ -295,7 +288,7 @@ function transfer(marbleName, user){
 	if(marbleName){
 		console.log('transfering', marbleName);
 		var obj = 	{
-						type: "transfer",
+						type: 'transfer',
 						name: marbleName,
 						user: user,
 						v: 2
@@ -340,7 +333,7 @@ function connect_to_server(){
 	connect();
 		
 	function connect(){
-		var wsUri = "ws://" + bag.setup.SERVER.EXTURI;
+		var wsUri = 'ws://' + bag.setup.SERVER.EXTURI;
 		ws = new WebSocket(wsUri);
 		ws.onopen = function(evt) { onOpen(evt); };
 		ws.onclose = function(evt) { onClose(evt); };
@@ -349,17 +342,17 @@ function connect_to_server(){
 	}
 	
 	function onOpen(evt){
-		console.log("WS CONNECTED");
+		console.log('WS CONNECTED');
 		connected = true;
 		clear_blocks();
-		$("#errorNotificationPanel").fadeOut();
-		ws.send(JSON.stringify({type: "chainstats", v:2}));
-		ws.send(JSON.stringify({type: "get_open_trades", v: 2}));
-		ws.send(JSON.stringify({type: "get", v:2}));
+		$('#errorNotificationPanel').fadeOut();
+		ws.send(JSON.stringify({type: 'chainstats', v:2}));
+		ws.send(JSON.stringify({type: 'get_open_trades', v: 2}));
+		ws.send(JSON.stringify({type: 'get', v:2}));
 	}
 
 	function onClose(evt){
-		console.log("WS DISCONNECTED", evt);
+		console.log('WS DISCONNECTED', evt);
 		connected = false;
 		setTimeout(function(){ connect(); }, 5000);					//try again one more time, server restarts are quick
 	}
@@ -374,7 +367,7 @@ function connect_to_server(){
 			}
 			else if(data.msg === 'chainstats'){
 				var e = formatDate(data.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
-				$("#blockdate").html('<span style="color:#fff">TIME</span>&nbsp;&nbsp;' + e + ' UTC');
+				$('#blockdate').html('<span style="color:#fff">TIME</span>&nbsp;&nbsp;' + e + ' UTC');
 				var temp = { 
 								id: data.blockstats.height, 
 								blockstats: data.blockstats
@@ -382,8 +375,8 @@ function connect_to_server(){
 				new_block(temp);									//send to blockchain.js
 			}
 			else if(data.msg === 'reset'){							//clear marble knowledge, prepare of incoming marble states
-				$("#user2wrap").html('');
-				$("#user1wrap").html('');
+				$('#user2wrap').html('');
+				$('#user1wrap').html('');
 			}
 			else if(data.msg === 'open_trades'){
 				build_trades(data.open_trades);
@@ -398,17 +391,12 @@ function connect_to_server(){
 	function onError(evt){
 		console.log('ERROR ', evt);
 		if(!connected && bag.e == null){											//don't overwrite an error message
-			$("#errorName").html("Warning");
-			$("#errorNoticeText").html("Waiting on the node server to open up so we can talk to the blockchain. ");
-			$("#errorNoticeText").append("This app is likely still starting up. ");
-			$("#errorNoticeText").append("Check the server logs if this message does not go away in 1 minute. ");
-			$("#errorNotificationPanel").fadeIn();
+			$('#errorName').html('Warning');
+			$('#errorNoticeText').html('Waiting on the node server to open up so we can talk to the blockchain. ');
+			$('#errorNoticeText').append('This app is likely still starting up. ');
+			$('#errorNoticeText').append('Check the server logs if this message does not go away in 1 minute. ');
+			$('#errorNotificationPanel').fadeIn();
 		}
-	}
-
-	function sendMessage(message){
-		console.log("SENT: " + message);
-		ws.send(message);
 	}
 }
 
@@ -431,16 +419,19 @@ function build_ball(data){
 	
 	if(data.user.toLowerCase() == user.username.toLowerCase()) notYours = '';
 	
-	if(!$("#" + data.name).length){								//only populate if it doesn't exists
+	console.log('got a marble');
+	if(!$('#' + data.name).length){								//only populate if it doesn't exists
+		console.log('building');
 		if(data.size == 16) size = 'fa-3x';
 		if(data.color) colorClass = data.color.toLowerCase();
 		
-		html += '<span id="' + data.name +'" class=" fa fa-circle ' + size + ' ball ' + colorClass + ' ' + notYours + '" title="' + data.name + '" user="' + data.user + '"></span>';
+		html += '<span id="' + data.name + '" class="fa fa-circle ' + size + ' ball ' + colorClass + ' ' + notYours + '" title="' + data.name + '" user="' + data.user + '"></span>';
+		console.log('yo', html);
 		if(data.user && data.user.toLowerCase() == bag.setup.USER1){
-			$("#user1wrap").append(html);
+			$('#user1wrap').append(html);
 		}
 		else{
-			$("#user2wrap").append(html);
+			$('#user2wrap').append(html);
 		}
 	}
 	//console.log('marbles', bag.marbles);
@@ -463,7 +454,7 @@ function build_trades(trades){
 					style = 'invalid';
 					buttonStatus = 'disabled="disabled"';
 				}
-				html += '<tr class="' + style +'">';
+				html += '<tr class="' + style + '">';
 				html +=		'<td>' + formatDate(Number(trades[i].timestamp), '%M/%d %I:%m%P') + '</td>';
 				html +=		'<td>1</td>';
 				html +=		'<td><span class="fa fa-2x fa-circle ' + trades[i].want.color + '"></span></td>';
@@ -472,7 +463,7 @@ function build_trades(trades){
 				html +=		'<td><span class="fa fa-2x fa-circle ' + trades[i].willing[x].color + '"></span></td>';
 				html +=		'<td>' + sizeMe(trades[i].willing[x].size) + '</td>';
 				html +=		'<td>';
-				html +=			'<button type="button" class="confirmTrade altButton" ' + buttonStatus +' name="' + name + '" trade_pos="' + i + '" willing_pos="' + x + '">';
+				html +=			'<button type="button" class="confirmTrade altButton" ' + buttonStatus + ' name="' + name + '" trade_pos="' + i + '" willing_pos="' + x + '">';
 				html +=				'<span class="fa fa-exchange"> &nbsp;&nbsp;TRADE</span>';
 				html +=			'</button>';
 				html += 	'</td>';
@@ -480,8 +471,8 @@ function build_trades(trades){
 			}
 		}
 	}
-	if(html == '') html = '<tr><td>nothing here...</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
-	$("#openTradesBody").html(html);
+	if(html === '') html = '<tr><td>nothing here...</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
+	$('#openTradesBody').html(html);
 	
 	build_my_trades(trades);
 }
@@ -493,7 +484,7 @@ function build_my_trades(trades){
 		var style = ' ';
 		
 		if(user.username.toLowerCase() == trades[i].user.toLowerCase()){				//only show trades with myself
-			html += '<tr class="' + style +'">';
+			html += '<tr class="' + style + '">';
 			html +=		'<td>' + formatDate(Number(trades[i].timestamp), '%M/%d %I:%m%P') + '</td>';
 			html +=		'<td>1</td>';
 			html +=		'<td><span class="fa fa-2x fa-circle ' + trades[i].want.color + '"></span></td>';
@@ -507,8 +498,8 @@ function build_my_trades(trades){
 			html += '</tr>';
 		}
 	}
-	if(html == '') html = '<tr><td>nothing here...</td><td></td><td></td><td></td><td></td><td></td></tr>';
-	$("#myTradesBody").html(html);
+	if(html === '') html = '<tr><td>nothing here...</td><td></td><td></td><td></td><td></td><td></td></tr>';
+	$('#myTradesBody').html(html);
 }
 
 function set_my_color_options(username){
@@ -520,8 +511,8 @@ function set_my_color_options(username){
 	}
 	
 	//console.log('has_colors', has_colors);
-	var colors = ["white", "black", "red", "green", "blue", "purple", "pink", "orange", "yellow"];
-	$(".willingWrap").each(function(){
+	var colors = ['white', 'black', 'red', 'green', 'blue', 'purple', 'pink', 'orange', 'yellow'];
+	$('.willingWrap').each(function(){
 		for(var i in colors){
 			//console.log('checking if user has', colors[i]);
 			if(!has_colors[colors[i]]) {
@@ -550,8 +541,8 @@ function set_my_size_options(username, colorOption){
 	}
 	
 	console.log('valid sizes:', sizes);
-	for(var i in sizes){
+	for(i in sizes){
 		html += '<option value="' + i + '">' + sizeMe(i) + '</option>';					//build it
 	}
-	$(colorOption).parent().parent().next("select[name='will_size']").html(html);
+	$(colorOption).parent().parent().next('select[name="will_size"]').html(html);
 }

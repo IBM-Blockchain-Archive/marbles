@@ -123,12 +123,6 @@ module.exports.process_msg = function(ws, data){
 			});
 		}
 	}
-
-	//call bacak for getting a block's stats, lets send the chain/block stats
-	function cb_blockstats(e, stats){
-		if(chain_stats.height) stats.height = chain_stats.height - 1;
-		sendMsg({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
-	}
 	
 	//call back for getting open trades, lets send the trades
 	function cb_got_trades(e, trades){

@@ -1,4 +1,5 @@
-/* global $ */
+/* global document */
+ /*exported in_array, formatDate, randStr, toTitleCase, nDig, escapeHtml */
 //if element is in array
 function in_array(name, array){
 	for(var i in array){
@@ -9,8 +10,8 @@ function in_array(name, array){
 			
 //make random string of set length
 function randStr(length){
-	var text = "";
-	var possible = "abcdefghijkmnpqrstuvwxyz0123456789";
+	var text = '';
+	var possible = 'abcdefghijkmnpqrstuvwxyz0123456789';
 	for(var i=0; i < length; i++ ) text += possible.charAt(Math.floor(Math.random() * possible.length));
 	return text;
 }	
@@ -38,7 +39,7 @@ function formatDate(date, fmt) {
 			return pad(date.getUTCHours());
 		case 'I':								//12 Hour 0 padded
 			tmp = date.getUTCHours();
-			if(tmp == 0) tmp = 12;				//00:00 should be seen as 12:00am
+			if(tmp === 0) tmp = 12;				//00:00 should be seen as 12:00am
 			else if(tmp > 12) tmp -= 12;
 			return pad(tmp);
 		case 'p':								//am / pm
@@ -63,29 +64,6 @@ function formatDate(date, fmt) {
 	});
 }
 
-function formatTimer(seconds){
-	var hr = 0;
-	var min = 0;
-	var sec = 0;
-	var str = '';
-	seconds = eval(seconds);
-	if(seconds >= 60*60){
-		hr = Math.floor(seconds / (60*60));
-		seconds = seconds % (60*60);
-		//console.log('seconds left: ' + seconds);
-	}
-	if(seconds >= 60){
-		min = Math.floor(seconds / 60);
-		seconds = seconds % 60;
-		//console.log('seconds left: ' + seconds);
-	}
-	sec = seconds;
-	//console.log('seconds left: ' + seconds);
-
-	str = nDig(hr, 2) + ':' + nDig(min, 2) + ':' + nDig(sec, 2);
-	return str;
-}
-
 function nDig(n, digits){								//zero left pad to number of digits
 	var ret = n;
 	for(var i=0; i < digits; i++) ret = '0' + ret;		//add  up to max i would need
@@ -98,4 +76,4 @@ function escapeHtml(str) {
 	var div = document.createElement('div');
 	div.appendChild(document.createTextNode(str));
 	return div.innerHTML;
-};
+}

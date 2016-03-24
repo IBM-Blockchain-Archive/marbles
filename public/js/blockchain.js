@@ -1,5 +1,5 @@
-/* global formatDate */
-/* global $ */
+/* global $, document, formatDate, nDig, atob */
+/* exported clear_blocks, new_block */
 var block = 0;
 var blocks = [];
 
@@ -9,21 +9,21 @@ $(document).on('ready', function() {
 	}, 2000);
 
 	var clicked = false;
-	$(document).on("click", ".block", function(event){
+	$(document).on('click', '.block', function(event){
 		clicked = !clicked;
-		show_details(Number($(this).html()));
+		show_details(event, Number($(this).html()));
 	});
 
-	$(document).on("mouseover", ".block", function(event){
-		show_details(Number($(this).html()));
+	$(document).on('mouseover', '.block', function(event){
+		show_details(event, Number($(this).html()));
 	});
 	
-	$(document).on("mouseleave", "#blockWrap", function(){
-		if(!clicked) $("#details").fadeOut();
+	$(document).on('mouseleave', '#blockWrap', function(){
+		if(!clicked) $('#details').fadeOut();
 	});
 });
 
-function show_details(id){										//build the block details html
+function show_details(event, id){								//build the block details html
 	var left = event.pageX - $('#details').parent().offset().left - 50;
 	if(left < 0) left = 0;
 	var ccid = formatCCID(blocks[id].blockstats.transactions[0].type, blocks[id].blockstats.transactions[0].uuid, atob(blocks[id].blockstats.transactions[0].chaincodeID));
@@ -35,7 +35,7 @@ function show_details(id){										//build the block details html
 	html += '<p> Type:  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + formatType(blocks[id].blockstats.transactions[0].type) + '</p>';
 	html += '<p> CC ID:  &nbsp;&nbsp;&nbsp;&nbsp;' + ccid + '</p>';
 	html += '<p> Payload:  &nbsp;' + formatPayload(payload, ccid) + '</p>';
-	$("#details").html(html).css("left", left).fadeIn();
+	$('#details').html(html).css('left', left).fadeIn();
 }
 
 function new_block(newblck){									//rec a new block
@@ -57,18 +57,18 @@ function new_block(newblck){									//rec a new block
 }
 
 function build_block(id){										//build and append the block html
-	$("#blockWrap").append('<div class="block">' +  nDig(id, 3) + '</div>');
-	$(".block:last").animate({opacity: 1, left: (block * 36)}, 600, function(){
-		$(".lastblock").removeClass("lastblock");
-		$(".block:last").addClass("lastblock");
+	$('#blockWrap').append('<div class="block">' +  nDig(id, 3) + '</div>');
+	$('.block:last').animate({opacity: 1, left: (block * 36)}, 600, function(){
+		$('.lastblock').removeClass('lastblock');
+		$('.block:last').addClass('lastblock');
 	});
 	block++;
 }
 
 function move_on_down(){										//move the blocks left
 	if(block > 10){
-		$(".block:first").animate({opacity: 0}, 800, function(){$(".block:first").remove();});
-		$(".block").animate({left: "-=36"}, 800, function(){});
+		$('.block:first').animate({opacity: 0}, 800, function(){$('.block:first').remove();});
+		$('.block').animate({left: '-=36'}, 800, function(){});
 		block--;
 	}
 }
@@ -76,7 +76,7 @@ function move_on_down(){										//move the blocks left
 function clear_blocks(){										//empty blocks
 	block = 0;
 	blocks = [];
-	$(".block").remove();
+	$('.block').remove();
 }
 
 
@@ -97,7 +97,7 @@ function formatType(i){											//spell out deploy or invoke
 }
 
 function formatPayload(str, ccid){								//create a sllliiiggghhhtttlllllyyy better payload name from decoded payload
-	var func = ["init", "delete", "write", "init_marble", "set_user", "open_trade", "perform_trade", "remove_trade"];
+	var func = ['init', 'delete', 'write', 'init_marble', 'set_user', 'open_trade', 'perform_trade', 'remove_trade'];
 	str =  str.substring(str.indexOf(ccid) + ccid.length + 4);
 	for(var i in func){
 		if(str.indexOf(func[i]) >= 0){

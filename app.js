@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 /* global process */
 /* global __dirname */
 /*******************************************************************************
@@ -23,10 +23,8 @@ var bodyParser = require('body-parser');
 var http = require('http');
 var app = express();
 var url = require('url');
-var async = require('async');
 var setup = require('./setup');
-var cors = require("cors");
-var fs = require("fs");
+var cors = require('cors');
 
 //// Set Server Parameters ////
 var host = setup.SERVER.HOST;
@@ -60,7 +58,6 @@ app.use(function(req, res, next){
 	console.log('------------------------------------------ incoming request ------------------------------------------');
 	console.log('New ' + req.method + ' request for', req.url);
 	req.bag = {};											//create my object for my stuff
-	req.session.count = eval(req.session.count) + 1;
 	req.bag.session = req.session;
 	
 	var url_parts = url.parse(req.url, true);
@@ -84,11 +81,11 @@ app.use(function(req, res, next) {
 	next(err);
 });
 app.use(function(err, req, res, next) {		// = development error handler, print stack trace
-	console.log("Error Handeler -", req.url);
+	console.log('Error Handeler -', req.url);
 	var errorCode = err.status || 500;
 	res.status(errorCode);
 	req.bag.error = {msg:err.stack, status:errorCode};
-	if(req.bag.error.status == 404) req.bag.error.msg = "Sorry, I cannot locate that file";
+	if(req.bag.error.status == 404) req.bag.error.msg = 'Sorry, I cannot locate that file';
 	res.render('template/error', {bag:req.bag});
 });
 
@@ -96,7 +93,7 @@ app.use(function(err, req, res, next) {		// = development error handler, print s
 // 														Launch Webserver
 // ============================================================================================================================
 var server = http.createServer(app).listen(port, function() {});
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 process.env.NODE_ENV = 'production';
 server.timeout = 240000;																							// Ta-da.
 console.log('------------------------------------------ Server Up - ' + host + ':' + port + ' ------------------------------------------');
@@ -132,62 +129,72 @@ var ibc = new Ibc1();
 // ==================================
 // load peers manually or from VCAP, VCAP will overwrite hardcoded list!
 // ==================================
-var manual ={						//this hard coded list is intentionaly left here, feel free to use it when initially starting out
-  "credentials": {					//please create your own network when you are up and running
-    "peers": [
+//this hard coded list is intentionaly left here, feel free to use it when initially starting out
+//please create your own network when you are up and running
+var manual ={
+  'credentials': {
+    'peers': [
       {
-        "discovery_host": "169.44.63.197",
-        "discovery_port": "33953",
-        "api_host": "169.44.63.197",
-        "api_port": "33954",
-        "type": "peer",
-        "network_id": "3fc3b557-312b-4bbe-bae7-cb08228e5935",
-        "id": "3fc3b557-312b-4bbe-bae7-cb08228e5935_vp1",
-        "api_url": "http://169.44.63.197:33954"
+        'discovery_host': '169.44.63.216',
+        'discovery_port': '37228',
+        'api_host': '169.44.63.216',
+        'api_port': '37229',
+        'type': 'peer',
+        'network_id': 'a6b7eb8b-1642-441b-8d0f-1b60526bbd2c',
+        'id': 'a6b7eb8b-1642-441b-8d0f-1b60526bbd2c_vp1',
+        'api_url': 'http://169.44.63.216:37229'
       },
       {
-        "discovery_host": "169.44.63.220",
-        "discovery_port": "33866",
-        "api_host": "169.44.63.220",
-        "api_port": "33867",
-        "type": "peer",
-        "network_id": "3fc3b557-312b-4bbe-bae7-cb08228e5935",
-        "id": "3fc3b557-312b-4bbe-bae7-cb08228e5935_vp2",
-        "api_url": "http://169.44.63.220:33867"
+        'discovery_host': '169.44.63.216',
+        'discovery_port': '37230',
+        'api_host': '169.44.63.216',
+        'api_port': '37231',
+        'type': 'peer',
+        'network_id': 'a6b7eb8b-1642-441b-8d0f-1b60526bbd2c',
+        'id': 'a6b7eb8b-1642-441b-8d0f-1b60526bbd2c_vp2',
+        'api_url': 'http://169.44.63.216:37231'
       }
     ],
-    "users": [
+    'users': [
       {
-        "username": "user_type1_c47eedf754",
-        "secret": "d7b78b8c03"
+        'username': 'user_type0_0f6dc74277',
+        'secret': '43f06f22b3'
       },
       {
-        "username": "user_type1_40045976d9",
-        "secret": "bd6a6587e4"
+        'username': 'user_type0_260daef220',
+        'secret': '531451f5b6'
       },
       {
-        "username": "user_type2_d58eb3b711",
-        "secret": "9eaf089c11"
+        'username': 'user_type1_a8739761d0',
+        'secret': 'a1480c599f'
       },
       {
-        "username": "user_type2_998ad40820",
-        "secret": "5261aef4ee"
+        'username': 'user_type1_004cb13351',
+        'secret': '77c92f46e2'
       },
       {
-        "username": "user_type4_362ecc0417",
-        "secret": "7e1bffa9da"
+        'username': 'user_type2_18531db6e7',
+        'secret': '69ddf1f23b'
       },
       {
-        "username": "user_type4_1623c53aa2",
-        "secret": "0facdd104f"
+        'username': 'user_type2_1bff9b070e',
+        'secret': '7ec16c669d'
       },
       {
-        "username": "user_type8_f371b789ff",
-        "secret": "ea489351db"
+        'username': 'user_type3_c8eb2fb25d',
+        'secret': 'aa5e12ae8e'
       },
       {
-        "username": "user_type8_7030d7e668",
-        "secret": "3957fae6da"
+        'username': 'user_type3_da1a2f9c1c',
+        'secret': '8e90b0c962'
+      },
+      {
+        'username': 'user_type4_71e901540b',
+        'secret': '75fb6f2537'
+      },
+      {
+        'username': 'user_type4_bccdc317dd',
+        'secret': 'f5b216ee3e'
       }
     ]
   }
@@ -206,7 +213,7 @@ if(process.env.VCAP_SERVICES){															//load from vcap, search for servic
 				console.log('!\n!\n! Error from Bluemix: \n', servicesObject[i][0].credentials.error, '!\n!\n');
 				peers = null;
 				users = null;
-				process.error = {type: 'network', msg: "Due to overwhelming demand the IBM Blockchain Network service is at maximum capacity.  Please try recreating this service at a later date."};
+				process.error = {type: 'network', msg: 'Due to overwhelming demand the IBM Blockchain Network service is at maximum capacity.  Please try recreating this service at a later date.'};
 			}
 			if(servicesObject[i][0].credentials && servicesObject[i][0].credentials.peers){
 				console.log('overwritting peers, loading from a vcap service: ', i);
@@ -241,21 +248,21 @@ var options = 	{
 				};
 if(process.env.VCAP_SERVICES){
 	console.log('\n[!] looks like you are in bluemix, I am going to clear out the deploy_name so that it deploys new cc.\n[!] hope that is ok budddy\n');
-	options.chaincode.deployed_name = "";
+	options.chaincode.deployed_name = '';
 }
 ibc.load(options, cb_ready);																//parse/load chaincode
 
 var chaincode = null;
 function cb_ready(err, cc){																	//response has chaincode functions
 	if(err != null){
-		console.log('! looks like an error loading the chaincode, app will fail\n', err);
+		console.log('! looks like an error loading the chaincode or network, app will fail\n', err);
 		if(!process.error) process.error = {type: 'load', msg: err.details};				//if it already exist, keep the last error
 	}
 	else{
 		chaincode = cc;
 		part1.setup(ibc, cc);
 		part2.setup(ibc, cc);
-		if(!cc.details.deployed_name || cc.details.deployed_name === ""){												//decide if i need to deploy
+		if(!cc.details.deployed_name || cc.details.deployed_name === ''){												//decide if i need to deploy
 			cc.deploy('init', ['99'], './cc_summaries', cb_deployed);
 		}
 		else{
