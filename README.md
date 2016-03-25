@@ -1,7 +1,6 @@
 # Marbles Demo
 
 [![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/ibm-blockchain/marbles.git)
-[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/ibm-blockchain/marbles.git&branch=test-tracking)
 
 
 #Application Background
@@ -53,4 +52,4 @@ This data is collected from the `VCAP_APPLICATION` environment variable in IBM B
 
 ### Disabling Deployment Tracking
 
-Deployment tracking can be disabled by removing the 'Deployment Tracking' section of app.js.
+Deployment tracking can be disabled by deleting the 'Deployment Tracking' section of app.js.

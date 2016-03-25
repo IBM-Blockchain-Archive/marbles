@@ -1,8 +1,8 @@
 ---
 applications:
 - disk_quota: 1024M
-  host: marbles-test-tracking
-  name: marbles-test-tracking
+  host: marbles
+  name: marbles
   command: "node app.js"
   path: "."
   instances: 1

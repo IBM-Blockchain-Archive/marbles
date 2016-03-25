@@ -3,7 +3,7 @@ stages:
 - name: Empty Build Stage
   inputs:
   - type: git
-    branch: test-tracking
+    branch: master
   jobs:
   - name: Empty Build Job
     type: builder

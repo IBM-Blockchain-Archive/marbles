@@ -3,5 +3,6 @@
 **/.vscode
 **/temp
 **/public/logs/**
+.idea
 .project
 /cc_summaries
