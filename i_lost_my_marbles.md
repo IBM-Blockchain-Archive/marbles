@@ -6,20 +6,20 @@ Let’s start at the very beginning and check things off one by one.
 
 **Game Plan**
 
-1. Check if the network is showing signs of life
-1. Check if the marbles app is registering users for the permissioned network
-1. Check if marbles is deploying chaincode successfully
-1. Check if marbles is reaching chaincode functions
-1. Check if marbles is sending its actions
-1. Turn it off and back on again
+1. [Check if the network is showing signs of life](./#step1)
+1. [Check if the marbles app is registering users for the permissioned network](./#step2)
+1. [Check if marbles is deploying chaincode successfully](./#step3)
+1. [Check if marbles backend is reaching chaincode functions](./#step4)
+1. [Check if marbles frontend is sending its actions](./#step5)
+1. [Turn it off and back on again](./#step6)
 
-**[ Step 1 ]** 
+**[ Step 1 ]**<a name="step1"></a>
 
 We need to first check off that your network is running correctly. 
 The best way to do this is to open your networks monitor page. 
 What we want to see is 2 peers (validating peer 1 and 2) and a CA with the status of "running" or "up for x time". 
 What we do not want to see is missing peers, or peers with an "exited" status. 
-Follow the instructions in [this section](#Peer or ChainCode Logs) to get to the monitor page, and while you are there check the peer logs to see if there is anything suspicious.
+Follow the instructions in [this section](#Peer-or-ChainCode-Logs) to get to the monitor page, and while you are there check the peer logs to see if there is anything suspicious.
 
 Results:
 
@@ -29,14 +29,14 @@ Results:
 	- You should delete this network and create another one. if this happens multiple times you should contact us
 	
 	
-**[ Step 2 ]**
+**[ Step 2 ]**<a name="step2"></a>
 
 Right so next is to verify if the marbles app is registering secure context users or not. 
 To do this we need to take a look at the logs from node.js. 
-Depending on your marble setup you either need to get to your [Bluemix Node.js Logs](#) or your [Local Machine Node.js Logs](#). 
+Depending on your marble setup you either need to get to your [Bluemix Node.js Logs](#Bluemix-Node.js-Logs) or your [Local Machine Node.js Logs](#Local-Machine-Node.js-Logs). 
 
 Now that you have access to your logs let’s find the relevant logs for user registration. 
-The SDK prints these out and they look like so:
+The SDK will print messages similar to the ones below to the console:
 	
 	[ibc-js] Peer:  vp1-3a82c724-6934-4575-87d8-047eefdcf25d_vp1-api.blockchain.ibm.com:80
 	[ibc-js] Peer:  vp2-3a82c724-6934-4575-87d8-047eefdcf25d_vp2-api.blockchain.ibm.com:80
@@ -57,20 +57,20 @@ Results:
 		- Verify if your peers are still running (we did this in step 1 though...)
 		- You have previously registered this username to a different peer. This is not allowed. A username can only be registered against 1 peer. (re-registering a username against the same peer is fine though)
 		- You must have at least one registered username for marbles. If only one works edit the list of peers/users you feed marbles to only contain this one.
-		- Check the [logs for CA](#) for any clues (same instructions as peer logs)
+		- Check the [logs for CA](#Peer-or-ChainCode-Logs) for any clues (same instructions as peer logs)
 		- If nothing is working, delete this network and create another
 - *I don't see any registration messages at all*
 	- So either you did not feed `ibc.load()` any usernames or you did not feed it any appropriate usernames. An apporiate username is one that contains "type_1" in the name. Any other names get filtered out by `ibc.load`.
-			- If this is problematic for you (ie you have a custom IBM Blockchain Network) then you need to build a custom `ibc.load()` out of the other SDK functions. `ibc.load()` purpose is to make deploying to standard IBM Blockchain Networks easy. If you have a custom network you should create your own function that mimics `ibc.load()` (tear it apart and look at it!). You would only need to omit `filter_users()`, and possibly change what users/peer relation you want with your own calls to `ibc.register()`.
+		- If this is problematic for you (ie you have a custom IBM Blockchain Network) then you need to build a custom `ibc.load()` out of the other SDK functions. `ibc.load()` purpose is to make deploying to standard IBM Blockchain Networks easy. If you have a custom network you should create your own function that mimics `ibc.load()` (tear it apart and look at it!). You would only need to omit `filter_users()`, and possibly change what users/peer relation you want with your own calls to `ibc.register()`.
 - *Everything looks okay*
 	- Glad to hear it, lets go to step 3
 	
 	
-**[ Step 3 ]**
+**[ Step 3 ]**<a name="step3"></a>
 
 Next we want to see if the marbles app deployed its chaincode successfully. 
 The first place I'd look is in the networks monitor page. 
-Follow the instructions in [this section](#Peer or ChainCode Logs) to get to the monitor page. 
+Follow the instructions in [this section](#Peer-or-ChainCode-Logs) to get to the monitor page. 
 
 Check the bottom table. 
 Does it have a row with a chaincode hash? 
@@ -88,6 +88,8 @@ What we are looking for is:
 	[ibc-js] Deploying Chaincode - Complete
 
 Its not important if the arguments in the init function do not match mine. 
+Though it is important that your deploy function tried to call some function that does exist in your chaincode. 
+If you see "function: undefined, arg: undefined" you have not specified a function to be called on deploy which is out of spec. 
 What you do want to match is the success message at the bottom. 
 You may find that the sdk did not even attempt to deploy and a failure happened before it got to that point. 
 
@@ -95,24 +97,22 @@ Results:
 
 - *I see a failure/error messages before deploy even happens*
 	- First off try to make sense of the specific error that was also printed.
-	- If you see anything like "fs readdir Error" check the  `unzip_dir` and `zip_url` field in the options objefct you passed to `ibc.load()`. Manually download the git repo using the `options.chaincode.zip_url` then extract it.  The `gir_dir` var should be the exact relative path to get to the desired cc folder
+	- If you see anything like "fs readdir Error" check the  `unzip_dir` and `zip_url` field in the options objefct you passed to `ibc.load()`. To do this manually download the git repo using the `options.chaincode.zip_url` then extract it.  The `gir_dir` var should be the exact relative path to get to the desired cc folder
 	- This is likely some sort of node.js error and has nothing to do with the blockchain Network.  Try StackOverflow and Google to figure it out.
 - *I see a deploy failure messages*
 	- There could be many causes for this. 
 		- First off try to make sense of the specific error that was also printed.
-		- If you see anyhing like "error code 2" then your chaincode has build issues and cannot be compiled. Manually build your chaincode and look at the compilers errors.
-		- If you see antyhing like "401 unathorized" message then you have not passed it a secure context username that has been successfully registered. (we did this in step 2 though)
-		- If you see anything like "fs readdir Error" check the  `unzip_dir` and `zip_url` field in the options objefct you passed to `ibc.load()`. Manually download the git repo using the `options.chaincode.zip_url` then extract it.  The `gir_dir` var should be the exact relative path to get to the desired cc folder
+		- If you see anyhing like "error code 2" then your chaincode has build issues and cannot be compiled. Manually build your chaincode and look at the compiler errors.
+		- If you see antyhing like "401 unauthorized" message then you have not passed it a secure context username that has been successfully registered. (we did this in step 2 though)
 		- You fed it incorrect peer host/ports. Verify the hostname/ports are the same as the ones you see in your network's monitor page.
 		- Verify if your peers are still running (we did this in step 1 though...)
-		- You have previously registered this username to a different peer. This is not allowed. A username can only be registered against 1 peer. (re-registering a username against the same peer is fine though)
-		- Check the [logs for the peer](#) for any clues, you are probably deploying to peer 1.
+		- Check the [logs for the peer](#Peer-or-ChainCode-Logs) for any clues, you are probably deploying to peer 1.
 		- If nothing is working, delete this network and create another
 - *Everything looks okay*
 	- Wohoo, let’s go to step 4
 
 
-**[ Step 4 ]**
+**[ Step 4 ]**<a name="step4"></a>
 
 The next thing we can do is figure out if marbles is actually reaching the chaincode or not. 
 We will need to open the logs for the chaincode container. 
@@ -140,15 +140,16 @@ Ctrl + F the page and look for the logs below:
 Results:
 
 - *I do not see any init_marble messages*
-	- Double check you are looking at the correct container logs, you may want to open the other one.
-	- Potentially your marbles app is having client side JS errors and is never sending its rest requests, lets go to step 5
+	- Double check you are looking at the correct container log, you may want to open the other one.
+	- It may be that this network is unreachable for unknown reasons. Try manually creating a HTTP request to invoke your cc function. I like to use the browser plugin/extension called Postman. If you still can't reach it delete the network and create another. 
+	- Potentially your marbles app is having client side JS errors and is never sending its rest requests, lets go to step 5. 
 - *I see a init_marble message and see nearby error messages*
 	- First off try to make sense of the specific error that was also printed.
 	- Sounds like the marble app is not formatting the rest requests correctly. Specifically the body. The error you see should indicate what is wrong. It may be as simple as a cc input argument is numeric when it should be a string. Or you do not have enough input arguments for the cc function you called. To make these changes look in `/utils/ws_part1.js` or `/utils/ws_part2.js`. Search for the function name that is problematic (like init_marble).
 - *Everything looks okay*
 	- Hmm ok, so let’s go to step 5.
 	
-**[ Step 5 ]**
+**[ Step 5 ]**<a name="step5"></a>
 
 Our final stop is to examine the client side JS debug messages. 
 - Browse to your marbles app in Chrome or Firefox
@@ -170,11 +171,14 @@ Results:
 - *Everything looks okay*
 	- Ah, ok. Onward to step 6 
 
-**[ Step 6 ]**
+**[ Step 6 ]**<a name="step6"></a>
 
 You went through all the steps and nothing was wrong yet marbles is still not behaving correctly? 
-Well I'm stumped.
-The last resort is to wipe it all clean. Delete the app, delete the service. Download it again and start anew.
+Well I'm stumped. 
+The last resort is to wipe it all clean. Delete the app and delete the service. 
+Download it again and start anew. 
+Please bear with us as we mature this sevice. 
+Your patience and enthusiasm is greatly appreciated!
 
 ***
 
@@ -195,7 +199,7 @@ Let’s get to the console logs your app is printing.
 **[1]** - Start off by installing the Cloud Foundry Command Line Tool
 - [download](https://github.com/cloudfoundry/cli/releases) an installer for your OS
 - run the installer
-- lets test it by open a command prompt or terminal window and typing
+- lets test it by opening a command prompt or terminal window and typing
 	
 		> cf
 		You should see a bunch of text.
@@ -238,6 +242,8 @@ So. Look at your screen.
 Like this screen, assuming you are running the app on the same machine you are reading this very sentence with.
 Well you might have multiple monitors and you should be looking at that screen over there --> or even that other shifty looking monitor on the other side <--.
 You may even have to move windows around, but I can sense it. Your logs are nearby.
+- the most important logs for setup debugging are at the top near the ------------ Server Up - x.x.x.x:xxxx ------------ line
+- you will likely want to restart your app to get to logs that are relevant
 
 #Peer or ChainCode Logs
 Peer logs will detail peer to peer chatter, peer to chaincode communication, and API rest calls. 
@@ -256,7 +262,3 @@ These instructions assume you have already created a service and are trying to d
 		- In addition to this static view we have live **streaming peer logs** in the "View Logs" tab near the top of the page
 	- **ChainCode Logs** will be found in the bottom table. There is one row for every chaincode and they are labeled using the same chaincode hash that was returned to you when it was deployed. Find the cc id you want, and then select the peer. Finally click the file like icon.
 		- It should have opened a new window. Congratulations you found your peer's chaincode's logs!
-
-#General Trouble Shooting
-1. Open the console in your browser (right click the page, inspect element, open console tab). There are lots of debug prints to help give you clues.
-1. If it still doesn't work try deleting the current network and creating another one
