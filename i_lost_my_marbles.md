@@ -10,6 +10,7 @@ Let’s start at the very beginning and check things off one by one.
 1. Check if the marbles app is registering users for the permissioned network
 1. Check if marbles is deploying chaincode successfully
 1. Check if marbles is reaching chaincode functions
+1. Check if marbles is sending its actions
 1. Turn it off and back on again
 
 **[ Step 1 ]** 
@@ -18,7 +19,7 @@ We need to first check off that your network is running correctly.
 The best way to do this is to open your networks monitor page. 
 What we want to see is 2 peers (validating peer 1 and 2) and a CA with the status of "running" or "up for x time". 
 What we do not want to see is missing peers, or peers with an "exited" status. 
-Follow the instructions in [this section](#Peer or ChainCode Logs) to get to the monitor page, and while you are there check the peer logs to see if there is anything suspiouse.
+Follow the instructions in [this section](#Peer or ChainCode Logs) to get to the monitor page, and while you are there check the peer logs to see if there is anything suspicious.
 
 Results:
 
@@ -34,7 +35,7 @@ Right so next is to verify if the marbles app is registering secure context user
 To do this we need to take a look at the logs from node.js. 
 Depending on your marble setup you either need to get to your [Bluemix Node.js Logs](#) or your [Local Machine Node.js Logs](#). 
 
-Now that you have access to your logs lets find the relevant logs for user registration. 
+Now that you have access to your logs let’s find the relevant logs for user registration. 
 The SDK prints these out and they look like so:
 	
 	[ibc-js] Peer:  vp1-3a82c724-6934-4575-87d8-047eefdcf25d_vp1-api.blockchain.ibm.com:80
@@ -58,11 +59,15 @@ Results:
 		- You must have at least one registered username for marbles. If only one works edit the list of peers/users you feed marbles to only contain this one.
 		- Check the [logs for CA](#) for any clues (same instructions as peer logs)
 		- If nothing is working, delete this network and create another
+- *I don't see any registration messages at all*
+	- So either you did not feed `ibc.load()` any usernames or you did not feed it any appropriate usernames. An apporiate username is one that contains "type_1" in the name. Any other names get filtered out by `ibc.load`.
+			- If this is problematic for you (ie you have a custom IBM Blockchain Network) then you need to build a custom `ibc.load()` out of the other SDK functions. `ibc.load()` purpose is to make deploying to standard IBM Blockchain Networks easy. If you have a custom network you should create your own function that mimics `ibc.load()` (tear it apart and look at it!). You would only need to omit `filter_users()`, and possibly change what users/peer relation you want with your own calls to `ibc.register()`.
 - *Everything looks okay*
 	- Glad to hear it, lets go to step 3
 	
 	
 **[ Step 3 ]**
+
 Next we want to see if the marbles app deployed its chaincode successfully. 
 The first place I'd look is in the networks monitor page. 
 Follow the instructions in [this section](#Peer or ChainCode Logs) to get to the monitor page. 
@@ -91,7 +96,7 @@ Results:
 - *I see a failure/error messages before deploy even happens*
 	- First off try to make sense of the specific error that was also printed.
 	- If you see anything like "fs readdir Error" check the  `unzip_dir` and `zip_url` field in the options objefct you passed to `ibc.load()`. Manually download the git repo using the `options.chaincode.zip_url` then extract it.  The `gir_dir` var should be the exact relative path to get to the desired cc folder
-	- This is likely some sort of node.js error and has nothing to do with the blockchain Network.  Try stackoverflow and google to figure it out.
+	- This is likely some sort of node.js error and has nothing to do with the blockchain Network.  Try StackOverflow and Google to figure it out.
 - *I see a deploy failure messages*
 	- There could be many causes for this. 
 		- First off try to make sense of the specific error that was also printed.
@@ -104,8 +109,74 @@ Results:
 		- Check the [logs for the peer](#) for any clues, you are probably deploying to peer 1.
 		- If nothing is working, delete this network and create another
 - *Everything looks okay*
-	- Wohoo, lets go to step 4
+	- Wohoo, let’s go to step 4
 
+
+**[ Step 4 ]**
+
+The next thing we can do is figure out if marbles is actually reaching the chaincode or not. 
+We will need to open the logs for the chaincode container. 
+Follow the instructions in [this section](#Peer or ChainCode Logs) to get to the monitor page. 
+
+Check the bottom table. 
+It should have at least one chaincode listed. 
+Find the one with the correct hashed chaincode name and open the logs for the chaincode container on Peer 1 (click the file like icon). 
+Go to the "Create" tab in your marble app and create a new marble. 
+Now flip back to the logs and refresh the page. 
+Ctrl + F the page and look for the logs below:
+
+
+	OUT - run is running init_marble
+	OUT - - start init marble
+	ERR - 2016/03/15 13:50:55 [66b47025]Received message RESPONSE from shim
+	ERR - 2016/03/15 13:50:55 [66b47025]Handling ChaincodeMessage of type: RESPONSE(state:transaction)
+	ERR - 2016/03/15 13:50:55 [66b47025]before send
+	ERR - 2016/03/15 13:50:55 [66b47025]after send
+	ERR - 2016/03/15 13:50:55 [66b47025]Received RESPONSE, communicated (state:transaction)
+	ERR - 2016/03/15 13:50:55 [66b47025]Received RESPONSE. Successfully updated state
+	ERR - 2016/03/15 13:50:55 [66b47025]Sending GET_STATE
+	...
+
+Results:
+
+- *I do not see any init_marble messages*
+	- Double check you are looking at the correct container logs, you may want to open the other one.
+	- Potentially your marbles app is having client side JS errors and is never sending its rest requests, lets go to step 5
+- *I see a init_marble message and see nearby error messages*
+	- First off try to make sense of the specific error that was also printed.
+	- Sounds like the marble app is not formatting the rest requests correctly. Specifically the body. The error you see should indicate what is wrong. It may be as simple as a cc input argument is numeric when it should be a string. Or you do not have enough input arguments for the cc function you called. To make these changes look in `/utils/ws_part1.js` or `/utils/ws_part2.js`. Search for the function name that is problematic (like init_marble).
+- *Everything looks okay*
+	- Hmm ok, so let’s go to step 5.
+	
+**[ Step 5 ]**
+
+Our final stop is to examine the client side JS debug messages. 
+- Browse to your marbles app in Chrome or Firefox
+- Right click the page and select "Inspect Element" or "Inspect"
+- Lets open the JS console by click the tab labeled "Console"
+- Go through the flow of creating a marble and let’s look at the console logs.  They should look similar to mine:
+
+
+	creating marble
+	creating marble, sending Object {type: "create", name: "r12sref", color: "black", size: "35", user: "bob"…}
+	getting new balls
+
+Results:
+
+- *I see a JS error of some sort*
+	- Vanilla marbles should have no errors, so you probably edited something right? 
+		- The most common JS error is if you try to index into something that is null.  IE this code will throw an error: var test = null; if(test.hi){}.
+		- I hate to leave you alone now but this is not a blockchain problem. Try copying the error into StackOverflow or Google to figure it out.
+- *Everything looks okay*
+	- Ah, ok. Onward to step 6 
+
+**[ Step 6 ]**
+
+You went through all the steps and nothing was wrong yet marbles is still not behaving correctly? 
+Well I'm stumped.
+The last resort is to wipe it all clean. Delete the app, delete the service. Download it again and start anew.
+
+***
 
 #Bluemix Node.js Logs
 So first up. Do not debug initial setup errors on a Bluemix app. 
