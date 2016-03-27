@@ -12,6 +12,101 @@ Let’s start at the very beginning and check things off one by one.
 1. Check if marbles is reaching chaincode functions
 1. Turn it off and back on again
 
+**[ Step 1 ]** 
+
+We need to first check off that your network is running correctly. 
+The best way to do this is to open your networks monitor page. 
+What we want to see is 2 peers (validating peer 1 and 2) and a CA with the status of "running" or "up for x time". 
+What we do not want to see is missing peers, or peers with an "exited" status. 
+Follow the instructions in [this section](#Peer or ChainCode Logs) to get to the monitor page, and while you are there check the peer logs to see if there is anything suspiouse.
+
+Results:
+
+- *Everything looks okay*
+	- Great, meet me at step 2
+- *Anything else*
+	- You should delete this network and create another one. if this happens multiple times you should contact us
+	
+	
+**[ Step 2 ]**
+
+Right so next is to verify if the marbles app is registering secure context users or not. 
+To do this we need to take a look at the logs from node.js. 
+Depending on your marble setup you either need to get to your [Bluemix Node.js Logs](#) or your [Local Machine Node.js Logs](#). 
+
+Now that you have access to your logs lets find the relevant logs for user registration. 
+The SDK prints these out and they look like so:
+	
+	[ibc-js] Peer:  vp1-3a82c724-6934-4575-87d8-047eefdcf25d_vp1-api.blockchain.ibm.com:80
+	[ibc-js] Peer:  vp2-3a82c724-6934-4575-87d8-047eefdcf25d_vp2-api.blockchain.ibm.com:80
+	[ibc-js] Registering  vp1-3a82c724-6934-4575-87d8-047eefdcf25d_vp1-api.blockchain.ibm.com:80  w/enrollID - user_type1_3fe7935193
+	[ibc-js] Registering  vp2-3a82c724-6934-4575-87d8-047eefdcf25d_vp2-api.blockchain.ibm.com:80  w/enrollID - user_type1_0c8e9f05b2
+	[ibc-js] Registration success: user_type1_0c8e9f05b2
+	[ibc-js] Registration success: user_type1_3fe7935193
+
+Ideally your logs look like mine above. 
+They may be spaced differently by having other lines in between these ones.
+
+Results:
+
+- *I have registration failure message(s)*
+	- Nuts, so here are a few issues that may cause this:
+		- You fed it incorrect usernames and/or secrets. Verify if the username printed out correctly matches one from your services credentials list
+		- You fed it incorrect peer host/ports. Verify the hostname/ports are the same as the ones you see in your network's monitor page.
+		- Verify if your peers are still running (we did this in step 1 though...)
+		- You have previously registered this username to a different peer. This is not allowed. A username can only be registered against 1 peer. (re-registering a username against the same peer is fine though)
+		- You must have at least one registered username for marbles. If only one works edit the list of peers/users you feed marbles to only contain this one.
+		- Check the [logs for CA](#) for any clues (same instructions as peer logs)
+		- If nothing is working, delete this network and create another
+- *Everything looks okay*
+	- Glad to hear it, lets go to step 3
+	
+	
+**[ Step 3 ]**
+Next we want to see if the marbles app deployed its chaincode successfully. 
+The first place I'd look is in the networks monitor page. 
+Follow the instructions in [this section](#Peer or ChainCode Logs) to get to the monitor page. 
+
+Check the bottom table. 
+Does it have a row with a chaincode hash? 
+If it does you can probably go to step 4.
+If it does not then we should look at the logs for your node app again. 
+Even if it the chaincode row is present you may still want to verify the deploy logs from your node app.
+What we are looking for is: 
+	
+	[ibc-js] Deploying Chaincode - Starting
+	[ibc-js]        function: init , arg: [ 'abc', '99']
+
+
+			Waiting...
+			deploy success [wait 1 more minute]
+	[ibc-js] Deploying Chaincode - Complete
+
+Its not important if the arguments in the init function do not match mine. 
+What you do want to match is the success message at the bottom. 
+You may find that the sdk did not even attempt to deploy and a failure happened before it got to that point. 
+
+Results:
+
+- *I see a failure/error messages before deploy even happens*
+	- First off try to make sense of the specific error that was also printed.
+	- If you see anything like "fs readdir Error" check the  `unzip_dir` and `zip_url` field in the options objefct you passed to `ibc.load()`. Manually download the git repo using the `options.chaincode.zip_url` then extract it.  The `gir_dir` var should be the exact relative path to get to the desired cc folder
+	- This is likely some sort of node.js error and has nothing to do with the blockchain Network.  Try stackoverflow and google to figure it out.
+- *I see a deploy failure messages*
+	- There could be many causes for this. 
+		- First off try to make sense of the specific error that was also printed.
+		- If you see anyhing like "error code 2" then your chaincode has build issues and cannot be compiled. Manually build your chaincode and look at the compilers errors.
+		- If you see antyhing like "401 unathorized" message then you have not passed it a secure context username that has been successfully registered. (we did this in step 2 though)
+		- If you see anything like "fs readdir Error" check the  `unzip_dir` and `zip_url` field in the options objefct you passed to `ibc.load()`. Manually download the git repo using the `options.chaincode.zip_url` then extract it.  The `gir_dir` var should be the exact relative path to get to the desired cc folder
+		- You fed it incorrect peer host/ports. Verify the hostname/ports are the same as the ones you see in your network's monitor page.
+		- Verify if your peers are still running (we did this in step 1 though...)
+		- You have previously registered this username to a different peer. This is not allowed. A username can only be registered against 1 peer. (re-registering a username against the same peer is fine though)
+		- Check the [logs for the peer](#) for any clues, you are probably deploying to peer 1.
+		- If nothing is working, delete this network and create another
+- *Everything looks okay*
+	- Wohoo, lets go to step 4
+
+
 #Bluemix Node.js Logs
 So first up. Do not debug initial setup errors on a Bluemix app. 
 You should really verify if marbles (or your own app) runs locally before debugging it here. 
@@ -66,7 +161,7 @@ Let’s get to the console logs your app is printing.
 	> cf logs <YOUR_APP_NAME_HERE> --recent
 
 #Local Machine Node.js Logs
-I'm not totally sure if I need this section, but if you are reading this then, ah, well, ok let’s do this.
+Right so local machine logs...
 You will find node.js logs on the same command prompt/terminal that you used to start the node app. 
 So. Look at your screen. 
 Like this screen, assuming you are running the app on the same machine you are reading this very sentence with.
@@ -92,19 +187,5 @@ These instructions assume you have already created a service and are trying to d
 		- It should have opened a new window. Congratulations you found your peer's chaincode's logs!
 
 #General Trouble Shooting
-1. If you can't get the app to reflect a new change try refreshing the browser
-1. Use the dashboard on the Bluemix service tile to verify if the chaincode was deployed and that your peers are running. You may get into the chaincode/peer logs from here.
-	- If there is no chaincode listed, get into the logs and figure out what happened
-1. Look at the node.js console logs for clues/errors (if using Bluemix do cf logs YOUR_APP_NAME, if localhost look at your screen buddy)
-	- If you want to see recent but historic logs when using Bluemix type cf logs YOUR_APP_NAME --recent in your command line/terminal
-	- The logs that are most helpful are right at the beginning. After the ------------ Server Up - x.x.x.x:xxxx ------------ line.
 1. Open the console in your browser (right click the page, inspect element, open console tab). There are lots of debug prints to help give you clues.
 1. If it still doesn't work try deleting the current network and creating another one
-
-#Common  Node Console Errors & Solutions
-
-1. **500 - ECONNREFUSED** - Check the peers in your options.network.peers.  They likely do not exist / are wrong
-1. **400 - Must supply username for chaincode** - Check if you see a "Register - failure: userx 401" message.  if so delete and remake the network
-1. **401 - Register - failure** - Check the logs of the CA / peer.  If they mention something about an expired certificate delete and remake the network. Logs can be found on the dashboard for the network on Bluemix.
-1. **400 - Error getting chaincode package bytes:...** - Check the options.chaincode.git_url, it is likely incorrect
-1. **fs readdir Error** - Check the `options.chaincode.unzip_dir` and `zip_url`. Manually download the git repo using the `options.chaincode.zip_url` then extract it.  the `gir_dir` var should be the exact relative path to get to the desired cc folder
