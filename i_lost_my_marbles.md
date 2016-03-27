@@ -1,3 +1,5 @@
+*Note while this guide is written for debugging Marbles on our Bluemix IBM Blockchain service it is still relevant for a custom app using a custom IBM Blockchain* 
+
 #Marbles Debug Help
 
 So you think marbles is totally broken, nothing is working right and this whole thing is lame. 

@@ -338,3 +338,7 @@ There is also a `remove_trade()` cc function to allow the user to cancel his tra
 The code for these functions can be found in the part2 folder in the cc repo.
 
 In part 3 we will discuss authentication/authorization, but in the meantime feel free to build off this demo and share your results!
+
+
+#Trouble Shooting
+Stuck? Try my handy [trouble shooting guide](./i_lost_my_marbles.md).

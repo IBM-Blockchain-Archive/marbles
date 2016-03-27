@@ -526,22 +526,5 @@ Next up is [Marbles Part 2](./tutorial_part2.md).
 Part 2 adds some new chaincode functions making it a little more nifty.
 
 
-#General Trouble Shooting
-Stuck? Lost your marbles? Try each trouble shooting method below!
-
-1. If you can't get the app to reflect a new change try refreshing the browser
-1. Use the dashboard on the Bluemix service tile to verify if the chaincode was deployed and that your peers are running. You may get into the chaincode/peer logs from here.
-	- If there is no chaincode listed, get into the logs and figure out what happened
-1. Look at the node.js console logs for clues/errors (if using Bluemix do cf logs YOUR_APP_NAME, if localhost look at your screen buddy)
-	- If you want to see recent but historic logs when using Bluemix type cf logs YOUR_APP_NAME --recent in your command line/terminal
-	- The logs that are most helpful are right at the beginning. After the ------------ Server Up - x.x.x.x:xxxx ------------ line.
-1. Open the console in your browser (right click the page, inspect element, open console tab). There are lots of debug prints to help give you clues.
-1. If it still doesn't work try deleting the current network and creating another one
-
-#Common  Node Console Errors & Solutions
-
-1. **500 - ECONNREFUSED** - Check the peers in your options.network.peers.  They likely do not exist / are wrong
-1. **400 - Must supply username for chaincode** - Check if you see a "Register - failure: userx 401" message.  if so delete and remake the network
-1. **401 - Register - failure** - Check the logs of the CA / peer.  If they mention something about an expired certificate delete and remake the network. Logs can be found on the dashboard for the network on Bluemix.
-1. **400 - Error getting chaincode package bytes:...** - Check the options.chaincode.git_url, it is likely incorrect
-1. **fs readdir Error** - Check the `options.chaincode.unzip_dir` and `zip_url`. Manually download the git repo using the `options.chaincode.zip_url` then extract it.  the `gir_dir` var should be the exact relative path to get to the desired cc folder
+#Trouble Shooting
+Stuck? Try my handy [trouble shooting guide](./i_lost_my_marbles.md).
