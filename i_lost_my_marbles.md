@@ -121,7 +121,7 @@ Results:
 
 The next thing we can do is figure out if marbles is actually reaching the chaincode or not. 
 We will need to open the logs for the chaincode container. 
-Follow the instructions in [this section](#Peer or ChainCode Logs) to get to the monitor page. 
+Follow the instructions in [this section](./i_lost_my_marbles.md#peer-or-chaincode-logs) to get to the monitor page. 
 
 Check the bottom table. 
 It should have at least one chaincode listed. 
@@ -164,10 +164,11 @@ Our final stop is to examine the client side JS debug messages.
 - Lets open the JS console by click the tab labeled "Console"
 - Go through the flow of creating a marble and let’s look at the console logs.  They should look similar to mine:
 
-
-	creating marble
-	creating marble, sending Object {type: "create", name: "r12sref", color: "black", size: "35", user: "bob"…}
-	getting new balls
+```
+creating marble
+creating marble, sending Object {type: "create", name: "r12sref", color: "black", size: "35", user: "bob"…}
+getting new balls
+```
 
 Results:
 
@@ -242,7 +243,7 @@ Let’s get to the console logs your app is printing.
 - it is possible to see a few past logs if you use the command below (this version however is not live)
 
 
-	> cf logs <YOUR_APP_NAME_HERE> --recent
+		> cf logs <YOUR_APP_NAME_HERE> --recent
 
 #Local Machine Node.js Logs
 Right so local machine logs...
