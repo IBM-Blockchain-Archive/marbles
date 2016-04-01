@@ -104,7 +104,7 @@ else console.log('Running using Developer settings');
 // 														Deployment Tracking
 // ============================================================================================================================
 console.log('------------------------------------------ Tracking Deployment ------------------------------------------');
-require("cf-deployment-tracker-client").track();
+require('cf-deployment-tracker-client').track();
 
 // ============================================================================================================================
 // ============================================================================================================================
@@ -140,66 +140,103 @@ var manual ={
   'credentials': {
     'peers': [
       {
-        'discovery_host': '169.44.63.216',
-        'discovery_port': '37228',
-        'api_host': '169.44.63.216',
-        'api_port': '37229',
+        'discovery_host': '9d2b27b6-5069-44fe-aa4a-5442e2602fbe_vp1-discovery.blockchain.ibm.com',
+        'discovery_port': 30303,
+        'api_host': '9d2b27b6-5069-44fe-aa4a-5442e2602fbe_vp1-api.blockchain.ibm.com',
+        'api_port_tls': 443,
+        'api_port': 80,
         'type': 'peer',
-        'network_id': 'a6b7eb8b-1642-441b-8d0f-1b60526bbd2c',
-        'id': 'a6b7eb8b-1642-441b-8d0f-1b60526bbd2c_vp1',
-        'api_url': 'http://169.44.63.216:37229'
+        'network_id': '9d2b27b6-5069-44fe-aa4a-5442e2602fbe',
+        'container_id': '1c6f051f6c4c9957aab1055aa33d9472ba63701e5bb7fe4321618883a599d734',
+        'id': '9d2b27b6-5069-44fe-aa4a-5442e2602fbe_vp1',
+        'api_url': 'http://9d2b27b6-5069-44fe-aa4a-5442e2602fbe_vp1-api.blockchain.ibm.com:80'
       },
       {
-        'discovery_host': '169.44.63.216',
-        'discovery_port': '37230',
-        'api_host': '169.44.63.216',
-        'api_port': '37231',
+        'discovery_host': '9d2b27b6-5069-44fe-aa4a-5442e2602fbe_vp2-discovery.blockchain.ibm.com',
+        'discovery_port': 30303,
+        'api_host': '9d2b27b6-5069-44fe-aa4a-5442e2602fbe_vp2-api.blockchain.ibm.com',
+        'api_port_tls': 443,
+        'api_port': 80,
         'type': 'peer',
-        'network_id': 'a6b7eb8b-1642-441b-8d0f-1b60526bbd2c',
-        'id': 'a6b7eb8b-1642-441b-8d0f-1b60526bbd2c_vp2',
-        'api_url': 'http://169.44.63.216:37231'
+        'network_id': '9d2b27b6-5069-44fe-aa4a-5442e2602fbe',
+        'container_id': 'b53538cf86603e22e358c855f1b3be6d3b8f5f910a762077dc6d6397127bdb4b',
+        'id': '9d2b27b6-5069-44fe-aa4a-5442e2602fbe_vp2',
+        'api_url': 'http://9d2b27b6-5069-44fe-aa4a-5442e2602fbe_vp2-api.blockchain.ibm.com:80'
       }
     ],
+    'ca': {
+      '9d2b27b6-5069-44fe-aa4a-5442e2602fbe_ca': {
+        'url': '9d2b27b6-5069-44fe-aa4a-5442e2602fbe_ca-api.blockchain.ibm.com:30303',
+        'discovery_host': '9d2b27b6-5069-44fe-aa4a-5442e2602fbe_ca-discovery.blockchain.ibm.com',
+        'discovery_port': 30303,
+        'api_host': '9d2b27b6-5069-44fe-aa4a-5442e2602fbe_ca-api.blockchain.ibm.com',
+        'api_port_tls': 30303,
+        'api_port': 80,
+        'type': 'ca',
+        'network_id': '9d2b27b6-5069-44fe-aa4a-5442e2602fbe',
+        'container_id': '3b455a7b8569654641d1d5c44e0c375ad44d21175affcd2b8086efa4a544141e'
+      }
+    },
     'users': [
       {
-        'username': 'user_type0_0f6dc74277',
-        'secret': '43f06f22b3'
+        'username': 'user_type0_6975e0da00',
+        'secret': '9c96098721',
+        'enrollId': 'user_type0_6975e0da00',
+        'enrollSecret': '9c96098721'
       },
       {
-        'username': 'user_type0_260daef220',
-        'secret': '531451f5b6'
+        'username': 'user_type0_07b7b00a6a',
+        'secret': '0ebab718bf',
+        'enrollId': 'user_type0_07b7b00a6a',
+        'enrollSecret': '0ebab718bf'
       },
       {
-        'username': 'user_type1_a8739761d0',
-        'secret': 'a1480c599f'
+        'username': 'user_type1_2842835d40',
+        'secret': 'c1db9878ba',
+        'enrollId': 'user_type1_2842835d40',
+        'enrollSecret': 'c1db9878ba'
       },
       {
-        'username': 'user_type1_004cb13351',
-        'secret': '77c92f46e2'
+        'username': 'user_type1_3505f29b71',
+        'secret': 'e64f519303',
+        'enrollId': 'user_type1_3505f29b71',
+        'enrollSecret': 'e64f519303'
       },
       {
-        'username': 'user_type2_18531db6e7',
-        'secret': '69ddf1f23b'
+        'username': 'user_type2_0b5f783b00',
+        'secret': '9cf6acf31e',
+        'enrollId': 'user_type2_0b5f783b00',
+        'enrollSecret': '9cf6acf31e'
       },
       {
-        'username': 'user_type2_1bff9b070e',
-        'secret': '7ec16c669d'
+        'username': 'user_type2_4f974be787',
+        'secret': '72e3125d48',
+        'enrollId': 'user_type2_4f974be787',
+        'enrollSecret': '72e3125d48'
       },
       {
-        'username': 'user_type3_c8eb2fb25d',
-        'secret': 'aa5e12ae8e'
+        'username': 'user_type3_b558a7e3d5',
+        'secret': 'd0630d6913',
+        'enrollId': 'user_type3_b558a7e3d5',
+        'enrollSecret': 'd0630d6913'
       },
       {
-        'username': 'user_type3_da1a2f9c1c',
-        'secret': '8e90b0c962'
+        'username': 'user_type3_96b91ad76a',
+        'secret': 'a7a78e0aa5',
+        'enrollId': 'user_type3_96b91ad76a',
+        'enrollSecret': 'a7a78e0aa5'
       },
       {
-        'username': 'user_type4_71e901540b',
-        'secret': '75fb6f2537'
+        'username': 'user_type4_fa2c901827',
+        'secret': 'cbb0ca35a4',
+        'enrollId': 'user_type4_fa2c901827',
+        'enrollSecret': 'cbb0ca35a4'
       },
       {
-        'username': 'user_type4_bccdc317dd',
-        'secret': 'f5b216ee3e'
+        'username': 'user_type4_5dc7d84f4c',
+        'secret': '9b0a0d62a2',
+        'enrollId': 'user_type4_5dc7d84f4c',
+        'enrollSecret': '9b0a0d62a2'
       }
     ]
   }
@@ -241,6 +278,7 @@ var options = 	{
 					network:{
 						peers: peers,
 						users: users,
+						options: {quiet: true}
 					},
 					chaincode:{
 						zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip',
@@ -289,6 +327,7 @@ function cb_deployed(e, d){
 	else{
 		console.log('------------------------------------------ Websocket Up ------------------------------------------');
 		ibc.save('./cc_summaries');															//save it here for chaincode investigator
+		
 		wss = new ws.Server({server: server});												//start the websocket now
 		wss.on('connection', function connection(ws) {
 			ws.on('message', function incoming(message) {
