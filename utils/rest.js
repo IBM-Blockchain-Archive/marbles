@@ -84,6 +84,7 @@ function mergeBtoA(b, a){
 		if(a[i] === undefined) {
 			//console.log(' - copying');
 			a[i] = b[i];
+			//a[i] = JSON.parse(JSON.stringify(b[i]));
 		}
 		//else console.log(' - not copying');
 	}
@@ -144,7 +145,7 @@ function http(options, parameters, body){
 		if(options.headers) options.headers['content-length'] = Buffer.byteLength(body);
 		else options.headers = {'content-lenght': Buffer.byteLength(body)};
 	}
-	else if(options.headers['content-length']) delete options.headers['content-length'];			//we don't need you
+	//else if(options.headers['content-length']) delete options.headers['content-length'];			//we don't need you
 	
 	if(!options.quiet && options.method.toLowerCase() !== 'get') {
 		console.log('  body:', body);
