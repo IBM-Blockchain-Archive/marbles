@@ -46,7 +46,7 @@ Attributes of a marble:
 We are going to create a Web UI that can set these values and pass them to the chaincode. 
 Interacting with the cc is done with a HTTP REST call to a peer on the network. 
 The ibc-js SDK will abstract the details of the REST calls away.
-This allow us to use dot notation to call our GoLang functions (such as `chaincode.init_marble(args)`).
+This allow us to use dot notation to call our GoLang functions (such as `chaincode.invoke.init_marble(args)`).
 
 #Application Communication Flow
 
@@ -101,44 +101,56 @@ The SDK we have built will be able to find the names of the functions listed in 
 It will then give you a dot notation to use them in your Node.js application. ie:
 	
 ```js
-	chaincode.read("abc");               //calls the Query() function which will read the var "abc"
-	chaincode.write("stuff", "test");    //invokes the cc funciton Write() function which will write test to "stuff" in the cc state
-	chaincode.rule_the_world("tomrrow"); //invokes the cc function "rule_the_world" (assuming it exists)
+	chaincode.query.read(["abc"]);               //calls the Query() function which will read the var "abc"
+	chaincode.invoke.write(["stuff", "test"]);    //invokes the cc funciton Write() function which will write test to "stuff" in the cc state
+	chaincode.invoke.rule_the_world(["tomrrow"]); //invokes the cc function "rule_the_world" (assuming it exists)
 ```
 
-Note that the `chaincode.read()` will call the `Query()` function in our chaincode. 
-This function is not listed in `Run()` because it is a special function. 
-The code for my `Query()` is listed below:
+Note that the `chaincode.query.read()` will call the `Query()` function in our chaincode. 
+This function is not listed in `Run()` because it not an invocation. 
+The code for my `Query()` and `read()` is listed below:
 
 __Query()__
 
 ```js
 	// ============================================================================================================================
-	// Query - read a variable from chaincode state - (aka read)
+	// Query - Our entry point for Queries
 	// ============================================================================================================================
 	func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
-		if function != "query" {
-			return nil, errors.New("Invalid query function name. Expecting \"query\"")
+		fmt.Println("query is running " + function)
+
+		// Handle different functions
+		if function == "read" {													//read a variable
+			return t.read(stub, args)
 		}
+		fmt.Println("query did not find func: " + function)						//error
+
+		return nil, errors.New("Received unknown function query")
+	}
+	
+	// ============================================================================================================================
+	// Read - read a variable from chaincode state
+	// ============================================================================================================================
+	func (t *SimpleChaincode) read(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 		var name, jsonResp string
 		var err error
 
 		if len(args) != 1 {
-			return nil, errors.New("Incorrect number of arguments. Expecting name of the person to query")
+			return nil, errors.New("Incorrect number of arguments. Expecting name of the var to query")
 		}
 
 		name = args[0]
-		valAsbytes, err := stub.GetState(name)              //get the var from chaincode state
+		valAsbytes, err := stub.GetState(name)									//get the var from chaincode state
 		if err != nil {
 			jsonResp = "{\"Error\":\"Failed to get state for " + name + "\"}"
 			return nil, errors.New(jsonResp)
 		}
 
-		return valAsbytes, nil                              //send it onward
+		return valAsbytes, nil													//send it onward
 	}
 ```
 
-The `Query()` function gives us some insight to how variables are retrieved from cc state. 
+The `read()` function gives us some insight to how variables are retrieved from cc state. 
 It is a simple matter of using `stub.GetState()` to fetch the value from the key/value pair.
 The return value of query is an array of bytes. 
 This array gets passed to the peer's REST API code which will format it into a JSON string for the response. 
@@ -174,7 +186,7 @@ __Write()__
 The `Write()` function is equally simple but unlike query, write is found in our `Run()` list. 
 `Write()` uses `stub.PutState(name, value)` to store the key/value pair. 
 Note that the name is a string, and that value is an array of bytes. 
-Most of the chaincode we will create will mimic parts of query or parts of write. 
+Most of the chaincode we will create will mimic parts of read or parts of write. 
 
 What I mean by that is that we will use `PutState()` and `GetState()` as the basic building blocks for any cc functions we need to create. 
 Marbles is going to use something that I'm going to call a "monolithic chaincode model". 
@@ -299,8 +311,8 @@ An abbreviated version is below:
 		},
 		chaincode:{
 			zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip', //http/https of a link to download zip
-			unzip_dir: 'marbles-chaincode-master/part2',                                    //name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
-			git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/part2',           //GO git https URL. should point to the desired chaincode repo AND directory
+			unzip_dir: 'marbles-chaincode-master/part2_v1.0.0',                                    //name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
+			git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/part2_v1.0.0',           //GO git https URL. should point to the desired chaincode repo AND directory
 		}
 	};
 	ibc.load(options, cb);
@@ -386,7 +398,7 @@ __/utils/ws_part1.js__
 		if(data.v == 1){
 			if(data.type == 'create'){
 				console.log('its a create!');
-				chaincode.init_marble([data.name, data.color, data.size, data.user], cb_invoked);
+				chaincode.invoke.init_marble([data.name, data.color, data.size, data.user], cb_invoked);
 			}
 			else if(data.type == 'get'){
 				console.log('get marbles msg');
@@ -394,12 +406,12 @@ __/utils/ws_part1.js__
 			}
 			else if(data.type == 'transfer'){
 				console.log('transfering msg');
-				chaincode.set_user([data.name, data.user]);
+				chaincode.invoke.set_user([data.name, data.user]);
 			}
 		...
 ```
 
-The `chaincode.set_user([data.name, data.user]);` line is where we submit our request to run the chaincode function. 
+The `chaincode.invoke.set_user([data.name, data.user]);` line is where we submit our request to run the chaincode function. 
 It is passing to our GoLang set_user function an array of strings argument containing the name of the marble and the name of it's new owner. 
 By "passing" I mean it is really sending a HTTP POST /devops/invoke request to one of the peers in our network. 
 This peer will in turn call the chaincode and actually pass the argument to the cc function. 
@@ -471,8 +483,8 @@ __./app.js__ (abbreviated)
 			console.log('hey new block, lets refresh and broadcast to all');
 			ibc.block_stats(chain_stats.height - 1, cb_blockstats);
 			wss.broadcast({msg: 'reset'});
-			chaincode.read('_marbleindex', cb_got_index);
-			chaincode.read('_opentrades', cb_got_trades);
+			chaincode.query.read(['_marbleindex'], cb_got_index);
+			chaincode.query.read(['_opentrades'], cb_got_trades);
 		}
 		
 		//got the block's stats, lets send the statistics
@@ -489,7 +501,7 @@ __./app.js__ (abbreviated)
 					var json = JSON.parse(index);
 					for(var i in json){
 						console.log('!', i, json[i]);
-						chaincode.read(json[i], cb_got_marble);							//iter over each, read their values
+						chaincode.query.read([json[i]], cb_got_marble);							//iter over each, read their values
 					}
 				}
 				catch(e){

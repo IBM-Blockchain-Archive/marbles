@@ -15,23 +15,23 @@ module.exports.process_msg = function(ws, data){
 		if(data.type == 'create'){
 			console.log('its a create!');
 			if(data.name && data.color && data.size && data.user){
-				chaincode.init_marble([data.name, data.color, data.size, data.user], cb_invoked);				//create a new marble
+				chaincode.invoke.init_marble([data.name, data.color, data.size, data.user], cb_invoked);				//create a new marble
 			}
 		}
 		else if(data.type == 'get'){
 			console.log('get marbles msg');
-			chaincode.read('_marbleindex', cb_got_index);
+			chaincode.query.read(['_marbleindex'], cb_got_index);
 		}
 		else if(data.type == 'transfer'){
 			console.log('transfering msg');
 			if(data.name && data.user){
-				chaincode.set_user([data.name, data.user]);
+				chaincode.invoke.set_user([data.name, data.user]);
 			}
 		}
 		else if(data.type == 'remove'){
 			console.log('removing msg');
 			if(data.name){
-				chaincode.remove(data.name);
+				chaincode.invoke.remove(data.name);
 			}
 		}
 		else if(data.type == 'chainstats'){
@@ -52,7 +52,7 @@ module.exports.process_msg = function(ws, data){
 				//serialized version
 				async.eachLimit(keys, concurrency, function(key, cb) {
 					console.log('!', json[key]);
-					chaincode.read(json[key], function(e, marble) {
+					chaincode.query.read([json[key]], function(e, marble) {
 						if(e != null) console.log('error:', e);
 						else {
 							sendMsg({msg: 'marbles', e: e, marble: marble});

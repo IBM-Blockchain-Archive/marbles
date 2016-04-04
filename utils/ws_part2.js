@@ -15,23 +15,23 @@ module.exports.process_msg = function(ws, data){
 		if(data.type == 'create'){
 			console.log('its a create!');
 			if(data.name && data.color && data.size && data.user){
-				chaincode.init_marble([data.name, data.color, data.size, data.user], cb_invoked);				//create a new marble
+				chaincode.invoke.init_marble([data.name, data.color, data.size, data.user], cb_invoked);				//create a new marble
 			}
 		}
 		else if(data.type == 'get'){
 			console.log('get marbles msg');
-			chaincode.read('_marbleindex', cb_got_index);
+			chaincode.query.read(['_marbleindex'], cb_got_index);
 		}
 		else if(data.type == 'transfer'){
 			console.log('transfering msg');
 			if(data.name && data.user){
-				chaincode.set_user([data.name, data.user]);
+				chaincode.invoke.set_user([data.name, data.user]);
 			}
 		}
 		else if(data.type == 'remove'){
 			console.log('removing msg');
 			if(data.name){
-				chaincode.remove(data.name);
+				chaincode.invoke.remove(data.name);
 			}
 		}
 		else if(data.type == 'chainstats'){
@@ -52,20 +52,20 @@ module.exports.process_msg = function(ws, data){
 					args.push(data.willing[i].color);
 					args.push(data.willing[i].size);
 				}
-				chaincode.open_trade(args);
+				chaincode.invoke.open_trade(args);
 			}
 		}
 		else if(data.type == 'get_open_trades'){
 			console.log('get open trades msg');
-			chaincode.read('_opentrades', cb_got_trades);
+			chaincode.query.read(['_opentrades'], cb_got_trades);
 		}
 		else if(data.type == 'perform_trade'){
 			console.log('perform trade msg');
-			chaincode.perform_trade([data.id, data.closer.user, data.closer.name, data.opener.user, data.opener.color, data.opener.size]);
+			chaincode.invoke.perform_trade([data.id, data.closer.user, data.closer.name, data.opener.user, data.opener.color, data.opener.size]);
 		}
 		else if(data.type == 'remove_trade'){
 			console.log('remove trade msg');
-			chaincode.remove_trade([data.id]);
+			chaincode.invoke.remove_trade([data.id]);
 		}
 	}
 	
@@ -78,7 +78,7 @@ module.exports.process_msg = function(ws, data){
 				var json = JSON.parse(index);
 				for(var i in json){
 					console.log('!', i, json[i]);
-					chaincode.read(json[i], cb_got_marble);												//iter over each, read their values
+					chaincode.query.read([json[i]], cb_got_marble);												//iter over each, read their values
 				}
 			}
 			catch(e){

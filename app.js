@@ -103,8 +103,8 @@ else console.log('Running using Developer settings');
 // ============================================================================================================================
 // 														Deployment Tracking
 // ============================================================================================================================
-console.log('------------------------------------------ Tracking Deployment ------------------------------------------');
-require('cf-deployment-tracker-client').track();
+console.log('- Tracking Deployment');
+require('cf-deployment-tracker-client').track();		//reports back to us, this helps us judge interest! feel free to remove it
 
 // ============================================================================================================================
 // ============================================================================================================================
@@ -278,15 +278,15 @@ var options = 	{
 					network:{
 						peers: peers,
 						users: users,
-						options: {quiet: true}
+						options: {quiet: true, tls:false, maxRetry: 1}
 					},
 					chaincode:{
 						zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip',
-						unzip_dir: 'marbles-chaincode-master/part2',											//subdirectroy name of chaincode after unzipped
-						git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/part2',					//GO git http url
+						unzip_dir: 'marbles-chaincode-master/part2_v1.0.0',											//subdirectroy name of chaincode after unzipped
+						git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/part2_v1.0.0',				//GO git http url
 					
 						//hashed cc name from prev deployment
-						//deployed_name: '8fe7b3d9a3d43c5b6b91d65b0585366fa3d560d5362e11f0eea11ff614a296fdec8607b17de429c919975d5386953e4dac486a09ce6c965f5844d7d183825efb'
+						//deployed_name: 'c5181b2ecd0c291d3bdc692921ba65e58d502aa35db2a06539e8a41398548f30c76990544f2edcc10ba4d25621dd1ef7e4c9f04ccab1b907ddc6914c3bc39a64'
 					}
 				};
 if(process.env.VCAP_SERVICES){
@@ -305,8 +305,8 @@ function cb_ready(err, cc){																	//response has chaincode functions
 		chaincode = cc;
 		part1.setup(ibc, cc);
 		part2.setup(ibc, cc);
-		if(!cc.details.deployed_name || cc.details.deployed_name === ''){												//decide if i need to deploy
-			cc.deploy('init', ['99'], './cc_summaries', cb_deployed);
+		if(!cc.details.deployed_name || cc.details.deployed_name === ''){					//decide if i need to deploy
+			cc.deploy('init', ['99'], {save_path: './cc_summaries'}, cb_deployed);
 		}
 		else{
 			console.log('chaincode summary file indicates chaincode has been previously deployed');
@@ -360,8 +360,8 @@ function cb_deployed(e, d){
 				console.log('hey new block, lets refresh and broadcast to all');
 				ibc.block_stats(chain_stats.height - 1, cb_blockstats);
 				wss.broadcast({msg: 'reset'});
-				chaincode.read('_marbleindex', cb_got_index);
-				chaincode.read('_opentrades', cb_got_trades);
+				chaincode.query.read(['_marbleindex'], cb_got_index);
+				chaincode.query.read(['_opentrades'], cb_got_trades);
 			}
 			
 			//got the block's stats, lets send the statistics
@@ -378,7 +378,7 @@ function cb_deployed(e, d){
 						var json = JSON.parse(index);
 						for(var i in json){
 							console.log('!', i, json[i]);
-							chaincode.read(json[i], cb_got_marble);							//iter over each, read their values
+							chaincode.query.read([json[i]], cb_got_marble);							//iter over each, read their values
 						}
 					}
 					catch(e){
