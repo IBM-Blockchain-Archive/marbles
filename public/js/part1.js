@@ -168,7 +168,7 @@ function connect_to_server(){
 		try{
 			var data = JSON.parse(msg.data);
 			if(data.v != '2'){
-				console.log('rec', data);
+				console.log('rec', data.msg, data);
 				if(data.marble){
 					build_ball(data.marble);
 				}

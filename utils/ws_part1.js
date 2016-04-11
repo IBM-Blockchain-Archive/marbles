@@ -31,7 +31,7 @@ module.exports.process_msg = function(ws, data){
 		else if(data.type == 'remove'){
 			console.log('removing msg');
 			if(data.name){
-				chaincode.invoke.remove(data.name);
+				chaincode.invoke.delete([data.name]);
 			}
 		}
 		else if(data.type == 'chainstats'){

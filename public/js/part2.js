@@ -360,7 +360,7 @@ function connect_to_server(){
 	function onMessage(msg){
 		try{
 			var data = JSON.parse(msg.data);
-			console.log('rec', data);
+			console.log('rec', data.msg, data);
 			if(data.marble){
 				build_ball(data.marble);
 				set_my_color_options(user.username);
