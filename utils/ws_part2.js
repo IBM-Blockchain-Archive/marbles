@@ -91,7 +91,10 @@ module.exports.process_msg = function(ws, data){
 	function cb_got_marble(e, marble){
 		if(e != null) console.log('error:', e);
 		else {
-			sendMsg({msg: 'marbles', marble: marble});
+			try{
+				sendMsg({msg: 'marbles', marble: JSON.parse(marble)});
+			}
+			catch(e){}
 		}
 	}
 	
@@ -105,13 +108,13 @@ module.exports.process_msg = function(ws, data){
 		chain_stats = stats;
 		if(stats && stats.height){
 			var list = [];
-			for(var i = stats.height - 1; i >= 1; i--){										//create a list of heights we need
+			for(var i = stats.height - 1; i >= 1; i--){								//create a list of heights we need
 				list.push(i);
 				if(list.length >= 8) break;
 			}
-			list.reverse();																//flip it so order is correct in UI
+			list.reverse();															//flip it so order is correct in UI
 			console.log(list);
-			async.eachLimit(list, 1, function(key, cb) {								//iter through each one, and send it
+			async.eachLimit(list, 1, function(key, cb) {							//iter through each one, and send it
 				ibc.block_stats(key, function(e, stats){
 					if(e == null){
 						stats.height = key;
@@ -128,9 +131,13 @@ module.exports.process_msg = function(ws, data){
 	function cb_got_trades(e, trades){
 		if(e != null) console.log('error:', e);
 		else {
-			if(trades && trades.open_trades){
-				sendMsg({msg: 'open_trades', open_trades: trades.open_trades});
+			try{
+				trades = JSON.parse(trades);
+				if(trades && trades.open_trades){
+					sendMsg({msg: 'open_trades', open_trades: trades.open_trades});
+				}
 			}
+			catch(e){}
 		}
 	}
 

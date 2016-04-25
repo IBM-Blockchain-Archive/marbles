@@ -55,7 +55,7 @@ module.exports.process_msg = function(ws, data){
 					chaincode.query.read([json[key]], function(e, marble) {
 						if(e != null) console.log('error:', e);
 						else {
-							sendMsg({msg: 'marbles', e: e, marble: marble});
+							sendMsg({msg: 'marbles', e: e, marble: JSON.parse(marble)});
 							cb(null);
 						}
 					});

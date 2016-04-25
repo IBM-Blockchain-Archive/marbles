@@ -335,7 +335,7 @@ The reason we need such functionality is because it is possible for a user to lo
 Thus he is no longer able to for fill his own trade. 
 The current cc code will find such events and remove the option from the trade and if the trade has no more willing options it will remove the trade itself.
 There is also a `remove_trade()` cc function to allow the user to cancel his trade. 
-The code for these functions can be found in the part2_v1.0.0 folder in the cc repo.
+The code for these functions can be found in the part2 folder in the cc repo.
 
 In part 3 we will discuss authentication/authorization, but in the meantime feel free to build off this demo and share your results!
 
