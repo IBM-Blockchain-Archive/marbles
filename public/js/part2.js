@@ -426,7 +426,6 @@ function build_ball(data){
 		if(data.color) colorClass = data.color.toLowerCase();
 		
 		html += '<span id="' + data.name + '" class="fa fa-circle ' + size + ' ball ' + colorClass + ' ' + notYours + '" title="' + data.name + '" user="' + data.user + '"></span>';
-		console.log('yo', html);
 		if(data.user && data.user.toLowerCase() == bag.setup.USER1){
 			$('#user1wrap').append(html);
 		}
