@@ -170,7 +170,7 @@ function connect_to_server(){
 			if(data.v != '2'){
 				console.log('rec', data.msg, data);
 				if(data.marble){
-					build_ball(JSON.parse(data.marble));
+					build_ball(data.marble);
 				}
 				else if(data.msg === 'chainstats'){
 					var e = formatDate(data.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
