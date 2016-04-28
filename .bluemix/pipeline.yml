@@ -26,3 +26,4 @@ stages:
       #!/bin/bash
       cf create-service ibm-blockchain-5-prod ibm-blockchain-plan-5-prod myblockchain
       cf push "${CF_APP}"
+
