@@ -86,28 +86,34 @@ First things first we need to list this in the bottom of our `Run()` function li
 __Run()__
 
 ```js
-	func (t *SimpleChaincode) Run(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
-		fmt.Println("run is running " + function)
+	func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+		fmt.Println("invoke is running " + function)
 
 		// Handle different functions
-		if function == "init" {                  //initialize the chaincode state, used as reset
-			return t.init(stub, args)
-		} else if function == "delete" {         //deletes an entity from its state
+		if function == "init" {                       //initialize the chaincode state, used as reset
+			return t.Init(stub, "init", args)
+		} else if function == "delete" {              //deletes an entity from its state
 			res, err := t.Delete(stub, args)
-			cleanTrades(stub)                    //lets make sure all open trades are still valid
+			cleanTrades(stub)                         //lets make sure all open trades are still valid
 			return res, err
-		} else if function == "write" {          //writes a value to the chaincode state
+		} else if function == "write" {               //writes a value to the chaincode state
 			return t.Write(stub, args)
-		} else if function == "init_marble" {    //create a new marble
+		} else if function == "init_marble" {         //create a new marble
 			return t.init_marble(stub, args)
-		} else if function == "set_user" {       //change owner of a marble
+		} else if function == "set_user" {            //change owner of a marble
 			res, err := t.set_user(stub, args)
-			cleanTrades(stub)                    //lets make sure all open trades are still valid
+			cleanTrades(stub)                         //lets make sure all open trades are still valid
 			return res, err
-		} else if function == "open_trade" {     //create a new trade order
+		} else if function == "open_trade" {          //create a new trade order
 			return t.open_trade(stub, args)
+		} else if function == "perform_trade" {       //forfill an open trade order
+			res, err := t.perform_trade(stub, args)
+			cleanTrades(stub)                         //lets clean just in case
+			return res, err
+		} else if function == "remove_trade" {        //cancel an open trade order
+			return t.remove_trade(stub, args)
 		}
-		fmt.Println("run did not find func: " + function) //error
+		fmt.Println("invoke did not find func: " + function)//error
 
 		return nil, errors.New("Received unknown function invocation")
 	}

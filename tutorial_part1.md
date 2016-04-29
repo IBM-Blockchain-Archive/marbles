@@ -234,7 +234,7 @@ The network is all setup.  Now we need to copy the peer data and pass it to our 
 
 1. Click the "myblockchain" tile in you Bluemix Dashboard
 1. Click the "Service Credentials" link on the left
-1. Copy the value of the whole JSON object to the `manual` var in app.js at line 134ish.
+1. Copy the value of the whole JSON object to the `manual` var in app.js at line 139ish.
 	1. If for some reason you don't see any credentials click the "ADD CREDENTIALS" button and let the page refresh
 
 #Run Marbles on Local Machine
@@ -276,7 +276,7 @@ If you haven't, go ahead and do it now (instructions are [above](#network)).
 	> (follow the prompts)  
 	> cf push YOUR_APP_NAME_HERE  
 	
-1. The application will bind to the service "myblockchain" and grab the peer data from VCAP_SERVICES. Code for this is in app.js line 208ish
+1. The application will bind to the service "myblockchain" and grab the peer data from VCAP_SERVICES. Code for this is in app.js line 309ish
 
 #<a name="run"></a>Use Marbles App
 1. Open up your browser and browse to [http://localhost:3000](http://localhost:3000) or your Bluemix www route.
@@ -395,18 +395,22 @@ __/utils/ws_part1.js__
 
 ```js
 	module.exports.process_msg = function(ws, data){
-		if(data.v == 1){
+		if(data.v === 1){
 			if(data.type == 'create'){
 				console.log('its a create!');
-				chaincode.invoke.init_marble([data.name, data.color, data.size, data.user], cb_invoked);
+				if(data.name && data.color && data.size && data.user){
+					chaincode.invoke.init_marble([data.name, data.color, data.size, data.user], cb_invoked);
+				}
 			}
 			else if(data.type == 'get'){
 				console.log('get marbles msg');
-				get_marbles();
+				chaincode.query.read(['_marbleindex'], cb_got_index);
 			}
 			else if(data.type == 'transfer'){
 				console.log('transfering msg');
-				chaincode.invoke.set_user([data.name, data.user]);
+				if(data.name && data.user){
+					chaincode.invoke.set_user([data.name, data.user]);
+				}
 			}
 		...
 ```
@@ -489,8 +493,11 @@ __./app.js__ (abbreviated)
 		
 		//got the block's stats, lets send the statistics
 		function cb_blockstats(e, stats){
-			if(chain_stats.height) stats.height = chain_stats.height - 1;
-			wss.broadcast({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
+			if(e != null) console.log('error:', e);
+			else {
+				if(chain_stats.height) stats.height = chain_stats.height - 1;
+				wss.broadcast({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
+			}
 		}
 		
 		//got the marble index, lets get each marble
@@ -501,11 +508,11 @@ __./app.js__ (abbreviated)
 					var json = JSON.parse(index);
 					for(var i in json){
 						console.log('!', i, json[i]);
-						chaincode.query.read([json[i]], cb_got_marble);							//iter over each, read their values
+						chaincode.query.read([json[i]], cb_got_marble);
 					}
 				}
 				catch(e){
-					console.log('error:', e);
+					console.log('marbles index msg error:', e);
 				}
 			}
 		}
@@ -514,7 +521,12 @@ __./app.js__ (abbreviated)
 		function cb_got_marble(e, marble){
 			if(e != null) console.log('error:', e);
 			else {
-				wss.broadcast({msg: 'marbles', marble: marble});
+				try{
+					wss.broadcast({msg: 'marbles', marble: JSON.parse(marble)});
+				}
+				catch(e){
+					console.log('marble msg error', e);
+				}
 			}
 		}
 		...
