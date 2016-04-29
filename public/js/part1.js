@@ -141,7 +141,9 @@ function connect_to_server(){
 	connect();
 	
 	function connect(){
-		var wsUri = 'ws://' + bag.setup.SERVER.EXTURI;
+		var wsUri = 'ws://' + document.location.hostname + ':' + document.location.port;
+		console.log('Connectiong to websocket', wsUri);
+		
 		ws = new WebSocket(wsUri);
 		ws.onopen = function(evt) { onOpen(evt); };
 		ws.onclose = function(evt) { onClose(evt); };
@@ -150,7 +152,7 @@ function connect_to_server(){
 	}
 	
 	function onOpen(evt){
-		console.log('WS CONNECTED', ws);
+		console.log('WS CONNECTED');
 		connected = true;
 		clear_blocks();
 		$('#errorNotificationPanel').fadeOut();

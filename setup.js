@@ -30,7 +30,7 @@ if(process.env.VCAP_APP_HOST && process.env.PRODUCTION){
 							HOST: process.env.VCAP_APP_HOST,
 							PORT: process.env.VCAP_APP_PORT,
 							DESCRIPTION: 'Bluemix - Production',
-							EXTURI: ext_uri,
+							EXTURI: ext_uri,		//no longer used 4/29/2016
 						};
 }
 
@@ -42,7 +42,7 @@ else if(process.env.VCAP_APP_HOST){
 								HOST: process.env.VCAP_APP_HOST,
 								PORT: process.env.VCAP_APP_PORT,
 								DESCRIPTION: 'Bluemix - Development',
-								EXTURI: ext_uri,
+								EXTURI: ext_uri,		//no longer used 4/29/2016
 							 };
 }
 
@@ -54,7 +54,7 @@ else{
 							HOST:'localhost',
 							PORT: 3000,
 							DESCRIPTION: 'Localhost',
-							EXTURI: 'localhost:3000',
+							EXTURI: 'localhost:3000',	//no longer used 4/29/2016
 						 };
 }
 
