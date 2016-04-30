@@ -10,7 +10,7 @@ var node, env = {};
 
 ////// Build Tasks ///////
 gulp.task('build-sass', function () {
-	gulp.src('./src/scss/*.scss')
+	gulp.src(path.join(__dirname, '/scss/*.scss'))
 		.pipe(sass().on('error', sass.logError))
 		.pipe(gulp.dest(path.join(__dirname,'/scss/temp')))			//build them here first
 		.pipe(concat('main.css'))									//concat them all
