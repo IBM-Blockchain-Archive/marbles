@@ -32,5 +32,9 @@
 		"gulp-concat": "*",
 		"gulp-clean-css": "*",
 		"gulp-rename": "*"
-	}
+	},
+	"author": {
+    	"name": "David Huffman"
+	},
+	"license": "Apache-2.0"
 }
