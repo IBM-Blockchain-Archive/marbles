@@ -13,8 +13,8 @@ Before jumping into the local network deployment, we recommend deploying first t
 This section explains the simplest network setup to make the Marbles app and the BlockChain nodes run locally altogether. Further advanced setup are suggested [here](#further).
 
 Previous considerations:
-- This deployment will use the [OBC](https://github.com/openblockchain) BlockChain implementation. This implementation is not the newest implementation as OBC was moved to [HyperLedger](https://github.com/hyperledger) and many advances have been made since then. But marbles hasn't been updated accordingly and some things are outdated (and won't work). 
-- The deployment won't use the security features of a CA because some [problems](https://github.com/hyperledger/fabric/issues/1204) were encountered when starting the Marbles app.
+- This deployment will use the [OBC](https://github.com/openblockchain) BlockChain implementation. This implementation is not the newest implementation as OBC was moved to [HyperLedger](https://github.com/hyperledger) and many advances have been made since then. 
+- The deployment won't use the security features of a CA
 
 Steps:
 
