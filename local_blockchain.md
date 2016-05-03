@@ -93,7 +93,7 @@ Now we are going to modify the Marbles app to work with the local network setup.
 	};
 	```
 
-7. Now you can run the Marbles app by doing [this](#run). You might want to use ```sudo``` when installing npm and running gulp.
+7. Now you can run the Marbles app by doing [this](/tutorial_part1.md#run). You might want to use ```sudo``` when installing npm and running gulp.
 
 
 ##<a name="further"></a>Further advanced setup
