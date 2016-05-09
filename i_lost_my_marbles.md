@@ -16,6 +16,18 @@ Let’s start at the very beginning and check things off one by one.
 1. [Turn it off and back on again](./i_lost_my_marbles.md#step6)
 
 
+**[ Step 0 ]**
+
+Lets double check some environmental setup before moving on! 
+While each marble version should run fine, its best to grab the newest version. Clone the repo again.
+
+Also make sure your node modules (especially the latest SDK [ibm-blockchain-js](https://github.com/IBM-Blockchain/ibm-blockchain-js/blob/master/package.json)) are up to date by running:
+
+```
+(from a command line/terminal browse to the marbles folder)
+npm update
+```
+
 <a name="step1"></a>
 **[ Step 1 ]**
 
