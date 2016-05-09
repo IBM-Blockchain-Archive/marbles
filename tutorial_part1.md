@@ -63,7 +63,7 @@ Marbles Part 1 and Marbles Part 2 will use different chaincode, but Part 2 will 
 Part 1 is just nicer to look at since it has less lines of code, and hopefully less things to confuse you on. 
 It is perfectly fine to use Part 2's chaincode with the Marbles Part 1 web application.
 	
-The first interesting place in the cc is the `Run()` function. 
+The first interesting place in the cc is the `Invoke()` function. 
 This is our entry point into chaincode. 
 IE the peer will call this function for any type of "invocation". 
 "Invoking" a function simply means we are attempting to run a cc function and that this event will be recorded to the blockchain ledger.
@@ -71,18 +71,18 @@ A counter example to an invoke operation would be a query operation.  Query even
 
 Looking at the example code it should be clear that we can invoke our GoLang functions by detecting the desired function name and passing to that function the argument `args`.
 
-__Run()__
+__Invoke()__
 
 ```js
 	// ============================================================================================================================
-	// Run - Our entry point
+	// Invoke - Our entry point for Invocations
 	// ============================================================================================================================
-	func (t *SimpleChaincode) Run(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
-		fmt.Println("run is running " + function)
+	func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+		fmt.Println("invoke is running " + function)
 
 		// Handle different functions
 		if function == "init" {               //initialize the chaincode state, used as reset
-			return t.init(stub, args)
+			return t.Init(stub, "init", args)
 		} else if function == "delete" {      //deletes an entity from its state
 			return t.Delete(stub, args)
 		} else if function == "write" {       //writes a value to the chaincode state
@@ -92,13 +92,13 @@ __Run()__
 		} else if function == "set_user" {    //change owner of a marble
 			return t.set_user(stub, args)
 		}
-		fmt.Println("run did not find func: " + function) //error
+		fmt.Println("invoke did not find func: " + function) //error
 
 		return nil, errors.New("Received unknown function invocation")
 	}
 ```
 
-The SDK we have built will be able to find the names of the functions listed in Run(). 
+The SDK we have built will be able to find the names of the functions listed in Invoke(). 
 It will then give you a dot notation to use them in your Node.js application. ie:
 	
 ```js
@@ -108,7 +108,7 @@ It will then give you a dot notation to use them in your Node.js application. ie
 ```
 
 Note that the `chaincode.query.read()` will call the `Query()` function in our chaincode. 
-This function is not listed in `Run()` because it not an invocation. 
+This function is not listed in `Invoke()` because it not an invocation. 
 The code for my `Query()` and `read()` is listed below:
 
 __Query()__
@@ -184,7 +184,7 @@ __Write()__
 	}
 ```
 
-The `Write()` function is equally simple but unlike query, write is found in our `Run()` list. 
+The `Write()` function is equally simple but unlike query, write is found in our `Invoke()` function. 
 `Write()` uses `stub.PutState(name, value)` to store the key/value pair. 
 Note that the name is a string, and that value is an array of bytes. 
 Most of the chaincode we will create will mimic parts of read or parts of write. 
@@ -196,6 +196,8 @@ Individual marbles and anything else we need will live inside this single chainc
 Of course there are much more complicated architectures you can create with a blockchain network. 
 I wanted to start here with the simplest one I could think of. 
 We will take a look at writing more specific chaincode after we get an environment setup. 
+
+**A slightly more comprehensive chaincode tutorial can be found at [Learn Chaincode](https://github.com/IBM-Blockchain/learn-chaincode)**
 
 # Setup Options:
 So the cc is great and all but first we need a blockchain network. 
@@ -312,8 +314,8 @@ An abbreviated version is below:
 				"id": "xxxxxx-xxxx-xxx-xxx-xxxxxxxxxxxx_vpx",
 			}],
 			users:  [{
-				"username": "user1",
-				"secret": "xxxxxxxx"
+				"enrollID": "user1",
+				"enrollSecret": "xxxxxxxx"
 			}]
 		},
 		chaincode:{
@@ -325,17 +327,22 @@ An abbreviated version is below:
 	ibc.load(options, cb);
 ```
 
-This network has membership security; we can tell because there are usernames/secrets in the network.users list. 
-Therefore the first step is we need to use the /registrar endpoint to register a username with a peer. 
-The SDK will first parse the network.peers[] and network.users[] and run 1 register HTTP request per peer. 
-The details of all rest calls are taken care of by the SDK but if you are curious we have [Swagger Documentation](http://ibmblockchainapi.mybluemix.net/) on the IBM Blockchain REST interface. 
+This network has membership security; we can tell because there are enroll IDs/secrets in the network.users array. 
+This means the peers will be expecting a validated `enrollID` on most API requests. 
+Therefore the first step is we need to use the /registrar API endpoint to register an `enrollID`. 
+This creates a binding of sorts between the ID and the peer such that this `enrollID` cannot be used on any other peer. 
+It's relatively safe to think of this step as registering an API key with a particular peer. 
+The SDK does almost all the work here for us. 
+It will first parse network.peers[] and network.users[] and run 1 POST /registrar HTTP request per peer. 
+It will send the first `enrollID` to the first peer, and the second ID to the second peer and so on until every peer has 1 ID. 
+The details of all rest calls are taken care of by the SDK but if you are curious we have [Swagger Documentation](https://obc-service-broker-staging.stage1.mybluemix.net/swagger) on the IBM Blockchain peer APIs. 
 At the end of this step we are ready to deploy our chaincode. 
 
 Before we deploy though, the SDK will download and parse the chaincode. 
 This is when it builds up the dot notation we can use to ultimately call cc functions from JS. 
 Once its done downloading/parsing it runs the /devops/deploy HTTP request. 
 We should receive a hash in the response that is unique to this chaincode. 
-This hash will be used along with the registered username in all future invocations / queries against this cc. 
+This hash will be used along with the registered `enrollID` in all future invocations / queries against this cc. 
 
 
 #Marbles Deeper Dive
