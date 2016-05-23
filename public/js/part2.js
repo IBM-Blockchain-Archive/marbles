@@ -1,4 +1,4 @@
-/* global new_block,formatDate, randStr, bag, $, clear_blocks, document, WebSocket, escapeHtml */
+/* global new_block,formatDate, randStr, bag, $, clear_blocks, document, WebSocket, escapeHtml, window */
 var ws = {};
 var user = {username: bag.setup.USER1};
 var bgcolors = ['whitebg', 'blackbg', 'redbg', 'greenbg', 'bluebg', 'purplebg', 'pinkbg', 'orangebg', 'yellowbg'];
@@ -28,8 +28,10 @@ $(document).on('ready', function() {
 			ws.send(JSON.stringify(obj));
 			$('.panel').hide();
 			$('#homePanel').show();
+			var part = window.location.pathname.substring(0,3);
+			window.history.pushState({},'', part + '/home');						//put it in url so we can f5
 			$('.colorValue').html('Color');											//reset
-			for(var i in bgcolors) $('.createball').removeClass(bgcolors[i]);			//reset
+			for(var i in bgcolors) $('.createball').removeClass(bgcolors[i]);		//reset
 			$('.createball').css('border', '2px dashed #fff');						//reset
 		}
 		return false;

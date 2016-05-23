@@ -1,4 +1,4 @@
-/* global new_block,formatDate, randStr, bag, $, clear_blocks, document, WebSocket, escapeHtml */
+/* global new_block,formatDate, randStr, bag, $, clear_blocks, document, WebSocket, escapeHtml, window */
 var ws = {};
 var bgcolors = ['whitebg', 'blackbg', 'redbg', 'greenbg', 'bluebg', 'purplebg', 'pinkbg', 'orangebg', 'yellowbg'];
 
@@ -107,6 +107,10 @@ $(document).on('ready', function() {
 	function showHomePanel(){
 		$('#homePanel').fadeIn(300);
 		$('#createPanel').hide();
+		
+		var part = window.location.pathname.substring(0,3);
+		window.history.pushState({},'', part + '/home');						//put it in url so we can f5
+		
 		console.log('getting new balls');
 		setTimeout(function(){
 			$('#user1wrap').html('');											//reset the panel
