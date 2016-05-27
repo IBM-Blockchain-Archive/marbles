@@ -223,22 +223,35 @@ All you have to do is find the tile and give the network a name.
 
 1. First login to [Bluemix](https://console.ng.bluemix.net)
 1. Click the "Catalog" link on the top navigation bar
-1. Scroll to the very bottom and click the experimental catalog link "Bluemix Labs Catalog"
-1. Find and click the "Blockchain - Experimental" tile (you can use the navigation on the left to filter the list: Services > Network)
+
+![](/doc_images/bluemix_ibc1.png)
+
+1. Find and click the "Blockchain" tile (you can use the navigation on the left to filter the list: Services > Network)
+
+![](/doc_images/bluemix_ibc2.png)
+
 1. Choose any space from the "Space:" dropdown (dealers choice)
 1. Leave the "App:" field as "Leave unbound" (unless you already have an application, but you probably don't yet)
 1. Change the "Service name" to "myblockchain" without the quotes
 1. Leave the "Credential name" field as its default value
 1. Leave the "Selected Plan" as its default value
 1. Click the "CREATE" button
+
+![](/doc_images/bluemix_ibc3.png)
+
 1. If all goes well you should be on the manage screen for your new service. Click the "LAUNCH" button to see the dashboard for your network. 
 	- You should see a few peers listed in the first table
 	- from here you can monitor if your peers crash, if the chaincode containers are running, and view logs for all
+
+![](/doc_images/bluemix_ibc4.png)
+
+![](/doc_images/bluemix_ibc5.png)
 
 (Note if you find yourself on the Bluemix Dashboard and want to get back to this service screen just click the tile name "myblockchain" in the "Services" section)
 
 The network is all setup.  Now we need to copy the peer data and pass it to our application (only need this step if we run the app locally).
 
+1. Go back to your Bluemix Dashboard page
 1. Click the "myblockchain" tile in you Bluemix Dashboard
 1. Click the "Service Credentials" link on the left
 1. Copy the value of the whole JSON object to the `manual` var in app.js at line 139ish.
