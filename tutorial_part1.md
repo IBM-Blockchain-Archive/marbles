@@ -264,7 +264,11 @@ Since we are running the app locally it will not find VCAP and will use the hard
 You should have replaced the hard coded data with your personal network data in the last section. 
 If you haven't, go ahead and do it now (instructions are [above](#network)).
 
-1. First up we need to install our dependencies. Open a command prompt/terminal and browse to the root of this project.
+1. To run the app locally we need to get these files onto your machine
+	- If you have Git installed then browse a command prompt/terminal to a desired working directory and type `git clone https://github.com/IBM-Blockchain/marbles`
+		- follow any login prompts with your GitHub account
+	- If you do not have Git then [download the zip](https://github.com/IBM-Blockchain/marbles/archive/master.zip) and extract it in your desired working directory.
+1. Next we need to install our dependencies. Open a command prompt/terminal and browse to the root of this project.
 1. In the command prompt type:
 	
 		> npm install
