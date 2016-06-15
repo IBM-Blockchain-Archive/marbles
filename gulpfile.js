@@ -6,7 +6,7 @@ var concat = require('gulp-concat');
 var cleanCSS = require('gulp-clean-css');
 var rename = require('gulp-rename');
 var spawn = require('child_process').spawn;
-var node, env = {};
+var node;
 
 ////// Build Tasks ///////
 gulp.task('build-sass', function () {
@@ -23,7 +23,7 @@ gulp.task('build-sass', function () {
 ////// Run Server Task ///////
 gulp.task('server', function() {
 	if(node) node.kill();
-	node = spawn('node', ['app.js'], {env: env, stdio: 'inherit'});	//command, file, options
+	node = spawn('node', ['app.js'], {stdio: 'inherit'});	//command, file, options
 });
 
 ////// Watch Tasks //////
