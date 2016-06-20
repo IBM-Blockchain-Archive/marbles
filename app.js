@@ -137,12 +137,18 @@ var ibc = new Ibc1();
 // ==================================
 //this hard coded list is intentionaly left here, feel free to use it when initially starting out
 //please create your own network when you are up and running
-var manual = JSON.parse(fs.readFileSync('mycreds.json', 'utf8'));
-var peers = manual.credentials.peers;
-console.log('loading hardcoded peers');
-var users = null;																		//users are only found if security is on
-if(manual.credentials.users) users = manual.credentials.users;
-console.log('loading hardcoded users');
+try{
+	var manual = JSON.parse(fs.readFileSync('mycreds.json', 'utf8'));
+	var peers = manual.credentials.peers;
+	console.log('loading hardcoded peers');
+	var users = null;																		//users are only found if security is on
+	if(manual.credentials.users) users = manual.credentials.users;
+	console.log('loading hardcoded users');
+}
+catch(e){
+	console.log('Error - could not find hardcoded peers/users, this is okay if running in bluemix');
+}
+
 
 if(process.env.VCAP_SERVICES){															//load from vcap, search for service, 1 of the 3 should be found...
 	var servicesObject = JSON.parse(process.env.VCAP_SERVICES);
