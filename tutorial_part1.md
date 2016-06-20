@@ -254,7 +254,7 @@ The network is all setup.  Now we need to copy the peer data and pass it to our 
 1. Go back to your Bluemix Dashboard page
 1. Click the "myblockchain" tile in you Bluemix Dashboard
 1. Click the "Service Credentials" link on the left
-1. Copy the value of the whole JSON object to the `manual` var in app.js at line 139ish.
+1. Copy the value of the whole JSON object to the `mycreds.json` file in the root of this project.
 	1. If for some reason you don't see any credentials click the "ADD CREDENTIALS" button and let the page refresh
 
 #<a name="run"></a>Run Marbles on Local Machine
@@ -300,7 +300,7 @@ If you haven't, go ahead and do it now (instructions are [above](#network)).
 	> (follow the prompts)  
 	> cf push YOUR_APP_NAME_HERE  
 	
-1. The application will bind to the service "myblockchain" and grab the peer data from VCAP_SERVICES. Code for this is in app.js line 309ish
+1. The application will bind to the service "myblockchain" and grab the peer data from VCAP_SERVICES. Code for this is in app.js line 153ish
 
 #<a name="run"></a>Use Marbles App
 1. Open up your browser and browse to [http://localhost:3000](http://localhost:3000) or your Bluemix www route.
