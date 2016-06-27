@@ -27,7 +27,7 @@ $(document).on('ready', function() {
 			ws.send(JSON.stringify(obj));
 			showHomePanel();
 			$('.colorValue').html('Color');											//reset
-			for(var i in bgcolors) $('.createball').removeClass(bgcolors[i]);			//reset
+			for(var i in bgcolors) $('.createball').removeClass(bgcolors[i]);		//reset
 			$('.createball').css('border', '2px dashed #fff');						//reset
 		}
 		return false;
@@ -172,21 +172,23 @@ function connect_to_server(){
 
 	function onMessage(msg){
 		try{
-			var data = JSON.parse(msg.data);
-			if(data.v != '2'){
-				console.log('rec', data.msg, data);
-				if(data.marble){
-					build_ball(data.marble);
+			var msgObj = JSON.parse(msg.data);
+			if(msgObj.v != '2'){
+				if(msgObj.marble){
+					console.log('rec', msgObj.msg, msgObj);
+					build_ball(msgObj.marble);
 				}
-				else if(data.msg === 'chainstats'){
-					var e = formatDate(data.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
+				else if(msgObj.msg === 'chainstats'){
+					console.log('rec', msgObj.msg, ': ledger blockheight', msgObj.chainstats.height, 'block', msgObj.blockstats.height);
+					var e = formatDate(msgObj.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
 					$('#blockdate').html('<span style="color:#fff">TIME</span>&nbsp;&nbsp;' + e + ' UTC');
-					var temp = { 
-									id: data.blockstats.height, 
-									blockstats: data.blockstats
+					var temp =  {
+									id: msgObj.blockstats.height, 
+									blockstats: msgObj.blockstats
 								};
 					new_block(temp);								//send to blockchain.js
 				}
+				else console.log('rec', msgObj.msg, msgObj);
 			}
 		}
 		catch(e){
@@ -219,6 +221,7 @@ function build_ball(data){
 	data.color = escapeHtml(data.color);
 	data.user = escapeHtml(data.user);
 	
+	console.log('got a marble: ', data.color);
 	if(!$('#' + data.name).length){								//only populate if it doesn't exists
 		if(data.size == 16) size = 'fa-3x';
 		if(data.color) colorClass = data.color.toLowerCase();

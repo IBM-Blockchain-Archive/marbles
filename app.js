@@ -24,7 +24,7 @@ var http = require('http');
 var app = express();
 var url = require('url');
 var setup = require('./setup');
-var fs = require("fs");
+var fs = require('fs');
 var cors = require('cors');
 
 //// Set Server Parameters ////
@@ -123,7 +123,7 @@ require('cf-deployment-tracker-client').track();		//reports back to us, this hel
 // ============================================================================================================================
 
 // ============================================================================================================================
-// 														Test Area
+// 														Work Area
 // ============================================================================================================================
 var part1 = require('./utils/ws_part1');
 var part2 = require('./utils/ws_part2');
@@ -265,7 +265,7 @@ function cb_deployed(e, d){
 		// ========================================================
 		ibc.monitor_blockheight(function(chain_stats){										//there is a new block, lets refresh everything that has a state
 			if(chain_stats && chain_stats.height){
-				console.log('hey new block, lets refresh and broadcast to all');
+				console.log('hey new block, lets refresh and broadcast to all', chain_stats.height-1);
 				ibc.block_stats(chain_stats.height - 1, cb_blockstats);
 				wss.broadcast({msg: 'reset'});
 				chaincode.query.read(['_marbleindex'], cb_got_index);
@@ -274,16 +274,17 @@ function cb_deployed(e, d){
 			
 			//got the block's stats, lets send the statistics
 			function cb_blockstats(e, stats){
-				if(e != null) console.log('error:', e);
+				if(e != null) console.log('blockstats error:', e);
 				else {
-					if(chain_stats.height) stats.height = chain_stats.height - 1;
+					chain_stats.height = chain_stats.height - 1;								//its 1 higher than actual height
+					stats.height = chain_stats.height;											//copy
 					wss.broadcast({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
 				}
 			}
 			
 			//got the marble index, lets get each marble
 			function cb_got_index(e, index){
-				if(e != null) console.log('error:', e);
+				if(e != null) console.log('marble index error:', e);
 				else{
 					try{
 						var json = JSON.parse(index);
@@ -300,7 +301,7 @@ function cb_deployed(e, d){
 			
 			//call back for getting a marble, lets send a message
 			function cb_got_marble(e, marble){
-				if(e != null) console.log('error:', e);
+				if(e != null) console.log('marble error:', e);
 				else {
 					try{
 						wss.broadcast({msg: 'marbles', marble: JSON.parse(marble)});
@@ -313,7 +314,7 @@ function cb_deployed(e, d){
 			
 			//call back for getting open trades, lets send the trades
 			function cb_got_trades(e, trades){
-				if(e != null) console.log('error:', e);
+				if(e != null) console.log('trade error:', e);
 				else {
 					try{
 						trades = JSON.parse(trades);

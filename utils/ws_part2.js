@@ -102,22 +102,20 @@ module.exports.process_msg = function(ws, data){
 		console.log('response: ', e, a);
 	}
 	
-	//call back for getting the blockchain stats, lets get the block height now
-	var chain_stats = {};
-	function cb_chainstats(e, stats){
-		chain_stats = stats;
-		if(stats && stats.height){
+	//call back for getting the blockchain stats, lets get the block stats now
+	function cb_chainstats(e, chain_stats){
+		if(chain_stats && chain_stats.height){
+			chain_stats.height = chain_stats.height - 1;								//its 1 higher than actual height
 			var list = [];
-			for(var i = stats.height - 1; i >= 1; i--){								//create a list of heights we need
+			for(var i = chain_stats.height; i >= 1; i--){								//create a list of heights we need
 				list.push(i);
 				if(list.length >= 8) break;
 			}
-			list.reverse();															//flip it so order is correct in UI
-			console.log(list);
-			async.eachLimit(list, 1, function(key, cb) {							//iter through each one, and send it
-				ibc.block_stats(key, function(e, stats){
+			list.reverse();																//flip it so order is correct in UI
+			async.eachLimit(list, 1, function(block_height, cb) {						//iter through each one, and send it
+				ibc.block_stats(block_height, function(e, stats){
 					if(e == null){
-						stats.height = key;
+						stats.height = block_height;
 						sendMsg({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
 					}
 					cb(null);

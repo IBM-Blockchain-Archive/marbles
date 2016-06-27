@@ -363,28 +363,32 @@ function connect_to_server(){
 
 	function onMessage(msg){
 		try{
-			var data = JSON.parse(msg.data);
-			console.log('rec', data.msg, data);
-			if(data.marble){
-				build_ball(data.marble);
+			var msgObj = JSON.parse(msg.data);
+			if(msgObj.marble){
+				console.log('rec', msgObj.msg, msgObj);
+				build_ball(msgObj.marble);
 				set_my_color_options(user.username);
 			}
-			else if(data.msg === 'chainstats'){
-				var e = formatDate(data.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
+			else if(msgObj.msg === 'chainstats'){
+				console.log('rec', msgObj.msg, ': ledger blockheight', msgObj.chainstats.height, 'block', msgObj.blockstats.height);
+				var e = formatDate(msgObj.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
 				$('#blockdate').html('<span style="color:#fff">TIME</span>&nbsp;&nbsp;' + e + ' UTC');
 				var temp = { 
-								id: data.blockstats.height, 
-								blockstats: data.blockstats
+								id: msgObj.blockstats.height, 
+								blockstats: msgObj.blockstats
 							};
 				new_block(temp);									//send to blockchain.js
 			}
-			else if(data.msg === 'reset'){							//clear marble knowledge, prepare of incoming marble states
+			else if(msgObj.msg === 'reset'){							//clear marble knowledge, prepare of incoming marble states
+				console.log('rec', msgObj.msg, msgObj);
 				$('#user2wrap').html('');
 				$('#user1wrap').html('');
 			}
-			else if(data.msg === 'open_trades'){
-				build_trades(data.open_trades);
+			else if(msgObj.msg === 'open_trades'){
+				console.log('rec', msgObj.msg, msgObj);
+				build_trades(msgObj.open_trades);
 			}
+			else console.log('rec', msgObj.msg, msgObj);
 		}
 		catch(e){
 			console.log('ERROR', e);
@@ -423,9 +427,8 @@ function build_ball(data){
 	
 	if(data.user.toLowerCase() == user.username.toLowerCase()) notYours = '';
 	
-	console.log('got a marble');
+	console.log('got a marble: ', data.color);
 	if(!$('#' + data.name).length){								//only populate if it doesn't exists
-		console.log('building');
 		if(data.size == 16) size = 'fa-3x';
 		if(data.color) colorClass = data.color.toLowerCase();
 		
