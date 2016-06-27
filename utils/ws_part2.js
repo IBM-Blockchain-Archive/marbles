@@ -72,7 +72,7 @@ module.exports.process_msg = function(ws, data){
 	
 	//got the marble index, lets get each marble
 	function cb_got_index(e, index){
-		if(e != null) console.log('error:', e);
+		if(e != null) console.log('[ws error] did not get marble index:', e);
 		else{
 			try{
 				var json = JSON.parse(index);
@@ -82,14 +82,14 @@ module.exports.process_msg = function(ws, data){
 				}
 			}
 			catch(e){
-				console.log('error:', e);
+				console.log('[ws error] could not parse response', e);
 			}
 		}
 	}
 	
 	//call back for getting a marble, lets send a message
 	function cb_got_marble(e, marble){
-		if(e != null) console.log('error:', e);
+		if(e != null) console.log('[ws error] did not get marble:', e);
 		else {
 			try{
 				sendMsg({msg: 'marbles', marble: JSON.parse(marble)});
@@ -127,7 +127,7 @@ module.exports.process_msg = function(ws, data){
 	
 	//call back for getting open trades, lets send the trades
 	function cb_got_trades(e, trades){
-		if(e != null) console.log('error:', e);
+		if(e != null) console.log('[ws error] did not get open trades:', e);
 		else {
 			try{
 				trades = JSON.parse(trades);
@@ -146,7 +146,7 @@ module.exports.process_msg = function(ws, data){
 				ws.send(JSON.stringify(json));
 			}
 			catch(e){
-				console.log('error ws', e);
+				console.log('[ws error] could not send msg', e);
 			}
 		}
 	}

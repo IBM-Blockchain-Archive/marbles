@@ -42,7 +42,7 @@ module.exports.process_msg = function(ws, data){
 
 	//got the marble index, lets get each marble
 	function cb_got_index(e, index){
-		if(e != null) console.log('error:', e);
+		if(e != null) console.log('[ws error] did not get marble index:', e);
 		else{
 			try{
 				var json = JSON.parse(index);
@@ -53,7 +53,7 @@ module.exports.process_msg = function(ws, data){
 				async.eachLimit(keys, concurrency, function(key, cb) {
 					console.log('!', json[key]);
 					chaincode.query.read([json[key]], function(e, marble) {
-						if(e != null) console.log('error:', e);
+						if(e != null) console.log('[ws error] did not get marble:', e);
 						else {
 							if(marble) sendMsg({msg: 'marbles', e: e, marble: JSON.parse(marble)});
 							cb(null);
@@ -64,7 +64,7 @@ module.exports.process_msg = function(ws, data){
 				});
 			}
 			catch(e){
-				console.log('error:', e);
+				console.log('[ws error] could not parse response', e);
 			}
 		}
 	}
@@ -103,7 +103,7 @@ module.exports.process_msg = function(ws, data){
 				ws.send(JSON.stringify(json));
 			}
 			catch(e){
-				console.log('error ws', e);
+				console.log('[ws error] could not send msg', e);
 			}
 		}
 	}
