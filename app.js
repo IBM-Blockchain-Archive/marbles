@@ -258,10 +258,9 @@ function cb_deployed(e, d){
 			ws.on('close', function(){console.log('ws closed');});
 		});
 		
-		wss.broadcast = function broadcast(data) {											//send to all connections			
+		wss.broadcast = function broadcast(data) {											//send to all connections
 			wss.clients.forEach(function each(client) {
 				try{
-					data.v = '2';
 					client.send(JSON.stringify(data));
 				}
 				catch(e){

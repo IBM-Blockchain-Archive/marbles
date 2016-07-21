@@ -173,23 +173,21 @@ function connect_to_server(){
 	function onMessage(msg){
 		try{
 			var msgObj = JSON.parse(msg.data);
-			if(msgObj.v != '2'){
-				if(msgObj.marble){
-					console.log('rec', msgObj.msg, msgObj);
-					build_ball(msgObj.marble);
-				}
-				else if(msgObj.msg === 'chainstats'){
-					console.log('rec', msgObj.msg, ': ledger blockheight', msgObj.chainstats.height, 'block', msgObj.blockstats.height);
-					var e = formatDate(msgObj.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
-					$('#blockdate').html('<span style="color:#fff">TIME</span>&nbsp;&nbsp;' + e + ' UTC');
-					var temp =  {
-									id: msgObj.blockstats.height, 
-									blockstats: msgObj.blockstats
-								};
-					new_block(temp);								//send to blockchain.js
-				}
-				else console.log('rec', msgObj.msg, msgObj);
+			if(msgObj.marble){
+				console.log('rec', msgObj.msg, msgObj);
+				build_ball(msgObj.marble);
 			}
+			else if(msgObj.msg === 'chainstats'){
+				console.log('rec', msgObj.msg, ': ledger blockheight', msgObj.chainstats.height, 'block', msgObj.blockstats.height);
+				var e = formatDate(msgObj.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
+				$('#blockdate').html('<span style="color:#fff">TIME</span>&nbsp;&nbsp;' + e + ' UTC');
+				var temp =  {
+								id: msgObj.blockstats.height, 
+								blockstats: msgObj.blockstats
+							};
+				new_block(temp);								//send to blockchain.js
+			}
+			else console.log('rec', msgObj.msg, msgObj);
 		}
 		catch(e){
 			console.log('ERROR', e);
