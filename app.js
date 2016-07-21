@@ -53,6 +53,16 @@ function setCustomCC(res, path) {
 app.options('*', cors());
 app.use(cors());
 
+//---------------------
+// Cache Busting Hash
+//---------------------
+var bust_js = require('./busters_js.json');
+var bust_css = require('./busters_css.json');
+process.env.cachebust_js = bust_js['public/js/singlejshash'];			//i'm just making 1 hash against all js for easier jade implementation
+process.env.cachebust_css = bust_css['public/css/singlecsshash'];		//i'm just making 1 hash against all css for easier jade implementation
+console.log('cache busting hash js', process.env.cachebust_js, 'css', process.env.cachebust_css);
+
+
 ///////////  Configure Webserver  ///////////
 app.use(function(req, res, next){
 	var keys;
@@ -179,9 +189,9 @@ if(process.env.VCAP_SERVICES){															//load from vcap, search for servic
 // ==================================
 var options = 	{
 					network:{
-						peers: peers,
+						peers: [peers[0]],																		//lets only use the first peer! (we really don't need any more than 1)
 						users: users,
-						options: {quiet: true, tls:false, maxRetry: 1}
+						options: {quiet: true, tls:true, maxRetry: 1}
 					},
 					chaincode:{
 						zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip',
@@ -189,7 +199,7 @@ var options = 	{
 						git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/hyperledger/part2',		//GO get http url
 					
 						//hashed cc name from prev deployment
-						//deployed_name: '14b711be6f0d00b190ea26ca48c22234d93996b6e625a4b108a7bbbde064edf0179527f30df238d61b66246fe1908005caa5204dd73488269c8999276719ca8b'
+						//deployed_name: '8c5677016abb7b4885b8dc40bb5b28f1554888cd766e2c945bc61bca03b349092f19197d32785254c692c9210db34c31821efc89e8a9f4dcb3f5575bebb4584b'
 					}
 				};
 if(process.env.VCAP_SERVICES){
@@ -278,6 +288,7 @@ function cb_deployed(e, d){
 				else {
 					chain_stats.height = chain_stats.height - 1;								//its 1 higher than actual height
 					stats.height = chain_stats.height;											//copy
+					console.log('? sending', chain_stats.height);
 					wss.broadcast({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
 				}
 			}
