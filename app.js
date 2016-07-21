@@ -68,15 +68,15 @@ app.use(function(req, res, next){
 	var keys;
 	console.log('------------------------------------------ incoming request ------------------------------------------');
 	console.log('New ' + req.method + ' request for', req.url);
-	req.bag = {};											//create my object for my stuff
+	req.bag = {};																			//create object for my stuff
 	req.bag.session = req.session;
 	
 	var url_parts = url.parse(req.url, true);
 	req.parameters = url_parts.query;
 	keys = Object.keys(req.parameters);
-	if(req.parameters && keys.length > 0) console.log({parameters: req.parameters});		//print request parameters
+	if(req.parameters && keys.length > 0) console.log({parameters: req.parameters});		//print request parameters for debug
 	keys = Object.keys(req.body);
-	if (req.body && keys.length > 0) console.log({body: req.body});						//print request body
+	if (req.body && keys.length > 0) console.log({body: req.body});							//print request body for debug
 	next();
 });
 
@@ -91,7 +91,7 @@ app.use(function(req, res, next) {
 	err.status = 404;
 	next(err);
 });
-app.use(function(err, req, res, next) {		// = development error handler, print stack trace
+app.use(function(err, req, res, next) {														// = development error handler, print stack trace
 	console.log('Error Handeler -', req.url);
 	var errorCode = err.status || 500;
 	res.status(errorCode);
@@ -99,6 +99,7 @@ app.use(function(err, req, res, next) {		// = development error handler, print s
 	if(req.bag.error.status == 404) req.bag.error.msg = 'Sorry, I cannot locate that file';
 	res.render('template/error', {bag:req.bag});
 });
+
 
 // ============================================================================================================================
 // 														Launch Webserver
@@ -111,11 +112,13 @@ console.log('------------------------------------------ Server Up - ' + host + '
 if(process.env.PRODUCTION) console.log('Running using Production settings');
 else console.log('Running using Developer settings');
 
+
 // ============================================================================================================================
 // 														Deployment Tracking
 // ============================================================================================================================
 console.log('- Tracking Deployment');
 require('cf-deployment-tracker-client').track();		//reports back to us, this helps us judge interest! feel free to remove it
+
 
 // ============================================================================================================================
 // ============================================================================================================================
@@ -135,11 +138,11 @@ require('cf-deployment-tracker-client').track();		//reports back to us, this hel
 // ============================================================================================================================
 // 														Work Area
 // ============================================================================================================================
-var part1 = require('./utils/ws_part1');
-var part2 = require('./utils/ws_part2');
-var ws = require('ws');
+var part1 = require('./utils/ws_part1');														//websocket message processing for part 1
+var part2 = require('./utils/ws_part2');														//websocket message processing for part 2
+var ws = require('ws');																			//websocket mod
 var wss = {};
-var Ibc1 = require('ibm-blockchain-js');
+var Ibc1 = require('ibm-blockchain-js');														//rest based SDK for ibm blockchain
 var ibc = new Ibc1();
 
 // ==================================
@@ -151,7 +154,7 @@ try{
 	var manual = JSON.parse(fs.readFileSync('mycreds.json', 'utf8'));
 	var peers = manual.credentials.peers;
 	console.log('loading hardcoded peers');
-	var users = null;																		//users are only found if security is on
+	var users = null;																			//users are only found if security is on
 	if(manual.credentials.users) users = manual.credentials.users;
 	console.log('loading hardcoded users');
 }
@@ -159,46 +162,51 @@ catch(e){
 	console.log('Error - could not find hardcoded peers/users, this is okay if running in bluemix');
 }
 
-
-if(process.env.VCAP_SERVICES){															//load from vcap, search for service, 1 of the 3 should be found...
+// ---- Load From VCAP aka Bluemix Services ---- //
+if(process.env.VCAP_SERVICES){																	//load from vcap, search for service, 1 of the 3 should be found...
 	var servicesObject = JSON.parse(process.env.VCAP_SERVICES);
 	for(var i in servicesObject){
-		if(i.indexOf('ibm-blockchain') >= 0){											//looks close enough
+		if(i.indexOf('ibm-blockchain') >= 0){													//looks close enough
 			if(servicesObject[i][0].credentials.error){
 				console.log('!\n!\n! Error from Bluemix: \n', servicesObject[i][0].credentials.error, '!\n!\n');
 				peers = null;
 				users = null;
 				process.error = {type: 'network', msg: 'Due to overwhelming demand the IBM Blockchain Network service is at maximum capacity.  Please try recreating this service at a later date.'};
 			}
-			if(servicesObject[i][0].credentials && servicesObject[i][0].credentials.peers){
+			if(servicesObject[i][0].credentials && servicesObject[i][0].credentials.peers){		//found the blob, copy it to 'peers'
 				console.log('overwritting peers, loading from a vcap service: ', i);
 				peers = servicesObject[i][0].credentials.peers;
-				if(servicesObject[i][0].credentials.users){
+				if(servicesObject[i][0].credentials.users){										//user field may or maynot exist, depends on if there is membership services or not for the network
 					console.log('overwritting users, loading from a vcap service: ', i);
 					users = servicesObject[i][0].credentials.users;
 				} 
-				else users = null;														//no security
+				else users = null;																//no security
 				break;
 			}
 		}
 	}
 }
 
+
 // ==================================
-// configure ibm-blockchain-js sdk
+// configure options for ibm-blockchain-js sdk
 // ==================================
 var options = 	{
 					network:{
-						peers: [peers[0]],																		//lets only use the first peer! (we really don't need any more than 1)
-						users: users,
-						options: {quiet: true, tls:true, maxRetry: 1}
+						peers: [peers[0]],																	//lets only use the first peer! since we really don't need any more than 1
+						users: users,																		//dump the whole thing, sdk will parse for a good one
+						options: {
+									quiet: true, 															//detailed debug messages on/off true/false
+									tls: true, 																//should app to peer communication use tls?
+									maxRetry: 1																//how many times should we retry register before giving up
+								}
 					},
 					chaincode:{
 						zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip',
-						unzip_dir: 'marbles-chaincode-master/hyperledger/part2',								//subdirectroy name of chaincode after unzipped
-						git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/hyperledger/part2',		//GO get http url
+						unzip_dir: 'marbles-chaincode-master/hyperledger/part2',							//subdirectroy name of chaincode after unzipped
+						git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/hyperledger/part2',	//GO get http url
 					
-						//hashed cc name from prev deployment
+						//hashed cc name from prev deployment, comment me out to always deploy, uncomment me when its already deployed to skip deploying again
 						//deployed_name: '8c5677016abb7b4885b8dc40bb5b28f1554888cd766e2c945bc61bca03b349092f19197d32785254c692c9210db34c31821efc89e8a9f4dcb3f5575bebb4584b'
 					}
 				};
@@ -206,27 +214,29 @@ if(process.env.VCAP_SERVICES){
 	console.log('\n[!] looks like you are in bluemix, I am going to clear out the deploy_name so that it deploys new cc.\n[!] hope that is ok budddy\n');
 	options.chaincode.deployed_name = '';
 }
-ibc.load(options, cb_ready);																//parse/load chaincode
 
-var chaincode = null;
-function cb_ready(err, cc){																	//response has chaincode functions
+// ---- Fire off SDK ---- //
+var chaincode = null;																		//sdk will populate this var in time, lets give it high scope by creating it here
+ibc.load(options, function (err, cc){														//parse/load chaincode, response has chaincode functions!
 	if(err != null){
 		console.log('! looks like an error loading the chaincode or network, app will fail\n', err);
 		if(!process.error) process.error = {type: 'load', msg: err.details};				//if it already exist, keep the last error
 	}
 	else{
 		chaincode = cc;
-		part1.setup(ibc, cc);
-		part2.setup(ibc, cc);
-		if(!cc.details.deployed_name || cc.details.deployed_name === ''){					//decide if i need to deploy
-			cc.deploy('init', ['99'], {save_path: './cc_summaries', delay_ms: 50000}, cb_deployed);
+		part1.setup(ibc, cc);																//pass the cc obj to part 1 node code
+		part2.setup(ibc, cc);																//pass the cc obj to part 2 node code
+
+		// ---- To Deploy or Not to Deploy ---- //
+		if(!cc.details.deployed_name || cc.details.deployed_name === ''){					//yes, go deploy
+			cc.deploy('init', ['99'], {save_path: './cc_summaries', delay_ms: 50000}, cb_deployed);	//delay_ms is milliseconds to wait after deploy for conatiner to start, 50sec recommended
 		}
-		else{
+		else{																				//no, already deployed
 			console.log('chaincode summary file indicates chaincode has been previously deployed');
 			cb_deployed();
 		}
 	}
-}
+});
 
 // ============================================================================================================================
 // 												WebSocket Communication Madness
@@ -246,8 +256,8 @@ function cb_deployed(e, d){
 				console.log('received ws msg:', message);
 				try{
 					var data = JSON.parse(message);
-					part1.process_msg(ws, data);
-					part2.process_msg(ws, data);
+					part1.process_msg(ws, data);											//pass the websocket msg to part 1 processing
+					part2.process_msg(ws, data);											//pass the websocket msg to part 2 processing
 				}
 				catch(e){
 					console.log('ws message error', e);
@@ -285,9 +295,8 @@ function cb_deployed(e, d){
 			function cb_blockstats(e, stats){
 				if(e != null) console.log('blockstats error:', e);
 				else {
-					chain_stats.height = chain_stats.height - 1;								//its 1 higher than actual height
-					stats.height = chain_stats.height;											//copy
-					console.log('? sending', chain_stats.height);
+					chain_stats.height = chain_stats.height - 1;							//its 1 higher than actual height
+					stats.height = chain_stats.height;										//copy
 					wss.broadcast({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
 				}
 			}
@@ -300,7 +309,7 @@ function cb_deployed(e, d){
 						var json = JSON.parse(index);
 						for(var i in json){
 							console.log('!', i, json[i]);
-							chaincode.query.read([json[i]], cb_got_marble);							//iter over each, read their values
+							chaincode.query.read([json[i]], cb_got_marble);					//iter over each, read their values
 						}
 					}
 					catch(e){
