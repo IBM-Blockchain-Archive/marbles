@@ -331,7 +331,7 @@ An abbreviated version is below:
 				"id": "xxxxxx-xxxx-xxx-xxx-xxxxxxxxxxxx_vpx",
 			}],
 			users:  [{
-				"enrollID": "user1",
+				"enrollId": "user1",
 				"enrollSecret": "xxxxxxxx"
 			}]
 		},
@@ -345,13 +345,13 @@ An abbreviated version is below:
 ```
 
 This network has membership security; we can tell because there are enroll IDs/secrets in the network.users array. 
-This means the peers will be expecting a validated `enrollID` on most API requests. 
-Therefore the first step is we need to use the /registrar API endpoint to register an `enrollID`. 
-This creates a binding of sorts between the ID and the peer such that this `enrollID` cannot be used on any other peer. 
+This means the peers will be expecting a validated `enrollId` on most API requests. 
+Therefore the first step is we need to use the /registrar API endpoint to register an `enrollId`. 
+This creates a binding of sorts between the ID and the peer such that this `enrollId` cannot be used on any other peer. 
 It's relatively safe to think of this step as registering an API key with a particular peer. 
 The SDK does almost all the work here for us. 
 It will first parse network.peers[] and network.users[] and run 1 POST /registrar HTTP request per peer. 
-It will send the first `enrollID` to the first peer, and the second ID to the second peer and so on until every peer has 1 ID. 
+It will send the first `enrollId` to the first peer, and the second ID to the second peer and so on until every peer has 1 ID. 
 The details of all rest calls are taken care of by the SDK but if you are curious we have [Swagger Documentation](https://obc-service-broker-staging.stage1.mybluemix.net/swagger) on the IBM Blockchain peer APIs. 
 At the end of this step we are ready to deploy our chaincode. 
 
@@ -359,7 +359,7 @@ Before we deploy though, the SDK will download and parse the chaincode.
 This is when it builds up the dot notation we can use to ultimately call cc functions from JS. 
 Once its done downloading/parsing it runs the /devops/deploy HTTP request. 
 We should receive a hash in the response that is unique to this chaincode. 
-This hash will be used along with the registered `enrollID` in all future invocations / queries against this cc. 
+This hash will be used along with the registered `enrollId` in all future invocations / queries against this cc. 
 
 
 #Marbles Deeper Dive

@@ -57,8 +57,8 @@ The SDK will print messages similar to the ones below to the console:
 	
 	[ibc-js] Peer:  vp1-3a82c724-6934-4575-87d8-047eefdcf25d_vp1-api.blockchain.ibm.com:80
 	[ibc-js] Peer:  vp2-3a82c724-6934-4575-87d8-047eefdcf25d_vp2-api.blockchain.ibm.com:80
-	[ibc-js] Registering  vp1-3a82c724-6934-4575-87d8-047eefdcf25d_vp1-api.blockchain.ibm.com:80  w/enrollID - user_type1_3fe7935193
-	[ibc-js] Registering  vp2-3a82c724-6934-4575-87d8-047eefdcf25d_vp2-api.blockchain.ibm.com:80  w/enrollID - user_type1_0c8e9f05b2
+	[ibc-js] Registering  vp1-3a82c724-6934-4575-87d8-047eefdcf25d_vp1-api.blockchain.ibm.com:80  w/enrollId - user_type1_3fe7935193
+	[ibc-js] Registering  vp2-3a82c724-6934-4575-87d8-047eefdcf25d_vp2-api.blockchain.ibm.com:80  w/enrollId - user_type1_0c8e9f05b2
 	[ibc-js] Registration success: user_type1_0c8e9f05b2
 	[ibc-js] Registration success: user_type1_3fe7935193
 
