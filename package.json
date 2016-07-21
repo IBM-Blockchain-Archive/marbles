@@ -34,7 +34,8 @@
 		"gulp-sass": "^2.0.4",
 		"gulp-concat": "*",
 		"gulp-clean-css": "*",
-		"gulp-rename": "*"
+		"gulp-rename": "*",
+		"gulp-buster": "*"
 	},
 	"author": {
     	"name": "David Huffman"

@@ -3,8 +3,8 @@ extends ./template/layout.jade
 	
 // --------------- Header -------------- //
 block custom_header
-	script(src='/js/part2.js')
-	script(src='/js/blockchain.js')
+	script(src='/js/part2.js?v=#{bag.jshash}')
+	script(src='/js/blockchain.js?v=#{bag.jshash}')
 	script(type='text/javascript').
 		$(document).ready(function(){
 			

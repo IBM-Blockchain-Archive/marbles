@@ -3,7 +3,7 @@ extends ./template/layout.jade
 	
 // --------------- Header -------------- //
 block custom_header
-	script(src='/js/part1.js')
+	script(src='/js/part1.js?v=#{bag.jshash}')
 	script(type='text/javascript').
 		$(document).ready(function(){
 			
