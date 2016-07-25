@@ -1,7 +1,7 @@
 #Marbles Part 1 - Demo
 
 ##BEFORE YOU RUN
-- The underlying network for this application is the open blockchain fabric code that was contributed by IBM to the Linux Foundation's Hyperledger project. They have extensive [Fabric Documentation](https://github.com/hyperledger/fabric/tree/master/docs)
+- The underlying network for this application is the [Hyperledger Fabric](https://github.com/hyperledger/fabric/tree/master/docs), a Linux Foundation project.
 - The expectations of this application are to test the JS SDK, guide its development and to aid a developer become familiar with our SDK + chaincode.
 - This is a `very simple` asset transfer demonstration.  Two users can create and exchange marbles with each other.
 - There will be multiple parts. Part 1 and 2 are complete  [2/15/2016]
@@ -12,7 +12,7 @@
 ##Part 1 Goals
 - User can create a marble and store it in the chaincode state
 - User can read and display all marbles in the chaincode state
-- User can transfer marble to another user
+- User can transfer a marble to another user
 - User can delete a marble
 - Server pushes block/marble updates to client when a new block event has occurred
 - Deployable on Bluemix
@@ -20,11 +20,13 @@
 ***
 
 #Prereq:
-1. Bluemix ID https://console.ng.bluemix.net/ (needed to create your IBM Blockchain network if local network is not deployed)
+1. Bluemix ID https://console.ng.bluemix.net/ (needed to create your IBM Blockchain network if local network is not setup)
+1. If you want to run Marbles on a local blockchain network (ie. not using Bluemix) you will need to have compeleted the Hyperledger Fabric [development setup](https://github.com/hyperledger/fabric/blob/master/docs/Setup/Network-setup.md).
 1. [Node.js](https://nodejs.org/en/download/) 0.12.0+ and npm v2+ (only needed if you want to run the app locally, npm comes with node.js)
-1. Node.js + express experience. Marbles is a very simple blockchain app but its still a failry involved node app.  You  should be comfortable with node and the express module.
+1. Node.js + express experience. Marbles is a very simple blockchain app but its still a failry involved node app.  **You should be comfortable with node** and the express module.
 1. GoLang Environment (only needed to build your own chaincode, not needed if you just run the marbles app as is)
-2. If Marbles wants to be run onto a local BlockChain network (not using Bluemix) you will also need to have all the [development setup prerequisites](https://github.com/hyperledger/fabric/blob/master/docs/Setup/Network-setup.md).
+1. I highly recommend you complete [learn chaincode](https://github.com/IBM-Blockchain/learn-chaincode) first
+
 
 
 #Application Background
@@ -49,6 +51,8 @@ The ibc-js SDK will abstract the details of the REST calls away.
 This allow us to use dot notation to call our GoLang functions (such as `chaincode.invoke.init_marble(args)`).
 
 #Application Communication Flow
+
+![](/doc_images/comm_flow.png)
 
 1. The user will interact with our Node.js application in their browser.
 1. This client side JS code will open a websocket to the backend Node.js application. The client JS will send msgs to the backend when the user interacts with the site.
