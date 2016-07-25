@@ -1,7 +1,7 @@
 #Marbles Part 1 - Demo
 
 ##BEFORE YOU RUN
-- The underlying network for this application is the open blockchain fabric code that was contributed by IBM to the Linux Foundation's Hyperledger project. They have extensive [Fabric Documentation](https://github.com/openblockchain/obc-docs)
+- The underlying network for this application is the open blockchain fabric code that was contributed by IBM to the Linux Foundation's Hyperledger project. They have extensive [Fabric Documentation](https://github.com/hyperledger/fabric/tree/master/docs)
 - The expectations of this application are to test the JS SDK, guide its development and to aid a developer become familiar with our SDK + chaincode.
 - This is a `very simple` asset transfer demonstration.  Two users can create and exchange marbles with each other.
 - There will be multiple parts. Part 1 and 2 are complete  [2/15/2016]
@@ -24,8 +24,7 @@
 1. [Node.js](https://nodejs.org/en/download/) 0.12.0+ and npm v2+ (only needed if you want to run the app locally, npm comes with node.js)
 1. Node.js + express experience. Marbles is a very simple blockchain app but its still a failry involved node app.  You  should be comfortable with node and the express module.
 1. GoLang Environment (only needed to build your own chaincode, not needed if you just run the marbles app as is)
-1. You are at least partially aware of the term 'chaincode', 'ledger', and 'peer' in a blockchain context. [Term Help](https://github.com/openblockchain/obc-docs/blob/master/glossary.md)
-2. If Marbles wants to be run onto a local BlockChain network (not using Bluemix) you will also need to have all the [development setup prerequisites](https://github.com/openblockchain/obc-docs/blob/master/dev-setup/devenv.md#prerequisites).
+2. If Marbles wants to be run onto a local BlockChain network (not using Bluemix) you will also need to have all the [development setup prerequisites](https://github.com/hyperledger/fabric/blob/master/docs/Setup/Network-setup.md).
 
 
 #Application Background
@@ -210,11 +209,6 @@ then continue [here](#run).
 `OR`
 
 (2) Deploy the app on my local machine, connecting to a Bluemix IBM BlockChain network - [instructions](#network)
-
-`OR`
-
-(3) Deploy the app on my local machine, connecting to a [locally deployed](https://github.com/hyperledger/fabric/blob/master/docs/dev-setup/devnet-setup.md) IBM BlockChain network. - [instructions](/local_blockchain.md)
-
 
 # <a name="network"></a>Manual Network Setup:
 Don't fret, "manual" setup means I will guide you to click on a particular button and fill out a text input field or two. 
@@ -451,7 +445,7 @@ It is passing to our GoLang set_user function an array of strings argument conta
 By "passing" I mean it is really sending a HTTP POST /devops/invoke request to one of the peers in our network. 
 This peer will in turn call the chaincode and actually pass the argument to the cc function. 
 The details of which peer and the exact rest call are taken care of in our ibc-js SDK. 
-For your own curiosity the details of the Invoke API call can be found [here](https://github.com/openblockchain/obc-docs/blob/master/api/Openchain%20API.md#devops)
+For your own curiosity the details of the Invoke API call can be found [here](https://github.com/hyperledger/fabric/blob/master/docs/API/CoreAPI.md#chaincode)
 This code itself was called in response to a websocket message that originated on our user's browser.
 
 Pretty simple, now lets look 1 more step up to how we sent this websocket message.
