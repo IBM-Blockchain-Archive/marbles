@@ -37,9 +37,9 @@ Start the tutorials below to have your own marbles blockchain demo!
 ## Projects Contents
 
 If you **run marbles on local host** you will have these two urls:
+
 1. Marbles Part 1   -	[http://localhost:3000/p1](http://localhost:3000/p1)
 1. Marbles Part 2   -	[http://localhost:3000/p2](http://localhost:3000/p2)
-
 
 
 ## Privacy Notice
