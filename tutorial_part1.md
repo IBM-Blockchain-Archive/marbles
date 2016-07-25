@@ -257,7 +257,7 @@ The network is all setup.  Now we need to copy the peer data and pass it to our 
 
 #<a name="run"></a>Run Marbles on Local Machine
 Now we are ready to work on the application! 
-The app is setup to either grab network data from Bluemix via VCAP Service's environmental variable OR to load the hard coded list in `./app.js`. 
+The app is setup to either grab network data from Bluemix via VCAP Service's environmental variable OR to load the hard coded list in `mycreds.json`. 
 Since we are running the app locally it will not find VCAP and will use the hard coded list. 
 You should have replaced the hard coded data with your personal network data in the last section. 
 If you haven't, go ahead and do it now (instructions are [above](#network)).
@@ -269,8 +269,8 @@ If you haven't, go ahead and do it now (instructions are [above](#network)).
 1. Next we need to install our dependencies. Open a command prompt/terminal and browse to the root of this project.
 1. In the command prompt type:
 	
-		> npm install
 		> npm install gulp -g
+		> npm install
 		> gulp
 		
 1. If all goes well you should see this message in the console:
