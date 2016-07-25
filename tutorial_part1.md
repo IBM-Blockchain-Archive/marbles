@@ -224,7 +224,7 @@ All you have to do is find the tile and give the network a name.
 
 ![](/doc_images/bluemix_ibc1.png)
 
-1. Find and click the "Blockchain" tile (you can use the navigation on the left to filter the list: Services > Network)
+1. Find and click the "Blockchain" tile (you can use the navigation on the left to filter the list: Services > Web and Application)
 
 ![](/doc_images/bluemix_ibc2.png)
 
