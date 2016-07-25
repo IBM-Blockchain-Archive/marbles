@@ -4,7 +4,7 @@
 - The underlying network for this application is the [Hyperledger Fabric](https://github.com/hyperledger/fabric/tree/master/docs), a Linux Foundation project.
 - The expectations of this application are to test the JS SDK, guide its development and to aid a developer become familiar with our SDK + chaincode.
 - This is a `very simple` asset transfer demonstration.  Two users can create and exchange marbles with each other.
-- There will be multiple parts. Part 1 and 2 are complete  [2/15/2016]
+- There will be multiple parts. Part 1 and 2 are complete [2/15/2016]
 - There are two components to this demo each with their own repo. The node.js web application and chaincode. The chaincode repo can be found here: [https://github.com/ibm-blockchain/marbles-chaincode](hhttps://github.com/ibm-blockchain/marbles-chaincode).  You are currently inside the node.js repo.
 
 ***
@@ -21,9 +21,9 @@
 
 #Prereq:
 1. Bluemix ID https://console.ng.bluemix.net/ (needed to create your IBM Blockchain network if local network is not setup)
-1. If you want to run Marbles on a local blockchain network (ie. not using Bluemix) you will need to have compeleted the Hyperledger Fabric [development setup](https://github.com/hyperledger/fabric/blob/master/docs/Setup/Network-setup.md).
+1. If you want to run Marbles on a local blockchain network (ie. not using Bluemix) you will need to have completed the Hyperledger Fabric [development setup](https://github.com/hyperledger/fabric/blob/master/docs/Setup/Network-setup.md).
 1. [Node.js](https://nodejs.org/en/download/) 0.12.0+ and npm v2+ (only needed if you want to run the app locally, npm comes with node.js)
-1. Node.js + express experience. Marbles is a very simple blockchain app but its still a failry involved node app.  **You should be comfortable with node** and the express module.
+1. Node.js + express experience. Marbles is a very simple blockchain app but it’s still a fairly involved node app.  **You should be comfortable with node** and the express module.
 1. GoLang Environment (only needed to build your own chaincode, not needed if you just run the marbles app as is)
 1. I highly recommend you complete [learn chaincode](https://github.com/IBM-Blockchain/learn-chaincode) first
 
@@ -48,14 +48,14 @@ Attributes of a marble:
 We are going to create a Web UI that can set these values and pass them to the chaincode. 
 Interacting with the cc is done with a HTTP REST call to a peer on the network. 
 The ibc-js SDK will abstract the details of the REST calls away.
-This allow us to use dot notation to call our GoLang functions (such as `chaincode.invoke.init_marble(args)`).
+This allows us to use dot notation to call our GoLang functions (such as `chaincode.invoke.init_marble(args)`).
 
 #Application Communication Flow
 
 ![](/doc_images/comm_flow.png)
 
 1. The user will interact with our Node.js application in their browser.
-1. This client side JS code will open a websocket to the backend Node.js application. The client JS will send msgs to the backend when the user interacts with the site.
+1. This client side JS code will open a websocket to the backend Node.js application. The client JS will send messages to the backend when the user interacts with the site.
 1. The backend Node.js will send HTTP requests (via the SDK) to a blockchain peer to carry out the user's actions.
 1. The peer will communicate to its chaincode container at its leisure. Note that the previous HTTP request was really a 'submission' of chaincode to be run, it will actually run at a later date (usually milliseconds).
 1. The cc container will carry out the desired operation and record it to the ledger. ie create/transfer a marble.
@@ -106,7 +106,7 @@ It will then give you a dot notation to use them in your Node.js application. ie
 	
 ```js
 	chaincode.query.read(["abc"]);               //calls the Query() function which will read the var "abc"
-	chaincode.invoke.write(["stuff", "test"]);    //invokes the cc funciton Write() function which will write test to "stuff" in the cc state
+	chaincode.invoke.write(["stuff", "test"]);    //invokes the cc function Write() function which will write test to "stuff" in the cc state
 	chaincode.invoke.rule_the_world(["tomrrow"]); //invokes the cc function "rule_the_world" (assuming it exists)
 ```
 
@@ -212,7 +212,7 @@ then continue [here](#run).
 
 `OR`
 
-(2) Deploy the app on my local machine, connecting to a Bluemix IBM BlockChain network - [instructions](#network)
+(2) Deploy the app on my local machine, connecting to a Bluemix IBM Blockchain network - [instructions](#network)
 
 # <a name="network"></a>Manual Network Setup:
 Don't fret, "manual" setup means I will guide you to click on a particular button and fill out a text input field or two. 
@@ -571,7 +571,7 @@ Our code then goes off and starts 4 things.
 1. It fires off a request to the cc to read marble index and then reads each marble
 1. It fires off a request to the cc to read the open trades
 
-The results will then be sent to the clients via the websocket (in indivdual messages).
+The results will then be sent to the clients via the websocket (in individual messages).
 
 
 That’s it! Hope you had fun trading some marbles in part 1. 
