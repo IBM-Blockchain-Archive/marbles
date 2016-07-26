@@ -268,7 +268,7 @@ The network is all setup.  **Now we need to copy the peer data and pass it to ou
 1. Copy the value of the whole JSON object to the `mycreds.json` file in the root of this project.
 	1. If for some reason you don't see any credentials click the "ADD CREDENTIALS" button and let the page refresh
 
-1. continue (here)[#run]
+1. continue by [running the marbles app](#run)
 
 #<a name="run"></a>Run Marbles on Local Machine
 Now we are ready to work on the application! 
@@ -300,7 +300,7 @@ If you haven't, go ahead and do it now (instructions are [above](#network)).
 		[ibc-js] Deploying Chaincode - Complete
 		---------------------------------------- Websocket Up ------------------------------------------
 
-1. continue (here)[#run]
+1. continue by [running the marbles app](#run)
 		
 #Run Marbles on Bluemix (command line)
 1. This app is already ready to run on Bluemix
@@ -365,7 +365,7 @@ Therefore the first step is we need to use the /registrar API endpoint to regist
 This creates a binding of sorts between the ID and the peer such that this `enrollId` cannot be used on any other peer. 
 It's relatively safe to think of this step as registering an API key with a particular peer. 
 The SDK does almost all the work here for us. 
-It will first parse network.peers[] and network.users[] and run 1 POST /registrar HTTP request per peer. 
+It will first parse `network.peers[]` and `network.users[]` and run 1 POST /registrar HTTP request per peer. 
 It will send the first `enrollId` to the first peer, and the second ID to the second peer and so on until every peer has 1 ID. 
 The details of all rest calls are taken care of by the SDK but if you are curious we have [Swagger Documentation](https://obc-service-broker-prod.mybluemix.net/swagger) on the IBM Blockchain peer APIs. 
 At the end of this step we are ready to deploy our chaincode. 
