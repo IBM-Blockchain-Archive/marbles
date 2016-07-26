@@ -65,11 +65,11 @@ There are 3 distinct parts/worlds that you need to keep straight.
 They should be thought of as isolated environments that communicate over HTTP. 
 This walk through will jump from one to another as we setup and explain each part. 
 It's important to identify which part is which. 
-There are certain keywoards and context clues to help you identify one from another.
+There are certain keywords and context clues to help you identify one from another.
 
 1. The Chaincode Part - This is GoLang code that runs on/with a peer on your blockchain network. Also called `cc`. Anything blockchain happens here.
 1. The Client Side JS Part - This is JavaScript code running in the user's browser. User interaction code happens here.
-1. The Server Side JS Part - This is JavaScript code running our application's backend. ie `Node.js` code which is the heart of Marbles! Sometimes refered to as our `node` or `server` code. Functions as the glue between the user and our blockchain.
+1. The Server Side JS Part - This is JavaScript code running our application's backend. ie `Node.js` code which is the heart of Marbles! Sometimes referred to as our `node` or `server` code. Functions as the glue between the user and our blockchain.
 
 #Chaincode
 To understand what is going on we need to start looking at the chaincode.  The complete cc code for this example can be found [here](https://github.com/IBM-Blockchain/marbles-chaincode/blob/master/hyperledger/part1/part1_chaincode.go). 
@@ -237,7 +237,7 @@ All you have to do is find the tile and give the network a name.
 
 ![](/doc_images/bluemix_ibc1.png)
 
-1. Find and click the "Blockchain" tile. Yyou can use the navigation on the left to filter the list: "Services" > "Web and Application" or type `blockchain` in the search box.
+1. Find and click the "Blockchain" tile. You can use the navigation on the left to filter the list: "Services" > "Web and Application" or type `blockchain` in the search box.
 
 ![](/doc_images/bluemix_ibc2.png)
 
@@ -325,13 +325,13 @@ If you haven't, go ahead and do it now (instructions are [above](#network)).
 1. Fill out all the fields, then click the "Create" button
 1. It should have flipped you back to "Home" and you should see that a new marble has been created
 	- If not click the "Home" tab again or refresh the page
-1. Next lets trade a marble.  Click and drag one marble from one person's list to another. It should temporary disappear and then auto reload the marbles in their new state. 
+1. Next let’s trade a marble.  Click and drag one marble from one person's list to another. It should temporary disappear and then auto reload the marbles in their new state. 
 	- If not refresh the page
 
 
 
 #SDK / IBM Blockchain Deeper Dive
-Before we examine how marbles works lets examine what the SDK did to get our cc onto the network.
+Before we examine how marbles works let’s examine what the SDK did to get our cc onto the network.
 The options argument for `ibc.load(options)` contains many important things. 
 An abbreviated version is below:
 
@@ -359,9 +359,9 @@ An abbreviated version is below:
 	ibc.load(options, cb);
 ```
 
-This network has membership security; we can tell because there are enroll IDs/secrets in the network.users array. 
+This network has membership security; we can tell because there are enroll IDs/secrets in the `network.users` array. 
 This means the peers will be expecting a validated `enrollId` on most API requests. 
-Therefore the first step is we need to use the /registrar API endpoint to register an `enrollId`. 
+Therefore, the first step is we need to use the /registrar API endpoint to register an `enrollId`. 
 This creates a binding of sorts between the ID and the peer such that this `enrollId` cannot be used on any other peer. 
 It's relatively safe to think of this step as registering an API key with a particular peer. 
 The SDK does almost all the work here for us. 
@@ -372,14 +372,14 @@ At the end of this step we are ready to deploy our chaincode.
 
 Before we deploy though, the SDK will download and parse the chaincode. 
 This is when it builds up the dot notation we can use to ultimately call cc functions from JS. 
-Once its done downloading/parsing it runs the deploy HTTP request. 
+Once it’s done downloading/parsing it runs the deploy HTTP request. 
 We should receive a hash in the response that is unique to this chaincode. 
 This hash will be used along with the registered `enrollId` in all future invocations / queries against this cc. 
 
 
 #Marbles Deeper Dive
 Hopefully you have successfully traded a marble or two between users. 
-Lets look at how this was done by starting at the chaincode.
+Let’s look at how this was done by starting at the chaincode.
 
 __set_user()__
 
@@ -462,7 +462,7 @@ __/utils/ws_part1.js__
 ```
 
 The `chaincode.invoke.set_user([data.name, data.user]);` line is where we submit our request to run the chaincode function. 
-It is passing to our GoLang set_user function an array of strings argument containing the name of the marble and the name of it's new owner. 
+It is passing to our GoLang `set_user` function an array of strings argument containing the name of the marble and the name of its new owner. 
 By "passing" I mean it is really sending a HTTP POST `/chaincode` invoke request to one of the peers in our network. 
 This peer will in turn call the chaincode and actually pass the argument to the cc function. 
 The details of which peer and the exact rest call are taken care of in our ibc-js SDK. 
@@ -506,7 +506,7 @@ With these tools we get a droppable event trigger.
 In the above code we have attached it to #user2wrap and #user1wrap div elements. 
 When the event fires we first check to see if this marble actually moved owners, or if it was just picked up and dropped back down. 
 If its owner has changed we go off to the `transfer()` function.
-This function creates a json message with all the needed data and uses our websocket to send it with `ws.send()`.
+This function creates a JSON message with all the needed data and uses our websocket to send it with `ws.send()`.
 
 __Monitor-Blockheight__
 
@@ -598,8 +598,9 @@ So if we want details on blockheight #5, we build a request for `/chain/blocks/4
 
 That’s it! Hope you had fun trading some marbles in part 1. 
 Next up is [Marbles Part 2](./tutorial_part2.md). 
-Part 2 adds some new chaincode functions making it a little more nifty.
+Part 2 adds some new chaincode functions making it a little niftier.
 
+***
 
 #Trouble Shooting
 Stuck? Try my handy [trouble shooting guide](./i_lost_my_marbles.md).
