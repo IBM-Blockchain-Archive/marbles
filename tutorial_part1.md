@@ -111,6 +111,7 @@ __Invoke()__
 		return nil, errors.New("Received unknown function invocation")
 	}
 ```
+
 For example our cc code will detect when the variable `function` is equal to "write" and will call `t.Write()`.
 The SDK we are using can parse and find the name of the functions listed in this `Invoke()` code. 
 It will then give you a dot notation to use them in your Node.js application. ie:
@@ -227,7 +228,11 @@ then continue [here](#run).
 
 (2) Deploy the app on my local machine, connecting to a Bluemix IBM Blockchain network - [instructions](#network)
 
-# <a name="network"></a>Manual Network Setup:
+`OR`
+
+(3) Deploy the app wherever and connect to a local/remote Hyperledger Network - [instructions](#confignetwork)
+
+# <a name="network"></a>Manual Bluemix Network:
 Don't fret, "manual" setup means I will guide you to click on a particular button and fill out a text input field or two. 
 There is a Bluemix tile that will create you your own personal blockchain network. 
 All you have to do is find the tile and give the network a name. 
@@ -270,12 +275,51 @@ The network is all setup.  **Now we need to copy the peer data and pass it to ou
 
 1. continue by [running the marbles app](#run)
 
+#<a name="confignetwork"></a>Configure the SDK for your Blockchain Network
+The app is setup to either grab network configuration data from Bluemix via VCAP Service's environmental variable OR to load the hard coded list in `mycreds.json`. 
+
+- If you are running the app locally it will not find VCAP. Thus you need to edit `mycreds.json` 
+- If you are hosting the app on Bluemix, but wish to use a different network you need to edit `mycreds.json`
+- If you are hosting the app on Bluemix, and wish to use a Bluemix network you do not need to edit `mycreds.json`
+
+Marbles is already coded to toggle the SDK between VCAP_SERVICES and `mycreds.json` depending on the environment.
+All we have to do is populate `mycreds.json` with information about our network.
+If you want to see details of whats going then take a look at the [SDK's documentation](https://github.com/IBM-Blockchain/ibm-blockchain-js).
+Below is a sample showing the information that must be in the JSON file. 
+
+You may see other examples JSON files that include much more information. 
+Those extra field are either legacy or simply extra. 
+You only need to set the fields that are in the sample below:
+
+__sample mycreds.json__
+
+```js
+{
+  "credentials": {
+    "peers": [
+      {
+        "api_host": "12345678-abcde-_vp0.blockchain.ibm.com",   //hostname or ip of peer
+        "api_port_tls": 443,                                    //https port (optional)
+        "api_port": 80,                                         //http port
+        "id": "12345678-abcde-4d6f-_vp0",                       //unique id of peer
+      },
+    ],
+    "users": [
+      {
+        "enrollId": "user_type1_1234567890",                     //enroll username
+        "enrollSecret": "1234567890"                             //enroll's secret
+      }
+    ]
+  }
+}
+```
+
+You must have the same number of entries in the `peer` array as the `users` array. 
+Also Marbles only needs to talk to 1 peer, so 1 peer and 1 user is a valid setup. 
+Once you have edited this file you are ready to run Marbles. 
+
 #<a name="run"></a>Run Marbles on Local Machine
 Now we are ready to work on the application! 
-The app is setup to either grab network data from Bluemix via VCAP Service's environmental variable OR to load the hard coded list in `mycreds.json`. 
-Since we are running the app locally it will not find VCAP and will use the hard coded list. 
-You should have replaced the hard coded data with your personal network data in the last section. 
-If you haven't, go ahead and do it now (instructions are [above](#network)).
 
 1. To run the app locally we need to get these files onto your machine
 	- If you have Git installed then browse a command prompt/terminal to a desired working directory and type `git clone https://github.com/IBM-Blockchain/marbles`
@@ -286,8 +330,13 @@ If you haven't, go ahead and do it now (instructions are [above](#network)).
 	
 		> npm install gulp -g
 		> npm install
-		> gulp
 		
+1. [Configure](#confignetwork) the SDK to use your preferred blockchain network. Jump back here when finished.
+
+1. Get back to your command prompt and browse to the root of this project. Run Marbles with the command:
+	
+		> gulp
+
 1. If all goes well you should see this message in the console:
 	
 		--------------------------------- Server Up - localhost:3000 ------------------------------------
