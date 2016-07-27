@@ -316,7 +316,9 @@ __sample mycreds.json__
 
 You must have the same number of entries in the `peer` array as the `users` array. 
 Also Marbles only needs to talk to 1 peer, so 1 peer and 1 user is a valid setup. 
-Once you have edited this file you are ready to run Marbles. 
+You can ommit the field `api_port_tls` if your network does not support tls. 
+If you are not using tls you should also change the `options.tls` field to `false` on [line 200](app.js#L200) of app.js.
+Once you have edited `mycreds.json` you are ready to run Marbles. 
 
 #<a name="run"></a>Run Marbles on Local Machine
 Now we are ready to work on the application! 
