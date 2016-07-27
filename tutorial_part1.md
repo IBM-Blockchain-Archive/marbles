@@ -222,17 +222,17 @@ Choose 1 option below:
 
 (1) Deploy the app and network at once on Bluemix.  Simply click this button &nbsp;&nbsp; 
 [![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/ibm-blockchain/marbles.git)
-then continue [here](#run).
+then continue [here](#use).
 
 `OR`
 
-(2) Deploy the app on my local machine, connecting to a Bluemix IBM Blockchain network - [instructions](#network)
+(2) Deploy the app on my local machine, connecting to a Bluemix IBM Blockchain network - [instructions](#manbluenetwork)
 
 `OR`
 
 (3) Deploy the app wherever and connect to a local/remote Hyperledger Network - [instructions](#confignetwork)
 
-# <a name="network"></a>Manual Bluemix Network:
+# <a name="manbluenetwork"></a>Manual Bluemix Network:
 Don't fret, "manual" setup means I will guide you to click on a particular button and fill out a text input field or two. 
 There is a Bluemix tile that will create you your own personal blockchain network. 
 All you have to do is find the tile and give the network a name. 
@@ -273,7 +273,7 @@ The network is all setup.  **Now we need to copy the peer data and pass it to ou
 1. Copy the value of the whole JSON object to the `mycreds.json` file in the root of this project.
 	1. If for some reason you don't see any credentials click the "ADD CREDENTIALS" button and let the page refresh
 
-1. continue by [running the marbles app](#run)
+1. continue by [running the marbles app](#runlocal)
 
 #<a name="confignetwork"></a>Configure the SDK for your Blockchain Network
 The app is setup to either grab network configuration data from Bluemix via VCAP Service's environmental variable OR to load the hard coded list in `mycreds.json`. 
@@ -323,7 +323,7 @@ If you are not using TLS you should also change the `options.tls` field to `fals
 All networks created with the Bluemix service will have Membership Services and support TLS exclusively.
 Once you have edited `mycreds.json` you are ready to run Marbles.
 
-#<a name="run"></a>Run Marbles on Local Machine
+#<a name="runlocal"></a>Run Marbles on Local Machine
 Now we are ready to work on the application! 
 
 1. To run the app locally we need to get these files onto your machine
@@ -354,7 +354,7 @@ Now we are ready to work on the application!
 		[ibc-js] Deploying Chaincode - Complete
 		---------------------------------------- Websocket Up ------------------------------------------
 
-1. continue by [running the marbles app](#run)
+1. Continue by [using the marbles app](#use)
 		
 #Run Marbles on Bluemix (command line)
 1. This app is already ready to run on Bluemix
@@ -371,7 +371,7 @@ Now we are ready to work on the application!
 	
 1. The application will bind to the service "myblockchain" and grab the peer data from VCAP_SERVICES. Code for this is in [app.js](app.js#L153)
 
-#<a name="run"></a>Use Marbles App
+#<a name="use"></a>Use Marbles App
 1. Open up your browser and browse to [http://localhost:3000](http://localhost:3000) or your Bluemix www route.
 1. You should be staring at our Marbles Part 1 application
 	- Part 2 can be found at [http://localhost:3000/p2](http://localhost:3000/p2), but lets stay on Part 1 for now  
