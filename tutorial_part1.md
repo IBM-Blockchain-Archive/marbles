@@ -285,11 +285,11 @@ The app is setup to either grab network configuration data from Bluemix via VCAP
 
 Marbles is already coded to toggle the SDK between VCAP_SERVICES and `mycreds.json` depending on the environment.
 All we have to do is populate `mycreds.json` with information about our network.
-If you want to see details of whats going then take a look at the [SDK's documentation](https://github.com/IBM-Blockchain/ibm-blockchain-js).
+If you want more details of setup options then take a look at the [SDK's documentation](https://github.com/IBM-Blockchain/ibm-blockchain-js).
 Below is a sample showing the information that must be in the JSON file. 
 
-You may see other examples JSON files that include much more information. 
-Those extra field are either legacy or simply extra. 
+You may see other example JSON files that include much more information. 
+Those extra fields are either legacy or simply extra. 
 You only need to set the fields that are in the sample below:
 
 __sample mycreds.json__
