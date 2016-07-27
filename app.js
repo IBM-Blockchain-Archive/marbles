@@ -229,19 +229,62 @@ ibc.load(options, function (err, cc){														//parse/load chaincode, respo
 
 		// ---- To Deploy or Not to Deploy ---- //
 		if(!cc.details.deployed_name || cc.details.deployed_name === ''){					//yes, go deploy
-			cc.deploy('init', ['99'], {save_path: './cc_summaries', delay_ms: 50000}, cb_deployed);	//delay_ms is milliseconds to wait after deploy for conatiner to start, 50sec recommended
+			cc.deploy('init', ['99'], {save_path: './cc_summaries', delay_ms: 50000}, function(e){ //delay_ms is milliseconds to wait after deploy for conatiner to start, 50sec recommended
+				check_if_deployed(e, 1);
+			});
 		}
 		else{																				//no, already deployed
 			console.log('chaincode summary file indicates chaincode has been previously deployed');
-			cb_deployed();
+			check_if_deployed(null, 1);
 		}
 	}
 });
 
+//loop here, check if chaincode is up and running or not
+function check_if_deployed(e, attempt){
+	if(e){
+		cb_deployed(e);																		//looks like an error pass it along
+	}
+	else if(attempt >= 15){																	//tried many times, lets give up and pass an err msg
+		console.log('[preflight check]', attempt, ': failed too many times, giving up');
+		var msg = 'chaincode is taking an unusually long time to start. this sounds like a network error, check peer logs';
+		if(!process.error) process.error = {type: 'deploy', msg: msg};
+		cb_deployed(msg);
+	}
+	else{
+		console.log('[preflight check]', attempt, ': testing if chaincode is ready');
+		chaincode.query.read(['_marbleindex'], function(err, resp){
+			var cc_deployed = false;
+			try{
+				if(err == null){															//no errors is good, but can't trust that alone
+					if(resp === 'null') cc_deployed = true;									//looks alright, brand new, no marbles yet
+					else{
+						var json = JSON.parse(resp);
+						if(json.constructor === Array) cc_deployed = true;					//looks alright, we have marbles
+					}
+				}
+			}
+			catch(e){}																		//anything nasty goes here
+
+			// ---- Are We Ready? ---- //
+			if(!cc_deployed){
+				console.log('[preflight check]', attempt, ': failed, trying again');
+				setTimeout(function(){
+					check_if_deployed(null, ++attempt);										//no, try again later
+				}, 10000);
+			}
+			else{
+				console.log('[preflight check]', attempt, ': success');
+				cb_deployed(null);															//yes, lets go!
+			}
+		});
+	}
+}
+
 // ============================================================================================================================
 // 												WebSocket Communication Madness
 // ============================================================================================================================
-function cb_deployed(e, d){
+function cb_deployed(e){
 	if(e != null){
 		//look at tutorial_part1.md in the trouble shooting section for help
 		console.log('! looks like a deploy error, holding off on the starting the socket\n', e);
