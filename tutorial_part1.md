@@ -281,6 +281,7 @@ The app is setup to either grab network configuration data from Bluemix via VCAP
 - If you are running the app locally it will not find VCAP. Thus you need to edit `mycreds.json` 
 - If you are hosting the app on Bluemix, but wish to use a different network you need to edit `mycreds.json`
 - If you are hosting the app on Bluemix, and wish to use a Bluemix network you do not need to touch `mycreds.json`
+	- Simply "bind" the Bluemix service to your application using the Bluemix's dashboard UI. [Binding Instructions](https://console.ng.bluemix.net/docs/services/reqnsi.html#add_service)
 
 Marbles is already coded to toggle the SDK between VCAP_SERVICES and `mycreds.json` depending on the environment.
 All we have to do is populate `mycreds.json` with information about our network.
@@ -317,8 +318,9 @@ __sample mycreds.json__
 You must have the same number of entries in the `peer` array as the `users` array unless the network does not use Membership Services. 
 You can omit the `users` array entirely if the network does not use Membership Services. 
 Marbles only talks to 1 peer so you only need 1 peer in the array. 
-You can omit the field `api_port_tls` if the network does not support tls. 
-If you are not using tls you should also change the `options.tls` field to `false` on [line 200](app.js#L200) of app.js.
+You can omit the field `api_port_tls` if the network does not support TLS. 
+If you are not using TLS you should also change the `options.tls` field to `false` on [line 200](app.js#L200) of app.js.
+All networks created with the Bluemix service will have Membership Services and support TLS exclusively.
 Once you have edited `mycreds.json` you are ready to run Marbles.
 
 #<a name="run"></a>Run Marbles on Local Machine
