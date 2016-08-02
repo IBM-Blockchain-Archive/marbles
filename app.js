@@ -157,6 +157,14 @@ try{
 	var users = null;																			//users are only found if security is on
 	if(manual.credentials.users) users = manual.credentials.users;
 	console.log('loading hardcoded users');
+	var options = {
+	    quiet: true, //detailed debug messages on/off true/false
+	    tls: true,   //should app to peer communication use tls?
+	    maxRetry: 1	 //how many times should we retry register before giving up
+	};
+        if (manual.options) {
+            options = Object.assign(options, manual.options);
+        };
 }
 catch(e){
 	console.log('Error - could not find hardcoded peers/users, this is okay if running in bluemix');
@@ -195,11 +203,7 @@ var options = 	{
 					network:{
 						peers: [peers[0]],																	//lets only use the first peer! since we really don't need any more than 1
 						users: users,																		//dump the whole thing, sdk will parse for a good one
-						options: {
-									quiet: true, 															//detailed debug messages on/off true/false
-									tls: true, 																//should app to peer communication use tls?
-									maxRetry: 1																//how many times should we retry register before giving up
-								}
+						options: options
 					},
 					chaincode:{
 						zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip',
