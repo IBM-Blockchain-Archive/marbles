@@ -302,8 +302,8 @@ __sample mycreds.json__
         "api_host": "12345678-abcde-_vp0.blockchain.ibm.com",   //hostname or ip of peer
         "api_port_tls": 443,                                    //https port (optional)
         "api_port": 80,                                         //http port
-        "id": "12345678-abcde-4d6f-_vp0",                       //unique id of peer
-      },
+        "id": "12345678-abcde-4d6f-_vp0"                        //unique id of peer
+      }
     ],
     "users": [
       {
