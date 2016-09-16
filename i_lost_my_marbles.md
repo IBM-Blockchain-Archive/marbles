@@ -33,8 +33,8 @@ npm update
 
 We need to first check off that your network is running correctly. 
 The best way to do this is to open your networks monitor page. 
-What we want to see is 2 peers (validating peer 1 and 2) and a CA with the status of "running" or "up for x time". 
-What we do not want to see is missing peers, or peers with an "exited" status. 
+What we want to see is 4 peers and a CA with the status of "running". 
+What we do not want to see is missing peers, or peers with a "stopped" status. 
 Follow the instructions in [this section](./i_lost_my_marbles.md#peer-or-chaincode-logs) to get to the monitor page, and while you are there check the peer logs to see if there is anything suspicious.
 
 Results:
@@ -69,15 +69,15 @@ Results:
 
 - *I have registration failure message(s)*
 	- Nuts, so here are a few issues that may cause this:
-		- You fed it incorrect usernames and/or secrets. Verify if the username printed out correctly matches one from your services credentials list
+		- You fed it incorrect enroll IDs and/or secrets. Verify if the enroll ID printed out correctly matches one from your services credentials list
 		- You fed it incorrect peer host/ports. Verify the hostname/ports are the same as the ones you see in your network's monitor page.
 		- Verify if your peers are still running (we did this in step 1 though...)
-		- You have previously registered this username to a different peer. This is not allowed. A username can only be registered against 1 peer. (re-registering a username against the same peer is fine though)
-		- You must have at least one registered username for marbles. If only one works edit the list of peers/users you feed marbles to only contain this one.
+		- You have previously registered this enroll ID to a different peer. This is not allowed. A enroll ID can only be registered against 1 peer. (re-registering a enroll ID against the same peer is fine though)
+		- You must have at least one registered enroll ID for marbles. If only one works edit the list of peers/users you feed marbles to only contain this one.
 		- Check the [logs for CA](./i_lost_my_marbles.md#peer-or-chaincode-logs) for any clues (same instructions as peer logs)
 		- If nothing is working, delete this network and create another
 - *I don't see any registration messages at all*
-	- So either you did not feed `ibc.load()` any usernames or you did not feed it any appropriate usernames. An apporiate username is one that contains "type_1" in the name. Any other names get filtered out by `ibc.load`.
+	- So either you did not feed `ibc.load()` any enroll IDs or you did not feed it any appropriate enroll IDs. An apporiate enroll ID is one that contains "type_1" in the name. Any other names get filtered out by `ibc.load`.
 		- If this is problematic for you (ie you have a custom IBM Blockchain Network) then you need to build a custom `ibc.load()` out of the other SDK functions. `ibc.load()` purpose is to make deploying to standard IBM Blockchain Networks easy. If you have a custom network you should create your own function that mimics `ibc.load()` (tear it apart and look at it!). You would only need to omit `filter_users()`, and possibly change what users/peer relation you want with your own calls to `ibc.register()`.
 - *Everything looks okay*
 	- Glad to hear it, lets go to step 3
