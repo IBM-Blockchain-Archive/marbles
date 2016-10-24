@@ -405,7 +405,7 @@ An abbreviated version is below:
 		},
 		chaincode:{
 			zip_url: 'https://github.com/ibm-blockchain/marbles/archive/v1.0.zip', //http/https of a link to download zip
-			unzip_dir: 'marbles-v1.0/chaincode/part2',                             //name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
+			unzip_dir: 'marbles-1.0/chaincode/part2',                             //name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
 			git_url: 'http://gopkg.in/ibm-blockchain/marbles.v1/chaincode/part2',  //GO get https URL. should point to the desired chaincode repo AND directory
 		}
 	};

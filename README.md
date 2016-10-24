@@ -2,6 +2,18 @@
 
 [![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/ibm-blockchain/marbles.git)
 
+***
+
+##### Versions and Supported Platforms
+Use the correct version for your Hyperledger network.
+
+- [Marbles - Branch v1.0](https://github.com/ibm-blockchain/marbles/tree/v1.0) 
+	- Works with Hyperledger fabric `v0.5-developer-preview`
+	- IBM Bluemix Blockchain Service `v0.4.2+`
+
+- Marbles - Branch v2.0 [coming soon]
+	- Works with Hyperledger fabric `v0.6-developer-preview`
+
 
 # Application Background
 
