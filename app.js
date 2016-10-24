@@ -203,11 +203,11 @@ var options = 	{
 					},
 					chaincode:{
 						zip_url: 'https://github.com/ibm-blockchain/marbles/archive/v1.0.zip',
-						unzip_dir: 'marbles-v1.0/chaincode/part2',											//subdirectroy name of chaincode after unzipped
+						unzip_dir: 'marbles-1.0/chaincode/part2',											//subdirectroy name of chaincode after unzipped
 						git_url: 'http://gopkg.in/ibm-blockchain/marbles.v1/chaincode/part2',				//GO get http url
 					
 						//hashed cc name from prev deployment, comment me out to always deploy, uncomment me when its already deployed to skip deploying again
-						//deployed_name: '8c5677016abb7b4885b8dc40bb5b28f1554888cd766e2c945bc61bca03b349092f19197d32785254c692c9210db34c31821efc89e8a9f4dcb3f5575bebb4584b'
+						//deployed_name: 'd7df81a1c1fb001c002de49098624c69ce0eef7507378679f1e73f6103763cb4c1f127bd6ab7a77acb1387beb0d33e85a450e20b52213fe8dd77277c9200894b'
 					}
 				};
 if(process.env.VCAP_SERVICES){
