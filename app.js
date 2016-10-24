@@ -202,9 +202,9 @@ var options = 	{
 								}
 					},
 					chaincode:{
-						zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip',
-						unzip_dir: 'marbles-chaincode-master/hyperledger/part2',							//subdirectroy name of chaincode after unzipped
-						git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/hyperledger/part2',	//GO get http url
+						zip_url: 'https://github.com/ibm-blockchain/marbles/archive/v1.0.zip',
+						unzip_dir: 'marbles-v1.0/chaincode/part2',											//subdirectroy name of chaincode after unzipped
+						git_url: 'http://gopkg.in/ibm-blockchain/marbles.v1/chaincode/part2',				//GO get http url
 					
 						//hashed cc name from prev deployment, comment me out to always deploy, uncomment me when its already deployed to skip deploying again
 						//deployed_name: '8c5677016abb7b4885b8dc40bb5b28f1554888cd766e2c945bc61bca03b349092f19197d32785254c692c9210db34c31821efc89e8a9f4dcb3f5575bebb4584b'

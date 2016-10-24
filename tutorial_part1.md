@@ -5,7 +5,6 @@
 - The expectations of this application are to test the JS SDK, guide its development and to aid a developer in becoming familiar with our SDK + chaincode.
 - This is a `very simple` asset transfer demonstration.  Two users can create and exchange marbles with each other.
 - There will be multiple parts. Part 1 and 2 are complete [2/15/2016]
-- There are two components to this demo each with their own repo. The node.js web application and chaincode. The chaincode repo can be found here: [https://github.com/ibm-blockchain/marbles-chaincode](hhttps://github.com/ibm-blockchain/marbles-chaincode).  You are currently inside the node.js repo.
 
 ***
 
@@ -72,7 +71,7 @@ There are certain keywords and context clues to help you identify one from anoth
 1. The Server Side JS Part - This is JavaScript code running our application's backend. ie `Node.js` code which is the heart of Marbles! Sometimes referred to as our `node` or `server` code. Functions as the glue between the user and our blockchain.
 
 #Chaincode
-To understand what is going on we need to start looking at the chaincode.  The complete cc code for this example can be found [here](https://github.com/IBM-Blockchain/marbles-chaincode/blob/master/hyperledger/part1/part1_chaincode.go). 
+To understand what is going on we need to start looking at the chaincode.  The complete cc code for this example can be found [here](https://github.com/IBM-Blockchain/marbles/blob/v1.0/chaincode/part1/part1_chaincode.go). 
 Marbles Part 1 and Marbles Part 2 will use different chaincode, but Part 2 will include everything from Part 1. 
 Part 1 is just nicer to look at since it has less lines of code, and hopefully less things to confuse you on. 
 It is perfectly fine to use Part 2's chaincode with the Marbles Part 1 web application.
@@ -405,9 +404,9 @@ An abbreviated version is below:
 			}]
 		},
 		chaincode:{
-			zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip', //http/https of a link to download zip
-			unzip_dir: 'marbles-chaincode-master/hyperledger/part2',                                       //name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
-			git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/hyperledger/part2',              //GO get https URL. should point to the desired chaincode repo AND directory
+			zip_url: 'https://github.com/ibm-blockchain/marbles/archive/v1.0.zip', //http/https of a link to download zip
+			unzip_dir: 'marbles-v1.0/chaincode/part2',                             //name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
+			git_url: 'http://gopkg.in/ibm-blockchain/marbles.v1/chaincode/part2',  //GO get https URL. should point to the desired chaincode repo AND directory
 		}
 	};
 	ibc.load(options, cb);

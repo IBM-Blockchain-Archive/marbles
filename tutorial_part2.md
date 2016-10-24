@@ -5,7 +5,6 @@
 - The underlying network for this application is the [Hyperledger Fabric](https://github.com/hyperledger/fabric/tree/master/docs), a Linux Foundation project.
 - The expectations of this application are to test the JS SDK, guide its development and to aid a developer become familiar with our SDK + chaincode.
 - This is a `very simple` asset transfer demonstration.  Two users can create and exchange marbles with each other.
-- There are two components to this demo each with their own repo. The node.js web application and chaincode. The chaincode repo can be found here: [https://github.com/ibm-blockchain/marbles-chaincode](hhttps://github.com/ibm-blockchain/marbles-chaincode).  You are currently inside the node.js repo.
 
 ***
 
