@@ -11,7 +11,7 @@ Use the correct version for your Hyperledger network.
 	- Works with Hyperledger fabric `v0.5-developer-preview`
 	- IBM Bluemix Blockchain Service `v0.4.2+`
 
-- Marbles - Branch v2.0 [coming soon]
+- [Marbles - Branch v2.0](https://github.com/ibm-blockchain/marbles/tree/v2.0)
 	- Works with Hyperledger fabric `v0.6-developer-preview`
 
 
