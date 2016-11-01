@@ -4,7 +4,7 @@
 /*******************************************************************************
  * Copyright (c) 2015 IBM Corp.
  *
- * All rights reserved. 
+ * All rights reserved.
  *
  * Contributors:
  *   David Huffman - Initial implementation
@@ -27,6 +27,12 @@ var setup = require('./setup');
 var fs = require('fs');
 var cors = require('cors');
 
+var hfc = require('hfc');
+var util = require('util');
+var fs = require('fs');
+const https = require('https');
+var hfc_util = require('./utils/hfc_util');
+
 //// Set Server Parameters ////
 var host = setup.SERVER.HOST;
 var port = setup.SERVER.PORT;
@@ -38,7 +44,7 @@ app.engine('.html', require('jade').__express);
 app.use(compression());
 app.use(morgan('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded()); 
+app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use('/cc/summary', serve_static(path.join(__dirname, 'cc_summaries')) );												//for chaincode investigator
 app.use( serve_static(path.join(__dirname, 'public'), {maxAge: '1d', setHeaders: setCustomCC}) );							//1 day cache
@@ -70,7 +76,7 @@ app.use(function(req, res, next){
 	console.log('New ' + req.method + ' request for', req.url);
 	req.bag = {};																			//create object for my stuff
 	req.bag.session = req.session;
-	
+
 	var url_parts = url.parse(req.url, true);
 	req.parameters = url_parts.query;
 	keys = Object.keys(req.parameters);
@@ -142,8 +148,8 @@ var part1 = require('./utils/ws_part1');														//websocket message proces
 var part2 = require('./utils/ws_part2');														//websocket message processing for part 2
 var ws = require('ws');																			//websocket mod
 var wss = {};
-var Ibc1 = require('ibm-blockchain-js');														//rest based SDK for ibm blockchain
-var ibc = new Ibc1();
+// var Ibc1 = require('ibm-blockchain-js');														//rest based SDK for ibm blockchain
+// var ibc = new Ibc1();
 
 // ==================================
 // load peers manually or from VCAP, VCAP will overwrite hardcoded list!
@@ -155,6 +161,9 @@ try{
 	var peers = manual.credentials.peers;
 	console.log('loading hardcoded peers');
 	var users = null;																			//users are only found if security is on
+	var caContainer = manual.credentials.ca;
+	var ca = caContainer[Object.keys(caContainer)[0]]
+
 	if(manual.credentials.users) users = manual.credentials.users;
 	console.log('loading hardcoded users');
 }
@@ -179,7 +188,7 @@ if(process.env.VCAP_SERVICES){																	//load from vcap, search for serv
 				if(servicesObject[i][0].credentials.users){										//user field may or maynot exist, depends on if there is membership services or not for the network
 					console.log('overwritting users, loading from a vcap service: ', i);
 					users = servicesObject[i][0].credentials.users;
-				} 
+				}
 				else users = null;																//no security
 				break;
 			}
@@ -187,7 +196,166 @@ if(process.env.VCAP_SERVICES){																	//load from vcap, search for serv
 	}
 }
 
+// ==================================
+// Set up the blockchain sdk
+// ==================================
+var chain = hfc.newChain("mychain");
 
+// Creating an environment variable for ciphersuites
+process.env['GRPC_SSL_CIPHER_SUITES'] = 'ECDHE-RSA-AES128-GCM-SHA256:' +
+    'ECDHE-RSA-AES128-SHA256:' +
+    'ECDHE-RSA-AES256-SHA384:' +
+    'ECDHE-RSA-AES256-GCM-SHA384:' +
+    'ECDHE-ECDSA-AES128-GCM-SHA256:' +
+    'ECDHE-ECDSA-AES128-SHA256:' +
+    'ECDHE-ECDSA-AES256-SHA384:' +
+    'ECDHE-ECDSA-AES256-GCM-SHA384';
+
+let ccPath = process.env["GOPATH"]+"/src/github.com/marbles-chaincode/part1";
+//let ccPath = process.env["GOPATH"]+"/src/github.com/marbles-chaincode";
+console.log('ccPath: ' + ccPath);
+
+var network_id = Object.keys(manual.credentials.ca);
+var ca_url = "grpcs://"+ca.url;
+console.log("Member services address: "+ca_url);
+var uuid = network_id[0].substring(0,8);
+chain.setKeyValStore( hfc.newFileKeyValStore(__dirname + '/keyValStore-' + uuid) );
+
+var certFile = 'certificate.pem';
+var certUrl = manual.credentials.cert;
+fs.access(certFile, function (err) {
+    if (!err) {
+        console.log("\nDeleting existing certificate ", certFile);
+        fs.unlinkSync(certFile);
+    }
+    downloadCertificate();
+});
+
+function downloadCertificate() {
+    var file = fs.createWriteStream(certFile);
+    var data = '';
+    https.get(certUrl, function (res) {
+        console.log('\nDownloading %s from %s', certFile, certUrl);
+        if (res.statusCode !== 200) {
+            console.log('\nDownload certificate failed, error code = %d', certFile, res.statusCode);
+            process.exit();
+        }
+        res.on('data', function(d) {
+            data += d;
+        });
+        // event received when certificate download is completed
+        res.on('end', function() {
+		    if (process.platform != "win32") {
+				data += '\n';
+		    }
+	        fs.writeFileSync(certFile, data);
+		    copyCertificate();
+        });
+    }).on('error', function (e) {
+        console.error(e);
+        process.exit();
+    });
+}
+
+function copyCertificate() {
+    fs.writeFileSync(ccPath + '/certificate.pem', fs.readFileSync(__dirname+'/certificate.pem'));
+
+    setTimeout(function() {
+        enrollAndRegisterUsers();
+    }, 1000);
+}
+
+function enrollAndRegisterUsers() {
+    var cert = fs.readFileSync(certFile);
+	chain.setMemberServicesUrl(ca_url, {
+        pem: cert
+    });
+
+    // Adding all the peers to blockchain
+    // this adds high availability for the client
+    for (var i = 0; i < peers.length; i++) {
+		chain.addPeer("grpcs://" + peers[i].discovery_host + ":" + peers[i].discovery_port, {
+            pem: cert
+        });
+    }
+
+    // console.log("\n\n------------- peers and caserver information: -------------");
+    // console.log(chain.getPeers());
+    // console.log(chain.getMemberServices());
+    // console.log('-----------------------------------------------------------\n\n');
+    var testChaincodeID;
+
+    // Enroll a 'admin' who is already registered because it is
+    // listed in fabric/membersrvc/membersrvc.yaml with it's one time password.
+	console.log('Attempt to enroll: username: ' + users[0].username + ', secret: ' + users[0].secret);
+    chain.enroll(users[0].username, users[0].secret, function(err, admin) {
+        if (err) throw Error("\nERROR: failed to enroll admin : %s", err);
+
+        console.log("\nEnrolled admin sucecssfully");
+
+        // Set this user as the chain's registrar which is authorized to register other users.
+        chain.setRegistrar(admin);
+
+        var enrollName = "JohnDoe"; //creating a new user
+        var registrationRequest = {
+            enrollmentID: enrollName,
+            account: "group1",
+            affiliation: "00001"
+        };
+        chain.registerAndEnroll(registrationRequest, function(err, user) {
+            if (err) throw Error(" Failed to register and enroll " + enrollName + ": " + err);
+
+            console.log("\nEnrolled and registered " + enrollName + " successfully");
+
+            //setting timers for fabric waits
+            chain.setDeployWaitTime(120);
+            chain.setInvokeWaitTime(20);
+
+            console.log("\nDeploying chaincode ...")
+            deployChaincode(user);
+        });
+    });
+}
+
+var testChaincodeID;
+
+function deployChaincode(user) {
+    // Construct the deploy request
+    var deployRequest = {
+        // Function to trigger
+        fcn: "init",
+        // Arguments to the initializing function
+        args: ["testArg"],
+        // The location where the startup and HSBN store the certificates
+//		certificatePath: __dirname + "certificate.pem",
+		certificatePath: "/certs/blockchain-cert.pem",
+		// The location of the chaincode on the local file system after $GOPATH/src/
+		chaincodePath: "github.com/marbles-chaincode/part1"
+    };
+
+    // Trigger the deploy transaction
+    var deployTx = user.deploy(deployRequest);
+
+    // Print the deploy results
+    deployTx.on('complete', function(results) {
+        // Deploy request completed successfully
+        testChaincodeID = results.chaincodeID;
+        console.log("\nChaincode ID : " + testChaincodeID);
+        console.log('Successfully deployed chaincode: request=' + JSON.stringify(deployRequest) + ', response=' + results);
+
+		part1.setup(user, testChaincodeID, peers[0]);
+		part2.setup(user, testChaincodeID, peers[0]);
+
+		cb_deployed(null, peers[0], user);
+    });
+
+    deployTx.on('error', function(err) {
+        // Deploy request failed
+        console.log('Failed to deploy chaincode: request=' + deployRequest + ', error=' + err);
+    });
+}
+
+/*
 // ==================================
 // configure options for ibm-blockchain-js sdk
 // ==================================
@@ -205,7 +373,7 @@ var options = 	{
 						zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip',
 						unzip_dir: 'marbles-chaincode-master/hyperledger/part2',							//subdirectroy name of chaincode after unzipped
 						git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/hyperledger/part2',	//GO get http url
-					
+
 						//hashed cc name from prev deployment, comment me out to always deploy, uncomment me when its already deployed to skip deploying again
 						//deployed_name: '8c5677016abb7b4885b8dc40bb5b28f1554888cd766e2c945bc61bca03b349092f19197d32785254c692c9210db34c31821efc89e8a9f4dcb3f5575bebb4584b'
 					}
@@ -280,11 +448,11 @@ function check_if_deployed(e, attempt){
 		});
 	}
 }
-
+*/
 // ============================================================================================================================
 // 												WebSocket Communication Madness
 // ============================================================================================================================
-function cb_deployed(e){
+function cb_deployed(e, peer, user){
 	if(e != null){
 		//look at tutorial_part1.md in the trouble shooting section for help
 		console.log('! looks like a deploy error, holding off on the starting the socket\n', e);
@@ -292,7 +460,7 @@ function cb_deployed(e){
 	}
 	else{
 		console.log('------------------------------------------ Websocket Up ------------------------------------------');
-		
+
 		wss = new ws.Server({server: server});												//start the websocket now
 		wss.on('connection', function connection(ws) {
 			ws.on('message', function incoming(message) {
@@ -300,17 +468,19 @@ function cb_deployed(e){
 				try{
 					var data = JSON.parse(message);
 					part1.process_msg(ws, data);											//pass the websocket msg to part 1 processing
-					part2.process_msg(ws, data);											//pass the websocket msg to part 2 processing
+					console.log('CRAIG DEBUG - COMMENTING OUT PART2 FOR NOW');
+//					part2.process_msg(ws, data);											//pass the websocket msg to part 2 processing
 				}
 				catch(e){
 					console.log('ws message error', e);
+					console.log(e.stack);
 				}
 			});
-			
+
 			ws.on('error', function(e){console.log('ws error', e);});
 			ws.on('close', function(){console.log('ws closed');});
 		});
-		
+
 		wss.broadcast = function broadcast(data) {											//send to all connections
 			wss.clients.forEach(function each(client) {
 				try{
@@ -321,19 +491,19 @@ function cb_deployed(e){
 				}
 			});
 		};
-		
+
 		// ========================================================
 		// Monitor the height of the blockchain
 		// ========================================================
-		ibc.monitor_blockheight(function(chain_stats){										//there is a new block, lets refresh everything that has a state
+		hfc_util.monitor_blockheight(peer, function(chain_stats){										//there is a new block, lets refresh everything that has a state
 			if(chain_stats && chain_stats.height){
-				console.log('hey new block, lets refresh and broadcast to all', chain_stats.height-1);
-				ibc.block_stats(chain_stats.height - 1, cb_blockstats);
+				console.log('\nHey new block, lets refresh and broadcast to all', chain_stats.height-1);
+				hfc_util.getBlockStats(peer, chain_stats.height - 1, cb_blockstats);
 				wss.broadcast({msg: 'reset'});
-				chaincode.query.read(['_marbleindex'], cb_got_index);
-				chaincode.query.read(['_opentrades'], cb_got_trades);
+				hfc_util.queryCC(user, testChaincodeID, "read", ['_marbleindex'], cb_got_index);
+//				hfc_util.queryCC(user, testChaincodeID, "read", ['_opentrades'], cb_got_trades);
 			}
-			
+
 			//got the block's stats, lets send the statistics
 			function cb_blockstats(e, stats){
 				if(e != null) console.log('blockstats error:', e);
@@ -343,7 +513,7 @@ function cb_deployed(e){
 					wss.broadcast({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
 				}
 			}
-			
+
 			//got the marble index, lets get each marble
 			function cb_got_index(e, index){
 				if(e != null) console.log('marble index error:', e);
@@ -352,7 +522,8 @@ function cb_deployed(e){
 						var json = JSON.parse(index);
 						for(var i in json){
 							console.log('!', i, json[i]);
-							chaincode.query.read([json[i]], cb_got_marble);					//iter over each, read their values
+							//iter over each, read their values
+							hfc_util.queryCC(user, testChaincodeID, "read", [json[i]], cb_got_marble);
 						}
 					}
 					catch(e){
@@ -360,7 +531,7 @@ function cb_deployed(e){
 					}
 				}
 			}
-			
+
 			//call back for getting a marble, lets send a message
 			function cb_got_marble(e, marble){
 				if(e != null) console.log('marble error:', e);
@@ -373,7 +544,7 @@ function cb_deployed(e){
 					}
 				}
 			}
-			
+
 			//call back for getting open trades, lets send the trades
 			function cb_got_trades(e, trades){
 				if(e != null) console.log('trade error:', e);

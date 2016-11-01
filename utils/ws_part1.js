@@ -1,13 +1,16 @@
 // ==================================
 // Part 1 - incoming messages, look for type
 // ==================================
-var ibc = {};
-var chaincode = {};
+var hfc_util = require('./hfc_util');
+var user = {};
+var chaincodeID;
+var peer;
 var async = require('async');
 
-module.exports.setup = function(sdk, cc){
-	ibc = sdk;
-	chaincode = cc;
+module.exports.setup = function(_user, _chaincodeID, _peer){
+	user = _user;
+	chaincodeID = _chaincodeID;
+	peer = _peer;
 };
 
 module.exports.process_msg = function(ws, data){
@@ -15,28 +18,29 @@ module.exports.process_msg = function(ws, data){
 		if(data.type == 'create'){
 			console.log('its a create!');
 			if(data.name && data.color && data.size && data.user){
-				chaincode.invoke.init_marble([data.name, data.color, data.size, data.user], cb_invoked);	//create a new marble
+				//create a new marble
+				hfc_util.invokeCC(user, chaincodeID, "init_marble", [data.name, data.color, data.size, data.user]);
 			}
 		}
 		else if(data.type == 'get'){
 			console.log('get marbles msg');
-			chaincode.query.read(['_marbleindex'], cb_got_index);
+			hfc_util.queryCC(user, chaincodeID, "read", ['_marbleindex'], cb_got_index);
 		}
 		else if(data.type == 'transfer'){
 			console.log('transfering msg');
 			if(data.name && data.user){
-				chaincode.invoke.set_user([data.name, data.user]);
+				hfc_util.invokeCC(user, chaincodeID, "set_user", [data.name, data.user]);
 			}
 		}
 		else if(data.type == 'remove'){
 			console.log('removing msg');
 			if(data.name){
-				chaincode.invoke.delete([data.name]);
+				hfc_util.invokeCC(user, chaincodeID, "delete", [data.name]);
 			}
 		}
 		else if(data.type == 'chainstats'){
 			console.log('chainstats msg');
-			ibc.chain_stats(cb_chainstats);
+			hfc_util.getChainStats(peer, cb_chainstats);
 		}
 	}
 
@@ -52,7 +56,7 @@ module.exports.process_msg = function(ws, data){
 				//serialized version
 				async.eachLimit(keys, concurrency, function(key, cb) {
 					console.log('!', json[key]);
-					chaincode.query.read([json[key]], function(e, marble) {
+					hfc_util.queryCC(user, chaincodeID, "read", [json[key]], function(e, marble) {
 						if(e != null) console.log('[ws error] did not get marble:', e);
 						else {
 							if(marble) sendMsg({msg: 'marbles', e: e, marble: JSON.parse(marble)});
@@ -68,13 +72,14 @@ module.exports.process_msg = function(ws, data){
 			}
 		}
 	}
-	
+
 	function cb_invoked(e, a){
 		console.log('response: ', e, a);
 	}
-	
+
 	//call back for getting the blockchain stats, lets get the block stats now
 	function cb_chainstats(e, chain_stats){
+		console.log('cb_chainstats: ' + JSON.stringify(chain_stats));
 		if(chain_stats && chain_stats.height){
 			chain_stats.height = chain_stats.height - 1;								//its 1 higher than actual height
 			var list = [];
@@ -84,7 +89,7 @@ module.exports.process_msg = function(ws, data){
 			}
 			list.reverse();																//flip it so order is correct in UI
 			async.eachLimit(list, 1, function(block_height, cb) {						//iter through each one, and send it
-				ibc.block_stats(block_height, function(e, stats){
+				hfc_util.getBlockStats(peer, block_height, function(e, stats){
 					if(e == null){
 						stats.height = block_height;
 						sendMsg({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
@@ -93,9 +98,11 @@ module.exports.process_msg = function(ws, data){
 				});
 			}, function() {
 			});
+		} else {
+			console.log('CRAIG DEBUG: chain_stats.height not found');
 		}
 	}
-	
+
 	//send a message, socket might be closed...
 	function sendMsg(json){
 		if(ws){

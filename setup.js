@@ -2,7 +2,7 @@
 /*******************************************************************************
  * Copyright (c) 2015 IBM Corp.
  *
- * All rights reserved. 
+ * All rights reserved.
  *
  * Contributors:
  *   David Huffman - Initial implementation
@@ -26,7 +26,7 @@ if(process.env.VCAP_APPLICATION){
 ///////////////////////////////////    1. Bluemix Production    ////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 if(process.env.VCAP_APP_HOST && process.env.PRODUCTION){
-	exports.SERVER = 	{	
+	exports.SERVER = 	{
 							HOST: process.env.VCAP_APP_HOST,
 							PORT: process.env.VCAP_APP_PORT,
 							DESCRIPTION: 'Bluemix - Production',
@@ -38,7 +38,7 @@ if(process.env.VCAP_APP_HOST && process.env.PRODUCTION){
 ///////////////////////////////////    2. Bluemix Development    ///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 else if(process.env.VCAP_APP_HOST){
-		exports.SERVER = 	{	
+		exports.SERVER = 	{
 								HOST: process.env.VCAP_APP_HOST,
 								PORT: process.env.VCAP_APP_PORT,
 								DESCRIPTION: 'Bluemix - Development',
