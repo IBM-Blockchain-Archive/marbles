@@ -1,0 +1,15 @@
+{
+	"credentials": {
+		"peers": [{
+			"api_host": "192.168.99.100",
+			"api_port": 7050,
+			"type": "peer",
+			"id": "vp0"
+		}],
+		"users": [{
+			"enrollId": "alice",
+			"enrollSecret": "CMS10pEQlB16"
+		}],
+		"cert": "https://blockchain-certs.mybluemix.net/us.blockchain.ibm.com.cert"
+	}
+}
