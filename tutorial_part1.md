@@ -276,15 +276,15 @@ The network is all setup.  **Now we need to copy the peer data and pass it to ou
 #<a name="confignetwork"></a>Configure the SDK for your Blockchain Network
 The app is setup to either grab network configuration data from Bluemix via VCAP Service's environmental variable OR to load the hard coded list in `mycreds.json`. 
 We have added two mycreds files. 
-The first is a sample of a Bluemix IBM Blockchain network called 'mycreds_bluemix.json'. 
-The second is a sample of a Docker Compose network called 'mycreds_docker_compose.json`. 
-The formats of each are the same, but the Bluemix file much more data. 
+The first is a sample of a Bluemix IBM Blockchain network called `mycreds_bluemix.json`. 
+The second is a sample of a Docker Compose network called `mycreds_docker_compose.json`. 
+The formats of each are the same, but the Bluemix file has more data. 
 It might look more familiar if you are coming from a Bluemix network. 
-Please use whichever file is more relevant as your **starting** template file. 
-**Double check that [app.js](/app.js#L121) is using your prefered file.**
+Please use whichever file is more relevant as your template. 
+**Double check that [app.js](/app.js#L155) is using your prefered file.**
 
-- If you are running the app locally it will not find VCAP. **Thus you need to edit** `mycreds_bluemix.json` or 'mycreds_docker_compose.json`
-- If you are hosting the app on Bluemix, but wish to use a different network **you need to edit **`mycreds_bluemix.json` or 'mycreds_docker_compose.json`
+- If you are running the app locally it will not find VCAP. **Thus you need to edit** `mycreds_bluemix.json` or `mycreds_docker_compose.json`
+- If you are hosting the app on Bluemix, but wish to use a different network **you need to edit **`mycreds_bluemix.json` or `mycreds_docker_compose.json`
 - If you are hosting the app on Bluemix, and wish to use a Bluemix network you do not need to touch `mycreds_bluemix.json`
 	- Simply "bind" the Bluemix service to your application using the Bluemix's dashboard UI. [Binding Instructions](https://console.ng.bluemix.net/docs/services/reqnsi.html#add_service)
 
@@ -322,13 +322,13 @@ __sample mycreds.json__
 
 You must have the same number of entries in the `peer` array as the `users` array unless the network does not use Membership Services. 
 You can omit the `users` array entirely if the network does not use Membership Services. 
-If you created your own network, then you should look up the default users for your Hyperledger Fabric version.
-Fabric version 0.6.1 can be found in the (membersrvc.yaml)[https://github.com/hyperledger/fabric/blob/v0.6/membersrvc/membersrvc.yaml#L121] file 
+If you created your own network, then you should look up the default users for your Hyperledger Fabric version. 
+Fabric version 0.6.1 can be found in the [membersrvc.yaml](https://github.com/hyperledger/fabric/blob/v0.6/membersrvc/membersrvc.yaml#L121) file. 
 Marbles only talks to 1 peer so you only need 1 peer in the array. 
 You can omit the field `api_port_tls` if the network does not support TLS. 
 If you are not using TLS you should also change the `options.tls` field to `false` on [line 200](app.js#L200) of app.js.
-All networks created with the Bluemix service will have Membership Services and support TLS exclusively.
-Once you have edited `mycreds.json` you are ready to run Marbles.
+All networks created with the Bluemix service will have Membership Services and support TLS exclusively. 
+Once you have edited `mycreds.json` you are ready to run Marbles. 
 
 #<a name="runlocal"></a>Run Marbles on Local Machine
 Now we are ready to work on the application! 
