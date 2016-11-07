@@ -1,10 +1,10 @@
 ---
 applications:
 - disk_quota: 1024M
-  name: lanzen-updated-marbles
+  name: marbles
   command: "node app.js"
   path: "."
   instances: 1
   memory: 512M
   services:
-   - LanzenProdBlockchain
+   - myblockchain
