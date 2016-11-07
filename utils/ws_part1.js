@@ -79,7 +79,6 @@ module.exports.process_msg = function(ws, data){
 
 	//call back for getting the blockchain stats, lets get the block stats now
 	function cb_chainstats(e, chain_stats){
-		console.log('cb_chainstats: ' + JSON.stringify(chain_stats));
 		if(chain_stats && chain_stats.height){
 			chain_stats.height = chain_stats.height - 1;								//its 1 higher than actual height
 			var list = [];
@@ -98,8 +97,6 @@ module.exports.process_msg = function(ws, data){
 				});
 			}, function() {
 			});
-		} else {
-			console.log('CRAIG DEBUG: chain_stats.height not found');
 		}
 	}
 

@@ -148,8 +148,6 @@ var part1 = require('./utils/ws_part1');														//websocket message proces
 var part2 = require('./utils/ws_part2');														//websocket message processing for part 2
 var ws = require('ws');																			//websocket mod
 var wss = {};
-// var Ibc1 = require('ibm-blockchain-js');														//rest based SDK for ibm blockchain
-// var ibc = new Ibc1();
 
 // ==================================
 // load peers manually or from VCAP, VCAP will overwrite hardcoded list!
@@ -211,8 +209,7 @@ process.env['GRPC_SSL_CIPHER_SUITES'] = 'ECDHE-RSA-AES128-GCM-SHA256:' +
     'ECDHE-ECDSA-AES256-SHA384:' +
     'ECDHE-ECDSA-AES256-GCM-SHA384';
 
-let ccPath = process.env["GOPATH"]+"/src/github.com/marbles-chaincode/part1";
-//let ccPath = process.env["GOPATH"]+"/src/github.com/marbles-chaincode";
+let ccPath = process.env["GOPATH"]+"/src/github.com/marbles-chaincode/hyperledger/part1";
 console.log('ccPath: ' + ccPath);
 
 var network_id = Object.keys(manual.credentials.ca);
@@ -279,10 +276,10 @@ function enrollAndRegisterUsers() {
         });
     }
 
-    // console.log("\n\n------------- peers and caserver information: -------------");
-    // console.log(chain.getPeers());
-    // console.log(chain.getMemberServices());
-    // console.log('-----------------------------------------------------------\n\n');
+    console.log("\n\n------------- peers and caserver information: -------------");
+    console.log(chain.getPeers());
+    console.log(chain.getMemberServices());
+    console.log('-----------------------------------------------------------\n\n');
     var testChaincodeID;
 
     // Enroll a 'admin' who is already registered because it is
@@ -308,7 +305,7 @@ function enrollAndRegisterUsers() {
             console.log("\nEnrolled and registered " + enrollName + " successfully");
 
             //setting timers for fabric waits
-            chain.setDeployWaitTime(120);
+            chain.setDeployWaitTime(60);
             chain.setInvokeWaitTime(20);
 
             console.log("\nDeploying chaincode ...")
@@ -325,12 +322,11 @@ function deployChaincode(user) {
         // Function to trigger
         fcn: "init",
         // Arguments to the initializing function
-        args: ["testArg"],
+        args: ["99"],
         // The location where the startup and HSBN store the certificates
-//		certificatePath: __dirname + "certificate.pem",
-		certificatePath: "/certs/blockchain-cert.pem",
+		certificatePath: "/certs/peer/cert.pem",
 		// The location of the chaincode on the local file system after $GOPATH/src/
-		chaincodePath: "github.com/marbles-chaincode/part1"
+		chaincodePath: "github.com/clanzen/marbles-chaincode/hyperledger/part1",
     };
 
     // Trigger the deploy transaction
@@ -351,104 +347,10 @@ function deployChaincode(user) {
 
     deployTx.on('error', function(err) {
         // Deploy request failed
-        console.log('Failed to deploy chaincode: request=' + deployRequest + ', error=' + err);
+        console.log('Failed to deploy chaincode: request=' + JSON.stringify(deployRequest) + ', error=' + JSON.stringify(err));
     });
 }
 
-/*
-// ==================================
-// configure options for ibm-blockchain-js sdk
-// ==================================
-var options = 	{
-					network:{
-						peers: [peers[0]],																	//lets only use the first peer! since we really don't need any more than 1
-						users: users,																		//dump the whole thing, sdk will parse for a good one
-						options: {
-									quiet: true, 															//detailed debug messages on/off true/false
-									tls: true, 																//should app to peer communication use tls?
-									maxRetry: 1																//how many times should we retry register before giving up
-								}
-					},
-					chaincode:{
-						zip_url: 'https://github.com/ibm-blockchain/marbles-chaincode/archive/master.zip',
-						unzip_dir: 'marbles-chaincode-master/hyperledger/part2',							//subdirectroy name of chaincode after unzipped
-						git_url: 'https://github.com/ibm-blockchain/marbles-chaincode/hyperledger/part2',	//GO get http url
-
-						//hashed cc name from prev deployment, comment me out to always deploy, uncomment me when its already deployed to skip deploying again
-						//deployed_name: '8c5677016abb7b4885b8dc40bb5b28f1554888cd766e2c945bc61bca03b349092f19197d32785254c692c9210db34c31821efc89e8a9f4dcb3f5575bebb4584b'
-					}
-				};
-if(process.env.VCAP_SERVICES){
-	console.log('\n[!] looks like you are in bluemix, I am going to clear out the deploy_name so that it deploys new cc.\n[!] hope that is ok budddy\n');
-	options.chaincode.deployed_name = '';
-}
-
-// ---- Fire off SDK ---- //
-var chaincode = null;																		//sdk will populate this var in time, lets give it high scope by creating it here
-ibc.load(options, function (err, cc){														//parse/load chaincode, response has chaincode functions!
-	if(err != null){
-		console.log('! looks like an error loading the chaincode or network, app will fail\n', err);
-		if(!process.error) process.error = {type: 'load', msg: err.details};				//if it already exist, keep the last error
-	}
-	else{
-		chaincode = cc;
-		part1.setup(ibc, cc);																//pass the cc obj to part 1 node code
-		part2.setup(ibc, cc);																//pass the cc obj to part 2 node code
-
-		// ---- To Deploy or Not to Deploy ---- //
-		if(!cc.details.deployed_name || cc.details.deployed_name === ''){					//yes, go deploy
-			cc.deploy('init', ['99'], {save_path: './cc_summaries', delay_ms: 50000}, function(e){ //delay_ms is milliseconds to wait after deploy for conatiner to start, 50sec recommended
-				check_if_deployed(e, 1);
-			});
-		}
-		else{																				//no, already deployed
-			console.log('chaincode summary file indicates chaincode has been previously deployed');
-			check_if_deployed(null, 1);
-		}
-	}
-});
-
-//loop here, check if chaincode is up and running or not
-function check_if_deployed(e, attempt){
-	if(e){
-		cb_deployed(e);																		//looks like an error pass it along
-	}
-	else if(attempt >= 15){																	//tried many times, lets give up and pass an err msg
-		console.log('[preflight check]', attempt, ': failed too many times, giving up');
-		var msg = 'chaincode is taking an unusually long time to start. this sounds like a network error, check peer logs';
-		if(!process.error) process.error = {type: 'deploy', msg: msg};
-		cb_deployed(msg);
-	}
-	else{
-		console.log('[preflight check]', attempt, ': testing if chaincode is ready');
-		chaincode.query.read(['_marbleindex'], function(err, resp){
-			var cc_deployed = false;
-			try{
-				if(err == null){															//no errors is good, but can't trust that alone
-					if(resp === 'null') cc_deployed = true;									//looks alright, brand new, no marbles yet
-					else{
-						var json = JSON.parse(resp);
-						if(json.constructor === Array) cc_deployed = true;					//looks alright, we have marbles
-					}
-				}
-			}
-			catch(e){}																		//anything nasty goes here
-
-			// ---- Are We Ready? ---- //
-			if(!cc_deployed){
-				console.log('[preflight check]', attempt, ': failed, trying again');
-				setTimeout(function(){
-					check_if_deployed(null, ++attempt);										//no, try again later
-				}, 10000);
-			}
-			else{
-				console.log('[preflight check]', attempt, ': success');
-				cb_deployed(null);															//yes, lets go!
-			}
-		});
-	}
-}
-*/
 // ============================================================================================================================
 // 												WebSocket Communication Madness
 // ============================================================================================================================
@@ -468,8 +370,7 @@ function cb_deployed(e, peer, user){
 				try{
 					var data = JSON.parse(message);
 					part1.process_msg(ws, data);											//pass the websocket msg to part 1 processing
-					console.log('CRAIG DEBUG - COMMENTING OUT PART2 FOR NOW');
-//					part2.process_msg(ws, data);											//pass the websocket msg to part 2 processing
+					part2.process_msg(ws, data);											//pass the websocket msg to part 2 processing
 				}
 				catch(e){
 					console.log('ws message error', e);
@@ -501,7 +402,7 @@ function cb_deployed(e, peer, user){
 				hfc_util.getBlockStats(peer, chain_stats.height - 1, cb_blockstats);
 				wss.broadcast({msg: 'reset'});
 				hfc_util.queryCC(user, testChaincodeID, "read", ['_marbleindex'], cb_got_index);
-//				hfc_util.queryCC(user, testChaincodeID, "read", ['_opentrades'], cb_got_trades);
+				hfc_util.queryCC(user, testChaincodeID, "read", ['_opentrades'], cb_got_trades);
 			}
 
 			//got the block's stats, lets send the statistics

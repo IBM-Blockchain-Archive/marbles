@@ -6,3 +6,6 @@
 .idea
 .project
 /cc_summaries
+mycreds.json
+keyValStore*
+certificate.pem
