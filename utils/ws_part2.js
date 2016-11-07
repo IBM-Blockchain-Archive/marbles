@@ -18,7 +18,6 @@ module.exports.process_msg = function(ws, data){
 		if(data.type == 'create'){
 			console.log('its a create!');
 			if(data.name && data.color && data.size && data.user){
-				chaincode.invoke.init_marble([data.name, data.color, data.size, data.user], cb_invoked);	//create a new marble
 				hfc_util.invokeCC(user, chaincodeID, "init_marble", [data.name, data.color, data.size, data.user], cb_invoked);
 			}
 		}

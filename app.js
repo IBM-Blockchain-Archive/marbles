@@ -284,15 +284,15 @@ function enrollAndRegisterUsers() {
 
     // Enroll a 'admin' who is already registered because it is
     // listed in fabric/membersrvc/membersrvc.yaml with it's one time password.
-	var user = users[1];
-	console.log('Attempt to enroll: username: ' + users[1].username + ', secret: ' + user.secret);
+	var user = users[0];
+	console.log('Attempt to enroll: username: ' + user.username + ', secret: ' + user.secret);
     chain.enroll(user.username, user.secret, function(err, admin) {
         if (err) throw Error("\nERROR: failed to enroll admin : %s", err);
 
         console.log("\nEnrolled " + user.username + " sucecssfully");
 
         // Set this user as the chain's registrar which is authorized to register other users.
-        chain.setRegistrar(user.username);
+        chain.setRegistrar(admin);
 
         var enrollName = "JohnDoe"; //creating a new user
         var registrationRequest = {

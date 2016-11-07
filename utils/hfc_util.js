@@ -23,7 +23,7 @@ module.exports.invokeCC = function(user, chaincodeID, fcn, args, callback) {
         // Invoke transaction submitted successfully
         console.log('\nSuccessfully submitted chaincode invoke transaction:'
 			+ '\nrequest=' + JSON.stringify(invokeRequest)
-			+ '\nresponse=' + results);
+			+ '\nresponse=' + JSON.stringify(results));
     });
     invokeTx.on('complete', function(results) {
         // Invoke transaction completed successfully
@@ -63,7 +63,7 @@ module.exports.queryCC = function(user, chaincodeID, fcn, args, callback) {
         // Invoke transaction submitted successfully
         console.log('\nSuccessfully submitted chaincode query transaction:'
 			+ '\nrequest=' + JSON.stringify(queryRequest)
-			+ '\nresponse=' + results);
+			+ '\nresponse=' + JSON.stringify(results));
     });
     queryTx.on('complete', function(results) {
         // Invoke transaction completed successfully
