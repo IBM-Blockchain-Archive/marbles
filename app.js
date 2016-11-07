@@ -28,7 +28,6 @@ var fs = require('fs');
 var cors = require('cors');
 
 var hfc = require('hfc');
-var util = require('util');
 var fs = require('fs');
 const https = require('https');
 var hfc_util = require('./utils/hfc_util');
