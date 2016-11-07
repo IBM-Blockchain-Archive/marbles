@@ -284,14 +284,15 @@ function enrollAndRegisterUsers() {
 
     // Enroll a 'admin' who is already registered because it is
     // listed in fabric/membersrvc/membersrvc.yaml with it's one time password.
-	console.log('Attempt to enroll: username: ' + users[0].username + ', secret: ' + users[0].secret);
-    chain.enroll(users[0].username, users[0].secret, function(err, admin) {
+	var user = users[1];
+	console.log('Attempt to enroll: username: ' + users[1].username + ', secret: ' + user.secret);
+    chain.enroll(user.username, user.secret, function(err, admin) {
         if (err) throw Error("\nERROR: failed to enroll admin : %s", err);
 
-        console.log("\nEnrolled admin sucecssfully");
+        console.log("\nEnrolled " + user.username + " sucecssfully");
 
         // Set this user as the chain's registrar which is authorized to register other users.
-        chain.setRegistrar(admin);
+        chain.setRegistrar(user.username);
 
         var enrollName = "JohnDoe"; //creating a new user
         var registrationRequest = {
@@ -451,9 +452,15 @@ function cb_deployed(e, peer, user){
 				if(e != null) console.log('trade error:', e);
 				else {
 					try{
-						trades = JSON.parse(trades);
-						if(trades && trades.open_trades){
-							wss.broadcast({msg: 'open_trades', open_trades: trades.open_trades});
+						console.log('Found open trades: ' + trades);
+						if (trades !== "") {
+							trades = JSON.parse(trades);
+							if(trades && trades.open_trades){
+								wss.broadcast({msg: 'open_trades', open_trades: trades.open_trades});
+							}
+						}
+						else {
+							console.log("No open trades");
 						}
 					}
 					catch(e){

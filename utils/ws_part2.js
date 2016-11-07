@@ -1,13 +1,16 @@
 // ==================================
 // Part 2 - incoming messages, look for type
 // ==================================
-var ibc = {};
-var chaincode = {};
+var hfc_util = require('./hfc_util');
+var user = {};
+var chaincodeID;
+var peer;
 var async = require('async');
 
-module.exports.setup = function(sdk, cc){
-	ibc = sdk;
-	chaincode = cc;
+module.exports.setup = function(_user, _chaincodeID, _peer){
+	user = _user;
+	chaincodeID = _chaincodeID;
+	peer = _peer;
 };
 
 module.exports.process_msg = function(ws, data){
@@ -16,27 +19,28 @@ module.exports.process_msg = function(ws, data){
 			console.log('its a create!');
 			if(data.name && data.color && data.size && data.user){
 				chaincode.invoke.init_marble([data.name, data.color, data.size, data.user], cb_invoked);	//create a new marble
+				hfc_util.invokeCC(user, chaincodeID, "init_marble", [data.name, data.color, data.size, data.user], cb_invoked);
 			}
 		}
 		else if(data.type == 'get'){
 			console.log('get marbles msg');
-			chaincode.query.read(['_marbleindex'], cb_got_index);
+			hfc_util.queryCC(user, chaincodeID, "read", ['_marbleindex'], cb_got_index);
 		}
 		else if(data.type == 'transfer'){
 			console.log('transfering msg');
 			if(data.name && data.user){
-				chaincode.invoke.set_user([data.name, data.user]);
+				hfc_util.invokeCC(user, chaincodeID, "set_user", [data.name, data.user]);
 			}
 		}
 		else if(data.type == 'remove'){
 			console.log('removing msg');
 			if(data.name){
-				chaincode.invoke.delete([data.name]);
+				hfc_util.invokeCC(user, chaincodeID, "delete", [data.name]);
 			}
 		}
 		else if(data.type == 'chainstats'){
 			console.log('chainstats msg');
-			ibc.chain_stats(cb_chainstats);
+			hfc_util.getChainStats(peer, cb_chainstats);
 		}
 		else if(data.type == 'open_trade'){
 			console.log('open_trade msg');
@@ -52,24 +56,25 @@ module.exports.process_msg = function(ws, data){
 					args.push(data.willing[i].color);
 					args.push(data.willing[i].size);
 				}
-				chaincode.invoke.open_trade(args);
+				hfc_util.invokeCC(user, chaincodeID, "open_trade", args);
 			}
 		}
 		else if(data.type == 'get_open_trades'){
 			console.log('get open trades msg');
-			chaincode.query.read(['_opentrades'], cb_got_trades);
+			hfc_util.queryCC(user, chaincodeID, "read", ['_opentrades'], cb_got_trades);
 		}
 		else if(data.type == 'perform_trade'){
 			console.log('perform trade msg');
-			chaincode.invoke.perform_trade([data.id, data.closer.user, data.closer.name, data.opener.user, data.opener.color, data.opener.size]);
+			var args = [data.id, data.closer.user, data.closer.name, data.opener.user, data.opener.color, data.opener.size];
+			hfc_util.invokeCC(user, chaincodeID, "perform_trade", args);
 		}
 		else if(data.type == 'remove_trade'){
 			console.log('remove trade msg');
-			chaincode.invoke.remove_trade([data.id]);
+			hfc_util.invokeCC(user, chaincodeID, "remove_trade", [data.id]);
 		}
 	}
-	
-	
+
+
 	//got the marble index, lets get each marble
 	function cb_got_index(e, index){
 		if(e != null) console.log('[ws error] did not get marble index:', e);
@@ -78,7 +83,7 @@ module.exports.process_msg = function(ws, data){
 				var json = JSON.parse(index);
 				for(var i in json){
 					console.log('!', i, json[i]);
-					chaincode.query.read([json[i]], cb_got_marble);												//iter over each, read their values
+					hfc_util.queryCC(user, chaincodeID, "read", [json[i]], cb_got_marble);
 				}
 			}
 			catch(e){
@@ -86,7 +91,7 @@ module.exports.process_msg = function(ws, data){
 			}
 		}
 	}
-	
+
 	//call back for getting a marble, lets send a message
 	function cb_got_marble(e, marble){
 		if(e != null) console.log('[ws error] did not get marble:', e);
@@ -97,11 +102,11 @@ module.exports.process_msg = function(ws, data){
 			catch(e){}
 		}
 	}
-	
+
 	function cb_invoked(e, a){
 		console.log('response: ', e, a);
 	}
-	
+
 	//call back for getting the blockchain stats, lets get the block stats now
 	function cb_chainstats(e, chain_stats){
 		if(chain_stats && chain_stats.height){
@@ -113,7 +118,7 @@ module.exports.process_msg = function(ws, data){
 			}
 			list.reverse();																//flip it so order is correct in UI
 			async.eachLimit(list, 1, function(block_height, cb) {						//iter through each one, and send it
-				ibc.block_stats(block_height, function(e, stats){
+				hfc_util.getBlockStats(peer, block_height, function(e, stats){
 					if(e == null){
 						stats.height = block_height;
 						sendMsg({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
@@ -124,7 +129,7 @@ module.exports.process_msg = function(ws, data){
 			});
 		}
 	}
-	
+
 	//call back for getting open trades, lets send the trades
 	function cb_got_trades(e, trades){
 		if(e != null) console.log('[ws error] did not get open trades:', e);

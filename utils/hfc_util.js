@@ -4,7 +4,7 @@ const https = require('https');
 // --------------------------------------------------------------------------
 // Helper function to call the Invoke function in a chaincode.
 // --------------------------------------------------------------------------
-module.exports.invokeCC = function(user, chaincodeID, fcn, args) {
+module.exports.invokeCC = function(user, chaincodeID, fcn, args, callback) {
     // Construct the invoke request
     var invokeRequest = {
         // Name (hash) required for invoke
@@ -21,18 +21,23 @@ module.exports.invokeCC = function(user, chaincodeID, fcn, args) {
     // Print the invoke results
     invokeTx.on('submitted', function(results) {
         // Invoke transaction submitted successfully
-        console.log('Successfully submitted chaincode invoke transaction: request='
-		 	+ JSON.stringify(invokeRequest) + ', response=', results);
+        console.log('\nSuccessfully submitted chaincode invoke transaction:'
+			+ '\nrequest=' + JSON.stringify(invokeRequest)
+			+ '\nresponse=' + results);
     });
     invokeTx.on('complete', function(results) {
         // Invoke transaction completed successfully
-        console.log('Successfully completed chaincode invoke transaction: request='
-			+ JSON.stringify(invokeRequest) + ', response=', results);
+        console.log('\nSuccessfully completed chaincode invoke transaction:'
+			+ '\nrequest=' + JSON.stringify(invokeRequest)
+			+ '\nresponse=' + results.result.toString());
+		if (callback) callback(null, results.result.toString());
     });
     invokeTx.on('error', function(err) {
         // Invoke transaction submission failed
-        console.log('Failed to submit chaincode invoke transaction: request='
-			+ JSON.stringify(invokeRequest) + ', error=', err);
+        console.log('\nFailed to submit chaincode invoke transaction:'
+			+ '\nrequest=' + JSON.stringify(invokeRequest)
+			+ '\nerror=', err);
+		if (callback) callback(err, null);
     });
 }
 
@@ -56,19 +61,22 @@ module.exports.queryCC = function(user, chaincodeID, fcn, args, callback) {
     // Print the invoke results
     queryTx.on('submitted', function(results) {
         // Invoke transaction submitted successfully
-        console.log('Successfully submitted chaincode query transaction: request='
-			+ JSON.stringify(queryRequest) + ', response=', results);
+        console.log('\nSuccessfully submitted chaincode query transaction:'
+			+ '\nrequest=' + JSON.stringify(queryRequest)
+			+ '\nresponse=' + results);
     });
     queryTx.on('complete', function(results) {
         // Invoke transaction completed successfully
-        console.log('Successfully completed chaincode query transaction: request='
-			+ JSON.stringify(queryRequest) + ', response=', results);
+        console.log('\nSuccessfully completed chaincode query transaction:'
+			+ '\nrequest=' + JSON.stringify(queryRequest)
+			+ '\nresponse=' + results.result.toString());
 		if (callback) callback(null, results.result.toString());
     });
     queryTx.on('error', function(err) {
         // Invoke transaction submission failed
-        console.log('Failed to submit chaincode query transaction: request='
-			+ JSON.stringify(queryRequest) + ', error=', err);
+        console.log('\nFailed to submit chaincode query transaction:'
+			+ '\nrequest=' + JSON.stringify(queryRequest)
+			+ '\nerror=', err);
 		if (callback) callback(err, null);
     });
 }
@@ -156,10 +164,8 @@ function heart_beat(peer){
 // to fetch statistics on a chain.
 // --------------------------------------------------------------------------
 function cb_got_stats(e, stats){
-	console.log('cb_got_stats: ' + JSON.stringify(stats));
 	if(e == null){
 		if(stats && stats.height){
-			console.log('cb_got_stats: lastBlock=' + lastBlock + ', stats.height=' + stats.height);
 			// Determine if there is a new block.
 			if(lastBlock != stats.height) {
 				console.log('New block!', stats.height);
@@ -169,9 +175,6 @@ function cb_got_stats(e, stats){
 				// Call the user's callback.
 				if(monitorFunction) monitorFunction(stats);
 			}
-		}
-		else {
-			console.log('CRAIG DEBUG: no stats.height');
 		}
 	}
 }

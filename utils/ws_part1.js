@@ -19,7 +19,7 @@ module.exports.process_msg = function(ws, data){
 			console.log('its a create!');
 			if(data.name && data.color && data.size && data.user){
 				//create a new marble
-				hfc_util.invokeCC(user, chaincodeID, "init_marble", [data.name, data.color, data.size, data.user]);
+				hfc_util.invokeCC(user, chaincodeID, "init_marble", [data.name, data.color, data.size, data.user], cb_invoked);
 			}
 		}
 		else if(data.type == 'get'){
@@ -39,7 +39,7 @@ module.exports.process_msg = function(ws, data){
 			}
 		}
 		else if(data.type == 'chainstats'){
-			console.log('chainstats msg');
+			console.log('get chainstats');
 			hfc_util.getChainStats(peer, cb_chainstats);
 		}
 	}
