@@ -151,8 +151,8 @@ var ibc = new Ibc1();
 //this hard coded list is intentionaly left here, feel free to use it when initially starting out
 //please create your own network when you are up and running
 try{
-	//var manual = JSON.parse(fs.readFileSync('mycreds_docker_compose.json', 'utf8'));
-	var manual = JSON.parse(fs.readFileSync('mycreds_bluemix.json', 'utf8'));
+	var manual = JSON.parse(fs.readFileSync('mycreds_docker_compose.json', 'utf8'));
+	//var manual = JSON.parse(fs.readFileSync('mycreds_bluemix.json', 'utf8'));
 	var peers = manual.credentials.peers;
 	console.log('loading hardcoded peers');
 	var users = null;																			//users are only found if security is on
@@ -198,17 +198,17 @@ var options = 	{
 						users: users,																		//dump the whole thing, sdk will parse for a good one
 						options: {
 									quiet: true, 															//detailed debug messages on/off true/false
-									tls: true, 																//should app to peer communication use tls?
+									tls: false, 															//should app to peer communication use tls?
 									maxRetry: 1																//how many times should we retry register before giving up
 								}
 					},
 					chaincode:{
 						zip_url: 'https://github.com/ibm-blockchain/marbles/archive/v2.0.zip',
-						unzip_dir: 'marbles-2.0/chaincode/part2',											//subdirectroy name of chaincode after unzipped
-						git_url: 'http://gopkg.in/ibm-blockchain/marbles.v2/chaincode/part2',				//GO get http url
+						unzip_dir: 'marbles-2.0/chaincode',													//subdirectroy name of chaincode after unzipped
+						git_url: 'http://gopkg.in/ibm-blockchain/marbles.v2/chaincode',						//GO get http url
 					
 						//hashed cc name from prev deployment, comment me out to always deploy, uncomment me when its already deployed to skip deploying again
-						//deployed_name: 'd7df81a1c1fb001c002de49098624c69ce0eef7507378679f1e73f6103763cb4c1f127bd6ab7a77acb1387beb0d33e85a450e20b52213fe8dd77277c9200894b'
+						//deployed_name: '16e655c0fce6a9882896d3d6d11f7dcd4f45027fd4764004440ff1e61340910a9d67685c4bb723272a497f3cf428e6cf6b009618612220e1471e03b6c0aa76cb'
 					}
 				};
 if(process.env.VCAP_SERVICES){
@@ -230,7 +230,7 @@ ibc.load(options, function (err, cc){														//parse/load chaincode, respo
 
 		// ---- To Deploy or Not to Deploy ---- //
 		if(!cc.details.deployed_name || cc.details.deployed_name === ''){					//yes, go deploy
-			cc.deploy('init', ['99'], {save_path: './cc_summaries', delay_ms: 50000}, function(e){ //delay_ms is milliseconds to wait after deploy for conatiner to start, 50sec recommended
+			cc.deploy('init', ['99'], {save_path: './cc_summaries', delay_ms: 30000}, function(e){ //delay_ms is milliseconds to wait after deploy for conatiner to start, 50sec recommended
 				check_if_deployed(e, 1);
 			});
 		}

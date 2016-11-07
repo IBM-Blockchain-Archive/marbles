@@ -7,8 +7,8 @@
 			"id": "vp0"
 		}],
 		"users": [{
-			"enrollId": "alice",
-			"enrollSecret": "CMS10pEQlB16"
+			"enrollId": "bob",
+			"enrollSecret": "NOE63pEQbL25"
 		}],
 		"cert": "https://blockchain-certs.mybluemix.net/us.blockchain.ibm.com.cert"
 	}

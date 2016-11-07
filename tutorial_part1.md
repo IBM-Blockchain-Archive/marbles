@@ -71,10 +71,9 @@ There are certain keywords and context clues to help you identify one from anoth
 1. The Server Side JS Part - This is JavaScript code running our application's backend. ie `Node.js` code which is the heart of Marbles! Sometimes referred to as our `node` or `server` code. Functions as the glue between the user and our blockchain.
 
 #Chaincode
-To understand what is going on we need to start looking at the chaincode.  The complete cc code for this example can be found [here](https://github.com/IBM-Blockchain/marbles/blob/v1.0/chaincode/part1/part1_chaincode.go). 
-Marbles Part 1 and Marbles Part 2 will use different chaincode, but Part 2 will include everything from Part 1. 
-Part 1 is just nicer to look at since it has less lines of code, and hopefully less things to confuse you on. 
-It is perfectly fine to use Part 2's chaincode with the Marbles Part 1 web application.
+To understand what is going on we need to start looking at the chaincode.  The complete cc code for this example can be found [here](/chaincode). 
+Marbles Tutorial Part 1 and Marbles Tutorial Part 2 will use the same chaincode. 
+Part 1 will simply not use as many functions as Part 2.
 	
 The first interesting place in the cc is the `Invoke()` function. 
 This is our entry point into chaincode. 
@@ -399,14 +398,14 @@ An abbreviated version is below:
 				"id": "xxxxxx-xxxx-xxx-xxx-xxxxxxxxxxxx_vpx",
 			}],
 			users:  [{
-				"enrollId": "user1",
+				"enrollId": "xxx",
 				"enrollSecret": "xxxxxxxx"
 			}]
 		},
 		chaincode:{
-			zip_url: 'https://github.com/ibm-blockchain/marbles/archive/v1.0.zip', //http/https of a link to download zip
-			unzip_dir: 'marbles-1.0/chaincode/part2',                             //name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
-			git_url: 'http://gopkg.in/ibm-blockchain/marbles.v1/chaincode/part2',  //GO get https URL. should point to the desired chaincode repo AND directory
+			zip_url: 'https://github.com/ibm-blockchain/marbles/archive/v2.0.zip', //http/https of a link to download zip
+			unzip_dir: 'marbles-2.0/chaincode',                                    //name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
+			git_url: 'http://gopkg.in/ibm-blockchain/marbles.v2/chaincode',        //GO get https URL. should point to the desired chaincode repo AND directory
 		}
 	};
 	ibc.load(options, cb);
