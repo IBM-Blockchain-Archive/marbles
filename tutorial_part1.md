@@ -268,21 +268,28 @@ The network is all setup.  **Now we need to copy the peer data and pass it to ou
 1. Go back to your Bluemix Dashboard page
 1. Click the "myblockchain" tile in you Bluemix Dashboard
 1. Click the "Service Credentials" link on the left
-1. Copy the value of the whole JSON object to the `mycreds.json` file in the root of this project.
+1. Copy the value of the whole JSON object to the `mycreds_bluemix.json` file in the root of this project.
 	1. If for some reason you don't see any credentials click the "ADD CREDENTIALS" button and let the page refresh
 
 1. continue by [running the marbles app](#runlocal)
 
 #<a name="confignetwork"></a>Configure the SDK for your Blockchain Network
 The app is setup to either grab network configuration data from Bluemix via VCAP Service's environmental variable OR to load the hard coded list in `mycreds.json`. 
+We have added two mycreds files. 
+The first is a sample of a Bluemix IBM Blockchain network called 'mycreds_bluemix.json'. 
+The second is a sample of a Docker Compose network called 'mycreds_docker_compose.json`. 
+The formats of each are the same, but the Bluemix file much more data. 
+It might look more familiar if you are coming from a Bluemix network. 
+Please use whichever file is more relevant as your **starting** template file. 
+**Double check that [app.js](/app.js#L121) is using your prefered file.**
 
-- If you are running the app locally it will not find VCAP. Thus you need to edit `mycreds.json` 
-- If you are hosting the app on Bluemix, but wish to use a different network you need to edit `mycreds.json`
-- If you are hosting the app on Bluemix, and wish to use a Bluemix network you do not need to touch `mycreds.json`
+- If you are running the app locally it will not find VCAP. **Thus you need to edit** `mycreds_bluemix.json` or 'mycreds_docker_compose.json`
+- If you are hosting the app on Bluemix, but wish to use a different network **you need to edit **`mycreds_bluemix.json` or 'mycreds_docker_compose.json`
+- If you are hosting the app on Bluemix, and wish to use a Bluemix network you do not need to touch `mycreds_bluemix.json`
 	- Simply "bind" the Bluemix service to your application using the Bluemix's dashboard UI. [Binding Instructions](https://console.ng.bluemix.net/docs/services/reqnsi.html#add_service)
 
-Marbles is already coded to toggle the SDK between VCAP_SERVICES and `mycreds.json` depending on the environment.
-All we have to do is populate `mycreds.json` with information about our network.
+Marbles is already coded to toggle the SDK between VCAP_SERVICES and a `mycreds_*.json` file depending on the environment.
+All we must do is populate the file with information about our network.
 If you want more details of setup options then take a look at the [SDK's documentation](https://github.com/IBM-Blockchain/ibm-blockchain-js).
 Below is a sample showing the information that must be in the JSON file. 
 
@@ -297,16 +304,16 @@ __sample mycreds.json__
   "credentials": {
     "peers": [
       {
-        "api_host": "12345678-abcde-_vp0.blockchain.ibm.com",   //hostname or ip of peer
-        "api_port_tls": 443,                                    //https port (optional)
-        "api_port": 80,                                         //http port
-        "id": "12345678-abcde-4d6f-_vp0"                        //unique id of peer
+        "api_host": "12345678-abcde-_vp0.blockchain.ibm.com", //replace with your hostname or ip of a peer
+        "api_port_tls": 443,                                  //replace with your https port (optional, omit if n/a)
+        "api_port": 80,                                       //replace with your http port
+        "id": "12345678-abcde-4d6f-_vp0"                      //unique id of peer
       }
     ],
     "users": [
       {
-        "enrollId": "user_type1_1234567890",                     //enroll username
-        "enrollSecret": "1234567890"                             //enroll's secret
+        "enrollId": "user_type1_1234567890",                  //enroll username
+        "enrollSecret": "1234567890"                          //enroll's secret
       }
     ]
   }
@@ -315,6 +322,8 @@ __sample mycreds.json__
 
 You must have the same number of entries in the `peer` array as the `users` array unless the network does not use Membership Services. 
 You can omit the `users` array entirely if the network does not use Membership Services. 
+If you created your own network, then you should look up the default users for your Hyperledger Fabric version.
+Fabric version 0.6.1 can be found in the (membersrvc.yaml)[https://github.com/hyperledger/fabric/blob/v0.6/membersrvc/membersrvc.yaml#L121] file 
 Marbles only talks to 1 peer so you only need 1 peer in the array. 
 You can omit the field `api_port_tls` if the network does not support TLS. 
 If you are not using TLS you should also change the `options.tls` field to `false` on [line 200](app.js#L200) of app.js.
