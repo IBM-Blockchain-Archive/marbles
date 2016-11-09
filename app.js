@@ -200,6 +200,14 @@ function prefer_type1_users(user_array){
 	return ret;
 }
 
+//see if peer 0 wants tls or no tls
+function detect_tls_or_not(peer_array){
+	var tls = false;
+	if(peer_array[0] && peer_array[0].api_port_tls){
+		if(!isNaN(peer_array[0].api_port_tls)) tls = true;
+	}
+	return tls;
+}
 
 // ==================================
 // configure options for ibm-blockchain-js sdk
@@ -207,10 +215,10 @@ function prefer_type1_users(user_array){
 var options = 	{
 					network:{
 						peers: [peers[0]],																	//lets only use the first peer! since we really don't need any more than 1
-						users: prefer_type1_users(users),																		//dump the whole thing, sdk will parse for a good one
+						users: prefer_type1_users(users),													//dump the whole thing, sdk will parse for a good one
 						options: {
 									quiet: true, 															//detailed debug messages on/off true/false
-									tls: true, 																//should app to peer communication use tls?
+									tls: detect_tls_or_not(peers), 											//should app to peer communication use tls?
 									maxRetry: 1																//how many times should we retry register before giving up
 								}
 					},
