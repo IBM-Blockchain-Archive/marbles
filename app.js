@@ -148,9 +148,9 @@ var ibc = new Ibc1();
 // ==================================
 // load peers manually or from VCAP, VCAP will overwrite hardcoded list!
 // ==================================
-//this hard coded list is intentionaly left here, feel free to use it when initially starting out
-//please create your own network when you are up and running
 try{
+	//this hard coded list is intentionaly left here, feel free to use it when initially starting out
+	//please create your own network when you are up and running
 	var manual = JSON.parse(fs.readFileSync('mycreds_docker_compose.json', 'utf8'));
 	//var manual = JSON.parse(fs.readFileSync('mycreds_bluemix.json', 'utf8'));
 	var peers = manual.credentials.peers;
@@ -188,6 +188,28 @@ if(process.env.VCAP_SERVICES){																	//load from vcap, search for serv
 	}
 }
 
+//filter for type1 users if we have any
+function prefer_type1_users(user_array){
+	var ret = [];
+	for(var i in users){
+		if(users[i].enrollId.indexOf('type1') >= 0) {	//gather the type1 users
+			ret.push(users[i]);
+		}
+	}
+
+	if(ret.length === 0) ret = user_array;				//if no users found, just use what we have
+	return ret;
+}
+
+
+//see if peer 0 wants tls or no tls
+function detect_tls_or_not(peer_array){
+	var tls = false;
+	if(peer_array[0] && peer_array[0].api_port_tls){
+		if(!isNaN(peer_array[0].api_port_tls)) tls = true;
+	}
+	return tls;
+}
 
 // ==================================
 // configure options for ibm-blockchain-js sdk
@@ -195,10 +217,10 @@ if(process.env.VCAP_SERVICES){																	//load from vcap, search for serv
 var options = 	{
 					network:{
 						peers: [peers[0]],																	//lets only use the first peer! since we really don't need any more than 1
-						users: users,																		//dump the whole thing, sdk will parse for a good one
+						users: prefer_type1_users(users),													//dump the whole thing, sdk will parse for a good one
 						options: {
 									quiet: true, 															//detailed debug messages on/off true/false
-									tls: false, 															//should app to peer communication use tls?
+									tls: detect_tls_or_not(peers), 											//should app to peer communication use tls?
 									maxRetry: 1																//how many times should we retry register before giving up
 								}
 					},
