@@ -187,6 +187,19 @@ if(process.env.VCAP_SERVICES){																	//load from vcap, search for serv
 	}
 }
 
+//filter for type1 users if we have any
+function prefer_type1_users(user_array){
+	var ret = [];
+	for(var i in users){
+		if(users[i].enrollId.indexOf('type1') >= 0) {	//gather the type1 users
+			ret.push(users[i]);
+		}
+	}
+
+	if(ret.length === 0) ret = user_array;				//if no users found, just use what we have
+	return ret;
+}
+
 
 // ==================================
 // configure options for ibm-blockchain-js sdk
@@ -194,7 +207,7 @@ if(process.env.VCAP_SERVICES){																	//load from vcap, search for serv
 var options = 	{
 					network:{
 						peers: [peers[0]],																	//lets only use the first peer! since we really don't need any more than 1
-						users: users,																		//dump the whole thing, sdk will parse for a good one
+						users: prefer_type1_users(users),																		//dump the whole thing, sdk will parse for a good one
 						options: {
 									quiet: true, 															//detailed debug messages on/off true/false
 									tls: true, 																//should app to peer communication use tls?
