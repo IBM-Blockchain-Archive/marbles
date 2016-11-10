@@ -331,7 +331,7 @@ Once you have edited `mycreds.json` you are ready to run Marbles.
 Now we are ready to work on the application! 
 
 1. To run the app locally we need to get these files onto your machine
-	- **Important Step:** If you have Git installed then browse a command prompt/terminal to a desired working directory and type `git clone http://gopkg.in/ibm-blockchain/marbles.v1` **<- that url is for Branch v1.0 which works with Hyperledger Fabric v0.5.0+**
+	- **Important Step:** If you have Git installed then browse a command prompt/terminal to a desired working directory and type `git clone http://gopkg.in/ibm-blockchain/marbles.v1` **<- that url is for Branch v1.0 which works with Hyperledger Fabric v0.5.3**
 		- Follow any login prompts with your GitHub account
 1. Next we need to install our dependencies. Open a command prompt/terminal and browse to the root of this project.
 1. In the command prompt type:
