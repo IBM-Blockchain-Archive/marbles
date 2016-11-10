@@ -5,6 +5,7 @@
 - The expectations of this application are to test the JS SDK, guide its development and to aid a developer in becoming familiar with our SDK + chaincode.
 - This is a `very simple` asset transfer demonstration.  Two users can create and exchange marbles with each other.
 - There will be multiple parts. Part 1 and 2 are complete [2/15/2016]
+- **This readme is for Branch v2.0** which supports **Hyperledger Fabric v0.6.1+.**  If you are using Hyperledger Fabric v0.5.3 [go here](https://github.com/IBM-Blockchain/marbles/blob/v1.0/tutorial_part1.md).
 
 ***
 
@@ -240,7 +241,7 @@ All you have to do is find the tile and give the network a name.
 
 ![](/doc_images/bluemix_ibc1.png)
 
-1. Find and click the "Blockchain" tile. You can use the navigation on the left to filter the list: "Services" > "Web and Application" or type `blockchain` in the search box.
+1. Find and click the "Blockchain" tile. Type `blockchain` in the search box to filter the list.
 
 ![](/doc_images/bluemix_ibc2.png)
 
@@ -268,8 +269,8 @@ The network is all setup.  **Now we need to copy the peer data and pass it to ou
 1. Go back to your Bluemix Dashboard page
 1. Click the "myblockchain" tile in you Bluemix Dashboard
 1. Click the "Service Credentials" link on the left
-1. Copy the value of the whole JSON object to the `mycreds_bluemix.json` file in the root of this project.
-	1. If for some reason you don't see any credentials click the "ADD CREDENTIALS" button and let the page refresh
+1. Copy the value of the whole JSON object to the `mycreds.json` file in the root of this project.
+	1. If for some reason you don't see any credentials click the "New Credential" button and then "Add" (you do not need to add any text in the form).
 
 1. continue by [running the marbles app](#runlocal)
 
@@ -320,11 +321,15 @@ __sample mycreds.json__
 }
 ```
 
+**Do you see the "credentials" field in your json file?** 
+It should be the outter most field like in the sample above. 
+If its not there you need to add it such that `peers` and `users` are inside `credentials`.
+
 You must have the same number of entries in the `peer` array as the `users` array unless the network does not use Membership Services. 
 You can omit the `users` array entirely if the network does not use Membership Services. 
 If you created your own network, then you should look up the default users for your Hyperledger Fabric version. 
 Fabric version 0.6.1 can be found in the [membersrvc.yaml](https://github.com/hyperledger/fabric/blob/v0.6/membersrvc/membersrvc.yaml#L121) file. 
-Marbles only talks to 1 peer so you only need 1 peer in the array. 
+Marbles only talks to 1 peer so you **only need 1 peer** in the `peers` array. 
 You can omit the field `api_port_tls` if the network does not support TLS. 
 If you are not using TLS you should also change the `options.tls` field to `false` on [line 200](app.js#L200) of app.js.
 All networks created with the Bluemix service will have Membership Services and support TLS exclusively. 
@@ -334,9 +339,8 @@ Once you have edited `mycreds.json` you are ready to run Marbles.
 Now we are ready to work on the application! 
 
 1. To run the app locally we need to get these files onto your machine
-	- If you have Git installed then browse a command prompt/terminal to a desired working directory and type `git clone http://gopkg.in/ibm-blockchain/marbles.v2`
+	- **Important Step:** If you have Git installed then browse a command prompt/terminal to a desired working directory and type `git clone http://gopkg.in/ibm-blockchain/marbles.v1` **<- that url is for Branch v1.0 which works with Hyperledger Fabric v0.5.0+**
 		- Follow any login prompts with your GitHub account
-	- If you do not have Git then [download the zip](https://github.com/IBM-Blockchain/marbles/archive/master.zip) and extract it in your desired working directory.
 1. Next we need to install our dependencies. Open a command prompt/terminal and browse to the root of this project.
 1. In the command prompt type:
 	

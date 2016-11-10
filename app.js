@@ -201,7 +201,6 @@ function prefer_type1_users(user_array){
 	return ret;
 }
 
-
 //see if peer 0 wants tls or no tls
 function detect_tls_or_not(peer_array){
 	var tls = false;
@@ -252,7 +251,7 @@ ibc.load(options, function (err, cc){														//parse/load chaincode, respo
 
 		// ---- To Deploy or Not to Deploy ---- //
 		if(!cc.details.deployed_name || cc.details.deployed_name === ''){					//yes, go deploy
-			cc.deploy('init', ['99'], {save_path: './cc_summaries', delay_ms: 30000}, function(e){ //delay_ms is milliseconds to wait after deploy for conatiner to start, 50sec recommended
+			cc.deploy('init', ['99'], {delay_ms: 30000}, function(e){ 						//delay_ms is milliseconds to wait after deploy for conatiner to start, 50sec recommended
 				check_if_deployed(e, 1);
 			});
 		}
