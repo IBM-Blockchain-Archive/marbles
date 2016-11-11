@@ -296,8 +296,7 @@ function enrollAndRegisterUsers() {
         var enrollName = "JohnDoe"; //creating a new user
         var registrationRequest = {
             enrollmentID: enrollName,
-            account: "group1",
-            affiliation: "00001"
+            affiliation: "group1"
         };
         chain.registerAndEnroll(registrationRequest, function(err, user) {
             if (err) throw Error(" Failed to register and enroll " + enrollName + ": " + err);
@@ -326,7 +325,7 @@ function deployChaincode(user) {
         // The location where the startup and HSBN store the certificates
 		certificatePath: "/certs/peer/cert.pem",
 		// The location of the chaincode on the local file system after $GOPATH/src/
-		chaincodePath: "github.com/clanzen/marbles-chaincode/hyperledger/part1",
+		chaincodePath: "github.com/marbles-chaincode/hyperledger/part1",
     };
 
     // Trigger the deploy transaction
@@ -337,7 +336,9 @@ function deployChaincode(user) {
         // Deploy request completed successfully
         testChaincodeID = results.chaincodeID;
         console.log("\nChaincode ID : " + testChaincodeID);
-        console.log('Successfully deployed chaincode: request=' + JSON.stringify(deployRequest) + ', response=' + results);
+        console.log("Successfully deployed chaincode: "
+			+ "\nrequest=" + JSON.stringify(deployRequest)
+			+ "\nresponse=" + JSON.stringify(results));
 
 		part1.setup(user, testChaincodeID, peers[0]);
 		part2.setup(user, testChaincodeID, peers[0]);
