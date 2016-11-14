@@ -83,13 +83,13 @@ then continue [here](#use).
 
 `OR`
 
-(2) Deploy the app on my local machine, connecting to a an IBM Blockchain network running in Bluemix  - [instructions](#manbluenetwork)
+(2) Deploy the app on my local machine, connecting to an IBM Blockchain network running in Bluemix  - [instructions](#manbluenetwork)
 
 `OR`
 
 (3) Deploy the app on my local machine and connect to a local Hyperledger Network - [instructions](#confignetwork)
 
-# <a name="manbluenetwork"></a>Local Marbles App to an IBM Blockchain Network running in Bluemix:
+# <a name="manbluenetwork"></a>Deploy the Marbles App locally and connect to an IBM Blockchain Network running in Bluemix:
 First, we need to create a Bluemix IBM Blockchain Network.  Don't fret, this is as simple as clicking on a particular button and filling out a text input field or two. 
 
 There is a Bluemix tile that will create you your own personal blockchain network. 
@@ -125,9 +125,20 @@ The network is all setup.  Since we are running the app locally, we need to **co
 
 1. Click the "Service Credentials" link on the very bottom left of the dashboard.
 1. This will open the file in your browser.  Replace the entire contents of the mycredentials.json file with this text.
+1. continue by [running the marbles app](#runlocal) below.
 
+#<a name="runlocal"></a>Run Marbles on Local Machine
+Now we are ready to work on the application! 
 
-1. continue by [running the marbles app](#runlocal)
+1. To run the app locally we need to get these files onto your machine
+	- **Important Step:** If you have Git installed then browse a command prompt/terminal to a desired working directory and type `git clone http://gopkg.in/ibm-blockchain/marbles.v2` **<- that url is for Branch v2.0 which works with Hyperledger Fabric v0.6.1+**
+		- Follow any login prompts with your GitHub account
+1. Next we need to install our dependencies. Open a command prompt/terminal and browse to the root of this project.
+1. In the command prompt type:
+	
+		> npm install gulp -g
+		> npm install
+
 
 #<a name="confignetwork"></a>Configure the SDK for your Blockchain Network
 The app is setup to either grab network configuration data from Bluemix via VCAP Service's environmental variable OR to load the hard coded list in `mycreds.json`. 
@@ -190,17 +201,7 @@ If you are not using TLS you should also change the `options.tls` field to `fals
 All networks created with the Bluemix service will have Membership Services and support TLS exclusively. 
 Once you have edited `mycreds.json` you are ready to run Marbles. 
 
-#<a name="runlocal"></a>Run Marbles on Local Machine
-Now we are ready to work on the application! 
 
-1. To run the app locally we need to get these files onto your machine
-	- **Important Step:** If you have Git installed then browse a command prompt/terminal to a desired working directory and type `git clone http://gopkg.in/ibm-blockchain/marbles.v2` **<- that url is for Branch v2.0 which works with Hyperledger Fabric v0.6.1+**
-		- Follow any login prompts with your GitHub account
-1. Next we need to install our dependencies. Open a command prompt/terminal and browse to the root of this project.
-1. In the command prompt type:
-	
-		> npm install gulp -g
-		> npm install
 		
 1. [Configure](#confignetwork) the SDK to use your preferred blockchain network. Jump back here when finished.
 
