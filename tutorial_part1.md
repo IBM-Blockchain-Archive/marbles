@@ -112,7 +112,10 @@ All you have to do is find the tile and give the network a name.
 
 1. The space used is listed in the Name/Region/Org/Space bar at the top left.  If you want to create the network in a different space, click this bar to bring up the option to change or create a new space.  
 1. Click on the text bar under "Service Name" to rename "Blockchain-bx" to "myblockchain" without the quotes
+1. Leave the "App:" field as "Leave unbound" (unless you already have an application, but you probably don't yet)
+1. Leave the "Selected Plan" as its default value
 1. Leave the "Credential name" field as its default value
+  
 1. Click the "CREATE" button at the bottom right.
 
 ![](/doc_images/bluemix_ibc3.png)
