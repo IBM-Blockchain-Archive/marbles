@@ -20,12 +20,8 @@
 
 #Prereq:
 1. Bluemix ID https://console.ng.bluemix.net/ (needed to create your IBM Blockchain network if local network is not setup)
-1. If you want to run Marbles on a local blockchain network (ie. not using Bluemix) you will need to have completed the Hyperledger Fabric [development setup](https://github.com/hyperledger/fabric/blob/master/docs/Setup/Network-setup.md).
-1. [Node.js](https://nodejs.org/en/download/) 0.12.0+ and npm v2+ (only needed if you want to run the app locally, npm comes with node.js)
-1. Node.js + express experience. Marbles is a very simple blockchain app but it’s still a fairly involved node app.  **You should be comfortable with node** and the express module.
-1. GoLang Environment (only needed to build your own chaincode, not needed if you just run the marbles app as is)
-1. I highly recommend you complete [learn chaincode](https://github.com/IBM-Blockchain/learn-chaincode) first
-
+1. I highly recommend you complete [learn chaincode](https://github.com/IBM-Blockchain/learn-chaincode) first.  This will not only explain what chaincode is, but also walk you through setting up your development environment.
+  
 #Application Background
 Hold on to your hats everyone, this application is going to demonstrate transferring marbles between two users leveraging IBM Blockchain.
 We are going to do this in Node.js and a bit of GoLang. 
@@ -90,7 +86,17 @@ then continue [here](#use).
 (3) Deploy the app on my local machine and connect to a local Hyperledger Network - [instructions](#confignetwork)
 
 # <a name="manbluenetwork"></a>Deploy the Marbles App locally and connect to an IBM Blockchain Network running in Bluemix:
-First, we need to create a Bluemix IBM Blockchain Network.  Don't fret, this is as simple as clicking on a particular button and filling out a text input field or two. 
+
+First, we need to install the prereqs on our local system to allow us to run the marbles app locally.  If you completed the [learn chaincode](https://github.com/IBM-Blockchain/learn-chaincode) demo, your environment is ready to go.  If not, then 
+follow the [IBM Blockchain development setup instructions](https://github.com/IBM-Blockchain/learn-chaincode/blob/v2.0/docs/setup.md) and install the following components:  
+-  Git - Needed to clone the code locally to your system.  
+-  Node.js - Needed to install and run the app locally.  
+There are more components listed in the setup link, but these are all you need to run for this marbles demo flow.  
+
+Second, we need to clone the Marbles app to our local system so we can run it here.  
+To do this, run ```git clone http://gopkg.in/ibm-blockchain/marbles.v2``` to clone the v2.0 branch to your local system.  
+
+Finally, we need to create a Bluemix IBM Blockchain Network.  Don't fret, this is as simple as clicking on a particular button and filling out a text input field or two. 
 
 There is a Bluemix tile that will create you your own personal blockchain network. 
 All you have to do is find the tile and give the network a name. 
@@ -130,17 +136,29 @@ The network is all setup.  Since we are running the app locally, we need to **co
 #<a name="runlocal"></a>Run Marbles on Local Machine
 Now we are ready to work on the application! 
 
-1. To run the app locally we need to get these files onto your machine
-	- **Important Step:** If you have Git installed then browse a command prompt/terminal to a desired working directory and type `git clone http://gopkg.in/ibm-blockchain/marbles.v2` **<- that url is for Branch v2.0 which works with Hyperledger Fabric v0.6.1+**
-		- Follow any login prompts with your GitHub account
-1. Next we need to install our dependencies. Open a command prompt/terminal and browse to the root of this project.
+1. Now we need to install the marbles application via npm, which is part of the Node.js package we installed earlier. Open a command prompt/terminal and browse to the root of this project (normally ``` git install location/marbles.v2```).
 1. In the command prompt type:
 	
 		> npm install gulp -g
 		> npm install
+		> gulp
+		
+1. If all goes well you should see this message in the console:
+	
+		--------------------------------- Server Up - localhost:3000 ------------------------------------
+		
+1. The app is already coded to auto deploy the chaincode.  You should see further message about it deploying.
+ **[IMPORTANT]** You will need to wait about 60 seconds for the cc to fully deploy. The SDK will do the waiting for us by stalling our callback.
+ 
+1. Once you see this message you are good to go: 
+		
+		[ibc-js] Deploying Chaincode - Complete
+		---------------------------------------- Websocket Up ------------------------------------------
+
+1. Continue by [using the marbles app](#use)
 
 
-#<a name="confignetwork"></a>Configure the SDK for your Blockchain Network
+#<a name="confignetwork"></a>Deploy the app on my local machine and connect to a local hyperledger network.
 The app is setup to either grab network configuration data from Bluemix via VCAP Service's environmental variable OR to load the hard coded list in `mycreds.json`. 
 We have added two mycreds files. 
 The first is a sample of a Bluemix IBM Blockchain network called `mycreds_bluemix.json`. 
@@ -205,23 +223,7 @@ Once you have edited `mycreds.json` you are ready to run Marbles.
 		
 1. [Configure](#confignetwork) the SDK to use your preferred blockchain network. Jump back here when finished.
 
-1. Get back to your command prompt and browse to the root of this project. Run Marbles with the command:
-	
-		> gulp
 
-1. If all goes well you should see this message in the console:
-	
-		--------------------------------- Server Up - localhost:3000 ------------------------------------
-		
-1. The app is already coded to auto deploy the chaincode.  You should see further message about it deploying.
- **[IMPORTANT]** You will need to wait about 60 seconds for the cc to fully deploy. The SDK will do the waiting for us by stalling our callback.
- 
-1. Once you see this message you are good to go: 
-		
-		[ibc-js] Deploying Chaincode - Complete
-		---------------------------------------- Websocket Up ------------------------------------------
-
-1. Continue by [using the marbles app](#use)
 		
 #Run Marbles on Bluemix (command line)
 1. This app is already ready to run on Bluemix
