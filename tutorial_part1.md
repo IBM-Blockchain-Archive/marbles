@@ -20,7 +20,7 @@
 
 #Prereq:
 1. Bluemix ID https://console.ng.bluemix.net/ (needed to create your IBM Blockchain network if local network is not setup)
-1. I highly recommend you complete [learn chaincode](https://github.com/IBM-Blockchain/learn-chaincode) first.  This will not only explain what chaincode is, but also walk you through setting up your development environment.
+1. I highly recommend you complete [learn chaincode](https://github.com/IBM-Blockchain/learn-chaincode) first.  This will not only explain what chaincode is, but also walk you through installing the dependencies needed for marbles and the other demos.
   
 #Application Background
 Hold on to your hats everyone, this application is going to demonstrate transferring marbles between two users leveraging IBM Blockchain.
@@ -33,10 +33,10 @@ Thus we will stringify JSON objects to store more complex structures.
 
 Attributes of a marble:
 
-	1. name (unique string, will be used as key)
-	1. color (string, css color names)
-	1. size (int, size in mm)
-	1. user (string)
+  1. name (unique string, will be used as key)
+  1. color (string, css color names)
+  1. size (int, size in mm)
+  1. user (string)
 	
 We are going to create a Web UI that can set these values and pass them to the chaincode. 
 Interacting with the cc is done with a HTTP REST call to a peer on the network. 
@@ -87,40 +87,40 @@ then continue [here](#use).
 
 # <a name="manbluenetwork"></a>Deploy the Marbles App locally and connect to an IBM Blockchain Network running in Bluemix:
 
-First, we need to install the prereqs on our local system to allow us to run the marbles app locally.  If you completed the [learn chaincode](https://github.com/IBM-Blockchain/learn-chaincode) demo, your environment is ready to go.  If not, then 
+1.  Install the prereqs on your local system to allow you to run the marbles app locally.  If you completed the [learn chaincode](https://github.com/IBM-Blockchain/learn-chaincode) demo, your environment is ready to go.  If not, then 
 follow the [IBM Blockchain development setup instructions](https://github.com/IBM-Blockchain/learn-chaincode/blob/v2.0/docs/setup.md) and install the following components:  
--  Git - Needed to clone the code locally to your system.  
--  Node.js - Needed to install and run the app locally.  
+  -  Git - Needed to clone the code locally to your system.  
+  -  Node.js - Needed to install and run the app locally.  
 There are more components listed in the setup link, but these are all you need to run for this marbles demo flow.  
 
-Second, we need to clone the Marbles app to our local system so we can run it here.  
+1.  Clone the Marbles app to your local system so you can run it here
 To do this, run ```git clone http://gopkg.in/ibm-blockchain/marbles.v2``` to clone the v2.0 branch to your local system.  
 
-Finally, we need to create a Bluemix IBM Blockchain Network.  Don't fret, this is as simple as clicking on a particular button and filling out a text input field or two. 
+1.  Create a Bluemix IBM Blockchain Network.  Don't fret, this is as simple as clicking on a particular button and filling out a text input field or two. 
 
-There is a Bluemix tile that will create you your own personal blockchain network. 
-All you have to do is find the tile and give the network a name. 
+  There is a Bluemix tile that will create you your own personal blockchain network. 
+  All you have to do is find the tile and give the network a name. 
 
-1. First login to [Bluemix](https://console.ng.bluemix.net)
-1. Click the "Catalog" link on the top navigation bar
+  1. First login to [Bluemix](https://console.ng.bluemix.net)
+  1. Click the "Catalog" link on the top navigation bar
 
 ![](/doc_images/bluemix_ibc1.png)
 
-1. Find and click the "Blockchain" tile. Type `blockchain` in the search box to filter the list.
+  1. Find and click the "Blockchain" tile. Type `blockchain` in the search box to filter the list.
 
 ![](/doc_images/bluemix_ibc2.png)
 
-1. The space used is listed in the Name/Region/Org/Space bar at the top left.  If you want to create the network in a different space, click this bar to bring up the option to change or create a new space.  
-1. Click on the text bar under "Service Name" to rename "Blockchain-bx" to "myblockchain" without the quotes
-1. Leave the "App:" field as "Leave unbound" (unless you already have an application, but you probably don't yet)
-1. Leave the "Selected Plan" as its default value
-1. Leave the "Credential name" field as its default value
+  1. The space used is listed in the Name/Region/Org/Space bar at the top right.  If you want to create the network in a different space, click this bar to bring up the option to change or create a new space.  
+  1. Click on the text bar under "Service Name" to rename "Blockchain-bx" to "myblockchain" without the quotes
+  1. Leave the "App:" field as "Leave unbound" (unless you already have an application, but you probably don't yet)
+  1. Leave the "Selected Plan" as its default value
+  1. Leave the "Credential name" field as its default value
   
-1. Click the "CREATE" button at the bottom right.
+  1. Click the "CREATE" button at the bottom right.
 
 ![](/doc_images/bluemix_ibc3.png)
 
-1. If all goes well you should be on the manage screen for your new service. Click the "LAUNCH" button to see the dashboard for your network. 
+  1. If all goes well you should be on the manage screen for your new service. Click the "LAUNCH" button to see the dashboard for your network. 
 	- You should see a few peers listed in the first table
 	- From here you can monitor if your peers crash, if the chaincode containers are running, and view logs for all
 
@@ -128,18 +128,18 @@ All you have to do is find the tile and give the network a name.
 
 ![](/doc_images/bluemix_ibc5.png)
 
-(Note if you find yourself on the main Bluemix Dashboard and want to get back to this service screen just click the tile name "myblockchain" in the "Services" section)
+  (Note if you find yourself on the main Bluemix Dashboard and want to get back to this service screen just click the tile name "myblockchain" in the "Services" section)
 
 The network is all setup.  Since we are running the app locally, we need to **copy the peer data and pass it to our marbles node.js application**.
 
 1. Click the "Service Credentials" link on the very bottom left of the dashboard.
 1. This will open the file in your browser.  Replace the entire contents of the mycredentials.json file with this text.
-1. continue by [running the marbles app](#runlocal) below.
+1. continue by [run marbles on local machine](#runlocal) below.
 
 #<a name="runlocal"></a>Run Marbles on Local Machine
 Now we are ready to work on the application! 
 
-1. Now we need to install the marbles application via npm, which is part of the Node.js package we installed earlier. Open a command prompt/terminal and browse to the root of this project (normally ``` git install location/marbles.v2```).
+1. Now you need to install the marbles application via npm, which is part of the Node.js package we installed earlier. Open a command prompt/terminal and browse to the root of this project (normally ``` git install location/marbles.v2```).
 1. In the command prompt type:
 	
 		> npm install gulp -g
