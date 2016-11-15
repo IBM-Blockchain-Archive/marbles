@@ -5,10 +5,11 @@
 ***
 
 ##### Versions and Supported Platforms
-On November 9th, 2016, we released the IBM Blockchain Service v1.0 based on HyperLedger fabric v0.6.  All new networks created in bluemix will be this version.  Support of the v0.4.2.x Bluemix Service based on the 0.5.3 Hyperledger Fabric has been deprecated.  It is strongly recommended that if you have an existing network based on 0.5.3, you redeploy a new network and follow the instructions in the master branch.
+On November 9th, 2016, we released the IBM Blockchain Service v1.0 based on HyperLedger fabric v0.6.  All new networks created in bluemix will be this version.  Support of the v0.4.2.x Bluemix Service based on the 0.5.3 Hyperledger Fabric has been deprecated.  It is strongly recommended that if you have an existing network based on 0.5.3, you redeploy a new network and follow the instructions in the 2.0 branch.
 
-- [Marbles - Master](https://github.com/ibm-blockchain/marbles)
+- [Marbles - Branch v2.0](https://github.com/ibm-blockchain/marbles/tree/v2.0)
 	- Works with Hyperledger fabric `v0.6-developer-preview`
+
 	
 If for some reason you need instructions for the v0.4.2+ level of the service, they are here, but support of these instructions is
 best effort only.
