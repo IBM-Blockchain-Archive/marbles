@@ -35,8 +35,8 @@
 
   (Note if you find yourself on the main Bluemix Dashboard and want to get back to this service screen just click the tile name "myblockchain" in the "Services" section)
 
-The network is all setup.  Since we are running the app locally, we need to **copy the peer data and pass it to our marbles node.js application**.
+The network is all setup.  Since we are running the app locally, we need to **copy the peer data and pass it to our demo node.js application**.
 
 1. Click the "Service Credentials" link on the very bottom left of the dashboard.
-1. This will open the file in your browser.  Replace the entire contents of the mycredentials.json file with this text.
+1. This will open the file in your browser.  Replace the entire contents of the `mycredentials.json` file in the root of the `/git/<project>` directory you cloned earlier with this text.
 1. continue by [run marbles on local machine](#runlocal) below.
