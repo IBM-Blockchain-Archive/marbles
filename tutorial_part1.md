@@ -87,12 +87,10 @@ then continue [here](#use).
 
 # <a name="manbluenetwork"></a>Deploy the Marbles App locally and connect to an IBM Blockchain Network running in Bluemix:
 
-1.  Install the prereqs on your local system to allow you to run the marbles app locally.  If you completed the [learn chaincode](https://github.com/IBM-Blockchain/learn-chaincode) demo, your environment is ready to go.  If not, then 
-follow the [IBM Blockchain development setup instructions](https://github.com/IBM-Blockchain/learn-chaincode/blob/v2.0/docs/setup.md) and install the following components:  
-  -  Git - Needed to clone the code locally to your system.  
-  -  Node.js - Needed to install and run the app locally.  
-There are more components listed in the setup link, but these are all you need to run for this marbles demo flow.  
+1.  Follow these instructions to [Set up your environment for running the demos](https://github.com/ptippett/marbles/blob/break_out_common_sections/demo_prereqs)
 
+1.  Clone the Marbles app to your local system so you can run it here
+To do this, run ```git clone http://gopkg.in/ibm-blockchain/marbles.v2``` to clone the v2.0 branch to your local system.  
 1.  Clone the Marbles app to your local system so you can run it here
 To do this, run ```git clone http://gopkg.in/ibm-blockchain/marbles.v2``` to clone the v2.0 branch to your local system.  
 
