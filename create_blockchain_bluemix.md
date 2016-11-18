@@ -1,4 +1,4 @@
-### Creating a Blockchain Network in IBM Bluemix
+# Creating a Blockchain Network in IBM Bluemix
 
 1.  Create a Bluemix IBM Blockchain Network.  Don't fret, this is as simple as clicking on a particular button and filling out a text input field or two. 
   There is a Bluemix tile that will create you your own personal blockchain network. All you have to do is find the tile and give the network a name. 
@@ -25,9 +25,9 @@
 
 ![](/doc_images/bluemix_ibc3.png)
 
-<a name ="get_credentials" ></a>  1. If all goes well you should be on the manage screen for your new service. Click the "LAUNCH" button to see the dashboard for your network. 
-	- You should see a few peers listed in the first table
-	- From here you can monitor if your peers crash, if the chaincode containers are running, and view logs for all
+<a name ="get_credentials" ></a> If all goes well you should be on the manage screen for your new service. Click the "LAUNCH" button to see the dashboard for your network. 
+- You should see a few peers listed in the first table
+- From here you can monitor if your peers crash, if the chaincode containers are running, and view logs for all
 
 ![](/doc_images/bluemix_ibc4.png)
 
@@ -35,8 +35,9 @@
 
   (Note if you find yourself on the main Bluemix Dashboard and want to get back to this service screen just click the tile name "myblockchain" in the "Services" section)
 
+# Finished
 The network is all setup.  Since we are running the app locally, we need to **copy the peer data and pass it to our demo node.js application**.
 
 1. Click the "Service Credentials" link on the very bottom left of the dashboard.
 1. This will open the file in your browser.  Replace the entire contents of the `mycredentials.json` file in the root of the `/git/<project>` directory you cloned earlier with this text.
-1. continue by [run marbles on local machine](#runlocal) below.
+1. continue by [run marbles on local machine](./tutorial_part1.md#runlocal) below.
