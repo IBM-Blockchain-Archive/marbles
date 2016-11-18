@@ -9,11 +9,11 @@ Let’s start at the very beginning and check things off one by one.
 **Game Plan**
 
 1. [Check if the network is showing signs of life](./i_lost_my_marbles.md#step1)
-1. [Check if the marbles app is registering users for the permissioned network](./i_lost_my_marbles.md#step2)
-1. [Check if marbles is deploying chaincode successfully](./i_lost_my_marbles.md#step3)
-1. [Check if marbles backend is reaching chaincode functions](./i_lost_my_marbles.md#step4)
-1. [Check if marbles frontend is sending its actions](./i_lost_my_marbles.md#step5)
-1. [Turn it off and back on again](./i_lost_my_marbles.md#step6)
+1. [Check if the marbles app is registering users for the permissioned network](#step2)
+1. [Check if marbles is deploying chaincode successfully](./#step3)
+1. [Check if marbles backend is reaching chaincode functions](./#step4)
+1. [Check if marbles frontend is sending its actions](./#step5)
+1. [Turn it off and back on again](./#step6)
 
 
 **[ Step 0 ]**
@@ -35,7 +35,7 @@ We need to first check off that your network is running correctly.
 The best way to do this is to open your networks monitor page. 
 What we want to see is 4 peers and a CA with the status of "running". 
 What we do not want to see is missing peers, or peers with a "stopped" status. 
-Follow the instructions in [this section](./i_lost_my_marbles.md#peer-or-chaincode-logs) to get to the monitor page, and while you are there check the peer logs to see if there is anything suspicious.
+Follow the instructions in [this section](./#peer-or-chaincode-logs) to get to the monitor page, and while you are there check the peer logs to see if there is anything suspicious.
 
 Results:
 
@@ -50,7 +50,7 @@ Results:
 
 Right so next is to verify if the marbles app is registering secure context users or not. 
 To do this we need to take a look at the logs from node.js. 
-Depending on your marble setup you either need to get to your [Bluemix Node.js Logs](./i_lost_my_marbles.md#bluemix-node.js-logs) or your [Local Machine Node.js Logs](./i_lost_my_marbles.md#local-machine-node.js-logs). 
+Depending on your marble setup you either need to get to your [Bluemix Node.js Logs](./#bluemix-node.js-logs) or your [Local Machine Node.js Logs](./#local-machine-node.js-logs). 
 
 Now that you have access to your logs let’s find the relevant logs for user registration. 
 The SDK will print messages similar to the ones below to the console:
@@ -74,7 +74,7 @@ Results:
 		- Verify if your peers are still running (we did this in step 1 though...)
 		- You have previously registered this enroll ID to a different peer. This is not allowed. A enroll ID can only be registered against 1 peer. (re-registering a enroll ID against the same peer is fine though)
 		- You must have at least one registered enroll ID for marbles. If only one works edit the list of peers/users you feed marbles to only contain this one.
-		- Check the [logs for CA](./i_lost_my_marbles.md#peer-or-chaincode-logs) for any clues (same instructions as peer logs)
+		- Check the [logs for CA](./#peer-or-chaincode-logs) for any clues (same instructions as peer logs)
 		- If nothing is working, delete this network and create another
 - *I don't see any registration messages at all*
 	- So either you did not feed `ibc.load()` any enroll IDs or you did not feed it any appropriate enroll IDs. An apporiate enroll ID is one that contains "type_1" in the name. Any other names get filtered out by `ibc.load`.
@@ -88,7 +88,7 @@ Results:
 
 Next we want to see if the marbles app deployed its chaincode successfully. 
 The first place I'd look is in the networks monitor page. 
-Follow the instructions in [this section](./i_lost_my_marbles.md#peer-or-chaincode-logs) to get to the monitor page. 
+Follow the instructions in [this section](./#peer-or-chaincode-logs) to get to the monitor page. 
 
 Check the bottom table. 
 Does it have a row with a chaincode hash? 
@@ -124,7 +124,7 @@ Results:
 		- If you see antyhing like "401 unauthorized" message then you have not passed it a secure context username that has been successfully registered. (we did this in step 2 though)
 		- You fed it incorrect peer host/ports. Verify the hostname/ports are the same as the ones you see in your network's monitor page.
 		- Verify if your peers are still running (we did this in step 1 though...)
-		- Check the [logs for the peer](./i_lost_my_marbles.md#peer-or-chaincode-logs) for any clues, you are probably deploying to peer 1.
+		- Check the [logs for the peer](./#peer-or-chaincode-logs) for any clues, you are probably deploying to peer 1.
 		- If nothing is working, delete this network and create another
 - *Everything looks okay*
 	- Wohoo, let’s go to step 4
@@ -135,7 +135,7 @@ Results:
 
 The next thing we can do is figure out if marbles is actually reaching the chaincode or not. 
 We will need to open the logs for the chaincode container. 
-Follow the instructions in [this section](./i_lost_my_marbles.md#peer-or-chaincode-logs) to get to the monitor page. 
+Follow the instructions in [this section](./#peer-or-chaincode-logs) to get to the monitor page. 
 
 Check the bottom table. 
 It should have at least one chaincode listed. 
