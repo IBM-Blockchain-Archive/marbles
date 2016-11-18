@@ -10,7 +10,6 @@ On November 9th, 2016, we released the IBM Blockchain Service v1.0 based on Hype
 - [Marbles - Branch v2.0](https://github.com/ibm-blockchain/marbles/tree/v2.0)
 	- Works with Hyperledger fabric `v0.6-developer-preview`
 
-	
 If for some reason you need instructions for the v0.4.2+ level of the service, they are here, but support of these instructions is
 best effort only.
 

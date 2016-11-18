@@ -1,11 +1,10 @@
 #Marbles Part 1 - Demo
 
-##BEFORE YOU RUN
-- The underlying network for this application is the [Hyperledger Fabric](https://github.com/hyperledger/fabric/tree/master/docs), a Linux Foundation project.
+##About Marbles
+- The underlying network for this application is the [Hyperledger Fabric](https://github.com/hyperledger/fabric/tree/master/docs), a Linux Foundation project.  You may want to review these instructions to understand a bit about the Hyperledger Fabric.
 - The expectations of this application are to test the JS SDK, guide its development and to aid a developer in becoming familiar with our SDK + chaincode.
 - This is a `very simple` asset transfer demonstration.  Two users can create and exchange marbles with each other.
 - There will be multiple parts. Part 1 and 2 are complete [2/15/2016]
-- **This readme is for Branch v2.0** which supports **Hyperledger Fabric v0.6.1+.**  If you are using Hyperledger Fabric v0.5.3 [go here](https://github.com/IBM-Blockchain/marbles/blob/v1.0/tutorial_part1.md).
 
 ***
 
@@ -21,14 +20,8 @@
 
 #Prereq:
 1. Bluemix ID https://console.ng.bluemix.net/ (needed to create your IBM Blockchain network if local network is not setup)
-1. If you want to run Marbles on a local blockchain network (ie. not using Bluemix) you will need to have completed the Hyperledger Fabric [development setup](https://github.com/hyperledger/fabric/blob/master/docs/Setup/Network-setup.md).
-1. [Node.js](https://nodejs.org/en/download/) 0.12.0+ and npm v2+ (only needed if you want to run the app locally, npm comes with node.js)
-1. Node.js + express experience. Marbles is a very simple blockchain app but it’s still a fairly involved node app.  **You should be comfortable with node** and the express module.
-1. GoLang Environment (only needed to build your own chaincode, not needed if you just run the marbles app as is)
-1. I highly recommend you complete [learn chaincode](https://github.com/IBM-Blockchain/learn-chaincode) first
-
-
-
+1. I highly recommend you complete [learn chaincode](https://github.com/IBM-Blockchain/learn-chaincode) first.  This will not only explain what chaincode is, but also walk you through installing the dependencies needed for marbles and the other demos.
+  
 #Application Background
 Hold on to your hats everyone, this application is going to demonstrate transferring marbles between two users leveraging IBM Blockchain.
 We are going to do this in Node.js and a bit of GoLang. 
@@ -40,10 +33,10 @@ Thus we will stringify JSON objects to store more complex structures.
 
 Attributes of a marble:
 
-	1. name (unique string, will be used as key)
-	1. color (string, css color names)
-	1. size (int, size in mm)
-	1. user (string)
+  1. name (unique string, will be used as key)
+  1. color (string, css color names)
+  1. size (int, size in mm)
+  1. user (string)
 	
 We are going to create a Web UI that can set these values and pass them to the chaincode. 
 Interacting with the cc is done with a HTTP REST call to a peer on the network. 
@@ -71,152 +64,13 @@ There are certain keywords and context clues to help you identify one from anoth
 1. The Client Side JS Part - This is JavaScript code running in the user's browser. User interaction code happens here.
 1. The Server Side JS Part - This is JavaScript code running our application's backend. ie `Node.js` code which is the heart of Marbles! Sometimes referred to as our `node` or `server` code. Functions as the glue between the user and our blockchain.
 
-#Chaincode
-To understand what is going on we need to start looking at the chaincode.  The complete cc code for this example can be found [here](/chaincode). 
-Marbles Tutorial Part 1 and Marbles Tutorial Part 2 will use the same chaincode. 
-Part 1 will simply not use as many functions as Part 2.
-	
-The first interesting place in the cc is the `Invoke()` function. 
-This is our entry point into chaincode. 
-IE the peer will call this function for any type of "invocation". 
-"Invoking" a function simply means we are attempting to run a cc function and that this event will be recorded to the blockchain ledger.
-A counter example to an invoke operation would be a query operation.  Query events do not get recorded to the ledger.
-
-Looking at the example code it should be clear that we can invoke our GoLang functions by detecting the desired function name and passing to that function the argument `args`.
-
-__Invoke()__
-
-```js
-	// ============================================================================================================================
-	// Invoke - Our entry point for Invocations
-	// ============================================================================================================================
-	func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
-		fmt.Println("invoke is running " + function)
-
-		// Handle different functions
-		if function == "init" {               //initialize the chaincode state, used as reset
-			return t.Init(stub, "init", args)
-		} else if function == "delete" {      //deletes an entity from its state
-			return t.Delete(stub, args)
-		} else if function == "write" {       //writes a value to the chaincode state
-			return t.Write(stub, args)
-		} else if function == "init_marble" { //create a new marble
-			return t.init_marble(stub, args)
-		} else if function == "set_user" {    //change owner of a marble
-			return t.set_user(stub, args)
-		}
-		fmt.Println("invoke did not find func: " + function) //error
-
-		return nil, errors.New("Received unknown function invocation")
-	}
-```
-
-For example our cc code will detect when the variable `function` is equal to "write" and will call `t.Write()`.
-The SDK we are using can parse and find the name of the functions listed in this `Invoke()` code. 
-It will then give you a dot notation to use them in your Node.js application. ie:
-	
-```js
-	chaincode.query.read(["abc"]);               //calls the Query() function which will read the var "abc"
-	chaincode.invoke.write(["stuff", "test"]);    //invokes the cc function Write() function which will write test to "stuff" in the cc state
-	chaincode.invoke.rule_the_world(["tomrrow"]); //invokes the cc function "rule_the_world" (assuming it exists)
-```
-
-For example in our node.js code if we call `chaincode.invoke.write()` it will generate a HTTP request to the peer which ultimately runs the `t.Write()` chaincode function.
-
-Note that the `chaincode.query.read()` will call the `Query()` function in our chaincode. 
-This function is not listed in `Invoke()` because it not an invocation. 
-The code for my `Query()` and `read()` is listed below:
-
-__Query()__
-
-```js
-	// ============================================================================================================================
-	// Query - Our entry point for Queries
-	// ============================================================================================================================
-	func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
-		fmt.Println("query is running " + function)
-
-		// Handle different functions
-		if function == "read" {													//read a variable
-			return t.read(stub, args)
-		}
-		fmt.Println("query did not find func: " + function)						//error
-
-		return nil, errors.New("Received unknown function query")
-	}
-	
-	// ============================================================================================================================
-	// Read - read a variable from chaincode state
-	// ============================================================================================================================
-	func (t *SimpleChaincode) read(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
-		var name, jsonResp string
-		var err error
-
-		if len(args) != 1 {
-			return nil, errors.New("Incorrect number of arguments. Expecting name of the var to query")
-		}
-
-		name = args[0]
-		valAsbytes, err := stub.GetState(name)									//get the var from chaincode state
-		if err != nil {
-			jsonResp = "{\"Error\":\"Failed to get state for " + name + "\"}"
-			return nil, errors.New(jsonResp)
-		}
-
-		return valAsbytes, nil													//send it onward
-	}
-```
-
-The `read()` cc function gives us some insight to how variables are retrieved from cc state. 
-It is a simple matter of using `stub.GetState()` to fetch the value from the key/value pair.
-The return value of query is an array of bytes. 
-This array gets passed to the peer's REST API code which will format it into a JSON string for the response. 
-Please note that all chaincode must have a Query() function. 
-I would suggest you simply copy this one if you plan to build your own cc. 
+**It is recommended that you first run through the [Learn Chaincode](https://github.com/IBM-Blockchain/learn-chaincode) demo
+to understand what chaincode is and how it's written, and set up your environment to run Marbles.**
 
 
-__Write()__
+# Marbles Setup Options:
+So the chaincode is great and all but first we need a blockchain network to run the chaincode on.
 
-```js
-	// ============================================================================================================================
-	// Write - write variable into chaincode state
-	// ============================================================================================================================
-	func (t *SimpleChaincode) Write(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
-		var name, value string
-		var err error
-		fmt.Println("running write()")
-
-		if len(args) != 2 {
-			return nil, errors.New("Incorrect number of arguments. Expecting 2. name of the variable and value to set")
-		}
-
-		name = args[0]                            //rename for funsies
-		value = args[1]
-		err = stub.PutState(name, []byte(value))  //write the variable into the chaincode state
-		if err != nil {
-			return nil, err
-		}
-		return nil, nil
-	}
-```
-
-The `Write()` function is equally simple but unlike query, write is found in our `Invoke()` function. 
-`Write()` uses `stub.PutState(name, value)` to store the key/value pair. 
-Note that the name is a string, and that value is an array of bytes. 
-
-Most of the chaincode we will create will mimic parts of read or parts of write. 
-What I mean by that is that we will use `PutState()` and `GetState()` as the basic building blocks for any cc functions we need to create. 
-Marbles is going to use something that I'm going to call a "monolithic chaincode model". 
-It just means we will have 1 chaincode for the entire app. 
-Individual marbles and anything else we need will live inside this single chaincode’s state space. 
-Of course there are much more complicated architectures you can create with a blockchain network. 
-I wanted to start here with the simplest one I could think of. 
-We will take a look at writing more specific chaincode after we get an environment setup. 
-
-**A slightly more comprehensive chaincode tutorial can be found at [Learn Chaincode](https://github.com/IBM-Blockchain/learn-chaincode)**
-
-# Setup Options:
-So the cc is great and all but first we need a blockchain network. 
 Choose 1 option below:
 
 (1) Deploy the app and network at once on Bluemix.  Simply click this button &nbsp;&nbsp; 
@@ -225,56 +79,47 @@ then continue [here](#use).
 
 `OR`
 
-(2) Deploy the app on my local machine, connecting to a Bluemix IBM Blockchain network - [instructions](#manbluenetwork)
+(2) Deploy the app on my local machine, connecting to an IBM Blockchain network running in Bluemix  - [instructions](#manbluenetwork)
 
 `OR`
 
-(3) Deploy the app wherever and connect to a local/remote Hyperledger Network - [instructions](#confignetwork)
+(3) Deploy the app on my local machine and connect to a local Hyperledger Network - [instructions](#confignetwork)
 
-# <a name="manbluenetwork"></a>Manual Bluemix Network:
-Don't fret, "manual" setup means I will guide you to click on a particular button and fill out a text input field or two. 
-There is a Bluemix tile that will create you your own personal blockchain network. 
-All you have to do is find the tile and give the network a name. 
+# <a name="manbluenetwork"></a>Deploy the Marbles App locally and connect to an IBM Blockchain Network running in Bluemix:
 
-1. First login to [Bluemix](https://console.ng.bluemix.net)
-1. Click the "Catalog" link on the top navigation bar
+1.  Follow these instructions to [Set up your environment for running the demos](https://github.com/ptippett/marbles/blob/break_out_common_sections/demo_prereqs)
 
-![](/doc_images/bluemix_ibc1.png)
+1.  Clone the Marbles app to your local system so you can run it here
+To do this, run ```git clone http://gopkg.in/ibm-blockchain/marbles.v2``` to clone the v2.0 branch to your local system.  
 
-1. Find and click the "Blockchain" tile. Type `blockchain` in the search box to filter the list.
+1.  Follow the instructions to [Set up a new bluemix network or grab credentials from an existing network](https://github.com/ptippett/marbles/blob/break_out_common_sections/create_blockchain_bluemix.md)
 
-![](/doc_images/bluemix_ibc2.png)
+#<a name="runlocal"></a>Run Marbles on Local Machine
+Now we are ready to work on the application! 
 
-1. Choose any space from the "Space:" dropdown (dealers choice)
-1. Leave the "App:" field as "Leave unbound" (unless you already have an application, but you probably don't yet)
-1. Change the "Service name" to "myblockchain" without the quotes
-1. Leave the "Credential name" field as its default value
-1. Leave the "Selected Plan" as its default value
-1. Click the "CREATE" button
+1. Now you need to install the marbles application via npm, which is part of the Node.js package we installed earlier. Open a command prompt/terminal and browse to the root of this project (normally ``` git install location/marbles.v2```).
+1. In the command prompt type:
+	
+		> npm install gulp -g
+		> npm install
+		> gulp
+		
+1. If all goes well you should see this message in the console:
+	
+		--------------------------------- Server Up - localhost:3000 ------------------------------------
+		
+1. The app is already coded to auto deploy the chaincode.  You should see further message about it deploying.
+ **[IMPORTANT]** You will need to wait about 60 seconds for the cc to fully deploy. The SDK will do the waiting for us by stalling our callback.
+ 
+1. Once you see this message you are good to go: 
+		
+		[ibc-js] Deploying Chaincode - Complete
+		---------------------------------------- Websocket Up ------------------------------------------
 
-![](/doc_images/bluemix_ibc3.png)
+1. Continue by [using the marbles app](#use)
 
-1. If all goes well you should be on the manage screen for your new service. Click the "LAUNCH" button to see the dashboard for your network. 
-	- You should see a few peers listed in the first table
-	- From here you can monitor if your peers crash, if the chaincode containers are running, and view logs for all
 
-![](/doc_images/bluemix_ibc4.png)
-
-![](/doc_images/bluemix_ibc5.png)
-
-(Note if you find yourself on the main Bluemix Dashboard and want to get back to this service screen just click the tile name "myblockchain" in the "Services" section)
-
-The network is all setup.  **Now we need to copy the peer data and pass it to our marbles node.js application** (only need this step if we run the app locally).
-
-1. Go back to your Bluemix Dashboard page
-1. Click the "myblockchain" tile in you Bluemix Dashboard
-1. Click the "Service Credentials" link on the left
-1. Copy the value of the whole JSON object to the `mycreds.json` file in the root of this project.
-	1. If for some reason you don't see any credentials click the "New Credential" button and then "Add" (you do not need to add any text in the form).
-
-1. continue by [running the marbles app](#runlocal)
-
-#<a name="confignetwork"></a>Configure the SDK for your Blockchain Network
+#<a name="confignetwork"></a>Deploy the app on my local machine and connect to a local hyperledger network.
 The app is setup to either grab network configuration data from Bluemix via VCAP Service's environmental variable OR to load the hard coded list in `mycreds.json`. 
 We have added two mycreds files. 
 The first is a sample of a Bluemix IBM Blockchain network called `mycreds_bluemix.json`. 
@@ -335,37 +180,11 @@ If you are not using TLS you should also change the `options.tls` field to `fals
 All networks created with the Bluemix service will have Membership Services and support TLS exclusively. 
 Once you have edited `mycreds.json` you are ready to run Marbles. 
 
-#<a name="runlocal"></a>Run Marbles on Local Machine
-Now we are ready to work on the application! 
 
-1. To run the app locally we need to get these files onto your machine
-	- **Important Step:** If you have Git installed then browse a command prompt/terminal to a desired working directory and type `git clone http://gopkg.in/ibm-blockchain/marbles.v2` **<- that url is for Branch v2.0 which works with Hyperledger Fabric v0.6.1+**
-		- Follow any login prompts with your GitHub account
-1. Next we need to install our dependencies. Open a command prompt/terminal and browse to the root of this project.
-1. In the command prompt type:
-	
-		> npm install gulp -g
-		> npm install
 		
 1. [Configure](#confignetwork) the SDK to use your preferred blockchain network. Jump back here when finished.
 
-1. Get back to your command prompt and browse to the root of this project. Run Marbles with the command:
-	
-		> gulp
 
-1. If all goes well you should see this message in the console:
-	
-		--------------------------------- Server Up - localhost:3000 ------------------------------------
-		
-1. The app is already coded to auto deploy the chaincode.  You should see further message about it deploying.
- **[IMPORTANT]** You will need to wait about 60 seconds for the cc to fully deploy. The SDK will do the waiting for us by stalling our callback.
- 
-1. Once you see this message you are good to go: 
-		
-		[ibc-js] Deploying Chaincode - Complete
-		---------------------------------------- Websocket Up ------------------------------------------
-
-1. Continue by [using the marbles app](#use)
 		
 #Run Marbles on Bluemix (command line)
 1. This app is already ready to run on Bluemix
