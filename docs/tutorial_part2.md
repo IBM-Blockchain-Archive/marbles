@@ -1,10 +1,11 @@
 #Marbles Part 2 - Demo
 
-##BEFORE YOU RUN
-- This tutorial assumes you have completed [Part 1](./docs/tutorial_part1.md)
-- The underlying network for this application is the [Hyperledger Fabric](https://github.com/hyperledger/fabric/tree/master/docs), a Linux Foundation project.
-- The expectations of this application are to test the JS SDK, guide its development and to aid a developer become familiar with our SDK + chaincode.
-- This is a `very simple` asset transfer demonstration.  Two users can create and exchange marbles with each other.
+##About Marbles
+- This tutorial assumes you have completed [Part 1](./tutorial_part1.md)
+- The underlying network for this application is the [Hyperledger Fabric](https://github.com/hyperledger/fabric/tree/master/docs), a Linux Foundation project.  You may want to review these instructions to understand a bit about the Hyperledger Fabric.
+- **This demo is to aid a developer learn the basics of chaincode and app development with a Hyperledger network.**
+- This is a `very simple` asset transfer demonstration. Two users can create and exchange marbles with each other.
+- There will be multiple parts. Part 1 and 2 are complete [2/15/2016]
 
 ***
 
@@ -17,13 +18,11 @@
 ***
 
 #Prereq:
-1. You have completed [Part 1](./tutorial_part1.md)
-1. Bluemix ID https://console.ng.bluemix.net/ (needed to create your IBM Blockchain network if local network is not setup)
+1. I highly recommend you complete [learn chaincode](https://github.com/IBM-Blockchain/learn-chaincode) first
 1. If you want to run Marbles on a local blockchain network (ie. not using Bluemix) you will need to have completed the Hyperledger Fabric [development setup](https://github.com/hyperledger/fabric/blob/master/docs/Setup/Network-setup.md).
 1. [Node.js](https://nodejs.org/en/download/) 0.12.0+ and npm v2+ (only needed if you want to run the app locally, npm comes with node.js)
-1. Node.js + express experience. Marbles is a very simple blockchain app but it’s still a fairly involved node app.  **You should be comfortable with node** and the express module.
+1. Node.js experience. Marbles is a very simple blockchain app but it’s still a fairly involved node app. **You should be comfortable with node** and the express module.
 1. GoLang Environment (only needed to build your own chaincode, not needed if you just run the marbles app as is)
-1. I highly recommend you complete [learn chaincode](https://github.com/IBM-Blockchain/learn-chaincode) first
 
 
 #Summary

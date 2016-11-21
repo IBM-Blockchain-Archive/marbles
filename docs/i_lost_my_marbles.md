@@ -8,7 +8,7 @@ Let’s start at the very beginning and check things off one by one.
 
 **Game Plan**
 
-1. [Check if the network is showing signs of life](./i_lost_my_marbles.md#step1)
+1. [Check if the network is showing signs of life](#step1)
 1. [Check if the marbles app is registering users for the permissioned network](#step2)
 1. [Check if marbles is deploying chaincode successfully](/#step3)
 1. [Check if marbles backend is reaching chaincode functions](#step4)
