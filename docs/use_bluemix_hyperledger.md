@@ -36,7 +36,7 @@
   (Note if you find yourself on the main Bluemix Dashboard and want to get back to this service screen just click the tile name "myblockchain" in the "Services" section)
 
 ### Finished
-The network is all setup. 
+The network is all setup. If you want more detail on the IBM Blockchain service, available plans, or a detailed overview of the IBM Blockchain Dashboard, continue [here](https://console.ng.bluemix.net/docs/services/blockchain/index.html?pos=2)
 
 1. Next we need to **copy the peer data and pass it to our demo node.js application**.
 1. Click the "Service Credentials" link on the very bottom left of the dashboard.
