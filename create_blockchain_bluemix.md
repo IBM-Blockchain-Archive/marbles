@@ -39,4 +39,4 @@ The network is all setup.  Since we are running the app locally, we need to **co
 
 1. Click the "Service Credentials" link on the very bottom left of the dashboard.
 1. This will open the file in your browser.  Replace the entire contents of the `mycredentials.json` file in the root of the `/git/<project>` directory you cloned earlier with this text.
-1. continue by [run marbles on local machine](#runlocal) below.
+1. Your Blockchain network is ready to go!  Continue to [run marbles on local machine](#runlocal) below to continue setting up the demo.  If you want more detail on the IBM Blockchain service, available plans, or a detailed overview of the IBM Blockchain Dashboard, continue [here](https://console.ng.bluemix.net/docs/services/blockchain/index.html?pos=2)
