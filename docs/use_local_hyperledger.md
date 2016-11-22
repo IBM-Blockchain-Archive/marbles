@@ -85,12 +85,12 @@ Example membersrvc.yaml line:
 
 Maps to:
 
-	```json
-	{
-		"enrollId": "alice",
-		"enrollSecret": "CMS10pEQlB16"
-	}
-	```
+```json
+{
+	"enrollId": "alice",
+	"enrollSecret": "CMS10pEQlB16"
+}
+```
 
 You can omit the field `api_port_tls` if the network does not support TLS. 
 The default docker-compose example does not support TLS. 
