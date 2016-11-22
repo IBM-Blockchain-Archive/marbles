@@ -49,21 +49,23 @@ __sample mycreds.json__
   "credentials": {
     "peers": [
       {
-        "api_host": "12345678-abcde-_vp0.blockchain.ibm.com",//replace with your hostname or ip of a peer
-        "api_port_tls": 443,                                 //replace with your https port (optional, omit if n/a)
-        "api_port": 80,                                      //replace with your http port
-        "id": "12345-_vp0"                                   //unique name to identify peer (anything you want)
+        "api_host": "192.168.99.100",         //replace with your hostname or ip of a peer
+        "api_port_tls": 443,                  //replace with your https port (omit if NOT using tls)
+        "api_port": 7050,                     //replace with your http port (omit if using tls)
+        "id": "12345-_vp0"                    //unique name to identify peer (anything you want)
       }
     ],
     "users": [
       {
-        "enrollId": "user_type1_1234567890",                 //enroll username
-        "enrollSecret": "1234567890"                         //enroll's secret
+        "enrollId": "bob",                    //enroll username
+        "enrollSecret": "NOE63pEQbL25 "       //enroll's secret
       }
     ]
   }
 }
 ```
+
+Remove any comments in your json file
 
 **Do you see the "credentials" field in your json file?** 
 It should be the outter most field like in the sample above. 
@@ -72,12 +74,26 @@ If its not there you need to add it such that `peers` and `users` are inside `cr
 Marbles only talks to 1 peer. 
 Therefore, you should have 1 entry in the `peers` array and 1 entry in the `users` array. 
 You can omit the `users` array entirely if the network does not use Membership Services. 
-If you created your own network, then you should look up the default users for your Hyperledger Fabric version. 
-Fabric version 0.6.1 can be found in the [membersrvc.yaml](https://github.com/hyperledger/fabric/blob/v0.6/membersrvc/membersrvc.yaml#L121) file. 
+You will need to look up the default users for your Hyperledger Fabric version to populate the `users` array. 
+Fabric version 0.6.1 enroll Ids can be found in the [membersrvc.yaml](https://github.com/hyperledger/fabric/blob/v0.6/membersrvc/membersrvc.yaml#L121) file.
+(pick IDs that have a `1` next to the ID, not a `4`) 
+
+Example membersrvc.yaml line:
+
+	alice: 1 CMS10pEQlB16 bank_a
+
+Maps to:
+
+	```json
+	{
+		"enrollId": "alice",
+		"enrollSecret": "CMS10pEQlB16"
+	}
+	```
 
 You can omit the field `api_port_tls` if the network does not support TLS. 
 If you are not using TLS you should also change the `options.tls` field to `false` on [line 200](../app.js#L221) of app.js.
-All networks created with the Bluemix service will have Membership Services and support TLS exclusively. 
-Once you have edited `mycreds_bluemix.json` you are ready to run Marbles. 
+The default docker-compose example does not support TLS. 
+Once you have edited `mycreds_docker_compose.json` you are ready to run Marbles. 
 
 1. Continue where you left off in [tutorial 1](./tutorial_part1.md#hostmarbles).
