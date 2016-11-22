@@ -74,7 +74,8 @@ If its not there you need to add it such that `peers` and `users` are inside `cr
 Marbles only talks to 1 peer. 
 Therefore, you should have 1 entry in the `peers` array and 1 entry in the `users` array. 
 You can omit the `users` array entirely if the network does not use Membership Services. 
-You will need to look up the default users for your Hyperledger Fabric version to populate the `users` array. 
+The default docker-compose example does use Membership Services. 
+You will need to look up the default enroll ID/users for your Hyperledger Fabric version to populate the `users` array. 
 Fabric version 0.6.1 enroll Ids can be found in the [membersrvc.yaml](https://github.com/hyperledger/fabric/blob/v0.6/membersrvc/membersrvc.yaml#L121) file.
 (pick IDs that have a `1` next to the ID, not a `4`) 
 
@@ -92,7 +93,6 @@ Maps to:
 	```
 
 You can omit the field `api_port_tls` if the network does not support TLS. 
-If you are not using TLS you should also change the `options.tls` field to `false` on [line 200](../app.js#L221) of app.js.
 The default docker-compose example does not support TLS. 
 Once you have edited `mycreds_docker_compose.json` you are ready to run Marbles. 
 
