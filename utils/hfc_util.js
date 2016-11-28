@@ -1,8 +1,11 @@
 // Require https to call REST APIs in a blockchain network peer.
 const https = require('https');
 
-var hfc = require('../../../../../../workspace-blockchain/fabric-sdk-node');
+//var hfc = require('../../../../../../workspace-blockchain/fabric-sdk-node');
+var hfc = require('@blockchain/hfc');
 
+var peerHost = "localhost";
+var peerRestPort = "7054";
 
 // --------------------------------------------------------------------------
 // Helper function to call the Invoke function in a chaincode.
@@ -99,7 +102,7 @@ module.exports.queryCC = function(user, chaincode_id, fcn, args, callback) {
 // Call the peer's REST API to fetch chain statistics.
 // --------------------------------------------------------------------------
 module.exports.getChainStats = function(peer, callback) {
-	var url = 'https://' + peer.api_host + ':' + peer.api_port + '/chain';
+	var url = 'https://' + peerHost + ':' + peerRestPort + '/chain';
     https.get(url, function (res) {
 		if (res.statusCode !== 200) {
 			console.log('Error getting chain stats, error code = %d', res.statusCode);
@@ -118,7 +121,7 @@ module.exports.getChainStats = function(peer, callback) {
 // Call the peer's REST API to fetch statistics for a specific block.
 // --------------------------------------------------------------------------
 module.exports.getBlockStats = function(peer, id, callback) {
-	var url = 'https://' + peer.api_host + ':' + peer.api_port + '/chain/blocks/' + id;
+	var url = 'https://' + peerHost + ':' + peerRestPort + '/chain/blocks/' + id;
     https.get(url, function (res) {
 		if (res.statusCode !== 200) {
 			console.log('Error getting block stats, error code = %d', res.statusCode);

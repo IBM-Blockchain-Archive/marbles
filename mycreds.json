@@ -64,7 +64,7 @@
       "newUsersObj": [
         {
           "enrollId": "admin",
-          "enrollSecret": "82e7e8bb7e",
+          "enrollSecret": "Xurw3yU9zI0l",
           "group": "group1",
           "affiliation": "0001",
           "username": "admin",
@@ -308,7 +308,7 @@
   "users": [
     {
       "username": "admin",
-      "secret": "82e7e8bb7e",
+      "secret": "Xurw3yU9zI0l",
       "enrollId": "admin",
       "enrollSecret": "82e7e8bb7e"
     },

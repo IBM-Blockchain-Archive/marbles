@@ -27,8 +27,7 @@ var setup = require('./setup');
 var fs = require('fs');
 var cors = require('cors');
 
-var hfc = require('../../../../../workspace-blockchain/fabric-sdk-node');
-//var hfc = require('hfc');
+var hfc = require('@blockchain/hfc');
 var fs = require('fs');
 const https = require('https');
 var hfc_util = require('./utils/hfc_util');
@@ -212,7 +211,7 @@ process.env['GRPC_SSL_CIPHER_SUITES'] = 'ECDHE-RSA-AES128-GCM-SHA256:' +
 let ccPath = process.env["GOPATH"]+"/src/github.com/marbles-chaincode/hyperledger/part1";
 console.log('ccPath: ' + ccPath);
 
-var chaincode_id = 'mycc-marbles-53';
+var chaincode_id = 'mycc-marbles-61';
 var peer = hfc.getPeer('grpc://localhost:7051');
 
 var network_id = Object.keys(manual.credentials.ca);
@@ -232,6 +231,9 @@ enrollAndRegisterUsers()
 .then(
 	function(user) {
 		console.log("\nEnrolled and registered successfully");
+		chain.setRegistrar(user);
+		part1.setup(user, chaincode_id, peer);
+		part2.setup(user, chaincode_id, peer);
 		console.log("\nDeploying chaincode ...")
 		return deployChaincode();
 	},
@@ -263,7 +265,8 @@ function enrollAndRegisterUsers() {
 		// listed in fabric/membersrvc/membersrvc.yaml with it's one time password.
 		var user = users[0];
 		console.log('Attempt to enroll: username: ' + user.username + ', secret: ' + user.secret);
-	    chain.enroll(user.username, user.secret)
+	    resolve(chain.enroll(user.username, user.secret));
+		/*
 		.then(
 			function(admin) {
 				console.log("\nEnrolled " + user.username + " successfully");
@@ -288,6 +291,7 @@ function enrollAndRegisterUsers() {
 				reject(new Error("\nERROR: failed register and/or enroll : %s", err));
 			}
 		);
+		*/
 	});
 }
 
