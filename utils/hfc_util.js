@@ -1,84 +1,98 @@
 // Require https to call REST APIs in a blockchain network peer.
 const https = require('https');
 
+var hfc = require('../../../../../../workspace-blockchain/fabric-sdk-node');
+
+
 // --------------------------------------------------------------------------
 // Helper function to call the Invoke function in a chaincode.
 // --------------------------------------------------------------------------
-module.exports.invokeCC = function(user, chaincodeID, fcn, args, callback) {
-    // Construct the invoke request
-    var invokeRequest = {
-        // Name (hash) required for invoke
-        chaincodeID: chaincodeID,
-        // Function to trigger
-        fcn: fcn,
-        // Parameters for the invoke function
-        args: args
-    };
-
-    // Trigger the invoke transaction
-    var invokeTx = user.invoke(invokeRequest);
-
-    // Print the invoke results
-    invokeTx.on('submitted', function(results) {
-        // Invoke transaction submitted successfully
-        console.log('\nSuccessfully submitted chaincode invoke transaction:'
-			+ '\nrequest=' + JSON.stringify(invokeRequest)
-			+ '\nresponse=' + JSON.stringify(results));
-    });
-    invokeTx.on('complete', function(results) {
-        // Invoke transaction completed successfully
-        console.log('\nSuccessfully completed chaincode invoke transaction:'
-			+ '\nrequest=' + JSON.stringify(invokeRequest)
-			+ '\nresponse=' + results.result.toString());
-		if (callback) callback(null, results.result.toString());
-    });
-    invokeTx.on('error', function(err) {
-        // Invoke transaction submission failed
-        console.log('\nFailed to submit chaincode invoke transaction:'
-			+ '\nrequest=' + JSON.stringify(invokeRequest)
-			+ '\nerror=', err);
-		if (callback) callback(err, null);
-    });
+module.exports.invokeCC = function(user, chaincode_id, fcn, args, callback) {
+	// send proposal to endorser
+	var request = {
+		targets: [hfc.getPeer('grpc://localhost:7051')],
+		chaincodeId : chaincode_id,
+		fcn: fcn,
+		args: args
+	};
+	console.log("Calling invoke on the cc");
+	user.sendTransactionProposal(request)
+	.then(
+		function(results) {
+			console.log("Got response from invoke");
+			var proposalResponses = results[0];
+			var proposal = results[1];
+			if (proposalResponses[0].response.status === 200) {
+				console.log('Successfully obtained transaction endorsement.' + JSON.stringify(proposalResponses));
+				return user.sendTransaction(proposalResponses[0], proposal);
+			} else {
+				var error = 'Failed to obtain transaction endorsement. Error code: ' + status;
+				console.log(error);
+				if (callback) {
+					callback(error);
+				}
+			}
+		},
+		function(err) {
+			console.log('Failed to send transaction proposal due to error: ' + err.stack ? err.stack : err);
+			if (callback) {
+				callback(err);
+			}
+		}
+	).then(
+		function(results) {
+			console.log('Successfully ordered endorsement transaction.');
+			console.log("May need to sleep here");
+			console.log(results);
+			if (callback) {
+				callback(null, results);
+			}
+		}
+	).catch(
+		function(err) {
+			var error = "Unexpected error during invoke: " + err.stack ? err.stack : err;
+			console.log(error);
+			if (callback) {
+				callback(error);
+			}
+		}
+	);
 }
 
 // --------------------------------------------------------------------------
 // Helper function to call the Query function in a chaincode.
 // --------------------------------------------------------------------------
-module.exports.queryCC = function(user, chaincodeID, fcn, args, callback) {
-    // Construct the invoke request
-    var queryRequest = {
-        // Name (hash) required for invoke
-        chaincodeID: chaincodeID,
-        // Function to trigger
-        fcn: fcn,
-        // Parameters for the invoke function
-        args: args
-    };
-
-    // Trigger the query transaction
-    var queryTx = user.query(queryRequest);
-
-    // Print the invoke results
-    queryTx.on('submitted', function(results) {
-        // Invoke transaction submitted successfully
-        console.log('\nSuccessfully submitted chaincode query transaction:'
-			+ '\nrequest=' + JSON.stringify(queryRequest)
-			+ '\nresponse=' + JSON.stringify(results));
-    });
-    queryTx.on('complete', function(results) {
-        // Invoke transaction completed successfully
-        console.log('\nSuccessfully completed chaincode query transaction:'
-			+ '\nrequest=' + JSON.stringify(queryRequest)
-			+ '\nresponse=' + results.result.toString());
-		if (callback) callback(null, results.result.toString());
-    });
-    queryTx.on('error', function(err) {
-        // Invoke transaction submission failed
-        console.log('\nFailed to submit chaincode query transaction:'
-			+ '\nrequest=' + JSON.stringify(queryRequest)
-			+ '\nerror=', err);
-		if (callback) callback(err, null);
-    });
+module.exports.queryCC = function(user, chaincode_id, fcn, args, callback) {
+	// send proposal to endorser
+	var request = {
+		targets: [hfc.getPeer('grpc://localhost:7051')],
+		chaincodeId : chaincode_id,
+		fcn: fcn,
+		args: args
+	};
+	console.log("Calling queryByChaincode");
+	user.queryByChaincode(request)
+	.then(
+		function(results) {
+			if (callback) {
+				callback(null, results);
+			}
+		},
+		function(err) {
+			console.log('Failed to query due to error: ' + err.stack ? err.stack : err);
+			if (callback) {
+				callback(err);
+			}
+		}
+	).catch(
+		function(err) {
+			var error = "Unexpected error during query: " + err.stack ? err.stack : err;
+			console.log(error);
+			if (callback) {
+				callback(error);
+			}
+		}
+	);
 }
 
 // --------------------------------------------------------------------------

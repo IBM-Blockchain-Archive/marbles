@@ -27,7 +27,8 @@ var setup = require('./setup');
 var fs = require('fs');
 var cors = require('cors');
 
-var hfc = require('hfc');
+var hfc = require('../../../../../workspace-blockchain/fabric-sdk-node');
+//var hfc = require('hfc');
 var fs = require('fs');
 const https = require('https');
 var hfc_util = require('./utils/hfc_util');
@@ -211,263 +212,249 @@ process.env['GRPC_SSL_CIPHER_SUITES'] = 'ECDHE-RSA-AES128-GCM-SHA256:' +
 let ccPath = process.env["GOPATH"]+"/src/github.com/marbles-chaincode/hyperledger/part1";
 console.log('ccPath: ' + ccPath);
 
+var chaincode_id = 'mycc-marbles-53';
+var peer = hfc.getPeer('grpc://localhost:7051');
+
 var network_id = Object.keys(manual.credentials.ca);
 var ca_url = "grpcs://"+ca.url;
 console.log("Member services address: "+ca_url);
 var uuid = network_id[0].substring(0,8);
-chain.setKeyValStore( hfc.newFileKeyValStore(__dirname + '/keyValStore-' + uuid) );
+//chain.setKeyValStore( hfc.newFileKeyValStore(__dirname + '/keyValStore-' + uuid) );
+chain.setKeyValueStore(
+	hfc.newKeyValueStore({
+		path: __dirname + '/keyValStore-' + uuid
+	})
+);
 
-var certFile = 'certificate.pem';
-var certUrl = manual.credentials.cert;
-fs.access(certFile, function (err) {
-    if (!err) {
-        console.log("\nDeleting existing certificate ", certFile);
-        fs.unlinkSync(certFile);
-    }
-    downloadCertificate();
-});
+var certFile = 'keyValStore/tlsca.cert';
 
-function downloadCertificate() {
-    var file = fs.createWriteStream(certFile);
-    var data = '';
-    https.get(certUrl, function (res) {
-        console.log('\nDownloading %s from %s', certFile, certUrl);
-        if (res.statusCode !== 200) {
-            console.log('\nDownload certificate failed, error code = %d', certFile, res.statusCode);
-            process.exit();
-        }
-        res.on('data', function(d) {
-            data += d;
-        });
-        // event received when certificate download is completed
-        res.on('end', function() {
-		    if (process.platform != "win32") {
-				data += '\n';
-		    }
-	        fs.writeFileSync(certFile, data);
-		    copyCertificate();
-        });
-    }).on('error', function (e) {
-        console.error(e);
-        process.exit();
-    });
-}
-
-function copyCertificate() {
-    fs.writeFileSync(ccPath + '/certificate.pem', fs.readFileSync(__dirname+'/certificate.pem'));
-
-    setTimeout(function() {
-        enrollAndRegisterUsers();
-    }, 1000);
-}
+enrollAndRegisterUsers()
+.then(
+	function(user) {
+		console.log("\nEnrolled and registered successfully");
+		console.log("\nDeploying chaincode ...")
+		return deployChaincode();
+	},
+	function(err) {
+		console.log("\nFailure: %s\n", err);
+	}
+).then(
+	function(user) {
+		console.log("\nChaincode deployed successfully");
+		console.log("\nSetting up web server ...")
+		return setupWebServer();
+	},
+	function(err) {
+		console.log("\nFailure deploying chaincode, %s\n", err);
+	}
+).catch(
+	function(err) {
+		console.log("\nERROR: %s", err);
+	}
+);
 
 function enrollAndRegisterUsers() {
     var cert = fs.readFileSync(certFile);
-	chain.setMemberServicesUrl(ca_url, {
-        pem: cert
-    });
+	chain.setMemberServicesUrl('grpc://localhost:7054');
+	chain.setOrderer('grpc://localhost:5151');
 
-    // Adding all the peers to blockchain
-    // this adds high availability for the client
-    for (var i = 0; i < peers.length; i++) {
-		chain.addPeer("grpcs://" + peers[i].discovery_host + ":" + peers[i].discovery_port, {
-            pem: cert
-        });
-    }
+	return new Promise(function(resolve, reject) {
+		// Enroll a 'admin' who is already registered because it is
+		// listed in fabric/membersrvc/membersrvc.yaml with it's one time password.
+		var user = users[0];
+		console.log('Attempt to enroll: username: ' + user.username + ', secret: ' + user.secret);
+	    chain.enroll(user.username, user.secret)
+		.then(
+			function(admin) {
+				console.log("\nEnrolled " + user.username + " successfully");
 
-    console.log("\n\n------------- peers and caserver information: -------------");
-    console.log(chain.getPeers());
-    console.log(chain.getMemberServices());
-    console.log('-----------------------------------------------------------\n\n');
-    var testChaincodeID;
+				// Set this user as the chain's registrar which is authorized to register other users.
+				chain.setRegistrar(admin);
+				part1.setup(admin, chaincode_id, peer);
+				part2.setup(admin, chaincode_id, peer);
 
-    // Enroll a 'admin' who is already registered because it is
-    // listed in fabric/membersrvc/membersrvc.yaml with it's one time password.
-	var user = users[0];
-	console.log('Attempt to enroll: username: ' + user.username + ', secret: ' + user.secret);
-    chain.enroll(user.username, user.secret, function(err, admin) {
-        if (err) throw Error("\nERROR: failed to enroll admin : %s", err);
-
-        console.log("\nEnrolled " + user.username + " sucecssfully");
-
-        // Set this user as the chain's registrar which is authorized to register other users.
-        chain.setRegistrar(admin);
-
-        var enrollName = "JohnDoe"; //creating a new user
-        var registrationRequest = {
-            enrollmentID: enrollName,
-            affiliation: "group1"
-        };
-        chain.registerAndEnroll(registrationRequest, function(err, user) {
-            if (err) throw Error(" Failed to register and enroll " + enrollName + ": " + err);
-
-            console.log("\nEnrolled and registered " + enrollName + " successfully");
-
-            //setting timers for fabric waits
-            chain.setDeployWaitTime(60);
-            chain.setInvokeWaitTime(20);
-
-            console.log("\nDeploying chaincode ...")
-            deployChaincode(user);
-        });
-    });
+				var enrollName = "JohnDoe"; //creating a new user
+				var registrationRequest = {
+					enrollmentID: enrollName,
+					affiliation: "group1"
+				};
+				resolve(chain.registerAndEnroll(registrationRequest));
+			},
+			function(err) {
+				reject(new Error("\nERROR: failed to enroll admin : %s", err));
+			}
+		).catch(
+			function(err) {
+				reject(new Error("\nERROR: failed register and/or enroll : %s", err));
+			}
+		);
+	});
 }
 
-var testChaincodeID;
 
-function deployChaincode(user) {
-    // Construct the deploy request
-    var deployRequest = {
-        // Function to trigger
-        fcn: "init",
-        // Arguments to the initializing function
-        args: ["99"],
-        // The location where the startup and HSBN store the certificates
-		certificatePath: "/certs/peer/cert.pem",
-		// The location of the chaincode on the local file system after $GOPATH/src/
-		chaincodePath: "github.com/marbles-chaincode/hyperledger/part1",
-    };
+function deployChaincode() {
+	var admin = chain.getRegistrar();
 
-    // Trigger the deploy transaction
-    var deployTx = user.deploy(deployRequest);
+	return new Promise(function(resolve, reject) {
+		// send proposal to endorser
+		var request = {
+			targets: [hfc.getPeer('grpc://localhost:7051')],
+			chaincodePath: "github.com/clanzen/marbles-chaincode/hyperledger/part1",
+			chaincodeId: chaincode_id,
+			fcn: 'init',
+			args: ['99']
+		};
 
-    // Print the deploy results
-    deployTx.on('complete', function(results) {
-        // Deploy request completed successfully
-        testChaincodeID = results.chaincodeID;
-        console.log("\nChaincode ID : " + testChaincodeID);
-        console.log("Successfully deployed chaincode: "
-			+ "\nrequest=" + JSON.stringify(deployRequest)
-			+ "\nresponse=" + JSON.stringify(results));
+		admin.sendDeploymentProposal(request)
+		.then(
+			function(results) {
+				var proposalResponses = results[0];
+				console.log('proposalResponses:'+JSON.stringify(proposalResponses));
+				var proposal = results[1];
+				if (proposalResponses && proposalResponses[0].response && proposalResponses[0].response.status === 200) {
+					return admin.sendTransaction(proposalResponses, proposal);
+				} else {
+					reject(new Error('Failed to send Proposal or receive valid response. Response null or status is not 200. exiting...'));
+				}
+			},
+			function(err) {
+				reject(new Error('Failed to send deployment proposal due to error: ' + err.stack ? err.stack : err));
+			}
+		).then(
+			function(response) {
+				if (response.Status === 'SUCCESS') {
+					console.log('Successfully ordered deployment endorsement.');
+					console.log(' need to wait now for the committer to catch up');
+					resolve(sleep(20000));
+				} else {
+					reject(new Error('Failed to order the deployment endorsement. Error code: ' + response.status));
+				}
+			},
+			function(err) {
+				reject(new Error('Failed to send deployment e due to error: ' + err.stack ? err.stack : err));
+			}
+		).catch(
+			function(err) {
+				reject(new Error('Failed to end to end test with error:' + err.stack ? err.stack : err));
+			}
+		);
+	});
+}
 
-		part1.setup(user, testChaincodeID, peers[0]);
-		part2.setup(user, testChaincodeID, peers[0]);
-
-		cb_deployed(null, peers[0], user);
-    });
-
-    deployTx.on('error', function(err) {
-        // Deploy request failed
-        console.log('Failed to deploy chaincode: request=' + JSON.stringify(deployRequest) + ', error=' + JSON.stringify(err));
-    });
+function sleep(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 // ============================================================================================================================
 // 												WebSocket Communication Madness
 // ============================================================================================================================
-function cb_deployed(e, peer, user){
-	if(e != null){
-		//look at tutorial_part1.md in the trouble shooting section for help
-		console.log('! looks like a deploy error, holding off on the starting the socket\n', e);
-		if(!process.error) process.error = {type: 'deploy', msg: e.details};
-	}
-	else{
-		console.log('------------------------------------------ Websocket Up ------------------------------------------');
+function setupWebServer(){
+	var admin = chain.getRegistrar();
+	console.log('------------------------------------------ Websocket Up ------------------------------------------');
 
-		wss = new ws.Server({server: server});												//start the websocket now
-		wss.on('connection', function connection(ws) {
-			ws.on('message', function incoming(message) {
-				console.log('received ws msg:', message);
-				try{
-					var data = JSON.parse(message);
-					part1.process_msg(ws, data);											//pass the websocket msg to part 1 processing
-					part2.process_msg(ws, data);											//pass the websocket msg to part 2 processing
-				}
-				catch(e){
-					console.log('ws message error', e);
-					console.log(e.stack);
-				}
-			});
-
-			ws.on('error', function(e){console.log('ws error', e);});
-			ws.on('close', function(){console.log('ws closed');});
-		});
-
-		wss.broadcast = function broadcast(data) {											//send to all connections
-			wss.clients.forEach(function each(client) {
-				try{
-					client.send(JSON.stringify(data));
-				}
-				catch(e){
-					console.log('error broadcast ws', e);
-				}
-			});
-		};
-
-		// ========================================================
-		// Monitor the height of the blockchain
-		// ========================================================
-		hfc_util.monitor_blockheight(peer, function(chain_stats){										//there is a new block, lets refresh everything that has a state
-			if(chain_stats && chain_stats.height){
-				console.log('\nHey new block, lets refresh and broadcast to all', chain_stats.height-1);
-				hfc_util.getBlockStats(peer, chain_stats.height - 1, cb_blockstats);
-				wss.broadcast({msg: 'reset'});
-				hfc_util.queryCC(user, testChaincodeID, "read", ['_marbleindex'], cb_got_index);
-				hfc_util.queryCC(user, testChaincodeID, "read", ['_opentrades'], cb_got_trades);
+	wss = new ws.Server({server: server});												//start the websocket now
+	wss.on('connection', function connection(ws) {
+		ws.on('message', function incoming(message) {
+			console.log('received ws msg:', message);
+			try{
+				var data = JSON.parse(message);
+				part1.process_msg(ws, data);											//pass the websocket msg to part 1 processing
+				part2.process_msg(ws, data);											//pass the websocket msg to part 2 processing
 			}
-
-			//got the block's stats, lets send the statistics
-			function cb_blockstats(e, stats){
-				if(e != null) console.log('blockstats error:', e);
-				else {
-					chain_stats.height = chain_stats.height - 1;							//its 1 higher than actual height
-					stats.height = chain_stats.height;										//copy
-					wss.broadcast({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
-				}
-			}
-
-			//got the marble index, lets get each marble
-			function cb_got_index(e, index){
-				if(e != null) console.log('marble index error:', e);
-				else{
-					try{
-						var json = JSON.parse(index);
-						for(var i in json){
-							console.log('!', i, json[i]);
-							//iter over each, read their values
-							hfc_util.queryCC(user, testChaincodeID, "read", [json[i]], cb_got_marble);
-						}
-					}
-					catch(e){
-						console.log('marbles index msg error:', e);
-					}
-				}
-			}
-
-			//call back for getting a marble, lets send a message
-			function cb_got_marble(e, marble){
-				if(e != null) console.log('marble error:', e);
-				else {
-					try{
-						wss.broadcast({msg: 'marbles', marble: JSON.parse(marble)});
-					}
-					catch(e){
-						console.log('marble msg error', e);
-					}
-				}
-			}
-
-			//call back for getting open trades, lets send the trades
-			function cb_got_trades(e, trades){
-				if(e != null) console.log('trade error:', e);
-				else {
-					try{
-						console.log('Found open trades: ' + trades);
-						if (trades !== "") {
-							trades = JSON.parse(trades);
-							if(trades && trades.open_trades){
-								wss.broadcast({msg: 'open_trades', open_trades: trades.open_trades});
-							}
-						}
-						else {
-							console.log("No open trades");
-						}
-					}
-					catch(e){
-						console.log('trade msg error', e);
-					}
-				}
+			catch(e){
+				console.log('ws message error', e);
+				console.log(e.stack);
 			}
 		});
-	}
+
+		ws.on('error', function(e){console.log('ws error', e);});
+		ws.on('close', function(){console.log('ws closed');});
+	});
+
+	wss.broadcast = function broadcast(data) {											//send to all connections
+		wss.clients.forEach(function each(client) {
+			try{
+				client.send(JSON.stringify(data));
+			}
+			catch(e){
+				console.log('error broadcast ws', e);
+			}
+		});
+	};
+
+	// ========================================================
+	// Monitor the height of the blockchain
+	// ========================================================
+	hfc_util.monitor_blockheight(hfc.getPeer('grpc://localhost:7051'), function(chain_stats) {										//there is a new block, lets refresh everything that has a state
+		if(chain_stats && chain_stats.height){
+			console.log('\nHey new block, lets refresh and broadcast to all', chain_stats.height-1);
+			hfc_util.getBlockStats(peer, chain_stats.height - 1, cb_blockstats);
+			wss.broadcast({msg: 'reset'});
+			hfc_util.queryCC(admin, chaincode_id, "read", ['_marbleindex'], cb_got_index);
+			hfc_util.queryCC(admin, chaincode_id, "read", ['_opentrades'], cb_got_trades);
+		}
+
+		//got the block's stats, lets send the statistics
+		function cb_blockstats(e, stats){
+			if(e != null) console.log('blockstats error:', e);
+			else {
+				chain_stats.height = chain_stats.height - 1;							//its 1 higher than actual height
+				stats.height = chain_stats.height;										//copy
+				wss.broadcast({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
+			}
+		}
+
+		//got the marble index, lets get each marble
+		function cb_got_index(e, index){
+			if(e != null) console.log('marble index error:', e);
+			else{
+				try{
+					var json = JSON.parse(index);
+					for(var i in json){
+						console.log('!', i, json[i]);
+						//iter over each, read their values
+						hfc_util.queryCC(admin, chaincode_id, "read", [json[i]], cb_got_marble);
+					}
+				}
+				catch(e){
+					console.log('marbles index msg error:', e);
+				}
+			}
+		}
+
+		//call back for getting a marble, lets send a message
+		function cb_got_marble(e, marble){
+			if(e != null) console.log('marble error:', e);
+			else {
+				try{
+					wss.broadcast({msg: 'marbles', marble: JSON.parse(marble)});
+				}
+				catch(e){
+					console.log('marble msg error', e);
+				}
+			}
+		}
+
+		//call back for getting open trades, lets send the trades
+		function cb_got_trades(e, trades){
+			if(e != null) console.log('trade error:', e);
+			else {
+				try{
+					console.log('Found open trades: ' + trades);
+					if (trades !== "") {
+						trades = JSON.parse(trades);
+						if(trades && trades.open_trades){
+							wss.broadcast({msg: 'open_trades', open_trades: trades.open_trades});
+						}
+					}
+					else {
+						console.log("No open trades");
+					}
+				}
+				catch(e){
+					console.log('trade msg error', e);
+				}
+			}
+		}
+	});
 }

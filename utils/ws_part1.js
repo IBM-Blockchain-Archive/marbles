@@ -49,6 +49,7 @@ module.exports.process_msg = function(ws, data){
 		if(e != null) console.log('[ws error] did not get marble index:', e);
 		else{
 			try{
+				console.log("Got index: " + index);
 				var json = JSON.parse(index);
 				var keys = Object.keys(json);
 				var concurrency = 1;
