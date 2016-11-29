@@ -98,6 +98,8 @@ module.exports.process_msg = function(ws, data){
 					if(e == null){
 						stats.height = block_height;
 						sendMsg({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
+					} else {
+						console.log('ws_part1.js - error getting block stats: ' + e);
 					}
 					cb(null);
 				});

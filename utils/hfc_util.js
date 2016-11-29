@@ -1,11 +1,11 @@
 // Require https to call REST APIs in a blockchain network peer.
-const https = require('https');
+const http = require('http');
 
-//var hfc = require('../../../../../../workspace-blockchain/fabric-sdk-node');
 var hfc = require('@blockchain/hfc');
+var fs = require('fs');
 
 var peerHost = "localhost";
-var peerRestPort = "7054";
+var peerRestPort = "7053";
 
 // --------------------------------------------------------------------------
 // Helper function to call the Invoke function in a chaincode.
@@ -102,17 +102,22 @@ module.exports.queryCC = function(user, chaincode_id, fcn, args, callback) {
 // Call the peer's REST API to fetch chain statistics.
 // --------------------------------------------------------------------------
 module.exports.getChainStats = function(peer, callback) {
-	var url = 'https://' + peerHost + ':' + peerRestPort + '/chain';
-    https.get(url, function (res) {
+	var url = 'http://' + peerHost + ':' + peerRestPort + '/chain';
+	http.get(url, function (res) {
 		if (res.statusCode !== 200) {
 			console.log('Error getting chain stats, error code = %d', res.statusCode);
 			callback('Error getting chain stats');
 		}
 		res.setEncoding('utf8');
 		res.on('data', function (data) {
+			console.log('Got chain stats: ' + data);
+			console.log(data);
 			callback(null, JSON.parse(data));
 		});
 	}).on('error', function (e) {
+		console.log('Error getting chain stats, error ' + e);
+		var error = "Unexpected error during getChainStats: " + e.stack ? e.stack : e;
+		console.log(error);
 		callback(e);
 	});
 }
@@ -121,8 +126,8 @@ module.exports.getChainStats = function(peer, callback) {
 // Call the peer's REST API to fetch statistics for a specific block.
 // --------------------------------------------------------------------------
 module.exports.getBlockStats = function(peer, id, callback) {
-	var url = 'https://' + peerHost + ':' + peerRestPort + '/chain/blocks/' + id;
-    https.get(url, function (res) {
+	var url = 'http://' + peerHost + ':' + peerRestPort + '/chain/blocks/' + id;
+	http.get(url, function (res) {
 		if (res.statusCode !== 200) {
 			console.log('Error getting block stats, error code = %d', res.statusCode);
 			callback('Error getting block stats');
@@ -132,6 +137,7 @@ module.exports.getBlockStats = function(peer, id, callback) {
 			callback(null, JSON.parse(data));
 		});
 	}).on('error', function (e) {
+		console.log('Error getting block stats, error ' + e);
 		callback(e);
 	});
 }

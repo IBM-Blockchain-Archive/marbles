@@ -211,7 +211,7 @@ process.env['GRPC_SSL_CIPHER_SUITES'] = 'ECDHE-RSA-AES128-GCM-SHA256:' +
 let ccPath = process.env["GOPATH"]+"/src/github.com/marbles-chaincode/hyperledger/part1";
 console.log('ccPath: ' + ccPath);
 
-var chaincode_id = 'mycc-marbles-61';
+var chaincode_id = 'mycc-marbles-73';
 var peer = hfc.getPeer('grpc://localhost:7051');
 
 var network_id = Object.keys(manual.credentials.ca);
