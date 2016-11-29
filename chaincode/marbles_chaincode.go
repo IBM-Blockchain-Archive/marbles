@@ -38,10 +38,11 @@ var marbleIndexStr = "_marbleindex"				//name for the key/value that will store 
 var openTradesStr = "_opentrades"				//name for the key/value that will store all open trades
 
 type Marble struct{
-	Name string `json:"name"`					//the fieldtags are needed to keep case from bouncing around
-	Color string `json:"color"`
-	Size int `json:"size"`
-	User string `json:"user"`
+	ProcessID string `json:"processid"`					//the fieldtags are needed to keep case from bouncing around
+	WorkOrder string `json:"workorder"`
+	DateTime string `json:"datetime"`
+	DateTimeStatus string `json:"datetimestatus"`
+	Quote string `json:"quote"`
 }
 
 type Description struct{
@@ -260,45 +261,29 @@ func (t *SimpleChaincode) init_marble(stub shim.ChaincodeStubInterface, args []s
 	if len(args) != 4 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 4")
 	}
-
-	//input sanitation
-	fmt.Println("- start init marble")
-	if len(args[0]) <= 0 {
-		return nil, errors.New("1st argument must be a non-empty string")
-	}
-	if len(args[1]) <= 0 {
-		return nil, errors.New("2nd argument must be a non-empty string")
-	}
-	if len(args[2]) <= 0 {
-		return nil, errors.New("3rd argument must be a non-empty string")
-	}
-	if len(args[3]) <= 0 {
-		return nil, errors.New("4th argument must be a non-empty string")
-	}
-	name := args[0]
-	color := strings.ToLower(args[1])
-	user := strings.ToLower(args[3])
-	size, err := strconv.Atoi(args[2])
-	if err != nil {
-		return nil, errors.New("3rd argument must be a numeric string")
-	}
+	
+	processid := args[0]
+	workorder := args[1]
+	datetime := args[2]
+	datetimestatus := args[3]
+	quote := "0"
 
 	//check if marble already exists
-	marbleAsBytes, err := stub.GetState(name)
+	marbleAsBytes, err := stub.GetState(processid)
 	if err != nil {
 		return nil, errors.New("Failed to get marble name")
 	}
 	res := Marble{}
 	json.Unmarshal(marbleAsBytes, &res)
-	if res.Name == name{
-		fmt.Println("This marble arleady exists: " + name)
+	if res.ProcessID == processid{
+		fmt.Println("This marble arleady exists: " + processid)
 		fmt.Println(res);
 		return nil, errors.New("This marble arleady exists")				//all stop a marble by this name exists
 	}
 	
 	//build the marble json string manually
-	str := `{"name": "` + name + `", "color": "` + color + `", "size": ` + strconv.Itoa(size) + `, "user": "` + user + `"}`
-	err = stub.PutState(name, []byte(str))									//store marble with id as key
+	str := `{"processid": "` + processid + `", "workorder": "` + workorder + `", "datetime": "` + datetime + `", "datetimestatus": "` + datetimestatus + `", "quote": "` + quote `"}`
+	err = stub.PutState(processid, []byte(str))									//store marble with id as key
 	if err != nil {
 		return nil, err
 	}
@@ -341,7 +326,7 @@ func (t *SimpleChaincode) set_user(stub shim.ChaincodeStubInterface, args []stri
 	}
 	res := Marble{}
 	json.Unmarshal(marbleAsBytes, &res)										//un stringify it aka JSON.parse()
-	res.User = args[1]														//change the user
+	res.Quote = args[1]														//change the user
 	
 	jsonAsBytes, _ := json.Marshal(res)
 	err = stub.PutState(args[0], jsonAsBytes)								//rewrite the marble with id as key
