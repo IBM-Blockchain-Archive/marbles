@@ -27,7 +27,8 @@ var setup = require('./setup');
 var fs = require('fs');
 var cors = require('cors');
 
-var hfc = require('@blockchain/hfc');
+var hfc = require('./utils/fabric-sdk-node/index.js');
+//var hfc = require('@blockchain/hfc');
 var fs = require('fs');
 const https = require('https');
 var hfc_util = require('./utils/hfc_util');
@@ -207,15 +208,14 @@ process.env['GRPC_SSL_CIPHER_SUITES'] = 'ECDHE-RSA-AES128-GCM-SHA256:' +
     'ECDHE-ECDSA-AES128-SHA256:' +
     'ECDHE-ECDSA-AES256-SHA384:' +
     'ECDHE-ECDSA-AES256-GCM-SHA384';
-
-let ccPath = process.env["GOPATH"]+"/src/github.com/marbles-chaincode/hyperledger/part1";
+let ccPath = process.env["GOPATH"]+"/src/local/marbles-hfc/marbles-v1/chaincode";
 console.log('ccPath: ' + ccPath);
 
 var chaincode_id = 'mycc-marbles-73';
 var peer = hfc.getPeer('grpc://localhost:7051');
 
 var network_id = Object.keys(manual.credentials.ca);
-var ca_url = "grpcs://"+ca.url;
+var ca_url = "grpcs://"+ca.discovery_host;
 console.log("Member services address: "+ca_url);
 var uuid = network_id[0].substring(0,8);
 //chain.setKeyValStore( hfc.newFileKeyValStore(__dirname + '/keyValStore-' + uuid) );
@@ -256,9 +256,9 @@ enrollAndRegisterUsers()
 );
 
 function enrollAndRegisterUsers() {
-    var cert = fs.readFileSync(certFile);
-	chain.setMemberServicesUrl('grpc://localhost:7054');
-	chain.setOrderer('grpc://localhost:5151');
+    //var cert = fs.readFileSync(certFile);
+	chain.setMemberServicesUrl('http://192.168.99.100:8888');
+	chain.setOrderer('grpc://192.168.99.100:5151');
 
 	return new Promise(function(resolve, reject) {
 		// Enroll a 'admin' who is already registered because it is
@@ -302,8 +302,9 @@ function deployChaincode() {
 	return new Promise(function(resolve, reject) {
 		// send proposal to endorser
 		var request = {
-			targets: [hfc.getPeer('grpc://localhost:7051')],
-			chaincodePath: "github.com/clanzen/marbles-chaincode/hyperledger/part1",
+			targets: [hfc.getPeer('grpc://192.168.99.100:7051')],
+			//chaincodePath: "github.com/clanzen/marbles-chaincode/hyperledger/part1",
+			chaincodePath: '/local/marbles-hfc/marbles/chaincode',
 			chaincodeId: chaincode_id,
 			fcn: 'init',
 			args: ['99']

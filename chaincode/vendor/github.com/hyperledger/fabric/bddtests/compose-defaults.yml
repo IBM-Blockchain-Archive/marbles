@@ -1,0 +1,4 @@
+- |
+  This file is a simple dummy to satisfy the CI scripts which make modifications
+  to this file. This file now lives in bddtests/bdd-docker. When the CI scripts
+  are modified to remove that logic, this file can be removed.

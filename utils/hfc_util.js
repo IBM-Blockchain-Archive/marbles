@@ -1,7 +1,8 @@
 // Require https to call REST APIs in a blockchain network peer.
 const http = require('http');
 
-var hfc = require('@blockchain/hfc');
+//var hfc = require('@blockchain/hfc');
+var hfc = require('./fabric-sdk-node/index.js');
 var fs = require('fs');
 
 var peerHost = "localhost";
