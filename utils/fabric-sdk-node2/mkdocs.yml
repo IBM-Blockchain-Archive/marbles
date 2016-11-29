@@ -1,0 +1,32 @@
+site_name: Hyperledger Fabric Node SDK
+site_url: http://fabric-sdk-node.readthedocs.io
+theme: readthedocs
+repo_url: https://github.com/hyperledger/fabric-sdk-node.git
+site_description: 'Welcome to the Hyperledger Fabric Node SDK documentation'
+strict: true
+theme_dir: 'docs/custom_theme'
+
+pages:
+- Home: index.md
+- NodeSDK:
+  - App-developer-env-setup: app-developer-env-setup.md
+  - App-Overview: app-overview.md
+  - Node-SDK-guide: node-sdk-guide.md
+  - Node-SDK-indepth: node-sdk-indepth.md
+  - Sample-Standalone-app: sample-standalone-app.md
+  - Sample-web-app: sample-web-app.md
+
+markdown_extensions:
+  - toc:
+     permalink: true
+  - admonition
+  - extra
+  - tables
+  - toc
+  - fenced_code
+  - smarty
+  - mdx_math:
+      enable_dollar_delimiter: True #for use of inline $..$
+  - footnotes
+
+copyright: Copyright &copy; 2016 IBM Corp. <br></br>Contributed to the Hyperledger Project under the <a href="https://github.com/hyperledger/fabric/blob/master/LICENSE" target="_blank">Apache Software License 2.0</a>

@@ -2,7 +2,7 @@
 const http = require('http');
 
 //var hfc = require('@blockchain/hfc');
-var hfc = require('./fabric-sdk-node/index.js');
+var hfc = require('./fabric-sdk-node2/index.js');
 var fs = require('fs');
 
 var peerHost = "localhost";

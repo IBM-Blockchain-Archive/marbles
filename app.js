@@ -27,7 +27,7 @@ var setup = require('./setup');
 var fs = require('fs');
 var cors = require('cors');
 
-var hfc = require('./utils/fabric-sdk-node/index.js');
+var hfc = require('./utils/fabric-sdk-node2/index.js');
 //var hfc = require('@blockchain/hfc');
 var fs = require('fs');
 const https = require('https');

@@ -1,0 +1,12 @@
+{
+	"request-timeout" : 7000,
+	"tcert-batch-size" : 30,
+	"ssl-target-name-override" : "localca",
+	"default-authority" : "localca",
+	"test-1": "local",
+	"test-2": "local",
+	"test-3": "local",
+	"test-4": "local",
+	"test-5": "local",
+	"test-6": "local"
+}
