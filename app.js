@@ -217,146 +217,118 @@ var peer_url = 'grpc://' + peers[0].discovery_host + ':' + peers[0].discovery_po
 console.log('Peer address: ' + peer_url);
 var peer = hfc.getPeer(peer_url);
 
-
 utils.setConfigSetting('crypto-keysize', 256);
 utils.setConfigSetting('crypto-hash-algo', 'SHA2');
-
 
 var network_id = Object.keys(manual.credentials.ca);
 var ca_url = 'grpcs://'+ca.discovery_host;
 console.log('Member services address: '+ca_url);
 var uuid = network_id[0].substring(0,8);
-//chain.setKeyValStore( hfc.newFileKeyValStore(__dirname + '/keyValStore-' + uuid) );
 chain.setKeyValueStore(
 	hfc.newKeyValueStore({
 		path: __dirname + '/keyValStore-' + uuid
 	})
 );
 
-//var certFile = 'keyValStore/tlsca.cert';
+chain.setMemberServicesUrl('http://192.168.99.100:8888');
+chain.setOrderer('grpc://192.168.99.100:5151');
+var webUser;
+var chaincode_id = 'mycc12';
+var user = users[0];
 
-enrollAndRegisterUsers()
-.then(
-	function(user) {
-		console.log('\nEnrolled and registered successfully');
-		chain.setRegistrar(user);
-		part1.setup(user, chaincode_id, peer);
-		part2.setup(user, chaincode_id, peer);
-		console.log('\nDeploying chaincode ...');
-		return deployChaincode();
-	},
-	function(err) {
-		console.log('\nFailure: %s\n', err);
-	}
-).then(
-	function(user) {
-		console.log('\nChaincode deployed successfully');
-		console.log('\nSetting up web server ...');
-		return setupWebServer();
-	},
-	function(err) {
-		console.log('\nFailure deploying chaincode, %s\n', err);
-	}
-).catch(
-	function(err) {
-		console.log('\nERROR: %s', err);
-	}
-);
+return new Promise(function(resolve, reject) {
+	console.log('Attempt to enroll: username: ' + user.username + ', secret: ' + user.secret);
+	chain.enroll('admin', 'adminpw')
+	//chain.enroll(user.username, user.secret)
+	.then(
+		function(admin) {
+			console.log('Successfully enrolled user \'admin\'');
+			webUser = admin;
 
-function enrollAndRegisterUsers() {
-    //var cert = fs.readFileSync(certFile);
-	chain.setMemberServicesUrl('http://192.168.99.100:8888');
-	chain.setOrderer('grpc://192.168.99.100:5151');
-
-	return new Promise(function(resolve, reject) {
-		// Enroll a 'admin' who is already registered because it is
-		// listed in fabric/membersrvc/membersrvc.yaml with it's one time password.
-		var user = users[0];
-		console.log('Attempt to enroll: username: ' + user.username + ', secret: ' + user.secret);
-	    resolve(chain.enroll(user.username, user.secret));
-		/*
-		.then(
-			function(admin) {
-				console.log('\nEnrolled ' + user.username + ' successfully');
-
-				// Set this user as the chain's registrar which is authorized to register other users.
-				chain.setRegistrar(admin);
-				part1.setup(admin, chaincode_id, peer);
-				part2.setup(admin, chaincode_id, peer);
-
-				var enrollName = 'JohnDoe'; //creating a new user
-				var registrationRequest = {
-					enrollmentID: enrollName,
-					affiliation: 'group1'
-				};
-				resolve(chain.registerAndEnroll(registrationRequest));
-			},
-			function(err) {
-				reject(new Error('\nERROR: failed to enroll admin : %s', err));
-			}
-		).catch(
-			function(err) {
-				reject(new Error('\nERROR: failed register and/or enroll : %s', err));
-			}
-		);
-		*/
-	});
-}
-
-
-function deployChaincode() {
-	var admin = chain.getRegistrar();
-
-	return new Promise(function(resolve, reject) {
-		// send proposal to endorser
-		var request = {
-			targets: [hfc.getPeer('grpc://192.168.99.100:7051')],
-			chaincodePath: 'local/marbles-hfc/marbles-v1/chaincode',
-			chaincodeId: chaincode_id,
-			fcn: 'init',
-			args: ['99'],
-			'dockerfile-contents' :
+			// send proposal to endorser
+			var request = {
+				targets: [hfc.getPeer('grpc://192.168.99.100:7051'), hfc.getPeer('grpc://192.168.99.100:7056')],
+				chaincodePath: 'local/marbles-hfc/marbles-v1/chaincode',
+				chaincodeId: chaincode_id,
+				fcn: 'init',
+				args: ['99'],
+				'dockerfile-contents' :
 				'from hyperledger/fabric-ccenv\n' +
 				'COPY . $GOPATH/src/build-chaincode/\n' +
 				'WORKDIR $GOPATH\n\n' +
 				'RUN go install build-chaincode && mv $GOPATH/bin/build-chaincode $GOPATH/bin/%s'
-		};
+			};
 
-		admin.sendDeploymentProposal(request)
-		.then(
-			function(results) {
-				var proposalResponses = results[0];
-				console.log('! proposalResponses:'+JSON.stringify(proposalResponses));
-				var proposal = results[1];
-				if (proposalResponses && proposalResponses[0].response && proposalResponses[0].response.status === 200) {
-					return admin.sendTransaction(proposalResponses, proposal);
-				} else {
-					reject(new Error('Failed to send Proposal or receive valid response. Response null or status is not 200. exiting...'));
-				}
-			},
-			function(err) {
-				reject(new Error('Failed to send deployment proposal due to error: ' + err.stack ? err.stack : err));
+			return admin.sendDeploymentProposal(request);
+		},
+		function(err) {
+			console.log('Failed to enroll user \'admin\'. ' + err);
+		}
+	).then(
+		function(results) {
+			var proposalResponses = results[0];
+			//console.log('proposalResponses:'+JSON.stringify(proposalResponses));
+			var proposal = results[1];
+			if (proposalResponses && proposalResponses[0].response && proposalResponses[0].response.status === 200) {
+				console.log('Successfully sent Proposal and received ProposalResponse: ');
+				console.log('\tStatus -', proposalResponses[0].response.status, 'message -', proposalResponses[0].response.message,
+					 'metadata -', proposalResponses[0].response.payload, 'endorsement signature:', proposalResponses[0].endorsement.signature);
+				return webUser.sendTransaction(proposalResponses, proposal);
+			} else {
+				console.log('Failed to send Proposal or receive valid response. Response null or status is not 200. exiting...');
 			}
-		).then(
+		},
+		function(err) {
+			console.log('Failed to send deployment proposal due to error: ' + err.stack ? err.stack : err);
+		}
+	).then(
 			function(response) {
 				if (response.Status === 'SUCCESS') {
 					console.log('Successfully ordered deployment endorsement.');
 					console.log(' need to wait now for the committer to catch up');
-					resolve(sleep(20000));
+					return sleep(20000);
 				} else {
-					reject(new Error('Failed to order the deployment endorsement. Error code: ' + response.status));
+					console.log('Failed to order the deployment endorsement. Error code: ' + response.status);
 				}
+
 			},
 			function(err) {
-				reject(new Error('Failed to send deployment e due to error: ' + err.stack ? err.stack : err));
+				console.log('Failed to send deployment e due to error: ' + err.stack ? err.stack : err);
 			}
-		).catch(
-			function(err) {
-				reject(new Error('Failed to end to end test with error:' + err.stack ? err.stack : err));
+	).then(
+		function() {
+			// send query
+			var request = {
+				targets: [hfc.getPeer('grpc://192.168.99.100:7051'), hfc.getPeer('grpc://192.168.99.100:7056')],
+				chaincodeId : chaincode_id,
+				fcn: 'invoke',
+				args: ['query','_marbleindex']
+			};
+			return webUser.queryByChaincode(request);
+		},
+		function(err) {
+			console.log('Failed to wait-- error: ' + err.stack ? err.stack : err);
+		}
+	).then(
+		function(response_payloads) {
+			for(let i = 0; i < response_payloads.length; i++) {
+				console.log(response_payloads[i].toString('utf8'),'300','checking query results are correct that user b has 300 now after the move');
 			}
-		);
-	});
-}
+
+			console.log('---------------------------------------------------------------------------');
+			console.log('\nChaincode deployed successfully');
+			console.log('\nSetting up web server ...');
+			return setupWebServer();
+		},
+		function(err) {
+			console.log('Failed to send query due to error: ' + err.stack ? err.stack : err);
+		}
+	).catch(
+		function(err) {
+			console.log('Failed to end to end test with error:' + err.stack ? err.stack : err);
+		}
+	);
+});
 
 function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
