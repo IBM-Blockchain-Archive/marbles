@@ -197,6 +197,7 @@ if(process.env.VCAP_SERVICES){																	//load from vcap, search for serv
 // ==================================
 // Set up the blockchain sdk
 // ==================================
+var utils = require('./utils/fabric-sdk-node2/lib/utils.js');
 var chain = hfc.newChain('mychain');
 
 // Creating an environment variable for ciphersuites
@@ -215,6 +216,11 @@ var chaincode_id = 'mycc-marbles-73';
 var peer_url = 'grpc://' + peers[0].discovery_host + ':' + peers[0].discovery_port;
 console.log('Peer address: ' + peer_url);
 var peer = hfc.getPeer(peer_url);
+
+
+utils.setConfigSetting('crypto-keysize', 256);
+utils.setConfigSetting('crypto-hash-algo', 'SHA2');
+
 
 var network_id = Object.keys(manual.credentials.ca);
 var ca_url = 'grpcs://'+ca.discovery_host;
