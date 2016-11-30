@@ -165,22 +165,13 @@ peer:
     # networkId: test
     networkId: dev
 
-    Dockerfile:  |
-        from hyperledger/fabric-baseimage:latest
-        # Copy GOPATH src and install Peer
-        COPY src $GOPATH/src
-        RUN mkdir -p /var/hyperledger/db
-        WORKDIR $GOPATH/src/github.com/hyperledger/fabric/peer/
-        RUN CGO_CFLAGS=" " CGO_LDFLAGS="-lrocksdb -lstdc++ -lm -lz -lbz2 -lsnappy" go install && cp $GOPATH/src/github.com/hyperledger/fabric/peer/core.yaml $GOPATH/bin
-
-
     # The Address this Peer will listen on
     listenAddress: 0.0.0.0:21212
     # The Address this Peer will bind to for providing services
     address: 0.0.0.0:21212
     # Whether the Peer should programmatically determine the address to bind to.
     # This case is useful for docker containers.
-    addressAutoDetect: false
+    addressAutoDetect: true
 
     # Peer port to accept connections on
     port:    21212
@@ -310,7 +301,7 @@ peer:
         touchMaxNodes: 100
 
     # Path on the file system where peer will store data
-    fileSystemPath: /var/hyperledger/production
+    fileSystemPath: /var/hyperledger/test/tmpdb
 
 
     profile:
@@ -363,17 +354,16 @@ chaincode:
         # This is the basis for the Golang Dockerfile.  Additional commands will
         # be appended depedendent upon the chaincode specification.
         Dockerfile:  |
-            from hyperledger/fabric-baseimage
-            #from utxo:0.1.0
-            COPY src $GOPATH/src
-            WORKDIR $GOPATH
+          FROM hyperledger/fabric-ccenv:$(ARCH)-$(PROJECT_VERSION)
+          COPY src $GOPATH/src
+          WORKDIR $GOPATH
 
     car:
 
         # This is the basis for the CAR Dockerfile.  Additional commands will
         # be appended depedendent upon the chaincode specification.
         Dockerfile:  |
-            FROM hyperledger/fabric-baseimage
+          FROM hyperledger/fabric-ccenv:$(ARCH)-$(PROJECT_VERSION)
 
     # timeout in millisecs for starting up a container and waiting for Register
     # to come through. 1sec should be plenty for chaincode unit tests
@@ -398,6 +388,13 @@ chaincode:
     #between peer and chaincode.
     #A value <= 0 turns keepalive off
     keepalive: 1
+
+    # system chaincodes whitelist. To add system chaincode "myscc" to the
+    # whitelist, add "myscc: enable" to the list
+    system:
+        lccc: enable
+        escc: enable
+        vscc: enable
 ###############################################################################
 #
 #    Ledger section - ledger configuration encompases both the blockchain

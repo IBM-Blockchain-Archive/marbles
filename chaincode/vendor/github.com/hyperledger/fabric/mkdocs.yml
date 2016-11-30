@@ -1,19 +1,19 @@
 site_name: Hyperledger Fabric
 site_url: http://hyperledger-fabric.readthedocs.io
 theme: readthedocs
-repo_url: http://gerrit.hyperledger.org/r/fabric
+repo_url: https://github.com/hyperledger/fabric.git
 site_description: 'Welcome to the Hyperledger fabric documentation'
+strict: true
+theme_dir: 'docs/custom_theme'
 
 pages:
 - Home: index.md
 - Glossary: glossary.md
 - Protocol Spec: protocol-spec.md
 - Usecases: biz/usecases.md
+- System Chaincode: SystemChaincode-noop.md
 
-- Starter Kit:
-  - Starter Kit: starter/fabric-starter-kit.md
-
-- Installation and setup:
+- Installation and Setup:
   - Chaincode or Application Developer Setup: Setup/Chaincode-setup.md
   - Java Chaincode Setup: Setup/JAVAChaincode.md
   - Fabric Network Setup: Setup/Network-setup.md
@@ -22,27 +22,26 @@ pages:
   - TLS Setup: Setup/TLSSetup.md
   - Logging: Setup/logging-control.md
 
-- APIs:
+- API's:
   - Chaincode APIs: API/ChaincodeAPI.md
   - Core API: API/CoreAPI.md
   - CA API: API/MemberServicesAPI.md
-  - System Chaincode: SystemChaincodes/noop.md
 
 - Fabric Developer:
   - v1.0 Preview: abstract_v1.md
   - Contributing: CONTRIBUTING.md
-  - Getting an Account: Gerrit/lf-account.md
-  - Gerrit: Gerrit/gerrit.md
+  - Maintainers: MAINTAINERS.md
   - Fabric Developer Setup: dev-setup/devenv.md
   - Building Fabric: dev-setup/build.md
-  - Best Practices: Gerrit/best-practices.md
-  - Maintainers: MAINTAINERS.md
+  - Getting an Account: Gerrit/lf-account.md
+  - Gerrit: Gerrit/gerrit.md
   - Reviewing: Gerrit/reviewing.md
   - Changes: Gerrit/changes.md
-  - Style guides:
+  - Best Practices: Gerrit/best-practices.md
+  - Go Style Guides:
     - Golang: Style-guides/go-style.md
 
-- FAQ:
+- FAQ's:
   - ChainCodeFAQ: FAQ/chaincode_FAQ.md
   - ConfidentialityFAQ: FAQ/confidentiality_FAQ.md
   - ConsensusFAQ: FAQ/consensus_FAQ.md
@@ -54,15 +53,15 @@ pages:
   - Attributes: tech/attributes.md
   - Best Practices: tech/best-practices.md
 
-- NodeSDK:
-  - App-developer-env-setup: nodeSDK/app-developer-env-setup.md
-  - App-Overview: nodeSDK/app-overview.md
-  - Node-SDK-guide: nodeSDK/node-sdk-guide.md
-  - Node-SDK-indepth: nodeSDK/node-sdk-indepth.md
-  - Sample-Standalone-app: nodeSDK/sample-standalone-app.md
-  - Sample-web-app: nodeSDK/sample-web-app.md
+- Starter Kit:
+  - Starter Kit: starter/fabric-starter-kit.md
+
+- Releases: releases.md
 
 markdown_extensions:
+  - toc:
+     permalink: true
+  - admonition
   - extra
   - tables
   - toc

@@ -35,7 +35,7 @@ type EventSender struct {
 }
 
 // Init function
-func (t *EventSender) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func (t *EventSender) Init(stub shim.ChaincodeStubInterface) ([]byte, error) {
 	err := stub.PutState("noevents", []byte("0"))
 	if err != nil {
 		return nil, err
@@ -45,7 +45,7 @@ func (t *EventSender) Init(stub shim.ChaincodeStubInterface, function string, ar
 }
 
 // Invoke function
-func (t *EventSender) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func (t *EventSender) invoke(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	b, err := stub.GetState("noevents")
 	if err != nil {
 		return nil, errors.New("Failed to get state")
@@ -70,13 +70,24 @@ func (t *EventSender) Invoke(stub shim.ChaincodeStubInterface, function string, 
 }
 
 // Query function
-func (t *EventSender) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func (t *EventSender) query(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	b, err := stub.GetState("noevents")
 	if err != nil {
 		return nil, errors.New("Failed to get state")
 	}
 	jsonResp := "{\"NoEvents\":\"" + string(b) + "\"}"
 	return []byte(jsonResp), nil
+}
+
+func (t *EventSender) Invoke(stub shim.ChaincodeStubInterface) ([]byte, error) {
+	function, args := stub.GetFunctionAndParameters()
+	if function == "invoke" {
+		return t.invoke(stub, args)
+	} else if function == "query" {
+		return t.query(stub, args)
+	}
+
+	return nil, errors.New("Invalid invoke function name. Expecting \"invoke\" \"query\"")
 }
 
 func main() {

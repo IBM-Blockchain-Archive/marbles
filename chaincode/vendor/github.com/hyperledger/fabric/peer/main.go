@@ -30,10 +30,11 @@ import (
 	_ "net/http/pprof"
 
 	"github.com/hyperledger/fabric/core"
-	"github.com/hyperledger/fabric/core/crypto"
+	"github.com/hyperledger/fabric/core/crypto/primitives"
 	"github.com/hyperledger/fabric/flogging"
+	"github.com/hyperledger/fabric/msp"
 	"github.com/hyperledger/fabric/peer/chaincode"
-	"github.com/hyperledger/fabric/peer/network"
+	"github.com/hyperledger/fabric/peer/clilogging"
 	"github.com/hyperledger/fabric/peer/node"
 	"github.com/hyperledger/fabric/peer/version"
 )
@@ -107,14 +108,28 @@ func main() {
 
 	mainCmd.AddCommand(version.Cmd())
 	mainCmd.AddCommand(node.Cmd())
-	mainCmd.AddCommand(network.Cmd())
 	mainCmd.AddCommand(chaincode.Cmd())
+	mainCmd.AddCommand(clilogging.Cmd())
 
 	runtime.GOMAXPROCS(viper.GetInt("peer.gomaxprocs"))
 
 	// Init the crypto layer
-	if err := crypto.Init(); err != nil {
-		panic(fmt.Errorf("Failed to initialize the crypto layer: %s", err))
+	//TODO: integrate new crypto / idp code
+	primitives.SetSecurityLevel("SHA2", 256)
+
+	// Init the MSP
+	// TODO: determine the location of this config file
+	var mspMgrConfigFile string
+	if alternativeCfgPath != "" {
+		mspMgrConfigFile = alternativeCfgPath + "/msp/peer-config.json"
+	} else if _, err := os.Stat("./peer-config.json"); err == nil {
+		mspMgrConfigFile = "./peer-config.json"
+	} else {
+		mspMgrConfigFile = os.Getenv("GOPATH") + "/src/github.com/hyperledger/fabric/msp/peer-config.json"
+	}
+	err = msp.GetManager().Setup(mspMgrConfigFile)
+	if err != nil {
+		panic(fmt.Errorf("Fatal error when reading MSP config file %s: err %s\n", mspMgrConfigFile, err))
 	}
 
 	// On failure Cobra prints the usage message and error string, so we only

@@ -21,7 +21,12 @@ import (
 
 	"golang.org/x/net/context"
 
+	"github.com/hyperledger/fabric/core/util"
+	"github.com/hyperledger/fabric/msp"
 	"github.com/hyperledger/fabric/peer/common"
+	protcommon "github.com/hyperledger/fabric/protos/common"
+	pb "github.com/hyperledger/fabric/protos/peer"
+	"github.com/hyperledger/fabric/protos/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -40,26 +45,82 @@ var chaincodeDeployCmd = &cobra.Command{
 	},
 }
 
+//deploy the command via Endorser
+func deploy(cmd *cobra.Command) (*protcommon.Envelope, error) {
+	spec, err := getChaincodeSpecification(cmd)
+	if err != nil {
+		return nil, err
+	}
+
+	cds, err := getChaincodeBytes(spec)
+	if err != nil {
+		return nil, fmt.Errorf("Error getting chaincode code %s: %s", chainFuncName, err)
+	}
+
+	endorserClient, err := common.GetEndorserClient(cmd)
+	if err != nil {
+		return nil, fmt.Errorf("Error getting endorser client %s: %s", chainFuncName, err)
+	}
+
+	// TODO: how should we get signing ID from the command line?
+	mspID := "DEFAULT"
+	id := "PEER"
+	signingIdentity := &msp.IdentityIdentifier{Mspid: msp.ProviderIdentifier{Value: mspID}, Value: id}
+
+	// TODO: how should we obtain the config for the MSP from the command line? a hardcoded test config?
+	signer, err := msp.GetManager().GetSigningIdentity(signingIdentity)
+	if err != nil {
+		return nil, fmt.Errorf("Error obtaining signing identity for %s: %s\n", signingIdentity, err)
+	}
+
+	creator, err := signer.Serialize()
+	if err != nil {
+		return nil, fmt.Errorf("Error serializing identity for %s: %s\n", signingIdentity, err)
+	}
+
+	uuid := util.GenerateUUID()
+
+	prop, err := utils.CreateProposalFromCDS(uuid, cds, creator)
+	if err != nil {
+		return nil, fmt.Errorf("Error creating proposal  %s: %s\n", chainFuncName, err)
+	}
+
+	var signedProp *pb.SignedProposal
+	signedProp, err = utils.GetSignedProposal(prop, signer)
+	if err != nil {
+		return nil, fmt.Errorf("Error creating signed proposal  %s: %s\n", chainFuncName, err)
+	}
+
+	proposalResponse, err := endorserClient.ProcessProposal(context.Background(), signedProp)
+	if err != nil {
+		return nil, fmt.Errorf("Error endorsing %s: %s\n", chainFuncName, err)
+	}
+
+	if proposalResponse != nil {
+		// assemble a signed transaction (it's an Envelope message)
+		env, err := utils.CreateSignedTx(prop, signer, proposalResponse)
+		if err != nil {
+			return nil, fmt.Errorf("Could not assemble transaction, err %s", err)
+		}
+
+		return env, nil
+	}
+
+	return nil, nil
+}
+
 // chaincodeDeploy deploys the chaincode. On success, the chaincode name
 // (hash) is printed to STDOUT for use by subsequent chaincode-related CLI
 // commands.
 func chaincodeDeploy(cmd *cobra.Command, args []string) error {
-	spec, err := getChaincodeSpecification(cmd)
+	env, err := deploy(cmd)
 	if err != nil {
 		return err
 	}
 
-	devopsClient, err := common.GetDevopsClient(cmd)
-	if err != nil {
-		return fmt.Errorf("Error building %s: %s", chainFuncName, err)
+	if env != nil {
+		err = sendTransaction(env)
 	}
 
-	chaincodeDeploymentSpec, err := devopsClient.Deploy(context.Background(), spec)
-	if err != nil {
-		return fmt.Errorf("Error building %s: %s\n", chainFuncName, err)
-	}
-	logger.Infof("Deploy result: %s", chaincodeDeploymentSpec.ChaincodeSpec)
-	fmt.Printf("Deploy chaincode: %s\n", chaincodeDeploymentSpec.ChaincodeSpec.ChaincodeID.Name)
-
-	return nil
+	return err
 }

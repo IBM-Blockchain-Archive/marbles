@@ -19,7 +19,7 @@ package peer
 import (
 	"fmt"
 
-	pb "github.com/hyperledger/fabric/protos"
+	pb "github.com/hyperledger/fabric/protos/peer"
 )
 
 // DuplicateHandlerError returned if attempt to register same chaincodeID while a stream already exists.
@@ -29,12 +29,4 @@ type DuplicateHandlerError struct {
 
 func (d *DuplicateHandlerError) Error() string {
 	return fmt.Sprintf("Duplicate Handler error: %s", d.To)
-}
-
-func newDuplicateHandlerError(msgHandler MessageHandler) error {
-	to, err := msgHandler.To()
-	if err != nil {
-		return fmt.Errorf("Error creating Duplicate Handler error: %s", err)
-	}
-	return &DuplicateHandlerError{To: to}
 }

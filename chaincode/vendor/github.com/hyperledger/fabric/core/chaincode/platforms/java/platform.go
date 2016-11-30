@@ -1,19 +1,3 @@
-/*
-Copyright DTCC 2016 All Rights Reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-         http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 package java
 
 import (
@@ -22,7 +6,7 @@ import (
 	"net/url"
 	"os"
 
-	pb "github.com/hyperledger/fabric/protos"
+	pb "github.com/hyperledger/fabric/protos/peer"
 	//	"path/filepath"
 )
 
@@ -69,7 +53,11 @@ func (javaPlatform *Platform) ValidateSpec(spec *pb.ChaincodeSpec) error {
 func (javaPlatform *Platform) WritePackage(spec *pb.ChaincodeSpec, tw *tar.Writer) error {
 
 	var err error
-	spec.ChaincodeID.Name, err = generateHashcode(spec, tw)
+
+	//ignore the generated hash. Just use the tw
+	//The hash could be used in a future enhancement
+	//to check, warn of duplicate installs etc.
+	_, err = collectChaincodeFiles(spec, tw)
 	if err != nil {
 		return err
 	}

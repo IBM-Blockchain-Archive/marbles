@@ -45,8 +45,9 @@ type RBACChaincode struct {
 }
 
 // Init method will be called during deployment
-func (t *RBACChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func (t *RBACChaincode) Init(stub shim.ChaincodeStubInterface) ([]byte, error) {
 
+	function, args := stub.GetFunctionAndParameters()
 	// Init the crypto layer
 	if err := crypto.Init(); err != nil {
 		panic(fmt.Errorf("Failed initializing the crypto layer [%s]", err))
@@ -99,22 +100,14 @@ func (t *RBACChaincode) Init(stub shim.ChaincodeStubInterface, function string, 
 }
 
 // Invoke Run callback representing the invocation of a chaincode
-func (t *RBACChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func (t *RBACChaincode) Invoke(stub shim.ChaincodeStubInterface) ([]byte, error) {
+	function, args := stub.GetFunctionAndParameters()
 	// Handle different functions
 	switch function {
 	case "addRole":
 		return t.addRole(stub, args)
 	case "write":
 		return t.write(stub, args)
-	}
-
-	return nil, fmt.Errorf("Received unknown function invocation [%s]", function)
-}
-
-// Query callback representing the query of a chaincode
-func (t *RBACChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
-	// Handle different functions
-	switch function {
 	case "read":
 		return t.read(stub, args)
 	}

@@ -21,11 +21,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/golang/protobuf/proto"
 	"github.com/hyperledger/fabric/core/db"
-	"github.com/hyperledger/fabric/protos"
 	"github.com/spf13/viper"
 	"github.com/tecbot/gorocksdb"
+
+	pbutils "github.com/hyperledger/fabric/protos/utils"
 )
 
 const (
@@ -143,15 +143,19 @@ func scan(openchainDB *db.OpenchainDB, cfName string, cf *gorocksdb.ColumnFamily
 }
 
 func blockDetailPrinter(blockBytes []byte) {
-	block, _ := protos.UnmarshallBlock(blockBytes)
-	txs := block.GetTransactions()
-	fmt.Printf("Number of transactions = [%d]\n", len(txs))
-	for _, tx := range txs {
-		if len(tx.Payload) >= MaxValueSize {
-			cIDBytes := tx.ChaincodeID
-			cID := &protos.ChaincodeID{}
-			proto.Unmarshal(cIDBytes, cID)
-			fmt.Printf("TxDetails: payloadSize=[%d], tx.Type=[%s], cID.Name=[%s], cID.Path=[%s]\n", len(tx.Payload), tx.Type, cID.Name, cID.Path)
-		}
+	block, err := pbutils.UnmarshallBlock(blockBytes)
+	if err != nil {
+		fmt.Printf("Error unmarshaling block %s\n", err)
+		return
 	}
+	txs, err := pbutils.GetTransactions(block)
+	if err != nil {
+		fmt.Printf("Error getting transactions from block %s\n", err)
+		return
+	}
+	fmt.Printf("Number of transactions = [%d]\n", len(txs))
+	/****** TODO pretty print Transaction
+	for _, tx := range txs {
+	}
+	********/
 }

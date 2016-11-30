@@ -190,7 +190,8 @@ func (t *AssetManagementChaincode) getBalance(stub shim.ChaincodeStubInterface, 
 }
 
 // Init initialization, this method will create asset despository in the chaincode state
-func (t *AssetManagementChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func (t *AssetManagementChaincode) Init(stub shim.ChaincodeStubInterface) ([]byte, error) {
+	function, args := stub.GetFunctionAndParameters()
 	myLogger.Debugf("********************************Init****************************************")
 
 	myLogger.Info("[AssetManagementChaincode] Init")
@@ -201,9 +202,10 @@ func (t *AssetManagementChaincode) Init(stub shim.ChaincodeStubInterface, functi
 	return nil, dHandler.createTable(stub)
 }
 
-// Invoke  method is the interceptor of all invocation transactions, its job is to direct
+// Invoke method is the interceptor of all invocation transactions, its job is to direct
 // invocation transactions to intended APIs
-func (t *AssetManagementChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func (t *AssetManagementChaincode) Invoke(stub shim.ChaincodeStubInterface) ([]byte, error) {
+	function, args := stub.GetFunctionAndParameters()
 	myLogger.Debugf("********************************Invoke****************************************")
 
 	//	 Handle different functions
@@ -213,24 +215,13 @@ func (t *AssetManagementChaincode) Invoke(stub shim.ChaincodeStubInterface, func
 	} else if function == "transferOwnership" {
 		// Transfer ownership
 		return t.transferOwnership(stub, args)
-	}
-
-	return nil, errors.New("Received unknown function invocation")
-}
-
-// Query method is the interceptor of all invocation transactions, its job is to direct
-// query transactions to intended APIs, and return the result back to callers
-func (t *AssetManagementChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
-	myLogger.Debugf("********************************Query****************************************")
-
-	// Handle different functions
-	if function == "getOwnerContactInformation" {
+	} else if function == "getOwnerContactInformation" {
 		return t.getOwnerContactInformation(stub, args)
 	} else if function == "getBalance" {
 		return t.getBalance(stub, args)
 	}
 
-	return nil, errors.New("Received unknown function query invocation with function " + function)
+	return nil, errors.New("Received unknown function invocation")
 }
 
 func main() {

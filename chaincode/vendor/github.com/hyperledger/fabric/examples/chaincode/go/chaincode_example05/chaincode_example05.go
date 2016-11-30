@@ -33,11 +33,11 @@ type SimpleChaincode struct {
 
 // Init takes two arguments, a string and int. The string will be a key with
 // the int as a value.
-func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) ([]byte, error) {
 	var sum string // Sum of asset holdings across accounts. Initially 0
 	var sumVal int // Sum of holdings
 	var err error
-
+	_, args := stub.GetFunctionAndParameters()
 	if len(args) != 2 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 2")
 	}
@@ -60,7 +60,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 }
 
 // Invoke queries another chaincode and updates its own state
-func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func (t *SimpleChaincode) invoke(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var sum string             // Sum entity
 	var Aval, Bval, sumVal int // value of sum entity - to be computed
 	var err error
@@ -75,7 +75,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	// Query chaincode_example02
 	f := "query"
 	queryArgs := util.ToChaincodeArgs(f, "a")
-	response, err := stub.QueryChaincode(chaincodeURL, queryArgs)
+	response, err := stub.InvokeChaincode(chaincodeURL, queryArgs)
 	if err != nil {
 		errStr := fmt.Sprintf("Failed to query chaincode. Got error: %s", err.Error())
 		fmt.Printf(errStr)
@@ -89,7 +89,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	}
 
 	queryArgs = util.ToChaincodeArgs(f, "b")
-	response, err = stub.QueryChaincode(chaincodeURL, queryArgs)
+	response, err = stub.InvokeChaincode(chaincodeURL, queryArgs)
 	if err != nil {
 		errStr := fmt.Sprintf("Failed to query chaincode. Got error: %s", err.Error())
 		fmt.Printf(errStr)
@@ -115,16 +115,11 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	return []byte(strconv.Itoa(sumVal)), nil
 }
 
-// Query callback representing the query of a chaincode
-func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
-	if function != "query" {
-		return nil, errors.New("Invalid query function name. Expecting \"query\"")
-	}
+func (t *SimpleChaincode) query(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var sum string             // Sum entity
 	var Aval, Bval, sumVal int // value of sum entity - to be computed
 	var err error
 
-	// Can query another chaincode within query, but cannot put state or invoke another chaincode (in transaction context)
 	if len(args) != 2 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 2")
 	}
@@ -135,7 +130,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 	// Query chaincode_example02
 	f := "query"
 	queryArgs := util.ToChaincodeArgs(f, "a")
-	response, err := stub.QueryChaincode(chaincodeURL, queryArgs)
+	response, err := stub.InvokeChaincode(chaincodeURL, queryArgs)
 	if err != nil {
 		errStr := fmt.Sprintf("Failed to query chaincode. Got error: %s", err.Error())
 		fmt.Printf(errStr)
@@ -149,7 +144,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 	}
 
 	queryArgs = util.ToChaincodeArgs(f, "b")
-	response, err = stub.QueryChaincode(chaincodeURL, queryArgs)
+	response, err = stub.InvokeChaincode(chaincodeURL, queryArgs)
 	if err != nil {
 		errStr := fmt.Sprintf("Failed to query chaincode. Got error: %s", err.Error())
 		fmt.Printf(errStr)
@@ -169,6 +164,17 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 	jsonResp := "{\"Name\":\"" + sum + "\",\"Value\":\"" + strconv.Itoa(sumVal) + "\"}"
 	fmt.Printf("Query Response:%s\n", jsonResp)
 	return []byte(strconv.Itoa(sumVal)), nil
+}
+
+func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) ([]byte, error) {
+	function, args := stub.GetFunctionAndParameters()
+	if function == "invoke" {
+		return t.invoke(stub, args)
+	} else if function == "query" {
+		return t.query(stub, args)
+	}
+
+	return nil, errors.New("Invalid invoke function name. Expecting \"invoke\" \"query\"")
 }
 
 func main() {

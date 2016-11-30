@@ -23,7 +23,7 @@ import (
 	"os"
 	"path/filepath"
 
-	pb "github.com/hyperledger/fabric/protos"
+	pb "github.com/hyperledger/fabric/protos/peer"
 )
 
 // Platform for chaincodes written in Go
@@ -72,7 +72,11 @@ func (goPlatform *Platform) ValidateSpec(spec *pb.ChaincodeSpec) error {
 func (goPlatform *Platform) WritePackage(spec *pb.ChaincodeSpec, tw *tar.Writer) error {
 
 	var err error
-	spec.ChaincodeID.Name, err = generateHashcode(spec, tw)
+
+	//ignore the generated hash. Just use the tw
+	//The hash could be used in a future enhancement
+	//to check, warn of duplicate installs etc.
+	_, err = collectChaincodeFiles(spec, tw)
 	if err != nil {
 		return err
 	}

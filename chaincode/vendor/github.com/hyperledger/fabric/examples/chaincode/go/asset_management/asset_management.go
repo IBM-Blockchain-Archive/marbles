@@ -38,7 +38,8 @@ type AssetManagementChaincode struct {
 
 // Init method will be called during deployment.
 // The deploy transaction metadata is supposed to contain the administrator cert
-func (t *AssetManagementChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func (t *AssetManagementChaincode) Init(stub shim.ChaincodeStubInterface) ([]byte, error) {
+	_, args := stub.GetFunctionAndParameters()
 	myLogger.Debug("Init Chaincode...")
 	if len(args) != 0 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 0")
@@ -242,8 +243,8 @@ func (t *AssetManagementChaincode) isCaller(stub shim.ChaincodeStubInterface, ce
 // "transfer(asset, newOwner)": to transfer the ownership of an asset. Only the owner of the specific
 // asset can call this function.
 // An asset is any string to identify it. An owner is representated by one of his ECert/TCert.
-func (t *AssetManagementChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
-
+func (t *AssetManagementChaincode) Invoke(stub shim.ChaincodeStubInterface) ([]byte, error) {
+	function, args := stub.GetFunctionAndParameters()
 	// Handle different functions
 	if function == "assign" {
 		// Assign ownership
@@ -251,22 +252,18 @@ func (t *AssetManagementChaincode) Invoke(stub shim.ChaincodeStubInterface, func
 	} else if function == "transfer" {
 		// Transfer ownership
 		return t.transfer(stub, args)
+	} else if function == "query" {
+		// Query owner
+		return t.query(stub, args)
 	}
 
 	return nil, errors.New("Received unknown function invocation")
 }
 
-// Query callback representing the query of a chaincode
 // Supported functions are the following:
 // "query(asset)": returns the owner of the asset.
 // Anyone can invoke this function.
-func (t *AssetManagementChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
-	myLogger.Debugf("Query [%s]", function)
-
-	if function != "query" {
-		return nil, errors.New("Invalid query function name. Expecting 'query' but found '" + function + "'")
-	}
-
+func (t *AssetManagementChaincode) query(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var err error
 
 	if len(args) != 1 {
@@ -277,7 +274,7 @@ func (t *AssetManagementChaincode) Query(stub shim.ChaincodeStubInterface, funct
 	// Who is the owner of the asset?
 	asset := args[0]
 
-	myLogger.Debugf("Arg [%s]", string(asset))
+	myLogger.Debugf("Query [%s]", string(asset))
 
 	var columns []shim.Column
 	col1 := shim.Column{Value: &shim.Column_String_{String_: asset}}

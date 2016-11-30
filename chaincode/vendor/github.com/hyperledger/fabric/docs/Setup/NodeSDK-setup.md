@@ -18,11 +18,10 @@ execute the following command:
 npm install -g hfc
 ```
 
-See [Hyperledger fabric Node.js client SDK](../nodeSDK/node-sdk-guide.md) for more information.
+See [Hyperledger fabric Node.js client SDK](http://fabric-sdk-node.readthedocs.io/en/latest/node-sdk-guide) for more information.
 
 
 ## Hyperledger fabric network
 
 First, you'll want to have a running peer node and member services. The
-instructions for setting up a network are
-[here](Network-setup.md). You may also use the [self contained environment](../nodeSDK/node-sdk-self-contained.md) that provides the network.
+instructions for setting up a network are [here](Network-setup.md). You may also use the [Fabric-starter-kit](../starter/fabric-starter-kit.md) that provides the network.

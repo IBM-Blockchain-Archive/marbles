@@ -33,7 +33,8 @@ import (
 	"github.com/hyperledger/fabric/core/chaincode/shim/crypto/attr"
 	"github.com/hyperledger/fabric/core/chaincode/shim/crypto/ecdsa"
 	"github.com/hyperledger/fabric/core/comm"
-	pb "github.com/hyperledger/fabric/protos"
+	"github.com/hyperledger/fabric/core/util"
+	pb "github.com/hyperledger/fabric/protos/peer"
 	"github.com/op/go-logging"
 	"github.com/spf13/viper"
 	"golang.org/x/net/context"
@@ -43,16 +44,13 @@ import (
 // Logger for the shim package.
 var chaincodeLogger = logging.MustGetLogger("shim")
 
-// Handler to shim that handles all control logic.
-var handler *Handler
-
 // ChaincodeStub is an object passed to chaincode for shim side handling of
 // APIs.
 type ChaincodeStub struct {
-	TxID            string
-	securityContext *pb.ChaincodeSecurityContext
-	chaincodeEvent  *pb.ChaincodeEvent
-	args            [][]byte
+	TxID           string
+	chaincodeEvent *pb.ChaincodeEvent
+	args           [][]byte
+	handler        *Handler
 }
 
 // Peer address derived from command line or env var
@@ -68,10 +66,7 @@ func Start(cc Chaincode) error {
 	backendFormatter := logging.NewBackendFormatter(backend, format)
 	logging.SetBackend(backendFormatter).SetLevel(logging.Level(shimLoggingLevel), "shim")
 
-	viper.SetEnvPrefix("CORE")
-	viper.AutomaticEnv()
-	replacer := strings.NewReplacer(".", "_")
-	viper.SetEnvKeyReplacer(replacer)
+	SetChaincodeLoggingLevel()
 
 	flag.StringVar(&peerAddress, "peer.address", "", "peer address")
 
@@ -103,6 +98,36 @@ func Start(cc Chaincode) error {
 	err = chatWithPeer(chaincodename, stream, cc)
 
 	return err
+}
+
+// IsEnabledForLogLevel checks to see if the chaincodeLogger is enabled for a specific logging level
+// used primarily for testing
+func IsEnabledForLogLevel(logLevel string) bool {
+	lvl, _ := logging.LogLevel(logLevel)
+	return chaincodeLogger.IsEnabledFor(lvl)
+}
+
+// SetChaincodeLoggingLevel sets the chaincode logging level to the value
+// of CORE_LOGGING_CHAINCODE set from core.yaml by chaincode_support.go
+func SetChaincodeLoggingLevel() {
+	viper.SetEnvPrefix("CORE")
+	viper.AutomaticEnv()
+	replacer := strings.NewReplacer(".", "_")
+	viper.SetEnvKeyReplacer(replacer)
+
+	chaincodeLogLevelString := viper.GetString("logging.chaincode")
+	if chaincodeLogLevelString == "" {
+		shimLogLevelDefault := logging.Level(shimLoggingLevel)
+		chaincodeLogger.Infof("Chaincode log level not provided; defaulting to: %s", shimLogLevelDefault)
+	} else {
+		chaincodeLogLevel, err := LogLevel(chaincodeLogLevelString)
+		if err == nil {
+			SetLoggingLevel(chaincodeLogLevel)
+		} else {
+			chaincodeLogger.Warningf("Error: %s for chaincode log level: %s", err, chaincodeLogLevelString)
+		}
+	}
+
 }
 
 // StartInProc is an entry point for system chaincodes bootstrap. It is not an
@@ -151,7 +176,7 @@ func newPeerClientConnection() (*grpc.ClientConn, error) {
 func chatWithPeer(chaincodename string, stream PeerChaincodeStream, cc Chaincode) error {
 
 	// Create the shim handler responsible for all control logic
-	handler = newChaincodeHandler(stream, cc)
+	handler := newChaincodeHandler(stream, cc)
 
 	defer stream.CloseSend()
 	// Send the ChaincodeID during register.
@@ -233,17 +258,18 @@ func chatWithPeer(chaincodename string, stream PeerChaincodeStream, cc Chaincode
 // -- init stub ---
 // ChaincodeInvocation functionality
 
-func (stub *ChaincodeStub) init(txid string, secContext *pb.ChaincodeSecurityContext) {
+func (stub *ChaincodeStub) init(handler *Handler, txid string, input *pb.ChaincodeInput) {
 	stub.TxID = txid
-	stub.securityContext = secContext
-	stub.args = [][]byte{}
-	newCI := pb.ChaincodeInput{}
-	err := proto.Unmarshal(secContext.Payload, &newCI)
-	if err == nil {
-		stub.args = newCI.Args
-	} else {
-		panic("Arguments cannot be unmarshalled.")
-	}
+	stub.args = input.Args
+	stub.handler = handler
+}
+
+func InitTestStub(funargs ...string) *ChaincodeStub {
+	stub := ChaincodeStub{}
+	allargs := util.ToChaincodeArgs(funargs...)
+	newCI := &pb.ChaincodeInput{Args: allargs}
+	stub.init(&Handler{}, "TEST-txid", newCI)
+	return &stub
 }
 
 func (stub *ChaincodeStub) GetTxID() string {
@@ -259,31 +285,24 @@ func (stub *ChaincodeStub) GetTxID() string {
 // same transaction context; that is, chaincode calling chaincode doesn't
 // create a new transaction message.
 func (stub *ChaincodeStub) InvokeChaincode(chaincodeName string, args [][]byte) ([]byte, error) {
-	return handler.handleInvokeChaincode(chaincodeName, args, stub.TxID)
-}
-
-// QueryChaincode locally calls the specified chaincode `Query` using the
-// same transaction context; that is, chaincode calling chaincode doesn't
-// create a new transaction message.
-func (stub *ChaincodeStub) QueryChaincode(chaincodeName string, args [][]byte) ([]byte, error) {
-	return handler.handleQueryChaincode(chaincodeName, args, stub.TxID)
+	return stub.handler.handleInvokeChaincode(chaincodeName, args, stub.TxID)
 }
 
 // --------- State functions ----------
 
 // GetState returns the byte array value specified by the `key`.
 func (stub *ChaincodeStub) GetState(key string) ([]byte, error) {
-	return handler.handleGetState(key, stub.TxID)
+	return stub.handler.handleGetState(key, stub.TxID)
 }
 
 // PutState writes the specified `value` and `key` into the ledger.
 func (stub *ChaincodeStub) PutState(key string, value []byte) error {
-	return handler.handlePutState(key, value, stub.TxID)
+	return stub.handler.handlePutState(key, value, stub.TxID)
 }
 
 // DelState removes the specified `key` and its value from the ledger.
 func (stub *ChaincodeStub) DelState(key string) error {
-	return handler.handleDelState(key, stub.TxID)
+	return stub.handler.handleDelState(key, stub.TxID)
 }
 
 //ReadCertAttribute is used to read an specific attribute from the transaction certificate, *attributeName* is passed as input parameter to this function.
@@ -334,11 +353,11 @@ type StateRangeQueryIterator struct {
 // between the startKey and endKey, inclusive. The order in which keys are
 // returned by the iterator is random.
 func (stub *ChaincodeStub) RangeQueryState(startKey, endKey string) (StateRangeQueryIteratorInterface, error) {
-	response, err := handler.handleRangeQueryState(startKey, endKey, stub.TxID)
+	response, err := stub.handler.handleRangeQueryState(startKey, endKey, stub.TxID)
 	if err != nil {
 		return nil, err
 	}
-	return &StateRangeQueryIterator{handler, stub.TxID, response, 0}, nil
+	return &StateRangeQueryIterator{stub.handler, stub.TxID, response, 0}, nil
 }
 
 // HasNext returns true if the range query iterator contains additional keys
@@ -394,6 +413,17 @@ func (stub *ChaincodeStub) GetStringArgs() []string {
 	return strargs
 }
 
+func (stub *ChaincodeStub) GetFunctionAndParameters() (function string, params []string) {
+	allargs := stub.GetStringArgs()
+	function = ""
+	params = []string{}
+	if len(allargs) >= 1 {
+		function = allargs[0]
+		params = allargs[1:]
+	}
+	return
+}
+
 // TABLE FUNCTIONALITY
 // TODO More comments here with documentation
 
@@ -405,8 +435,11 @@ var (
 
 // CreateTable creates a new table given the table name and column definitions
 func (stub *ChaincodeStub) CreateTable(name string, columnDefinitions []*ColumnDefinition) error {
+	return createTableInternal(stub, name, columnDefinitions)
+}
 
-	_, err := stub.getTable(name)
+func createTableInternal(stub ChaincodeStubInterface, name string, columnDefinitions []*ColumnDefinition) error {
+	_, err := getTable(stub, name)
 	if err == nil {
 		return fmt.Errorf("CreateTable operation failed. Table %s already exists.", name)
 	}
@@ -475,11 +508,15 @@ func (stub *ChaincodeStub) CreateTable(name string, columnDefinitions []*ColumnD
 // GetTable returns the table for the specified table name or ErrTableNotFound
 // if the table does not exist.
 func (stub *ChaincodeStub) GetTable(tableName string) (*Table, error) {
-	return stub.getTable(tableName)
+	return getTable(stub, tableName)
 }
 
 // DeleteTable deletes an entire table and all associated rows.
 func (stub *ChaincodeStub) DeleteTable(tableName string) error {
+	return deleteTableInternal(stub, tableName)
+}
+
+func deleteTableInternal(stub ChaincodeStubInterface, tableName string) error {
 	tableNameKey, err := getTableNameKey(tableName)
 	if err != nil {
 		return err
@@ -512,7 +549,7 @@ func (stub *ChaincodeStub) DeleteTable(tableName string) error {
 // false and a TableNotFoundError if the specified table name does not exist.
 // false and an error if there is an unexpected error condition.
 func (stub *ChaincodeStub) InsertRow(tableName string, row Row) (bool, error) {
-	return stub.insertRowInternal(tableName, row, false)
+	return insertRowInternal(stub, tableName, row, false)
 }
 
 // ReplaceRow updates the row in the specified table.
@@ -522,11 +559,15 @@ func (stub *ChaincodeStub) InsertRow(tableName string, row Row) (bool, error) {
 // flase and a TableNotFoundError if the specified table name does not exist.
 // false and an error if there is an unexpected error condition.
 func (stub *ChaincodeStub) ReplaceRow(tableName string, row Row) (bool, error) {
-	return stub.insertRowInternal(tableName, row, true)
+	return insertRowInternal(stub, tableName, row, true)
 }
 
 // GetRow fetches a row from the specified table for the given key.
 func (stub *ChaincodeStub) GetRow(tableName string, key []Column) (Row, error) {
+	return getRowInternal(stub, tableName, key)
+}
+
+func getRowInternal(stub ChaincodeStubInterface, tableName string, key []Column) (Row, error) {
 
 	var row Row
 
@@ -556,13 +597,17 @@ func (stub *ChaincodeStub) GetRow(tableName string, key []Column) (Row, error) {
 // also be called with A only to return all rows that have A and any value
 // for C and D as their key.
 func (stub *ChaincodeStub) GetRows(tableName string, key []Column) (<-chan Row, error) {
+	return getRowsInternal(stub, tableName, key)
+}
+
+func getRowsInternal(stub ChaincodeStubInterface, tableName string, key []Column) (<-chan Row, error) {
 
 	keyString, err := buildKeyString(tableName, key)
 	if err != nil {
 		return nil, err
 	}
 
-	table, err := stub.getTable(tableName)
+	table, err := getTable(stub, tableName)
 	if err != nil {
 		return nil, err
 	}
@@ -615,6 +660,10 @@ func (stub *ChaincodeStub) GetRows(tableName string, key []Column) (<-chan Row, 
 
 // DeleteRow deletes the row for the given key from the specified table.
 func (stub *ChaincodeStub) DeleteRow(tableName string, key []Column) error {
+	return deleteRowInternal(stub, tableName, key)
+}
+
+func deleteRowInternal(stub ChaincodeStubInterface, tableName string, key []Column) error {
 
 	keyString, err := buildKeyString(tableName, key)
 	if err != nil {
@@ -641,33 +690,33 @@ func (stub *ChaincodeStub) VerifySignature(certificate, signature, message []byt
 
 // GetCallerCertificate returns caller certificate
 func (stub *ChaincodeStub) GetCallerCertificate() ([]byte, error) {
-	return stub.securityContext.CallerCert, nil
+	return nil, nil
 }
 
 // GetCallerMetadata returns caller metadata
 func (stub *ChaincodeStub) GetCallerMetadata() ([]byte, error) {
-	return stub.securityContext.Metadata, nil
+	return nil, nil
 }
 
 // GetBinding returns the transaction binding
 func (stub *ChaincodeStub) GetBinding() ([]byte, error) {
-	return stub.securityContext.Binding, nil
+	return nil, nil
 }
 
 // GetPayload returns transaction payload, which is a `ChaincodeSpec` defined
 // in fabric/protos/chaincode.proto
 func (stub *ChaincodeStub) GetPayload() ([]byte, error) {
-	return stub.securityContext.Payload, nil
+	return nil, nil
 }
 
 // GetTxTimestamp returns transaction created timestamp, which is currently
 // taken from the peer receiving the transaction. Note that this timestamp
 // may not be the same with the other peers' time.
 func (stub *ChaincodeStub) GetTxTimestamp() (*timestamp.Timestamp, error) {
-	return stub.securityContext.TxTimestamp, nil
+	return nil, nil
 }
 
-func (stub *ChaincodeStub) getTable(tableName string) (*Table, error) {
+func getTable(stub ChaincodeStubInterface, tableName string) (*Table, error) {
 
 	tableName, err := getTableNameKey(tableName)
 	if err != nil {
@@ -793,7 +842,7 @@ func getKeyAndVerifyRow(table Table, row Row) ([]Column, error) {
 	return keys, nil
 }
 
-func (stub *ChaincodeStub) isRowPresent(tableName string, key []Column) (bool, error) {
+func isRowPresent(stub ChaincodeStubInterface, tableName string, key []Column) (bool, error) {
 	keyString, err := buildKeyString(tableName, key)
 	if err != nil {
 		return false, err
@@ -814,9 +863,9 @@ func (stub *ChaincodeStub) isRowPresent(tableName string, key []Column) (bool, e
 // false and no error if a row already exists for the given key.
 // false and a TableNotFoundError if the specified table name does not exist.
 // false and an error if there is an unexpected error condition.
-func (stub *ChaincodeStub) insertRowInternal(tableName string, row Row, update bool) (bool, error) {
+func insertRowInternal(stub ChaincodeStubInterface, tableName string, row Row, update bool) (bool, error) {
 
-	table, err := stub.getTable(tableName)
+	table, err := getTable(stub, tableName)
 	if err != nil {
 		return false, err
 	}
@@ -826,7 +875,7 @@ func (stub *ChaincodeStub) insertRowInternal(tableName string, row Row, update b
 		return false, err
 	}
 
-	present, err := stub.isRowPresent(tableName, key)
+	present, err := isRowPresent(stub, tableName, key)
 	if err != nil {
 		return false, err
 	}

@@ -34,7 +34,8 @@ import (
 type SimpleChaincode struct {
 }
 
-func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) ([]byte, error) {
+	_, args := stub.GetFunctionAndParameters()
 	var A, B string    // Entities
 	var Aval, Bval int // Asset holdings
 	var err error
@@ -70,13 +71,24 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	return nil, nil
 }
 
-// Transaction makes payment of X units from A to B
-func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
-	if function == "delete" {
+func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) ([]byte, error) {
+	function, args := stub.GetFunctionAndParameters()
+	if function == "invoke" {
+		// Make payment of X units from A to B
+		return t.invoke(stub, args)
+	} else if function == "delete" {
 		// Deletes an entity from its state
 		return t.delete(stub, args)
+	} else if function == "query" {
+		// the old "Query" is now implemtned in invoke
+		return t.query(stub, args)
 	}
 
+	return nil, errors.New("Invalid invoke function name. Expecting \"invoke\" \"delete\" \"query\"")
+}
+
+// Transaction makes payment of X units from A to B
+func (t *SimpleChaincode) invoke(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var A, B string    // Entities
 	var Aval, Bval int // Asset holdings
 	var X int          // Transaction value
@@ -149,11 +161,8 @@ func (t *SimpleChaincode) delete(stub shim.ChaincodeStubInterface, args []string
 	return nil, nil
 }
 
-// Query callback representing the query of a chaincode
-func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
-	if function != "query" {
-		return nil, errors.New("Invalid query function name. Expecting \"query\"")
-	}
+// query callback representing the query of a chaincode
+func (t *SimpleChaincode) query(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var A string // Entities
 	var err error
 

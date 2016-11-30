@@ -30,8 +30,6 @@ import (
 // Invoke operations
 // put - requires two arguments, a key and value
 // remove - requires a key
-
-// Query operations
 // get - requires one argument, a key, and returns a value
 // keys - requires no arguments, returns all keys
 
@@ -40,15 +38,15 @@ type SimpleChaincode struct {
 }
 
 // Init is a no-op
-func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) ([]byte, error) {
 	return nil, nil
 }
 
 // Invoke has two functions
 // put - takes two arguements, a key and value, and stores them in the state
 // remove - takes one argument, a key, and removes if from the state
-func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
-
+func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) ([]byte, error) {
+	function, args := stub.GetFunctionAndParameters()
 	switch function {
 	case "put":
 		if len(args) < 2 {
@@ -76,18 +74,6 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		}
 		return nil, nil
 
-	default:
-		return nil, errors.New("Unsupported operation")
-	}
-}
-
-// Query has two functions
-// get - takes one argument, a key, and returns the value for the key
-// keys - returns all keys stored in this chaincode
-func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
-
-	switch function {
-
 	case "get":
 		if len(args) < 1 {
 			return nil, errors.New("get operation must include one argument, a key")
@@ -100,7 +86,6 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 		return value, nil
 
 	case "keys":
-
 		keysIter, err := stub.RangeQueryState("", "")
 		if err != nil {
 			return nil, fmt.Errorf("keys operation failed. Error accessing state: %s", err)

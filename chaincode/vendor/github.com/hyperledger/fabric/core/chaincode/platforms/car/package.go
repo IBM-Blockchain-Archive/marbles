@@ -27,7 +27,7 @@ import (
 	"time"
 
 	cutil "github.com/hyperledger/fabric/core/container/util"
-	pb "github.com/hyperledger/fabric/protos"
+	pb "github.com/hyperledger/fabric/protos/peer"
 )
 
 func download(path string) (string, error) {
@@ -69,17 +69,13 @@ func (carPlatform *Platform) WritePackage(spec *pb.ChaincodeSpec, tw *tar.Writer
 		return err
 	}
 
-	spec.ChaincodeID.Name, err = generateHashcode(spec, path)
-	if err != nil {
-		return fmt.Errorf("Error generating hashcode: %s", err)
-	}
-
 	var buf []string
 
 	//let the executable's name be chaincode ID's name
 	buf = append(buf, cutil.GetDockerfileFromConfig("chaincode.car.Dockerfile"))
 	buf = append(buf, "COPY package.car /tmp/package.car")
-	buf = append(buf, fmt.Sprintf("RUN chaintool buildcar /tmp/package.car -o $GOPATH/bin/%s && rm /tmp/package.car", spec.ChaincodeID.Name))
+	// invoking directly for maximum JRE compatiblity
+	buf = append(buf, fmt.Sprintf("RUN java -jar /usr/local/bin/chaintool buildcar /tmp/package.car -o $GOPATH/bin/%s && rm /tmp/package.car", spec.ChaincodeID.Name))
 
 	dockerFileContents := strings.Join(buf, "\n")
 	dockerFileSize := int64(len([]byte(dockerFileContents)))

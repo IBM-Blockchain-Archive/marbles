@@ -31,10 +31,12 @@ import (
 	"github.com/hyperledger/fabric/core/chaincode/shim/crypto/attr"
 	"github.com/hyperledger/fabric/core/container"
 	"github.com/hyperledger/fabric/core/crypto"
+	"github.com/hyperledger/fabric/core/db"
 	"github.com/hyperledger/fabric/core/ledger"
+	"github.com/hyperledger/fabric/core/peer"
 	"github.com/hyperledger/fabric/core/util"
 	"github.com/hyperledger/fabric/membersrvc/ca"
-	pb "github.com/hyperledger/fabric/protos"
+	pb "github.com/hyperledger/fabric/protos/peer"
 	"github.com/op/go-logging"
 	"github.com/spf13/viper"
 	"golang.org/x/net/context"
@@ -361,6 +363,9 @@ func setup() {
 	}
 
 	removeFolders()
+
+	// Start db
+	db.Start()
 }
 
 func initMembershipSrvc() {
@@ -416,7 +421,10 @@ func initVP() {
 
 	//use a different address than what we usually use for "peer"
 	//we override the peerAddress set in chaincode_support.go
-	peerAddress := "0.0.0.0:40404"
+	peerAddress, err := peer.GetLocalAddress()
+	if err != nil {
+		return nil, fmt.Errorf("Error obtaining peer address: %s", err)
+	}
 	var err error
 	lis, err = net.Listen("tcp", peerAddress)
 	if err != nil {
