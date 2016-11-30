@@ -212,7 +212,9 @@ let ccPath = process.env["GOPATH"]+"/src/local/marbles-hfc/marbles-v1/chaincode"
 console.log('ccPath: ' + ccPath);
 
 var chaincode_id = 'mycc-marbles-73';
-var peer = hfc.getPeer('grpc://localhost:7051');
+var peer_url = 'grpc://' + peers[0].discovery_host + ':' + peers[0].discovery_port;
+console.log('Peer address: ' + peer_url);
+var peer = hfc.getPeer(peer_url);
 
 var network_id = Object.keys(manual.credentials.ca);
 var ca_url = "grpcs://"+ca.discovery_host;
@@ -390,7 +392,7 @@ function setupWebServer(){
 	// ========================================================
 	// Monitor the height of the blockchain
 	// ========================================================
-	hfc_util.monitor_blockheight(hfc.getPeer('grpc://localhost:7051'), function(chain_stats) {										//there is a new block, lets refresh everything that has a state
+	hfc_util.monitor_blockheight(hfc.getPeer(peer_url), function(chain_stats) {										//there is a new block, lets refresh everything that has a state
 		if(chain_stats && chain_stats.height){
 			console.log('\nHey new block, lets refresh and broadcast to all', chain_stats.height-1);
 			hfc_util.getBlockStats(peer, chain_stats.height - 1, cb_blockstats);
