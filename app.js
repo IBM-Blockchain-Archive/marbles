@@ -311,11 +311,15 @@ function deployChaincode() {
 		// send proposal to endorser
 		var request = {
 			targets: [hfc.getPeer('grpc://192.168.99.100:7051')],
-			//chaincodePath: 'github.com/clanzen/marbles-chaincode/hyperledger/part1',
-			chaincodePath: '/local/marbles-hfc/marbles/chaincode',
+			chaincodePath: 'local/marbles-hfc/marbles-v1/chaincode',
 			chaincodeId: chaincode_id,
 			fcn: 'init',
-			args: ['99']
+			args: ['99'],
+			'dockerfile-contents' :
+				'from hyperledger/fabric-ccenv\n' +
+				'COPY . $GOPATH/src/build-chaincode/\n' +
+				'WORKDIR $GOPATH\n\n' +
+				'RUN go install build-chaincode && mv $GOPATH/bin/build-chaincode $GOPATH/bin/%s'
 		};
 
 		admin.sendDeploymentProposal(request)
