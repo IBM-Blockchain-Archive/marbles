@@ -3,10 +3,10 @@ const http = require('http');
 
 //var hfc = require('@blockchain/hfc');
 var hfc = require('./fabric-sdk-node2/index.js');
-var fs = require('fs');
+//var fs = require('fs');
 
-var peerHost = "localhost";
-var peerRestPort = "7053";
+var peerHost = 'localhost';
+var peerRestPort = '7053';
 
 // --------------------------------------------------------------------------
 // Helper function to call the Invoke function in a chaincode.
@@ -14,23 +14,23 @@ var peerRestPort = "7053";
 module.exports.invokeCC = function(user, chaincode_id, fcn, args, callback) {
 	// send proposal to endorser
 	var request = {
-		targets: [hfc.getPeer('grpc://localhost:7051')],
+		targets: [hfc.getPeer('grpc://192.168.99.100:7051')],
 		chaincodeId : chaincode_id,
 		fcn: fcn,
 		args: args
 	};
-	console.log("Calling invoke on the cc");
+	console.log('Calling invoke on the cc');
 	user.sendTransactionProposal(request)
 	.then(
 		function(results) {
-			console.log("Got response from invoke");
+			console.log('Got response from invoke');
 			var proposalResponses = results[0];
 			var proposal = results[1];
 			if (proposalResponses[0].response.status === 200) {
 				console.log('Successfully obtained transaction endorsement.' + JSON.stringify(proposalResponses));
 				return user.sendTransaction(proposalResponses[0], proposal);
 			} else {
-				var error = 'Failed to obtain transaction endorsement. Error code: ' + status;
+				var error = 'Failed to obtain transaction endorsement. Error code: ' + proposalResponses[0].response.status;
 				console.log(error);
 				if (callback) {
 					callback(error);
@@ -46,7 +46,7 @@ module.exports.invokeCC = function(user, chaincode_id, fcn, args, callback) {
 	).then(
 		function(results) {
 			console.log('Successfully ordered endorsement transaction.');
-			console.log("May need to sleep here");
+			console.log('May need to sleep here');
 			console.log(results);
 			if (callback) {
 				callback(null, results);
@@ -54,14 +54,14 @@ module.exports.invokeCC = function(user, chaincode_id, fcn, args, callback) {
 		}
 	).catch(
 		function(err) {
-			var error = "Unexpected error during invoke: " + err.stack ? err.stack : err;
+			var error = 'Unexpected error during invoke: ' + err.stack ? err.stack : err;
 			console.log(error);
 			if (callback) {
 				callback(error);
 			}
 		}
 	);
-}
+};
 
 // --------------------------------------------------------------------------
 // Helper function to call the Query function in a chaincode.
@@ -74,7 +74,7 @@ module.exports.queryCC = function(user, chaincode_id, fcn, args, callback) {
 		fcn: fcn,
 		args: args
 	};
-	console.log("Calling queryByChaincode");
+	console.log('Calling queryByChaincode');
 	user.queryByChaincode(request)
 	.then(
 		function(results) {
@@ -90,14 +90,14 @@ module.exports.queryCC = function(user, chaincode_id, fcn, args, callback) {
 		}
 	).catch(
 		function(err) {
-			var error = "Unexpected error during query: " + err.stack ? err.stack : err;
+			var error = 'Unexpected error during query: ' + err.stack ? err.stack : err;
 			console.log(error);
 			if (callback) {
 				callback(error);
 			}
 		}
 	);
-}
+};
 
 // --------------------------------------------------------------------------
 // Call the peer's REST API to fetch chain statistics.
@@ -117,11 +117,11 @@ module.exports.getChainStats = function(peer, callback) {
 		});
 	}).on('error', function (e) {
 		console.log('Error getting chain stats, error ' + e);
-		var error = "Unexpected error during getChainStats: " + e.stack ? e.stack : e;
+		var error = 'Unexpected error during getChainStats: ' + e.stack ? e.stack : e;
 		console.log(error);
 		callback(e);
 	});
-}
+};
 
 // --------------------------------------------------------------------------
 // Call the peer's REST API to fetch statistics for a specific block.
@@ -141,7 +141,7 @@ module.exports.getBlockStats = function(peer, id, callback) {
 		console.log('Error getting block stats, error ' + e);
 		callback(e);
 	});
-}
+};
 
 // --------------------------------------------------------------------------
 // Internal function to send periodic heart_beat REST requests to a blockchain
@@ -149,7 +149,7 @@ module.exports.getBlockStats = function(peer, id, callback) {
 // is a change.
 // (has fast and slow mode)
 // --------------------------------------------------------------------------
-var selectedPeer = 0;
+//var selectedPeer = 0;
 // Array of unix timestamps, 1 for each unsettled action
 var q = [];
 // Unix timestamp of the last time we polled

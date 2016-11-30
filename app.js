@@ -30,7 +30,7 @@ var cors = require('cors');
 var hfc = require('./utils/fabric-sdk-node2/index.js');
 //var hfc = require('@blockchain/hfc');
 var fs = require('fs');
-const https = require('https');
+//const https = require('https');
 var hfc_util = require('./utils/hfc_util');
 
 //// Set Server Parameters ////
@@ -160,7 +160,7 @@ try{
 	console.log('loading hardcoded peers');
 	var users = null;																			//users are only found if security is on
 	var caContainer = manual.credentials.ca;
-	var ca = caContainer[Object.keys(caContainer)[0]]
+	var ca = caContainer[Object.keys(caContainer)[0]];
 
 	if(manual.credentials.users) users = manual.credentials.users;
 	console.log('loading hardcoded users');
@@ -197,7 +197,7 @@ if(process.env.VCAP_SERVICES){																	//load from vcap, search for serv
 // ==================================
 // Set up the blockchain sdk
 // ==================================
-var chain = hfc.newChain("mychain");
+var chain = hfc.newChain('mychain');
 
 // Creating an environment variable for ciphersuites
 process.env['GRPC_SSL_CIPHER_SUITES'] = 'ECDHE-RSA-AES128-GCM-SHA256:' +
@@ -208,7 +208,7 @@ process.env['GRPC_SSL_CIPHER_SUITES'] = 'ECDHE-RSA-AES128-GCM-SHA256:' +
     'ECDHE-ECDSA-AES128-SHA256:' +
     'ECDHE-ECDSA-AES256-SHA384:' +
     'ECDHE-ECDSA-AES256-GCM-SHA384';
-let ccPath = process.env["GOPATH"]+"/src/local/marbles-hfc/marbles-v1/chaincode";
+let ccPath = process.env['GOPATH']+'/src/local/marbles-hfc/marbles-v1/chaincode';
 console.log('ccPath: ' + ccPath);
 
 var chaincode_id = 'mycc-marbles-73';
@@ -217,8 +217,8 @@ console.log('Peer address: ' + peer_url);
 var peer = hfc.getPeer(peer_url);
 
 var network_id = Object.keys(manual.credentials.ca);
-var ca_url = "grpcs://"+ca.discovery_host;
-console.log("Member services address: "+ca_url);
+var ca_url = 'grpcs://'+ca.discovery_host;
+console.log('Member services address: '+ca_url);
 var uuid = network_id[0].substring(0,8);
 //chain.setKeyValStore( hfc.newFileKeyValStore(__dirname + '/keyValStore-' + uuid) );
 chain.setKeyValueStore(
@@ -227,33 +227,33 @@ chain.setKeyValueStore(
 	})
 );
 
-var certFile = 'keyValStore/tlsca.cert';
+//var certFile = 'keyValStore/tlsca.cert';
 
 enrollAndRegisterUsers()
 .then(
 	function(user) {
-		console.log("\nEnrolled and registered successfully");
+		console.log('\nEnrolled and registered successfully');
 		chain.setRegistrar(user);
 		part1.setup(user, chaincode_id, peer);
 		part2.setup(user, chaincode_id, peer);
-		console.log("\nDeploying chaincode ...")
+		console.log('\nDeploying chaincode ...');
 		return deployChaincode();
 	},
 	function(err) {
-		console.log("\nFailure: %s\n", err);
+		console.log('\nFailure: %s\n', err);
 	}
 ).then(
 	function(user) {
-		console.log("\nChaincode deployed successfully");
-		console.log("\nSetting up web server ...")
+		console.log('\nChaincode deployed successfully');
+		console.log('\nSetting up web server ...');
 		return setupWebServer();
 	},
 	function(err) {
-		console.log("\nFailure deploying chaincode, %s\n", err);
+		console.log('\nFailure deploying chaincode, %s\n', err);
 	}
 ).catch(
 	function(err) {
-		console.log("\nERROR: %s", err);
+		console.log('\nERROR: %s', err);
 	}
 );
 
@@ -271,26 +271,26 @@ function enrollAndRegisterUsers() {
 		/*
 		.then(
 			function(admin) {
-				console.log("\nEnrolled " + user.username + " successfully");
+				console.log('\nEnrolled ' + user.username + ' successfully');
 
 				// Set this user as the chain's registrar which is authorized to register other users.
 				chain.setRegistrar(admin);
 				part1.setup(admin, chaincode_id, peer);
 				part2.setup(admin, chaincode_id, peer);
 
-				var enrollName = "JohnDoe"; //creating a new user
+				var enrollName = 'JohnDoe'; //creating a new user
 				var registrationRequest = {
 					enrollmentID: enrollName,
-					affiliation: "group1"
+					affiliation: 'group1'
 				};
 				resolve(chain.registerAndEnroll(registrationRequest));
 			},
 			function(err) {
-				reject(new Error("\nERROR: failed to enroll admin : %s", err));
+				reject(new Error('\nERROR: failed to enroll admin : %s', err));
 			}
 		).catch(
 			function(err) {
-				reject(new Error("\nERROR: failed register and/or enroll : %s", err));
+				reject(new Error('\nERROR: failed register and/or enroll : %s', err));
 			}
 		);
 		*/
@@ -305,7 +305,7 @@ function deployChaincode() {
 		// send proposal to endorser
 		var request = {
 			targets: [hfc.getPeer('grpc://192.168.99.100:7051')],
-			//chaincodePath: "github.com/clanzen/marbles-chaincode/hyperledger/part1",
+			//chaincodePath: 'github.com/clanzen/marbles-chaincode/hyperledger/part1',
 			chaincodePath: '/local/marbles-hfc/marbles/chaincode',
 			chaincodeId: chaincode_id,
 			fcn: 'init',
@@ -316,7 +316,7 @@ function deployChaincode() {
 		.then(
 			function(results) {
 				var proposalResponses = results[0];
-				console.log('proposalResponses:'+JSON.stringify(proposalResponses));
+				console.log('! proposalResponses:'+JSON.stringify(proposalResponses));
 				var proposal = results[1];
 				if (proposalResponses && proposalResponses[0].response && proposalResponses[0].response.status === 200) {
 					return admin.sendTransaction(proposalResponses, proposal);
@@ -397,8 +397,8 @@ function setupWebServer(){
 			console.log('\nHey new block, lets refresh and broadcast to all', chain_stats.height-1);
 			hfc_util.getBlockStats(peer, chain_stats.height - 1, cb_blockstats);
 			wss.broadcast({msg: 'reset'});
-			hfc_util.queryCC(admin, chaincode_id, "read", ['_marbleindex'], cb_got_index);
-			hfc_util.queryCC(admin, chaincode_id, "read", ['_opentrades'], cb_got_trades);
+			hfc_util.queryCC(admin, chaincode_id, 'read', ['_marbleindex'], cb_got_index);
+			hfc_util.queryCC(admin, chaincode_id, 'read', ['_opentrades'], cb_got_trades);
 		}
 
 		//got the block's stats, lets send the statistics
@@ -420,7 +420,7 @@ function setupWebServer(){
 					for(var i in json){
 						console.log('!', i, json[i]);
 						//iter over each, read their values
-						hfc_util.queryCC(admin, chaincode_id, "read", [json[i]], cb_got_marble);
+						hfc_util.queryCC(admin, chaincode_id, 'read', [json[i]], cb_got_marble);
 					}
 				}
 				catch(e){
@@ -448,14 +448,14 @@ function setupWebServer(){
 			else {
 				try{
 					console.log('Found open trades: ' + trades);
-					if (trades !== "") {
+					if (trades !== '') {
 						trades = JSON.parse(trades);
 						if(trades && trades.open_trades){
 							wss.broadcast({msg: 'open_trades', open_trades: trades.open_trades});
 						}
 					}
 					else {
-						console.log("No open trades");
+						console.log('No open trades');
 					}
 				}
 				catch(e){
