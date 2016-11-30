@@ -8,3 +8,4 @@
 /cc_summaries
 keyValStore*
 certificate.pem
+Dockerfile
