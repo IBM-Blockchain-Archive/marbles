@@ -151,10 +151,12 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) ([]byte, erro
 		return res, err
 	} else if function == "remove_trade" { //cancel an open trade order
 		return t.remove_trade(stub, args)
+	} else if function == "read" {
+		return t.read(stub, args)
 	}
 	fmt.Println("invoke did not find func: " + function) //error
 
-	return nil, errors.New("Received unknown function invocation")
+	return nil, errors.New("Received unknown invoke function name: '" + function + "'")
 }
 
 // ============================================================================================================================
