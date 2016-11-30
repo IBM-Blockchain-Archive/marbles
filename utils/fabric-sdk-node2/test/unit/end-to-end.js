@@ -48,8 +48,8 @@ chain.setKeyValueStore(hfc.newKeyValueStore({
 	path: testUtil.KVS
 }));
 
-chain.setMemberServicesUrl('http://localhost:8888');
-chain.setOrderer('grpc://localhost:5151');
+chain.setMemberServicesUrl('http://192.168.99.100:8888');
+chain.setOrderer('grpc://192.168.99.100:5151');
 
 test('End-to-end flow of chaincode deploy, transaction invocation, and query', function(t) {
 	chain.enroll('admin', 'adminpw')
@@ -60,7 +60,7 @@ test('End-to-end flow of chaincode deploy, transaction invocation, and query', f
 
 			// send proposal to endorser
 			var request = {
-				targets: [hfc.getPeer('grpc://localhost:7051'), hfc.getPeer('grpc://localhost:7056')],
+				targets: [hfc.getPeer('grpc://192.168.99.100:7051'), hfc.getPeer('grpc://192.168.99.100:7056')],
 				chaincodePath: testUtil.CHAINCODE_PATH,
 				chaincodeId: chaincode_id,
 				fcn: 'init',
@@ -115,7 +115,7 @@ test('End-to-end flow of chaincode deploy, transaction invocation, and query', f
 		function() {
 			// send proposal to endorser
 			var request = {
-				targets: [hfc.getPeer('grpc://localhost:7051'), hfc.getPeer('grpc://localhost:7056')],
+				targets: [hfc.getPeer('grpc://192.168.99.100:7051'), hfc.getPeer('grpc://192.168.99.100:7056')],
 				chaincodeId : chaincode_id,
 				fcn: 'invoke',
 				args: ['move', 'a', 'b','100']
@@ -161,7 +161,7 @@ test('End-to-end flow of chaincode deploy, transaction invocation, and query', f
 		function() {
 			// send query
 			var request = {
-				targets: [hfc.getPeer('grpc://localhost:7051'), hfc.getPeer('grpc://localhost:7056')],
+				targets: [hfc.getPeer('grpc://192.168.99.100:7051'), hfc.getPeer('grpc://192.168.99.100:7056')],
 				chaincodeId : chaincode_id,
 				fcn: 'invoke',
 				args: ['query','b']
