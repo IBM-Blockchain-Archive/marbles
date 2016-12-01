@@ -148,7 +148,6 @@ module.exports = function (chain, chaincode_id, logger) {
 
 					console.log('---------------------------------------------------------------------------');
 					console.log('\nChaincode deployed successfully');
-					console.log('\nSetting up web server ...');
 					if(cb) return cb(null, webUser);
 					else return;
 				},

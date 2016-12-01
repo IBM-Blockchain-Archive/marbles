@@ -11,55 +11,43 @@ module.exports = function (chain, chaincode_id, logger) {
 	//-------------------------------------------------------------------
 	marbles.create_a_marble = function (webUser, options, cb) {
 		console.log('\ncreating a marble...');
-		return new Promise(function (resolve, reject) {
-			chain.enroll('admin', 'adminpw')
-				.then(
-				function () {
-					// send proposal to endorser
-					var request = {
-						targets: [hfc.getPeer('grpc://192.168.99.100:7051'), hfc.getPeer('grpc://192.168.99.100:7056')],
-						chaincodeId: chaincode_id,
-						fcn: 'init_marble',
-						args: options 									//args == [marble_id, color, size, owner]
-					};
-					return webUser.sendTransactionProposal(request);
-				},
-				function (err) {
-					console.log('Failed to send invoke due to error: ' + err.stack ? err.stack : err);
+		
+		// send proposal to endorser
+		var request = {
+			targets: [hfc.getPeer('grpc://192.168.99.100:7051'), hfc.getPeer('grpc://192.168.99.100:7056')],
+			chaincodeId: chaincode_id,
+			fcn: 'init_marble',
+			args: options 									//args == [marble_id, color, size, owner]
+		};
+		webUser.sendTransactionProposal(request)
+		.then(
+			function (results) {
+				var proposalResponses = results[0];
+				var proposal = results[1];
+				if (proposalResponses[0].response.status === 200) {
+					console.log('Successfully obtained transaction endorsement.' + JSON.stringify(proposalResponses));
+					return webUser.sendTransaction(proposalResponses, proposal);
 				}
-				).then(
-				function (results) {
-					var proposalResponses = results[0];
-					var proposal = results[1];
-					if (proposalResponses[0].response.status === 200) {
-						console.log('Successfully obtained transaction endorsement.' + JSON.stringify(proposalResponses));
-						return webUser.sendTransaction(proposalResponses, proposal);
-					} else {
-						console.log('Failed to obtain transaction endorsement. Error code: ' + proposalResponses[0].response.status);
-					}
-				},
-				function (err) {
-					console.log('Failed to send transaction proposal due to error: ' + err.stack ? err.stack : err);
+				else {
+					console.log('Failed to obtain transaction endorsement. Error code: ' + proposalResponses[0].response.status);
 				}
-				).then(
-				function (response) {
-					if (response.Status === 'SUCCESS') {
-						console.log('Successfully ordered endorsement transaction.');
-						console.log(' need to wait now for the committer to catch up');
-						if (cb) cb();
-					} else {
-						console.log('Failed to order the endorsement of the transaction. Error code: ' + response.status);
-					}
-				},
-				function (err) {
-					console.log('Failed to send transaction proposal due to error: ' + err.stack ? err.stack : err);
+			}
+		).then(
+			function (response) {
+				if (response.Status === 'SUCCESS') {
+					console.log('Successfully ordered endorsement transaction.');
+					console.log(' need to wait now for the committer to catch up');
+					if (cb) cb();
 				}
-				).catch(
-				function (err) {
-					console.log('Failed, in catch block' + err.stack ? err.stack : err);
+				else {
+					console.log('Failed to order the endorsement of the transaction. Error code: ' + response.status);
 				}
-				);
-		});
+			}
+		).catch(
+			function (err) {
+				console.log('Failed, in catch block' + err.stack ? err.stack : err);
+			}
+		);
 	};
 
 
