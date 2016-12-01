@@ -231,10 +231,9 @@ chain.setKeyValueStore(
 	})
 );
 
-console.log('Membersrvc url = ', helper.getMemberservicesUrl(0));
+var webUser;
 chain.setMemberServicesUrl(helper.getMemberservicesUrl(0));
 chain.setOrderer(helper.getOrderersUrl(0));
-var webUser;
 var chaincode_prefix = 'marbles';								//name to identify chaincode
 var chaincode_id = null;										//full name to identify chaincode
 //var user = users[0];
@@ -269,22 +268,33 @@ function set_chaincode_id(cb){
 // -------------------------------------------------------------------
 // things start here!
 // -------------------------------------------------------------------
-set_chaincode_id(function(){
-	marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, chaincode_id, null);
-	marbles_lib.check_if_already_deployed(function(not_deployed, enrollUser){
-		if(not_deployed){										//if this is truthy we have not yet deployed, do it now
-			console.log('\n\nChaincode was not detected, going to deploy it now\n\n');
-			marbles_lib.deploy_chaincode(setup_application);
-		}
-		else{													//else we already deployed
-			webUser = enrollUser;
-			console.log('\n\nChaincode already deployed\n\n');
-			setupWebServer();				//starts the webapp
-			//setup_application(enrollUser); 			//builds marbles
-			//marbles_lib.reset_marble_index();			//reset 
-		}
-	});
-});
+var webUser = null;
+chain.enroll('admin', 'adminpw').then(
+	function(enrolledUser) {
+		console.log('Successfully enrolled user');
+		webUser = enrolledUser;
+		
+		set_chaincode_id(function(){
+			marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, chaincode_id, null);
+			marbles_lib.check_if_already_deployed(webUser, function(not_deployed, enrollUser){
+				if(not_deployed){										//if this is truthy we have not yet deployed, do it now
+					console.log('\n\nChaincode was not detected, going to deploy it now\n\n');
+					marbles_lib.deploy_chaincode(webUser, setup_application);
+				}
+				else{													//else we already deployed
+					console.log('\n\nChaincode already deployed\n\n');
+					setupWebServer();				//starts the webapp
+					//setup_application(enrollUser); 			//builds marbles
+					//marbles_lib.reset_marble_index();			//reset 
+				}
+			});
+		});
+	}
+).catch(
+	function(err) {
+		console.log('Failed to enroll' + err.stack ? err.stack : err);
+	}
+);
 
 //random integer
 function getRandomInt(min, max) {
@@ -319,7 +329,6 @@ function build_marble_options(username){
 
 //this only runs after we deploy
 function setup_application(enrollUser){
-	webUser = enrollUser;
 
 	// --- Create Each user --- //
 	if(process.env.build_marbles_users){
@@ -362,12 +371,14 @@ function setup_application(enrollUser){
 function setupWebServer(){
 	//var admin = chain.getRegistrar();
 	marbles_lib.get_marble_list(webUser, function(err, resp){
-		console.log('\nthis is wat i got 1:\n', err, JSON.stringify(resp));
+		console.log('\n\n\nthis is wat i got 1: marbles:', resp.payload[0].length);
+		console.log(err, JSON.stringify(resp));
 
 		for(var i in resp.payload[0]){
-			console.log('looking at...', resp.payload[0][i]);
+			console.log('\nlooking at...', resp.payload[0][i]);
 			marbles_lib.get_marble(webUser, resp.payload[0][i], function(err2, resp2){
-				console.log('\nthis is wat i got 2:\n', err2, JSON.stringify(resp2));
+				console.log('\n\n\nthis is wat i got 2:\n', err2, JSON.stringify(resp2));
+				console.log('\n');
 
 				/*marbles_lib.set_marble_owner(webUser, [resp.payload[0][i], 'david'], function(err3, resp3){
 					console.log('\nthis is wat i got 3:\n', err2, JSON.stringify(resp2));
