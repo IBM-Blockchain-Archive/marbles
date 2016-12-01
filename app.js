@@ -271,7 +271,7 @@ chain.enroll('admin', 'adminpw').then(
 	function(enrolledUser) {
 		console.log('Successfully enrolled user');
 		webUser = enrolledUser;
-		
+
 		set_chaincode_id(function(){
 			marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, chaincode_id, null);
 			marbles_lib.check_if_already_deployed(webUser, function(not_deployed, enrollUser){
@@ -343,7 +343,11 @@ function setup_application(enrollUser){
 				async.eachLimit([1,2], 1, function(block_height, marble_cb) {	//create two marbles for every user
 					var randOptions = build_marble_options(username);
 					console.log('\n\ngoing to create marble:', randOptions);
-					marbles_lib.create_a_marble(webUser, randOptions, marble_cb);
+					marbles_lib.create_a_marble(webUser, randOptions, function(){
+						setTimeout(function(){
+							marble_cb();
+						}, 5000);
+					});
 				}, function() {
 					user_cb();													//marble creation finished
 				});
@@ -353,7 +357,7 @@ function setup_application(enrollUser){
 			if(err == null) {
 				setTimeout(function(){
 					setupWebServer();									//user creation finished
-				}, 15000);
+				}, 10000);
 			}
 		});
 	}
@@ -385,7 +389,7 @@ function setupWebServer(){
 						marbles_lib.get_marble(webUser, resp.payload[0][i], function(err4, resp4){
 							console.log('\nthis is wat i got 4:\n', err4, JSON.stringify(resp4));
 						});
-					}, 15000);
+					}, 10000);
 				});*/
 			});
 		}
