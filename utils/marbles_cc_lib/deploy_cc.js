@@ -5,6 +5,7 @@
 module.exports = function (chain, chaincode_id, logger) {
 	var hfc = require('../fabric-sdk-node2/index.js');
 	var deploy_cc = {};
+	var helper = require(__dirname + '/../helper.js')();
 
 	//-------------------------------------------------------------------
 	// Check if Chaincode Is Already Deployed
@@ -12,7 +13,7 @@ module.exports = function (chain, chaincode_id, logger) {
 	deploy_cc.check_if_already_deployed = function (webUser, cb) {
 		// send query
 		var request = {
-			targets: [hfc.getPeer('grpc://192.168.99.100:7051'), hfc.getPeer('grpc://192.168.99.100:7056')],
+			targets: [hfc.getPeer(helper.getPeersUrl(0)), hfc.getPeer(helper.getPeersUrl(1))],
 			chaincodeId : chaincode_id,
 			fcn: 'read',
 			args: ['_marbleindex']
