@@ -29,10 +29,9 @@ var cors = require('cors');
 var async = require('async');
 
 var hfc = require('./utils/fabric-sdk-node2/index.js');
-//var hfc = require('@blockchain/hfc');
 var fs = require('fs');
-//const https = require('https');
-var hfc_util = require('./utils/hfc_util');
+//var hfc_util = require('./utils/hfc_util');
+var more_entropy = randStr(24);
 
 //// Set Server Parameters ////
 var host = setup.SERVER.HOST;
@@ -216,7 +215,7 @@ console.log('ccPath: ' + ccPath);
 var chaincode_id = 'mycc-marbles-73';
 var peer_url = 'grpc://' + peers[0].discovery_host + ':' + peers[0].discovery_port;
 console.log('Peer address: ' + peer_url);
-var peer = hfc.getPeer(peer_url);
+//var peer = hfc.getPeer(peer_url);
 
 utils.setConfigSetting('crypto-keysize', 256);
 utils.setConfigSetting('crypto-hash-algo', 'SHA2');
@@ -237,11 +236,11 @@ var webUser;
 var chaincode_prefix = 'marbles';								//name to identify chaincode
 var chaincode_id = null;										//full name to identify chaincode
 //var user = users[0];
-
 var marbles_lib = null;
 
 //make chaincode name unique-ish
-function make_chaincode_id(cb){
+function set_chaincode_id(cb){
+	//find a go file
 	fs.readdir(ccPath, function(err, files){
 		if(err != null){
 			console.log('Error - cannot find chaincode directory: ' + ccPath);
@@ -249,12 +248,13 @@ function make_chaincode_id(cb){
 		}
 		for(var i in files){
 			if(files[i].indexOf('.go') === -1) continue;
-			else chaincode_edit_date(ccPath + '/' + files[i]);
+			else build_id_from_ts(ccPath + '/' + files[i]);
 			break;												//first .go file we found is good enough
 		}
 	});
  
-	function chaincode_edit_date(file_path){
+	//get the modified timestamp for the go file
+	function build_id_from_ts(file_path){
 		fs.stat(file_path, function(err, fstats){
 			var temp = new Date(fstats.mtime);
 			chaincode_id = chaincode_prefix + '.' + temp.getTime();
@@ -264,19 +264,18 @@ function make_chaincode_id(cb){
 	}
 }
 
-// gogo
-make_chaincode_id(function(){
-	console.log('[0] this should only appear once, right?');
+// -------------------------------------------------------------------
+// things start here!
+// -------------------------------------------------------------------
+set_chaincode_id(function(){
 	marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, chaincode_id, null);
-
 	marbles_lib.check_if_already_deployed(function(not_deployed, enrollUser){
 		if(not_deployed){										//if this is truthy we have not yet deployed, do it now
-			console.log('\n\n[1]Chaincode was not detected, going to deploy it now\n\n');
+			console.log('\n\nChaincode was not detected, going to deploy it now\n\n');
 			marbles_lib.deploy_chaincode(setup_application);
 		}
 		else{													//else we already deployed
-			console.log('\n\n[1]Chaincode already deployed\n\n');
-			console.log('\nSetting up web server ...');
+			console.log('\n\nChaincode already deployed\n\n');
 			setupWebServer();				//starts the webapp
 			//setup_application(enrollUser); 			//builds marbles
 			//marbles_lib.reset_marble_index();			//reset 
@@ -284,12 +283,14 @@ make_chaincode_id(function(){
 	});
 });
 
+//random integer
 function getRandomInt(min, max) {
 	min = Math.ceil(min);
 	max = Math.floor(max);
 	return Math.floor(Math.random() * (max - min)) + min;
 }
 
+//random string of x length
 function randStr(length){
 	var text = '';
 	var possible = 'abcdefghijkmnpqrstuvwxyz0123456789';
@@ -297,8 +298,7 @@ function randStr(length){
 	return text;
 }	
 
-var more_entropy = randStr(24);
-
+//real simple hash
 function simple_hash(a_string){
 	var hash = 0;
 	for(var i in a_string) hash += a_string.charCodeAt(i);
@@ -319,30 +319,31 @@ function setup_application(enrollUser){
 	webUser = enrollUser;
 	//var marble_users = ['bob', 'bill'];
 	var marble_users = ['bob'];
+
+	// --- Create Each user --- //
 	async.eachLimit(marble_users, 1, function(username, user_cb) {			//iter through each one
-		create_marble_user(username, function(){
-			async.each([1], function(block_height, marble_cb) {			//create two marbles for every user
+		var options = {username: username};
+		marbles_lib.create_marble_user(webUser, options, function(){
+			
+			// --- Create Marble(s) --- //
+			async.each([1], function(block_height, marble_cb) {				//create two marbles for every user
 				var randOptions = build_marble_options(username);
 				console.log('\n\ngoing to creat marble:', randOptions);
 				marbles_lib.create_a_marble(webUser, randOptions, marble_cb);
 			}, function() {
-				user_cb();													//marble setup finished
+				user_cb();													//marble creation finished
 			});
 		});
 	}, function(err) {
-		if(err == null) setupWebServer();									//user setup finished
+		if(err == null) setupWebServer();									//user creation finished
 	});
-}
-
-function create_marble_user(username, cb){
-	if(cb) cb();
 }
 
 // ============================================================================================================================
 // 												WebSocket Communication Madness
 // ============================================================================================================================
 function setupWebServer(){
-	var admin = chain.getRegistrar();
+	//var admin = chain.getRegistrar();
 	console.log('------------------------------------------ Websocket Up ------------------------------------------');
 
 	wss = new ws.Server({server: server});												//start the websocket now
@@ -378,7 +379,7 @@ function setupWebServer(){
 	// ========================================================
 	// Monitor the height of the blockchain
 	// ========================================================
-	hfc_util.monitor_blockheight(hfc.getPeer(peer_url), function(chain_stats) {										//there is a new block, lets refresh everything that has a state
+	/*hfc_util.monitor_blockheight(hfc.getPeer(peer_url), function(chain_stats) {										//there is a new block, lets refresh everything that has a state
 		if(chain_stats && chain_stats.height){
 			console.log('\nHey new block, lets refresh and broadcast to all', chain_stats.height-1);
 			hfc_util.getBlockStats(peer, chain_stats.height - 1, cb_blockstats);
@@ -449,5 +450,5 @@ function setupWebServer(){
 				}
 			}
 		}
-	});
+	});*/
 }

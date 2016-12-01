@@ -8,7 +8,7 @@
 module.exports = function (chain, chaincode_id, logger) {
 	var deploy_cc = require('./deploy_cc.js')(chain, chaincode_id, logger);
 	var marbles = require('./marbles.js')(chain, chaincode_id, logger);
-	//var users = require('./users.js')(chain, chaincode_id, logger);
+	var users = require('./users.js')(chain, chaincode_id, logger);
 	var marbles_chaincode = {};
 
 	//deploy chaincode
@@ -16,7 +16,7 @@ module.exports = function (chain, chaincode_id, logger) {
 		deploy_cc.deploy_chaincodefunction(cb);
 	};
 
-	//deploy chaincode
+	//check chaincode
 	marbles_chaincode.check_if_already_deployed = function (cb) {
 		deploy_cc.check_if_already_deployed(cb);
 	};
@@ -29,6 +29,11 @@ module.exports = function (chain, chaincode_id, logger) {
 	//reset marble index
 	marbles_chaincode.reset_marble_index = function (webUser, cb) {
 		marbles.reset_marble_index(webUser, cb);
+	};
+
+	//create a marble
+	marbles_chaincode.create_marble_user = function (webUser, options, cb) {
+		users.create_marble_user(webUser, options, cb);
 	};
 
 	return marbles_chaincode;
