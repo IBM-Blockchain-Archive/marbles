@@ -277,6 +277,7 @@ set_chaincode_id(function(){
 			marbles_lib.deploy_chaincode(setup_application);
 		}
 		else{													//else we already deployed
+			webUser = enrollUser;
 			console.log('\n\nChaincode already deployed\n\n');
 			setupWebServer();				//starts the webapp
 			//setup_application(enrollUser); 			//builds marbles
@@ -319,26 +320,40 @@ function build_marble_options(username){
 //this only runs after we deploy
 function setup_application(enrollUser){
 	webUser = enrollUser;
-	//var marble_users = ['bob', 'bill'];
-	var marble_users = ['bob'];
 
 	// --- Create Each user --- //
-	async.eachLimit(marble_users, 1, function(username, user_cb) {			//iter through each one
-		var options = {username: username};
-		marbles_lib.create_marble_user(webUser, options, function(){
-			
-			// --- Create Marble(s) --- //
-			async.each([1], function(block_height, marble_cb) {				//create two marbles for every user
-				var randOptions = build_marble_options(username);
-				console.log('\n\ngoing to creat marble:', randOptions);
-				marbles_lib.create_a_marble(webUser, randOptions, marble_cb);
-			}, function() {
-				user_cb();													//marble creation finished
+	if(process.env.build_marbles_users){
+		var build_users = [];
+		try{
+			build_users = JSON.parse(process.env.build_marbles_users);
+		}
+		catch(e){console.log('not json', e);}
+		async.eachLimit(build_users, 1, function(username, user_cb) { 			//iter through each one
+			var options = {username: username};
+			marbles_lib.create_marble_user(webUser, options, function(){
+				
+				// --- Create Marble(s) --- //
+				async.eachLimit([1,2], 1, function(block_height, marble_cb) {	//create two marbles for every user
+					var randOptions = build_marble_options(username);
+					console.log('\n\ngoing to create marble:', randOptions);
+					marbles_lib.create_a_marble(webUser, randOptions, marble_cb);
+				}, function() {
+					user_cb();													//marble creation finished
+				});
 			});
+		}, function(err) {
+			console.log('finished setup_application, waiting for catch up');
+			if(err == null) {
+				setTimeout(function(){
+					setupWebServer();									//user creation finished
+				}, 15000);
+			}
 		});
-	}, function(err) {
-		if(err == null) setupWebServer();									//user creation finished
-	});
+	}
+	else{
+		console.log('there are no new users to create');
+		setupWebServer();
+	}
 }
 
 // ============================================================================================================================
@@ -346,6 +361,27 @@ function setup_application(enrollUser){
 // ============================================================================================================================
 function setupWebServer(){
 	//var admin = chain.getRegistrar();
+	marbles_lib.get_marble_list(webUser, function(err, resp){
+		console.log('\nthis is wat i got 1:\n', err, JSON.stringify(resp));
+
+		for(var i in resp.payload[0]){
+			console.log('looking at...', resp.payload[0][i]);
+			marbles_lib.get_marble(webUser, resp.payload[0][i], function(err2, resp2){
+				console.log('\nthis is wat i got 2:\n', err2, JSON.stringify(resp2));
+
+				/*marbles_lib.set_marble_owner(webUser, [resp.payload[0][i], 'david'], function(err3, resp3){
+					console.log('\nthis is wat i got 3:\n', err2, JSON.stringify(resp2));
+
+					setTimeout(function(){
+						marbles_lib.get_marble(webUser, resp.payload[0][i], function(err4, resp4){
+							console.log('\nthis is wat i got 4:\n', err4, JSON.stringify(resp4));
+						});
+					}, 15000);
+				});*/
+			});
+		}
+	});
+
 	console.log('------------------------------------------ Websocket Up ------------------------------------------');
 
 	wss = new ws.Server({server: server});												//start the websocket now
