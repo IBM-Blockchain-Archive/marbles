@@ -277,8 +277,8 @@ set_chaincode_id(function(){
 		else{													//else we already deployed
 			webUser = enrollUser;
 			console.log('\n\nChaincode already deployed\n\n');
-			//setupWebServer();				//starts the webapp
-			setup_application(enrollUser); 			//builds marbles
+			setupWebServer();				//starts the webapp
+			//setup_application(enrollUser); 			//builds marbles
 			//marbles_lib.reset_marble_index();			//reset 
 		}
 	});
@@ -367,7 +367,7 @@ function setupWebServer(){
 			marbles_lib.get_marble(webUser, resp.payload[0][i], function(err2, resp2){
 				console.log('\nthis is wat i got 2:\n', err2, JSON.stringify(resp2));
 
-				marbles_lib.set_marble_owner(webUser, [resp.payload[0][i], 'david'], function(err3, resp3){
+				/*marbles_lib.set_marble_owner(webUser, [resp.payload[0][i], 'david'], function(err3, resp3){
 					console.log('\nthis is wat i got 3:\n', err2, JSON.stringify(resp2));
 
 					setTimeout(function(){
@@ -375,7 +375,7 @@ function setupWebServer(){
 							console.log('\nthis is wat i got 4:\n', err4, JSON.stringify(resp4));
 						});
 					}, 15000);
-				});
+				});*/
 			});
 		}
 	});
