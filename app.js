@@ -233,21 +233,48 @@ chain.setKeyValueStore(
 chain.setMemberServicesUrl('http://192.168.99.100:8888');
 chain.setOrderer('grpc://192.168.99.100:5151');
 var webUser;
-var chaincode_id = 'mycc12345';
+var chaincode_prefix = 'marbles';								//name to identify chaincode
+var chaincode_id = null;										//full name to identify chaincode
 var user = users[0];
 
+//make chaincode name unique-ish
+function make_chaincode_id(cb){
+	fs.readdir(ccPath, function(err, files){
+		if(err != null){
+			console.log('Error - cannot find chaincode directory: ' + ccPath);
+			process.exit();
+		}
+		for(var i in files){
+			if(files[i].indexOf('.go') === -1) continue;
+			else chaincode_edit_date(ccPath + '/' + files[i]);
+			break;												//first go file we found is good enough
+		}
+	});
+ 
+	function chaincode_edit_date(file_path){
+		fs.stat(file_path, function(err, fstats){
+			var temp = new Date(fstats.mtime);
+			chaincode_id = chaincode_prefix + '.' + temp.getTime();
+			console.log('chaincode id', chaincode_id);
+			cb();
+		});
+	}
+}
+
 // gogo
-check_if_already_deployed(function(not_deployed){
-	if(not_deployed){										//if this is truthy we have not yet deployed, do it now
-		console.log('\nChaincode was not detected, going to deploy it now\n');
-		deploy_chaincode(create_a_marble);
-	}
-	else{													//else we already deployed
-		console.log('\nChaincode already deployed');
-		console.log('\nSetting up web server ...');
-		//setupWebServer();
-		create_a_marble();
-	}
+make_chaincode_id(function(){
+	check_if_already_deployed(function(not_deployed){
+		if(not_deployed){										//if this is truthy we have not yet deployed, do it now
+			console.log('\nChaincode was not detected, going to deploy it now\n');
+			deploy_chaincode(create_a_marble);
+		}
+		else{													//else we already deployed
+			console.log('\nChaincode already deployed');
+			console.log('\nSetting up web server ...');
+			//setupWebServer();
+			create_a_marble();
+		}
+	});
 });
 
 function check_if_already_deployed(cb){
