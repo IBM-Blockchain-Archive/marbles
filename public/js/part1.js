@@ -127,7 +127,7 @@ $(document).on('ready', function() {
 			var obj = 	{
 							type: 'transfer',
 							name: marbleName,
-							user: user,
+							owner: user,
 							v: 1
 						};
 			ws.send(JSON.stringify(obj));

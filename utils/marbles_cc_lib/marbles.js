@@ -115,7 +115,7 @@ module.exports = function (chain, chaincode_id, logger) {
 	marbles.get_marble_list = function (webUser, cb) {
 		console.log('\nfetching marble index list...');
 		var request = {
-			targets: [hfc.getPeer('grpc://192.168.99.100:7051'), hfc.getPeer('grpc://192.168.99.100:7056')],
+			targets: [hfc.getPeer(helper.getPeersUrl(0)), hfc.getPeer(helper.getPeersUrl(1))],
 			chaincodeId: chaincode_id,
 			fcn: 'read',
 			args: ['_marbleindex']
@@ -150,7 +150,7 @@ module.exports = function (chain, chaincode_id, logger) {
 	marbles.get_marble = function (webUser, marble_name, cb) {
 		console.log('\nfetching marble ' + marble_name +' list...');
 		var request = {
-			targets: [hfc.getPeer('grpc://192.168.99.100:7051'), hfc.getPeer('grpc://192.168.99.100:7056')],
+			targets: [hfc.getPeer(helper.getPeersUrl(0)), hfc.getPeer(helper.getPeersUrl(1))],
 			chaincodeId: chaincode_id,
 			fcn: 'read',
 			args: [marble_name]
@@ -185,7 +185,7 @@ module.exports = function (chain, chaincode_id, logger) {
 
 		// send proposal to endorser
 		var request = {
-			targets: [hfc.getPeer('grpc://192.168.99.100:7051'), hfc.getPeer('grpc://192.168.99.100:7056')],
+			targets: [hfc.getPeer(helper.getPeersUrl(0)), hfc.getPeer(helper.getPeersUrl(1))],
 			chaincodeId: chaincode_id,
 			fcn: 'set_owner',
 			args: options 									//args == ["name", "bob"]

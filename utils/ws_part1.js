@@ -21,13 +21,21 @@ module.exports = function (webUser, marbles_lib, logger) {
 
 	part1.process_msg = function(ws, data){
 		if(data.v === 1){																						//only look at messages for part 1
+			
+			// create a new marble
 			if(data.type == 'create'){
 				console.log('[ws] create marbles msg');
-				if(data.name && data.color && data.size && data.user){
-					//create a new marble
-					//hfc_util.invokeCC(user, chaincodeID, 'init_marble', [data.name, data.color, data.size, data.user], cb_invoked);
+				if(data.name && data.color && data.size && data.owner){
+					marbles_lib.create_a_marble(webUser, [data.name, data.color, data.size, data.owner], function(){
+						/*setTimeout(function(){
+							marble_cb();
+						}, 1500);*/
+					});
 				}
+				else console.log('bad inputs for create', data);
 			}
+
+			//get all marbles
 			else if(data.type == 'get'){
 				console.log('[ws] get marbles msg');
 				//hfc_util.queryCC(user, chaincodeID, 'read', ['_marbleindex'], cb_got_index);
@@ -52,12 +60,19 @@ module.exports = function (webUser, marbles_lib, logger) {
 					});
 				});
 			}
-			/*else if(data.type == 'transfer'){
+
+			//transfer a marble
+			else if(data.type == 'transfer'){
 				console.log('transfering msg');
-				if(data.name && data.user){
-					hfc_util.invokeCC(user, chaincodeID, 'set_user', [data.name, data.user]);
+				if(data.name && data.owner){
+					marbles_lib.set_marble_owner(webUser, [data.name, data.owner], function(err, resp){
+						/*setTimeout(function(){
+							
+						}, 2000);*/
+					});
 				}
-			}
+				else console.log('bad inputs for set owner', data);
+			}/*
 			else if(data.type == 'remove'){
 				console.log('removing msg');
 				if(data.name){
