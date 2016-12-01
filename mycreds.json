@@ -1,45 +1,53 @@
 {
 	"credentials": {
-  "peers": [
-    {
-      "discovery_host": "192.168.99.100",
-      "discovery_port": 7051,
-      "api_host": "192.168.99.100",
-      "api_port": 7051,
-      "type": "peer",
-      "network_id": "asdf",
-      "id": "peer1"
+		"network_id": "asdf",
+		"peers": [
+			{
+				"grpc_host": "localhost",
+				"grpc_port": 7051,
+				"api_host": "localhost",
+				"api_port": 7051,
+				"type": "peer",
+				"network_id": "asdf",
+				"id": "peer1"
+			},
+			{
+				"grpc_host": "localhost",
+				"grpc_port": 7052,
+				"api_host": "localhost",
+				"api_port": 7052,
+				"type": "peer",
+				"network_id": "asdf",
+				"id": "peer1"
+			}
+		],
+		"memberservices": [
+			{
+				"id": "asdf-ca",
+				"url": "localhost:8888",
+				"host": "localhost",
+				"port": 8888,
+				"type": "ca",
+				"network_id": "asdf"
+			}
+		],
+		"orderers": [
+			{
+				"host": "localhost",
+				"port": 5151,
+				"type": "orderer",
+				"network_id": "asdf",
+				"id": "orderer-01"
+			}			
+		],
+		"users": [
+			{
+				"username": "bob",
+				"secret": "bobpw",
+				"enrollId": "bob",
+				"enrollSecret": "bobpw"
+			}
+		],
+		"cert": "https://blockchain-certs.mybluemix.net/us.blockchain.ibm.com.cert"
 	}
-  ],
-  "ca": {
-    "0afda1f79f894a99b470ec94b6e1b7af-ca": {
-      "url": "192.168.99.100:7050",
-      "discovery_host": "192.168.99.100:7050",
-      "discovery_port": 7050,
-      "api_host": "192.168.99.100",
-      "api_port": 7050,
-      "type": "ca",
-      "network_id": "asdf",
-      "newUsersObj": [
-        {
-          "enrollId": "bob",
-          "enrollSecret": "bobpw",
-          "group": "group1",
-          "affiliation": "0001",
-          "username": "bob",
-          "secret": "bobpw"
-        }
-      ]
-    }
-  },
-  "users": [
-    {
-      "username": "bob",
-      "secret": "bobpw",
-      "enrollId": "bob",
-      "enrollSecret": "bobpw"
-    }
-  ],
-  "cert": "https://blockchain-certs.mybluemix.net/us.blockchain.ibm.com.cert"
-}
 }

@@ -4,6 +4,8 @@
 
 module.exports = function (chain, chaincode_id, logger) {
 	var hfc = require('../fabric-sdk-node2/index.js');
+	var helper = require(__dirname + '/../helper.js')();
+
 	var marbles = {};
 
 	//-------------------------------------------------------------------
@@ -17,7 +19,7 @@ module.exports = function (chain, chaincode_id, logger) {
 				function() {
 					// send proposal to endorser
 					var request = {
-						targets: [hfc.getPeer('grpc://192.168.99.100:7051'), hfc.getPeer('grpc://192.168.99.100:7056')],
+						targets: [hfc.getPeer(helper.getPeersUrl(0)), hfc.getPeer(helper.getPeersUrl(1))],
 						chaincodeId : chaincode_id,
 						fcn: 'init_marble',
 						args: options 									//args == [marble_id, color, size, owner]
@@ -74,7 +76,7 @@ module.exports = function (chain, chaincode_id, logger) {
 				function() {
 					// send proposal to endorser
 					var request = {
-						targets: [hfc.getPeer('grpc://192.168.99.100:7051'), hfc.getPeer('grpc://192.168.99.100:7056')],
+						targets: [hfc.getPeer(helper.getPeersUrl(0)), hfc.getPeer(helper.getPeersUrl(1))],
 						chaincodeId : chaincode_id,
 						fcn: 'init',
 						args: ['99']

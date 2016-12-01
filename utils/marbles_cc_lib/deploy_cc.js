@@ -6,6 +6,7 @@ module.exports = function (chain, chaincode_id, logger) {
 	var hfc = require('../fabric-sdk-node2/index.js');
 	var deploy_cc = {};
 	var webUser = null;
+	var helper = require(__dirname + '/../helper.js')();
 
 	//-------------------------------------------------------------------
 	// Check if Chaincode Is Already Deployed
@@ -22,7 +23,7 @@ module.exports = function (chain, chaincode_id, logger) {
 
 					// send query
 					var request = {
-						targets: [hfc.getPeer('grpc://192.168.99.100:7051'), hfc.getPeer('grpc://192.168.99.100:7056')],
+						targets: [hfc.getPeer(helper.getPeersUrl(0)), hfc.getPeer(helper.getPeersUrl(1))],
 						chaincodeId : chaincode_id,
 						fcn: 'read',
 						args: ['_marbleindex']
@@ -78,8 +79,8 @@ module.exports = function (chain, chaincode_id, logger) {
 
 					// send proposal to endorser
 					var request = {
-						targets: [hfc.getPeer('grpc://192.168.99.100:7051'), hfc.getPeer('grpc://192.168.99.100:7056')],
-						chaincodePath: 'local/marbles-hfc/marbles-v1/chaincode',
+						targets: [hfc.getPeer(helper.getPeersUrl(0)), hfc.getPeer(helper.getPeersUrl(1))],
+						chaincodePath: './chaincode',
 						chaincodeId: chaincode_id,
 						fcn: 'init',
 						args: ['99'],
@@ -130,7 +131,7 @@ module.exports = function (chain, chaincode_id, logger) {
 				function() {
 					// send query
 					var request = {
-						targets: [hfc.getPeer('grpc://192.168.99.100:7051'), hfc.getPeer('grpc://192.168.99.100:7056')],
+						targets: [hfc.getPeer(helper.getPeersUrl(0)), hfc.getPeer(helper.getPeersUrl(1))],
 						chaincodeId : chaincode_id,
 						fcn: 'read',
 						args: ['_marbleindex']

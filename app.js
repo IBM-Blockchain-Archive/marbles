@@ -33,6 +33,8 @@ var fs = require('fs');
 //var hfc_util = require('./utils/hfc_util');
 var more_entropy = randStr(24);
 
+var helper = require(__dirname + '/utils/helper.js')(console);
+console.log(helper);
 //// Set Server Parameters ////
 var host = setup.SERVER.HOST;
 var port = setup.SERVER.PORT;
@@ -209,29 +211,29 @@ process.env['GRPC_SSL_CIPHER_SUITES'] = 'ECDHE-RSA-AES128-GCM-SHA256:' +
     'ECDHE-ECDSA-AES128-SHA256:' +
     'ECDHE-ECDSA-AES256-SHA384:' +
     'ECDHE-ECDSA-AES256-GCM-SHA384';
-let ccPath = process.env['GOPATH']+'/src/local/marbles-hfc/marbles-v1/chaincode';
+//let ccPath = process.env['GOPATH']+'/src/local/marbles-hfc/marbles-v1/chaincode';
+let ccPath = __dirname + '/chaincode';
 console.log('ccPath: ' + ccPath);
 
 var chaincode_id = 'mycc-marbles-73';
-var peer_url = 'grpc://' + peers[0].discovery_host + ':' + peers[0].discovery_port;
+var peer_url = helper.getPeersUrl(0);
 console.log('Peer address: ' + peer_url);
 //var peer = hfc.getPeer(peer_url);
 
 utils.setConfigSetting('crypto-keysize', 256);
 utils.setConfigSetting('crypto-hash-algo', 'SHA2');
 
-var network_id = Object.keys(manual.credentials.ca);
-var ca_url = 'grpcs://'+ca.discovery_host;
-console.log('Member services address: '+ca_url);
-var uuid = network_id[0].substring(0,8);
+var network_id = helper.getNetworkId();
+var uuid = network_id;
 chain.setKeyValueStore(
 	hfc.newKeyValueStore({
 		path: __dirname + '/keyValStore-' + uuid
 	})
 );
 
-chain.setMemberServicesUrl('http://192.168.99.100:8888');
-chain.setOrderer('grpc://192.168.99.100:5151');
+console.log('Membersrvc url = ', helper.getMemberservicesUrl(0));
+chain.setMemberServicesUrl(helper.getMemberservicesUrl(0));
+chain.setOrderer(helper.getOrderersUrl(0));
 var webUser;
 var chaincode_prefix = 'marbles';								//name to identify chaincode
 var chaincode_id = null;										//full name to identify chaincode

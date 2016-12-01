@@ -3,6 +3,7 @@ const http = require('http');
 
 //var hfc = require('@blockchain/hfc');
 var hfc = require('./fabric-sdk-node2/index.js');
+var helper = require(__dirname + '/helper.js')();
 //var fs = require('fs');
 
 var peerHost = 'localhost';
@@ -14,7 +15,7 @@ var peerRestPort = '7053';
 module.exports.invokeCC = function(user, chaincode_id, fcn, args, callback) {
 	// send proposal to endorser
 	var request = {
-		targets: [hfc.getPeer('grpc://192.168.99.100:7051')],
+		targets: [hfc.getPeer(helper.getPeersUrl(0))],
 		chaincodeId : chaincode_id,
 		fcn: fcn,
 		args: args
@@ -69,7 +70,7 @@ module.exports.invokeCC = function(user, chaincode_id, fcn, args, callback) {
 module.exports.queryCC = function(user, chaincode_id, fcn, args, callback) {
 	// send proposal to endorser
 	var request = {
-		targets: [hfc.getPeer('grpc://localhost:7051')],
+		targets: [hfc.getPeer(helper.getPeersUrl(0))],
 		chaincodeId : chaincode_id,
 		fcn: fcn,
 		args: args
