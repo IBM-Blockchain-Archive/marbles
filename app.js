@@ -346,12 +346,22 @@ function setup_application(enrollUser){
 function setupWebServer(){
 	//var admin = chain.getRegistrar();
 	marbles_lib.get_marble_list(webUser, function(err, resp){
-		console.log('\nthis is wat i got:\n', err, JSON.stringify(resp));
+		console.log('\nthis is wat i got 1:\n', err, JSON.stringify(resp));
 
 		for(var i in resp.payload[0]){
 			console.log('looking at...', resp.payload[0][i]);
 			marbles_lib.get_marble(webUser, resp.payload[0][i], function(err2, resp2){
-				console.log('\nthis is wat i got:\n', err2, JSON.stringify(resp2));
+				console.log('\nthis is wat i got 2:\n', err2, JSON.stringify(resp2));
+
+				marbles_lib.set_marble_owner(webUser, [resp.payload[0][i], 'david'], function(err3, resp3){
+					console.log('\nthis is wat i got 3:\n', err2, JSON.stringify(resp2));
+
+					setTimeout(function(){
+						marbles_lib.get_marble(webUser, resp.payload[0][i], function(err4, resp4){
+							console.log('\nthis is wat i got 4:\n', err4, JSON.stringify(resp4));
+						});
+					}, 15000);
+				});
 			});
 		}
 	});

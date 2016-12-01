@@ -13,7 +13,7 @@ module.exports = function (chain, chaincode_id, logger) {
 
 	//deploy chaincode
 	marbles_chaincode.deploy_chaincode = function (cb) {
-		deploy_cc.deploy_chaincodefunction(cb);
+		deploy_cc.deploy_chaincode(cb);
 	};
 
 	//check chaincode
@@ -41,9 +41,14 @@ module.exports = function (chain, chaincode_id, logger) {
 		marbles.get_marble_list(webUser, cb);
 	};
 
-	//get marbles
-	marbles_chaincode.get_marble = function (webUser, cb) {
-		marbles.get_marble(webUser, cb);
+	//get marble
+	marbles_chaincode.get_marble = function (webUser, marble_name, cb) {
+		marbles.get_marble(webUser, marble_name, cb);
+	};
+
+	//set marble owner
+	marbles_chaincode.set_marble_owner = function (webUser, options, cb) {
+		marbles.set_marble_owner(webUser, options, cb);
 	};
 
 	return marbles_chaincode;

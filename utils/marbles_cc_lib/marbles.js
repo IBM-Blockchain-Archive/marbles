@@ -10,7 +10,7 @@ module.exports = function (chain, chaincode_id, logger) {
 	// Create Marble - options are [marble_id, color, size, owner]
 	//-------------------------------------------------------------------
 	marbles.create_a_marble = function (webUser, options, cb) {
-		console.log('\nCreating a marble\n');
+		console.log('\ncreating a marble...');
 		return new Promise(function (resolve, reject) {
 			chain.enroll('admin', 'adminpw')
 				.then(
@@ -67,7 +67,7 @@ module.exports = function (chain, chaincode_id, logger) {
 	// Create Marble - delete all marbles from index (this will make the app 'forget' them)
 	//-------------------------------------------------------------------
 	marbles.reset_marble_index = function (webUser, cb) {
-		console.log('\nRemoving marbles from index\n');
+		console.log('\nremoving marbles from index...');
 		return new Promise(function (resolve, reject) {
 			chain.enroll('admin', 'adminpw')
 				.then(
@@ -123,7 +123,7 @@ module.exports = function (chain, chaincode_id, logger) {
 	// Get Marble Index List
 	//----------------------------------------------------
 	marbles.get_marble_list = function (webUser, cb) {
-		console.log('fetching marble index list...');
+		console.log('\nfetching marble index list...');
 		var request = {
 			targets: [hfc.getPeer('grpc://192.168.99.100:7051'), hfc.getPeer('grpc://192.168.99.100:7056')],
 			chaincodeId: chaincode_id,
@@ -158,7 +158,7 @@ module.exports = function (chain, chaincode_id, logger) {
 	// Get a Marble
 	//----------------------------------------------------
 	marbles.get_marble = function (webUser, marble_name, cb) {
-		console.log('fetching marble ' + marble_name +' list...');
+		console.log('\nfetching marble ' + marble_name +' list...');
 		var request = {
 			targets: [hfc.getPeer('grpc://192.168.99.100:7051'), hfc.getPeer('grpc://192.168.99.100:7056')],
 			chaincodeId: chaincode_id,
@@ -180,8 +180,50 @@ module.exports = function (chain, chaincode_id, logger) {
 					if(cb) return cb(formated.error, formated.ret);
 				}
 			}
-		)
-		.catch(
+		).catch(
+			function (err) {
+				if(cb) return cb(err, null);
+			}
+		);
+	};
+
+	//-------------------------------------------------------------------
+	// Set Marble Owner - options are [marble_id, owner]
+	//-------------------------------------------------------------------
+	marbles.set_marble_owner = function (webUser, options, cb) {
+		console.log('\nsetting marble owner...');
+
+		// send proposal to endorser
+		var request = {
+			targets: [hfc.getPeer('grpc://192.168.99.100:7051'), hfc.getPeer('grpc://192.168.99.100:7056')],
+			chaincodeId: chaincode_id,
+			fcn: 'set_owner',
+			args: options 									//args == ["name", "bob"]
+		};
+		webUser.sendTransactionProposal(request)
+		.then(
+			function (results) {
+				var proposalResponses = results[0];
+				var proposal = results[1];
+				if (proposalResponses[0].response.status === 200) {
+					console.log('Successfully obtained transaction endorsement.' + JSON.stringify(proposalResponses));
+					return webUser.sendTransaction(proposalResponses, proposal);
+				}
+				else {
+					console.log('Failed to obtain transaction endorsement. Error code: ' + proposalResponses[0].response.status);
+				}
+			}
+		).then(
+			function (response) {
+				if (response.Status === 'SUCCESS') {
+					console.log('Successfully ordered endorsement transaction.');
+					if (cb) cb();
+				}
+				else {
+					console.log('Failed to order the endorsement of the transaction. Error code: ' + response.status);
+				}
+			}
+		).catch(
 			function (err) {
 				if(cb) return cb(err, null);
 			}
