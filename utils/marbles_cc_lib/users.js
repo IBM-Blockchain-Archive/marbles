@@ -7,7 +7,7 @@ module.exports = function (chain, chaincode_id, logger) {
 	var users = {};
 
 	//-------------------------------------------------------------------
-	// Create Marble - options are [marble_id, color, size, owner]
+	// Create User - options are {username: bob}
 	//-------------------------------------------------------------------
 	users.create_marble_user = function (webUser, options, cb) {
 		console.log('\nCreating a user\n');

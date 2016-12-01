@@ -275,6 +275,7 @@ set_chaincode_id(function(){
 			marbles_lib.deploy_chaincode(setup_application);
 		}
 		else{													//else we already deployed
+			webUser = enrollUser;
 			console.log('\n\nChaincode already deployed\n\n');
 			setupWebServer();				//starts the webapp
 			//setup_application(enrollUser); 			//builds marbles
@@ -344,6 +345,10 @@ function setup_application(enrollUser){
 // ============================================================================================================================
 function setupWebServer(){
 	//var admin = chain.getRegistrar();
+	marbles_lib.get_marble_list(webUser, function(err, resp){
+		console.log('this is wat i got:\n', err, JSON.stringify(resp));
+	});
+
 	console.log('------------------------------------------ Websocket Up ------------------------------------------');
 
 	wss = new ws.Server({server: server});												//start the websocket now
