@@ -3,13 +3,13 @@
 //var url = require('url');
 
 module.exports = function (chain, chaincode_id, logger) {
-	var hfc = require('./fabric-sdk-node2/index.js');
-	var marbles_chaincode = {};
+	var hfc = require('../fabric-sdk-node2/index.js');
+	var marbles = {};
 
 	//-------------------------------------------------------------------
 	// Create Marble - options are [marble_id, color, size, owner]
 	//-------------------------------------------------------------------
-	marbles_chaincode.create_a_marble = function (webUser, options, cb) {
+	marbles.create_a_marble = function (webUser, options, cb) {
 		console.log('\nCreating a marble\n');
 		return new Promise(function(resolve, reject) {
 			chain.enroll('admin', 'adminpw')
@@ -66,7 +66,7 @@ module.exports = function (chain, chaincode_id, logger) {
 	//-------------------------------------------------------------------
 	// Create Marble - delete all marbles from index (this will make the app 'forget' them)
 	//-------------------------------------------------------------------
-	marbles_chaincode.reset_marble_index = function (webUser, cb) {
+	marbles.reset_marble_index = function (webUser, cb) {
 		console.log('\nRemoving marbles from index\n');
 		return new Promise(function(resolve, reject) {
 			chain.enroll('admin', 'adminpw')
@@ -120,6 +120,6 @@ module.exports = function (chain, chaincode_id, logger) {
 	};
 	
 
-	return marbles_chaincode;
+	return marbles;
 };
 

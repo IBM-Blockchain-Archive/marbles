@@ -267,7 +267,7 @@ function make_chaincode_id(cb){
 // gogo
 make_chaincode_id(function(){
 	console.log('[0] this should only appear once, right?');
-	marbles_lib = require('./utils/marbles_cc_lib.js')(chain, chaincode_id, null);
+	marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, chaincode_id, null);
 
 	check_if_already_deployed(function(not_deployed){
 		if(not_deployed){										//if this is truthy we have not yet deployed, do it now
