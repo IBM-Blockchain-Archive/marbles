@@ -41,6 +41,11 @@ module.exports = function (chain, chaincode_id, logger) {
 		marbles.get_marble_list(webUser, cb);
 	};
 
+	//get marbles
+	marbles_chaincode.get_marble = function (webUser, cb) {
+		marbles.get_marble(webUser, cb);
+	};
+
 	return marbles_chaincode;
 };
 

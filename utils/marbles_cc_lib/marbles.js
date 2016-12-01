@@ -120,10 +120,10 @@ module.exports = function (chain, chaincode_id, logger) {
 	};
 
 	//-------------------------------------------------------------------
-	// Check if Chaincode Is Already Deployed
+	// Get Marble Index List
 	//----------------------------------------------------
 	marbles.get_marble_list = function (webUser, cb) {
-		// send query
+		console.log('fetching marble index list...');
 		var request = {
 			targets: [hfc.getPeer('grpc://192.168.99.100:7051'), hfc.getPeer('grpc://192.168.99.100:7056')],
 			chaincodeId: chaincode_id,
@@ -141,7 +141,7 @@ module.exports = function (chain, chaincode_id, logger) {
 				else{
 
 					// -- send formated response -- //
-					var formated = format_response(response_payloads, 'marbles');
+					var formated = format_query_resp(response_payloads, 'marbles');
 					if(cb) return cb(formated.error, formated.ret);
 				}
 			}
@@ -154,9 +154,42 @@ module.exports = function (chain, chaincode_id, logger) {
 	};
 	
 
+	//-------------------------------------------------------------------
+	// Get a Marble
+	//----------------------------------------------------
+	marbles.get_marble = function (webUser, marble_name, cb) {
+		console.log('fetching marble ' + marble_name +' list...');
+		var request = {
+			targets: [hfc.getPeer('grpc://192.168.99.100:7051'), hfc.getPeer('grpc://192.168.99.100:7056')],
+			chaincodeId: chaincode_id,
+			fcn: 'read',
+			args: [marble_name]
+		};
+
+		webUser.queryByChaincode(request)
+		.then(
+			function(response_payloads) {
+				if(response_payloads.length <= 0){
+					console.log('! Query response is empty: ');
+					if(cb) return cb({error: 'query response is empty'}, null);
+				}
+				else{
+
+					// -- send formated response -- //
+					var formated = format_query_resp(response_payloads);
+					if(cb) return cb(formated.error, formated.ret);
+				}
+			}
+		)
+		.catch(
+			function (err) {
+				if(cb) return cb(err, null);
+			}
+		);
+	};
 
 	//format query response
-	function format_response(peer_responses, grab_inner_field){
+	function format_query_resp(peer_responses, grab_inner_field){
 		var ret = 	{
 						peers_agree: true,
 						payload: []

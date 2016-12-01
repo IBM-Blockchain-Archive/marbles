@@ -346,7 +346,14 @@ function setup_application(enrollUser){
 function setupWebServer(){
 	//var admin = chain.getRegistrar();
 	marbles_lib.get_marble_list(webUser, function(err, resp){
-		console.log('this is wat i got:\n', err, JSON.stringify(resp));
+		console.log('\nthis is wat i got:\n', err, JSON.stringify(resp));
+
+		for(var i in resp.payload[0]){
+			console.log('looking at...', resp.payload[0][i]);
+			marbles_lib.get_marble(webUser, resp.payload[0][i], function(err2, resp2){
+				console.log('\nthis is wat i got:\n', err2, JSON.stringify(resp2));
+			});
+		}
 	});
 
 	console.log('------------------------------------------ Websocket Up ------------------------------------------');
