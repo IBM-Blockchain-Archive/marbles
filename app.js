@@ -318,26 +318,35 @@ function build_marble_options(username){
 //this only runs after we deploy
 function setup_application(enrollUser){
 	webUser = enrollUser;
-	//var marble_users = ['bob', 'bill'];
-	var marble_users = ['bob'];
 
 	// --- Create Each user --- //
-	async.eachLimit(marble_users, 1, function(username, user_cb) {			//iter through each one
-		var options = {username: username};
-		marbles_lib.create_marble_user(webUser, options, function(){
-			
-			// --- Create Marble(s) --- //
-			async.each([1], function(block_height, marble_cb) {				//create two marbles for every user
-				var randOptions = build_marble_options(username);
-				console.log('\n\ngoing to creat marble:', randOptions);
-				marbles_lib.create_a_marble(webUser, randOptions, marble_cb);
-			}, function() {
-				user_cb();													//marble creation finished
+	if(process.env.build_marbles_users){
+		var build_users = [];
+		try{
+			build_users = JSON.parse(process.env.build_marbles_users);
+		}
+		catch(e){console.log('not json', e);}
+		async.eachLimit(build_users, 1, function(username, user_cb) { //iter through each one
+			var options = {username: username};
+			user_cb();
+			marbles_lib.create_marble_user(webUser, options, function(){
+				
+				// --- Create Marble(s) --- //
+				async.each([1], function(block_height, marble_cb) {				//create two marbles for every user
+					var randOptions = build_marble_options(username);
+					console.log('\n\ngoing to creat marble:', randOptions);
+					marbles_lib.create_a_marble(webUser, randOptions, marble_cb);
+				}, function() {
+					user_cb();													//marble creation finished
+				});
 			});
+		}, function(err) {
+			if(err == null) setupWebServer();									//user creation finished
 		});
-	}, function(err) {
-		if(err == null) setupWebServer();									//user creation finished
-	});
+	}
+	else{
+		setupWebServer();
+	}
 }
 
 // ============================================================================================================================

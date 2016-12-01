@@ -7,7 +7,7 @@ var cleanCSS = require('gulp-clean-css');
 var rename = require('gulp-rename');
 var bust = require('gulp-buster');
 var spawn = require('child_process').spawn;
-var node;
+var node, env = process.env;
 
 ////// Build Tasks ///////
 gulp.task('build-sass', function () {
@@ -34,7 +34,7 @@ gulp.task('build-js-hash', function () {
 ////// Run Server Task ///////
 gulp.task('server', function() {
 	if(node) node.kill();
-	node = spawn('node', ['app.js'], {stdio: 'inherit'});			//command, file, options
+	node = spawn('node', ['app.js'], {env: env, stdio: 'inherit'});			//command, file, options
 });
 
 ////// Watch Tasks //////
@@ -55,3 +55,27 @@ gulp.task('watch-server', ['server'], function () {
 
 ////// Tasks //////
 gulp.task('default', ['watch-sass', 'watch-js', 'watch-server']);
+gulp.task('mtc1', ['setup_mtc1', 'default']);
+gulp.task('mtc2', ['setup_mtc2', 'default']);
+gulp.task('mtc3', ['setup_mtc3', 'default']);
+
+// MTC 1
+gulp.task('setup_mtc1', function () {
+	console.log('Starting Marbles Trading Company 1');
+	var build_users = ['amy', 'alice', 'amber'];
+	env['build_marbles_users'] = JSON.stringify(build_users);		//copy to environmental vars
+});
+
+// MTC 2
+gulp.task('setup_mtc2', function () {
+	console.log('Starting Marbles Trading Company 2');
+	var build_users = ['bob', 'bill'];
+	env['build_marbles_users'] = JSON.stringify(build_users);		//copy to environmental vars
+});
+
+// MTC 3
+gulp.task('setup_mtc3', function () {
+	console.log('Starting Marbles Trading Company 3');
+	var build_users= ['cliff', 'cody'];
+	env['build_marbles_users'] = JSON.stringify(build_users);		//copy to environmental vars
+});
