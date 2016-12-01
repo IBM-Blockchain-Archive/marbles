@@ -19,10 +19,10 @@ $(document).on('ready', function() {
 						name: $('input[name="name"]').val().replace(' ', ''),
 						color: $('.colorSelected').attr('color'),
 						size: $('select[name="size"]').val(),
-						user: $('select[name="user"]').val(),
+						owner: $('select[name="user"]').val(),
 						v: 1
 					};
-		if(obj.user && obj.name && obj.color){
+		if(obj.owner && obj.name && obj.color){
 			console.log('creating marble, sending', obj);
 			ws.send(JSON.stringify(obj));
 			showHomePanel();
@@ -217,15 +217,15 @@ function build_ball(data){
 	
 	data.name = escapeHtml(data.name);
 	data.color = escapeHtml(data.color);
-	data.user = escapeHtml(data.user);
+	data.owner = escapeHtml(data.owner);
 	
 	console.log('got a marble: ', data.color);
 	if(!$('#' + data.name).length){								//only populate if it doesn't exists
 		if(data.size == 16) size = 'fa-3x';
 		if(data.color) colorClass = data.color.toLowerCase();
 		
-		html += '<span id="' + data.name + '" class="fa fa-circle ' + size + ' ball ' + colorClass + ' title="' + data.name + '" user="' + data.user + '"></span>';
-		if(data.user && data.user.toLowerCase() == bag.setup.USER1){
+		html += '<span id="' + data.name + '" class="fa fa-circle ' + size + ' ball ' + colorClass + ' title="' + data.name + '" user="' + data.owner + '"></span>';
+		if(data.owner && data.owner.toLowerCase() == bag.setup.USER1){
 			$('#user1wrap').append(html);
 		}
 		else{

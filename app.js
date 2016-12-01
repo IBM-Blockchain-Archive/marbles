@@ -146,8 +146,6 @@ require('cf-deployment-tracker-client').track();		//reports back to us, this hel
 // ============================================================================================================================
 // 														Work Area
 // ============================================================================================================================
-var part1 = require('./utils/ws_part1');														//websocket message processing for part 1
-var part2 = require('./utils/ws_part2');														//websocket message processing for part 2
 var ws = require('ws');																			//websocket mod
 var wss = {};
 
@@ -161,8 +159,8 @@ try{
 	var peers = manual.credentials.peers;
 	console.log('loading hardcoded peers');
 	var users = null;																			//users are only found if security is on
-	var caContainer = manual.credentials.ca;
-	var ca = caContainer[Object.keys(caContainer)[0]];
+	//var caContainer = manual.credentials.ca;
+	//var ca = caContainer[Object.keys(caContainer)[0]];
 
 	if(manual.credentials.users) users = manual.credentials.users;
 	console.log('loading hardcoded users');
@@ -329,12 +327,13 @@ function build_marble_options(username){
 
 //this only runs after we deploy
 function setup_application(enrollUser){
-
+	console.log('setting up application');
 	// --- Create Each user --- //
 	if(process.env.build_marbles_users){
 		var build_users = [];
 		try{
 			build_users = JSON.parse(process.env.build_marbles_users);
+			console.log('building ' + build_users.length + ' users');
 		}
 		catch(e){console.log('not json', e);}
 		async.eachLimit(build_users, 1, function(username, user_cb) { 			//iter through each one
@@ -348,7 +347,7 @@ function setup_application(enrollUser){
 					marbles_lib.create_a_marble(webUser, randOptions, function(){
 						setTimeout(function(){
 							marble_cb();
-						}, 5000);
+						}, 1500);
 					});
 				}, function() {
 					user_cb();													//marble creation finished
@@ -359,7 +358,7 @@ function setup_application(enrollUser){
 			if(err == null) {
 				setTimeout(function(){
 					setupWebServer();									//user creation finished
-				}, 10000);
+				}, 2000);
 			}
 		});
 	}
@@ -374,7 +373,7 @@ function setup_application(enrollUser){
 // ============================================================================================================================
 function setupWebServer(){
 	//var admin = chain.getRegistrar();
-	marbles_lib.get_marble_list(webUser, function(err, resp){
+	/*marbles_lib.get_marble_list(webUser, function(err, resp){
 		console.log('\n\n\nthis is wat i got 1: marbles:', resp.payload[0].length);
 		console.log(err, JSON.stringify(resp));
 
@@ -391,13 +390,15 @@ function setupWebServer(){
 						marbles_lib.get_marble(webUser, resp.payload[0][i], function(err4, resp4){
 							console.log('\nthis is wat i got 4:\n', err4, JSON.stringify(resp4));
 						});
-					}, 10000);
+					}, 2000);
 				});*/
-			});
+			/*});
 		}
-	});
+	});*/
 
 	console.log('------------------------------------------ Websocket Up ------------------------------------------');
+	var part1 = require('./utils/ws_part1')(webUser, marbles_lib, null);				//websocket message processing for part 1
+	//var part2 = require('./utils/ws_part2');											//websocket message processing for part 2
 
 	wss = new ws.Server({server: server});												//start the websocket now
 	wss.on('connection', function connection(ws) {
@@ -406,7 +407,7 @@ function setupWebServer(){
 			try{
 				var data = JSON.parse(message);
 				part1.process_msg(ws, data);											//pass the websocket msg to part 1 processing
-				part2.process_msg(ws, data);											//pass the websocket msg to part 2 processing
+				//part2.process_msg(ws, data);											//pass the websocket msg to part 2 processing
 			}
 			catch(e){
 				console.log('ws message error', e);

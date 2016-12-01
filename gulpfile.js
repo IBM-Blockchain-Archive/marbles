@@ -63,7 +63,7 @@ gulp.task('mtc3', ['setup_mtc3', 'default']);
 gulp.task('setup_mtc1', function () {
 	console.log('Starting Marbles Trading Company 1');
 	//var build_users = ['amy', 'alice', 'amber'];
-	var build_users = ['amy'];
+	var build_users = ['amy', 'alice'];
 	env['build_marbles_users'] = JSON.stringify(build_users);		//copy to environmental vars
 });
 
