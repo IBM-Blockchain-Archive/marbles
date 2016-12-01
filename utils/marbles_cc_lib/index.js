@@ -12,13 +12,13 @@ module.exports = function (chain, chaincode_id, logger) {
 	var marbles_chaincode = {};
 
 	//deploy chaincode
-	marbles_chaincode.deploy_chaincode = function (cb) {
-		deploy_cc.deploy_chaincode(cb);
+	marbles_chaincode.deploy_chaincode = function (webUser, cb) {
+		deploy_cc.deploy_chaincode(webUser, cb);
 	};
 
 	//check chaincode
-	marbles_chaincode.check_if_already_deployed = function (cb) {
-		deploy_cc.check_if_already_deployed(cb);
+	marbles_chaincode.check_if_already_deployed = function (webUser, cb) {
+		deploy_cc.check_if_already_deployed(webUser, cb);
 	};
 
 	//create a marble
