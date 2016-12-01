@@ -824,8 +824,9 @@ function packageChaincode(chaincodePath, chaincodeId, dockerfileContents) {
 	let goPath =  process.env['GOPATH'];
 
 	// Compose the path to the chaincode project directory
-	let projDir = goPath + '/src/' + chaincodePath;
-
+	//let projDir = goPath + '/src/' + chaincodePath;
+	let projDir = chaincodePath;
+	
 	// Compose the Dockerfile commands
 	if (dockerfileContents === undefined) {
 		dockerfileContents = sdkUtils.getConfigSetting('dockerfile-contents', undefined);
