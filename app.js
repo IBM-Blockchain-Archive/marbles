@@ -238,6 +238,8 @@ var chaincode_prefix = 'marbles';								//name to identify chaincode
 var chaincode_id = null;										//full name to identify chaincode
 var user = users[0];
 
+var marbles_lib = null;
+
 //make chaincode name unique-ish
 function make_chaincode_id(cb){
 	fs.readdir(ccPath, function(err, files){
@@ -264,13 +266,16 @@ function make_chaincode_id(cb){
 
 // gogo
 make_chaincode_id(function(){
+	console.log('[0] this should only appear once, right?');
+	marbles_lib = require('./utils/marbles_cc_lib.js')(chain, chaincode_id, null);
+
 	check_if_already_deployed(function(not_deployed){
 		if(not_deployed){										//if this is truthy we have not yet deployed, do it now
-			console.log('\nChaincode was not detected, going to deploy it now\n');
+			console.log('\n[1]Chaincode was not detected, going to deploy it now\n');
 			deploy_chaincode(setup_application);
 		}
 		else{													//else we already deployed
-			console.log('\nChaincode already deployed');
+			console.log('\n[1]Chaincode already deployed');
 			console.log('\nSetting up web server ...');
 			setupWebServer();				//starts the webapp
 			//setup_application(); 			//builds marbles
@@ -307,7 +312,6 @@ function check_if_already_deployed(cb){
 				if(response_payloads.length <= 0){
 					console.log('Query response is empty: ');
 					if(cb) return cb({error: 'query response is empty'});
-					else return;
 				}
 				else{
 					for(i in response_payloads) {		//pray to the gods that i===peer_id and they never move
@@ -315,7 +319,6 @@ function check_if_already_deployed(cb){
 					}
 					console.log('---------------------------------------------------------------------------');
 					if(cb) return cb(null);
-					else return;
 				}
 			},
 			function(err) {
@@ -326,8 +329,8 @@ function check_if_already_deployed(cb){
 		).catch(
 			function(err) {
 				console.log('Failed, in catch block?' + err.stack ? err.stack : err);
-				if(cb) return cb(err);
-				else return;
+				//if(cb) return cb(err);
+				//else return;
 			}
 		);
 	});
@@ -430,62 +433,6 @@ function deploy_chaincode(cb){
 	});
 }
 
-//options are [marble_id, color, size, owner]
-function create_a_marble(options, cb){
-	console.log('\nCreating a marble\n');
-	return new Promise(function(resolve, reject) {
-		console.log('Attempt to enroll: username: ' + user.username + ', secret: ' + user.secret);
-		chain.enroll('admin', 'adminpw')
-		.then(
-			function() {
-				// send proposal to endorser
-				var request = {
-					targets: [hfc.getPeer('grpc://192.168.99.100:7051'), hfc.getPeer('grpc://192.168.99.100:7056')],
-					chaincodeId : chaincode_id,
-					fcn: 'init_marble',
-					args: options 									//args == [marble_id, color, size, owner]
-				};
-				return webUser.sendTransactionProposal(request);
-			},
-			function(err) {
-				console.log('Failed to send invoke due to error: ' + err.stack ? err.stack : err);
-			}
-		).then(
-			function(results) {
-				var proposalResponses = results[0];
-				var proposal = results[1];
-				if (proposalResponses[0].response.status === 200) {
-					console.log('Successfully obtained transaction endorsement.' + JSON.stringify(proposalResponses));
-					return webUser.sendTransaction(proposalResponses, proposal);
-				} else {
-					console.log('Failed to obtain transaction endorsement. Error code: ' + proposalResponses[0].response.status);
-				}
-			},
-			function(err) {
-				console.log('Failed to send transaction proposal due to error: ' + err.stack ? err.stack : err);
-			}
-		).then(
-			function(response) {
-				if (response.Status === 'SUCCESS') {
-					console.log('Successfully ordered endorsement transaction.');
-					console.log(' need to wait now for the committer to catch up');
-					if(cb) cb();
-				} else {
-					console.log('Failed to order the endorsement of the transaction. Error code: ' + response.status);
-				}
-			},
-			function(err) {
-				console.log('Failed to send transaction proposal due to error: ' + err.stack ? err.stack : err);
-			}
-		).catch(
-			function(err) {
-				console.log('Failed, in catch block' + err.stack ? err.stack : err);
-			}
-		);
-	});
-}
-
-
 //delete all marbles from index (this will make the app 'forget' them)
 function reset_marble_index(cb){
 	console.log('\nRemoving marbles from index\n');
@@ -583,10 +530,10 @@ function setup_application(){
 	var marble_users = ['bob'];
 	async.eachLimit(marble_users, 1, function(username, user_cb) {			//iter through each one
 		create_marble_user(username, function(){
-			async.each([1,2], function(block_height, marble_cb) {			//create two marbles for every user
+			async.each([1], function(block_height, marble_cb) {			//create two marbles for every user
 				var randOptions = build_marble_options(username);
 				console.log('\n\ngoing to creat marble:', randOptions);
-				create_a_marble(randOptions, marble_cb);
+				marbles_lib.create_a_marble(webUser, randOptions, marble_cb);
 			}, function() {
 				user_cb();													//marble setup finished
 			});
