@@ -26,6 +26,7 @@ var url = require('url');
 var setup = require('./setup');
 var fs = require('fs');
 var cors = require('cors');
+var async = require('async');
 
 var hfc = require('./utils/fabric-sdk-node2/index.js');
 //var hfc = require('@blockchain/hfc');
@@ -247,7 +248,7 @@ function make_chaincode_id(cb){
 		for(var i in files){
 			if(files[i].indexOf('.go') === -1) continue;
 			else chaincode_edit_date(ccPath + '/' + files[i]);
-			break;												//first go file we found is good enough
+			break;												//first .go file we found is good enough
 		}
 	});
  
@@ -266,13 +267,13 @@ make_chaincode_id(function(){
 	check_if_already_deployed(function(not_deployed){
 		if(not_deployed){										//if this is truthy we have not yet deployed, do it now
 			console.log('\nChaincode was not detected, going to deploy it now\n');
-			deploy_chaincode(create_a_marble);
+			deploy_chaincode(setup_application);
 		}
 		else{													//else we already deployed
 			console.log('\nChaincode already deployed');
 			console.log('\nSetting up web server ...');
-			//setupWebServer();
-			create_a_marble();
+			setupWebServer();
+			//setup_application();
 		}
 	});
 });
@@ -297,8 +298,8 @@ function check_if_already_deployed(cb){
 			},
 			function(err) {
 				console.log('Failed to wait-- error: ' + err.stack ? err.stack : err);
-				if(cb) return cb(err);
-				else return;
+				//if(cb) return cb(err);
+				//else return;
 			}
 		).then(
 			function(response_payloads) {
@@ -318,12 +319,12 @@ function check_if_already_deployed(cb){
 			},
 			function(err) {
 				console.log('Failed to send query due to error: ' + err.stack ? err.stack : err);
-				if(cb) return cb(err);
-				else return;
+				//if(cb) return cb(err);
+				//else return;
 			}
 		).catch(
 			function(err) {
-				console.log('Failed to end to end test with error:' + err.stack ? err.stack : err);
+				console.log('Failed, in catch block?' + err.stack ? err.stack : err);
 				if(cb) return cb(err);
 				else return;
 			}
@@ -428,7 +429,8 @@ function deploy_chaincode(cb){
 	});
 }
 
-function create_a_marble(){
+//options are [marble_id, color, size, owner]
+function create_a_marble(options, cb){
 	console.log('\nCreating a marble\n');
 	return new Promise(function(resolve, reject) {
 		console.log('Attempt to enroll: username: ' + user.username + ', secret: ' + user.secret);
@@ -440,7 +442,7 @@ function create_a_marble(){
 					targets: [hfc.getPeer('grpc://192.168.99.100:7051'), hfc.getPeer('grpc://192.168.99.100:7056')],
 					chaincodeId : chaincode_id,
 					fcn: 'init_marble',
-					args: ['test', 'blue', '35','bob']
+					args: options 									//args == [marble_id, color, size, owner]
 				};
 				return webUser.sendTransactionProposal(request);
 			},
@@ -466,7 +468,7 @@ function create_a_marble(){
 				if (response.Status === 'SUCCESS') {
 					console.log('Successfully ordered endorsement transaction.');
 					console.log(' need to wait now for the committer to catch up');
-					setupWebServer();
+					if(cb) cb();
 				} else {
 					console.log('Failed to order the endorsement of the transaction. Error code: ' + response.status);
 				}
@@ -482,8 +484,63 @@ function create_a_marble(){
 	});
 }
 
+
 function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function getRandomInt(min, max) {
+	min = Math.ceil(min);
+	max = Math.floor(max);
+	return Math.floor(Math.random() * (max - min)) + min;
+}
+
+
+function randStr(length){
+	var text = '';
+	var possible = 'abcdefghijkmnpqrstuvwxyz0123456789';
+	for(var i=0; i < length; i++ ) text += possible.charAt(Math.floor(Math.random() * possible.length));
+	return text;
+}	
+
+var more_entropy = randStr(24);
+
+function simple_hash(a_string){
+	var hash = 0;
+	for(var i in a_string) hash += a_string.charCodeAt(i);
+	return hash;
+}
+
+//create random marble arguments (it is not important for it to be random, just more fun)
+function build_marble_options(username){
+	var colors = ['white', 'black', 'red', 'green', 'blue', 'purple', 'pink', 'orange', 'yellow'];
+	var sizes = ['35', '16'];
+	var color_index = simple_hash(more_entropy + username) % colors.length;	//build a psudeo random index to pick a color
+	var size_index = getRandomInt(0, sizes.length);					//build a random size for this marble
+	return [randStr(24), colors[color_index], sizes[size_index], username];
+}
+
+//this only runs after we deploy
+function setup_application(){
+	//var marble_users = ['bob', 'bill'];
+	var marble_users = ['bob'];
+	async.eachLimit(marble_users, 1, function(username, user_cb) {			//iter through each one
+		create_marble_user(username, function(){
+			async.each([1,2], function(block_height, marble_cb) {			//create two marbles for every user
+				var randOptions = build_marble_options(username);
+				console.log('\n\ngoing to creat marble:', randOptions);
+				create_a_marble(randOptions, marble_cb);
+			}, function() {
+				user_cb();													//marble setup finished
+			});
+		});
+	}, function(err) {
+		if(err == null) setupWebServer();									//user setup finished
+	});
+}
+
+function create_marble_user(username, cb){
+	if(cb) cb();
 }
 
 // ============================================================================================================================
