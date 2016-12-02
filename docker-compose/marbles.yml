@@ -3,7 +3,7 @@ version: '2'
 services:
 
   mtc-01:
-    build: ../
+    build: ${MARBLES_LOCATION}/
     image: marbles
     depends_on:
       - peer-01
@@ -22,7 +22,7 @@ services:
     entrypoint: gulp mtc1
 
   mtc-02:
-    build: ../
+    build: ${MARBLES_LOCATION}/
     image: marbles
     depends_on:
       - peer-01
