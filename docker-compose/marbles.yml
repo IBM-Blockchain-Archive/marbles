@@ -1,0 +1,37 @@
+version: '2'
+
+services:
+
+  mtc-01:
+    build: ../
+    image: marbles
+    depends_on:
+      - peer-01
+      - orderer
+      - cop
+    links:
+      - cop
+      - orderer
+      - peer-02
+    ports:
+      - 3000:3000
+    container_name: mtc-01
+    entrypoint: gulp mtc1
+
+  mtc-02:
+    build: ../
+    image: marbles
+    depends_on:
+      - peer-01
+      - orderer
+      - cop
+    links:
+      - cop
+      - orderer
+      - peer-03
+    ports:
+      - 3001:3000
+    container_name: mtc-02
+    entrypoint: gulp mtc2
+
+
