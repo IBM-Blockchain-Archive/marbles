@@ -33,10 +33,10 @@
 		],
 		"users": [
 			{
-				"username": "bob",
-				"secret": "bobpw",
-				"enrollId": "bob",
-				"enrollSecret": "bobpw"
+				"username": "admin",
+				"secret": "adminpw",
+				"enrollId": "admin",
+				"enrollSecret": "adminpw"
 			}
 		],
 		"cert": "https://blockchain-certs.mybluemix.net/us.blockchain.ibm.com.cert"
