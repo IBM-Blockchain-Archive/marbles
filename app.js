@@ -267,7 +267,7 @@ function set_chaincode_id(cb){
 // things start here!
 // -------------------------------------------------------------------
 var webUser = null;
-chain.enroll('admin', 'adminpw').then(
+chain.enroll(helper.getUsers(0).enrollId, helper.getUsers(0).enrollSecret).then(
 	function(enrolledUser) {
 		console.log('Successfully enrolled user');
 		webUser = enrolledUser;
