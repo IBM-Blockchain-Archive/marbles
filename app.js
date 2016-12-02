@@ -281,8 +281,8 @@ chain.enroll(helper.getUsers(0).enrollId, helper.getUsers(0).enrollSecret).then(
 				}
 				else{													//else we already deployed
 					console.log('\n\nChaincode already deployed\n\n');
-					setupWebServer();				//starts the webapp
-					//setup_application(enrollUser); 			//builds marbles
+					//setupWebServer();							//starts the webapp
+					setup_application(enrollUser); 				//builds marbles, then starts webapp
 					//marbles_lib.reset_marble_index();			//reset 
 				}
 			});
