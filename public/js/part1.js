@@ -228,7 +228,7 @@ function build_ball(data){
 		if(data.owner && data.owner.toLowerCase() == bag.setup.USER1){
 			$('#user1wrap').append(html);
 		}
-		else{
+		else if(data.owner && data.owner.toLowerCase() == bag.setup.USER2){
 			$('#user2wrap').append(html);
 		}
 	}

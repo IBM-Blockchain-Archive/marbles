@@ -52,7 +52,7 @@ else if(process.env.VCAP_APP_HOST){
 else{
 	exports.SERVER = 	{
 							HOST:'localhost',
-							PORT: 3000,
+							PORT: process.env.marble_port || 3000,
 							DESCRIPTION: 'Localhost',
 							EXTURI: 'localhost:3000',	//no longer used 4/29/2016
 						 };
@@ -64,5 +64,12 @@ exports.SERVER.vcap_app = vcap_app;
 ////////////////////////////////////////     Common     ////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
 exports.DEBUG = vcap_app;
-exports.USER1 = 'amy';									//left username
-exports.USER2 = 'alice';								//right username
+var marbles_users = ['unknown1', 'unknown2'];
+try{
+	marbles_users = JSON.parse(process.env.marbles_users);
+}
+catch(e){
+	console.log('build_marbles_users is not json', e);
+}
+exports.USER1 = marbles_users[0];				//left username
+exports.USER2 = marbles_users[1];				//right username
