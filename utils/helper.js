@@ -88,5 +88,19 @@ module.exports = function (logger) {
 		}
 	}
 
+	helper.getUsers = function (index) {
+		if (index === undefined || index == null) {
+			return helper.creds.credentials.users;
+		}
+		else {
+			if (index < helper.creds.credentials.users.length) {
+				return helper.creds.credentials.users[index];
+			}
+			else {
+				throw new Error('Users index out of bounds. Total member services = '	+ helper.creds.credentials.users.length);
+			}
+		}
+	}
+
 	return helper;
 };

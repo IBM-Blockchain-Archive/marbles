@@ -1,0 +1,3 @@
+[submodule "fabric_images"]
+	path = fabric_images
+	url = https://github.ibm.com/IBM-Blockchain/fabric_images

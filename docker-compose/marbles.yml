@@ -1,0 +1,43 @@
+version: '2'
+
+services:
+
+  mtc-01:
+    build: ${MARBLES_LOCATION}/
+    image: marbles
+    depends_on:
+      - peer-01
+      - orderer
+      - cop
+    links:
+      - cop
+      - orderer
+      - peer-02
+    ports:
+      - 3000:3000
+    volumes:
+      - ${CREDS_LOCATION}/mtc1.json:/app/mycreds.json
+      - ${CREDS_LOCATION}/keyValStore-1:/app/keyValStore-asdf
+    container_name: mtc-01
+    entrypoint: gulp mtc1
+
+  mtc-02:
+    build: ${MARBLES_LOCATION}/
+    image: marbles
+    depends_on:
+      - peer-01
+      - orderer
+      - cop
+    links:
+      - cop
+      - orderer
+      - peer-03
+    ports:
+      - 3001:3000
+    volumes:
+      - ${CREDS_LOCATION}/mtc2.json:/app/mycreds.json
+      - ${CREDS_LOCATION}/keyValStore-2:/app/keyValStore-asdf
+    container_name: mtc-02
+    entrypoint: gulp mtc2
+
+

@@ -13,7 +13,7 @@ module.exports = function (chain, chaincode_id, logger) {
 	deploy_cc.check_if_already_deployed = function (webUser, cb) {
 		// send query
 		var request = {
-			targets: [hfc.getPeer(helper.getPeersUrl(0)), hfc.getPeer(helper.getPeersUrl(1))],
+			targets: [hfc.getPeer(helper.getPeersUrl(0))],
 			chaincodeId : chaincode_id,
 			fcn: 'read',
 			args: ['_marbleindex']
@@ -49,7 +49,7 @@ module.exports = function (chain, chaincode_id, logger) {
 	deploy_cc.deploy_chaincode = function (webUser, cb) {
 		// send proposal to endorser
 		var request = {
-			targets: [hfc.getPeer(helper.getPeersUrl(0)), hfc.getPeer(helper.getPeersUrl(1))],
+			targets: [hfc.getPeer(helper.getPeersUrl(0))],
 			chaincodePath: './chaincode',
 			chaincodeId: chaincode_id,
 			fcn: 'init',
@@ -96,7 +96,7 @@ module.exports = function (chain, chaincode_id, logger) {
 			function() {
 				// send query
 				var request = {
-					targets: [hfc.getPeer(helper.getPeersUrl(0)), hfc.getPeer(helper.getPeersUrl(1))],
+					targets: [hfc.getPeer(helper.getPeersUrl(0))],
 					chaincodeId : chaincode_id,
 					fcn: 'read',
 					args: ['_marbleindex']
