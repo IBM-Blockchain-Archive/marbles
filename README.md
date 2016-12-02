@@ -54,3 +54,41 @@ This web application includes code to track deployments to [IBM Bluemix](https:/
 This data is used by IBM to track metrics around deployments of sample applications to IBM Bluemix to measure the usefulness of our examples, so that we can continuously improve the content we offer to you. Only deployments of sample applications that include code to ping the Deployment Tracker service will be tracked.
 
 **Deployment tracking can be disabled by deleting the 'Deployment Tracking' section in [app.js.](app.js#L120)**
+
+# Run Marbles with Docker-Compose
+
+## Build v1 Fabric
+```
+# Clone the repository
+git clone --recursive https://github.ibm.com/dshuffma/marbles-v1
+
+# Build the fabric images
+cd marbles-v1
+cd fabric_images/v1.0/build-scripts/
+sudo ./build_linux.sh 
+```
+
+## Run Marbles
+ ```
+# Run Marbles
+cd ../../../docker-compose/
+export MARBLES_LOCATION=${PWD}/../
+export CREDS_LOCATION=${PWD}
+
+# Run Cop, Orderer & Peer 1
+sudo docker-compose -f ../fabric_images/v1.0/docker-compose/docker-compose-no-cdb.yml -f marbles.yml up -d cop orderer peer-01 
+
+# Run Peer 2 & MTC 01
+sudo docker-compose -f ../fabric_images/v1.0/docker-compose/docker-compose-no-cdb.yml -f marbles.yml up -d peer-02 mtc-01
+#2m58s
+sudo docker logs -f mtc-01
+
+# Run Peer 3 & MTC 02
+sudo docker-compose -f ../fabric_images/v1.0/docker-compose/docker-compose-no-cdb.yml -f marbles.yml up -d peer-03 mtc-02
+sudo docker logs -f mtc-02
+
+# Delete Everything
+sudo docker-compose -f ../fabric_images/v1.0/docker-compose/docker-compose-no-cdb.yml -f marbles.yml down
+```
+
+
