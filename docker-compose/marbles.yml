@@ -15,6 +15,9 @@ services:
       - peer-02
     ports:
       - 3000:3000
+    volumes:
+      - ${CREDS_LOCATION}/mtc1.json:/app/mycreds.json
+      - ${CREDS_LOCATION}/keyValStore:/app/keyValStore-asdf
     container_name: mtc-01
     entrypoint: gulp mtc1
 
@@ -31,6 +34,9 @@ services:
       - peer-03
     ports:
       - 3001:3000
+    volumes:
+      - ${CREDS_LOCATION}/mtc2.json:/app/mycreds.json
+      - ${CREDS_LOCATION}/keyValStore:/app/keyValStore-asdf
     container_name: mtc-02
     entrypoint: gulp mtc2
 
