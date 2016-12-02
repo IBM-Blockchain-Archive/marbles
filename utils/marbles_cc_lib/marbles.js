@@ -38,7 +38,6 @@ module.exports = function (chain, chaincode_id, logger) {
 			function (response) {
 				if (response.Status === 'SUCCESS') {
 					console.log('Successfully ordered endorsement transaction.');
-					console.log(' need to wait now for the committer to catch up');
 					if (cb) cb();
 				}
 				else {
@@ -92,7 +91,6 @@ module.exports = function (chain, chaincode_id, logger) {
 				function (response) {
 					if (response.Status === 'SUCCESS') {
 						console.log('Successfully ordered endorsement transaction.');
-						console.log(' need to wait now for the committer to catch up');
 						if (cb) cb();
 					} else {
 						console.log('Failed to order the endorsement of the transaction. Error code: ' + response.status);
@@ -216,6 +214,49 @@ module.exports = function (chain, chaincode_id, logger) {
 		).catch(
 			function (err) {
 				if(cb) return cb(err, null);
+			}
+		);
+	};
+
+	//-------------------------------------------------------------------
+	// Delete Marble - options are [marble_id]
+	//-------------------------------------------------------------------
+	marbles.delete_marble = function (webUser, options, cb) {
+		console.log('\ndeleting a marble...');
+		
+		// send proposal to endorser
+		var request = {
+			targets: [hfc.getPeer(helper.getPeersUrl(0)), hfc.getPeer(helper.getPeersUrl(1))],
+			chaincodeId: chaincode_id,
+			fcn: 'delete_marble',
+			args: options 									//args == [marble_id]
+		};
+		webUser.sendTransactionProposal(request)
+		.then(
+			function (results) {
+				var proposalResponses = results[0];
+				var proposal = results[1];
+				if (proposalResponses[0].response.status === 200) {
+					console.log('Successfully obtained transaction endorsement.' + JSON.stringify(proposalResponses));
+					return webUser.sendTransaction(proposalResponses, proposal);
+				}
+				else {
+					console.log('Failed to obtain transaction endorsement. Error code: ' + proposalResponses[0].response.status);
+				}
+			}
+		).then(
+			function (response) {
+				if (response.Status === 'SUCCESS') {
+					console.log('Successfully ordered endorsement transaction.');
+					if (cb) cb();
+				}
+				else {
+					console.log('Failed to order the endorsement of the transaction. Error code: ' + response.status);
+				}
+			}
+		).catch(
+			function (err) {
+				console.log('Failed, in catch block' + err.stack ? err.stack : err);
 			}
 		);
 	};

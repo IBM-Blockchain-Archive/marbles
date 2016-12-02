@@ -51,6 +51,11 @@ module.exports = function (chain, chaincode_id, logger) {
 		marbles.set_marble_owner(webUser, options, cb);
 	};
 
+	//delete marble
+	marbles_chaincode.delete_marble = function (webUser, options, cb) {
+		marbles.delete_marble(webUser, options, cb);
+	};
+
 	return marbles_chaincode;
 };
 

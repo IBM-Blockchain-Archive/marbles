@@ -111,13 +111,13 @@ $(document).on('ready', function() {
 		var part = window.location.pathname.substring(0,3);
 		window.history.pushState({},'', part + '/home');						//put it in url so we can f5
 		
-		console.log('getting new balls');
+		console.log('getting new marbles');
 		setTimeout(function(){
 			$('#user1wrap').html('');											//reset the panel
 			$('#user2wrap').html('');
 			ws.send(JSON.stringify({type: 'get', v: 1}));						//need to wait a bit
 			ws.send(JSON.stringify({type: 'chainstats', v: 1}));
-		}, 1000);
+		}, 1200);
 	}
 	
 	//transfer selected ball to user

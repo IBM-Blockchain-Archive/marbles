@@ -83,7 +83,6 @@ module.exports = function (chain, chaincode_id, logger) {
 				function(response) {
 					if (response.Status === 'SUCCESS') {
 						console.log('Successfully ordered deployment endorsement.');
-						console.log(' need to wait now for the committer to catch up');
 						return sleep(20000);
 					} else {
 						console.log('Failed to order the deployment endorsement. Error code: ' + response.status);

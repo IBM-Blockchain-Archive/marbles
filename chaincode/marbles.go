@@ -129,27 +129,27 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) ([]byte, erro
 	fmt.Println("invoke is running " + function)
 
 	// Handle different functions
-	if function == "init" { //initialize the chaincode state, used as reset
+	if function == "init" { 				//initialize the chaincode state, used as reset
 		return t.Init(stub)
-	} else if function == "delete" { //deletes an entity from its state
-		res, err := t.Delete(stub, args)
-		cleanTrades(stub) //lets make sure all open trades are still valid
+	} else if function == "delete_marble" { //deletes a marble from state
+		res, err := t.delete_marble(stub, args)
+		cleanTrades(stub) 					//lets make sure all open trades are still valid
 		return res, err
-	} else if function == "write" { //writes a value to the chaincode state
+	} else if function == "write" { 		//writes a value to the chaincode state
 		return t.Write(stub, args)
-	} else if function == "init_marble" { //create a new marble
+	} else if function == "init_marble" { 	//create a new marble
 		return t.init_marble(stub, args)
-	} else if function == "set_owner" { //change owner of a marble
+	} else if function == "set_owner" { 	//change owner of a marble
 		res, err := t.set_owner(stub, args)
-		cleanTrades(stub) //lets make sure all open trades are still valid
+		cleanTrades(stub) 					//lets make sure all open trades are still valid
 		return res, err
-	} else if function == "open_trade" { //create a new trade order
+	} else if function == "open_trade" { 	//create a new trade order
 		return t.open_trade(stub, args)
 	} else if function == "perform_trade" { //forfill an open trade order
 		res, err := t.perform_trade(stub, args)
-		cleanTrades(stub) //lets clean just in case
+		cleanTrades(stub) 					//lets clean just in case
 		return res, err
-	} else if function == "remove_trade" { //cancel an open trade order
+	} else if function == "remove_trade" { 	//cancel an open trade order
 		return t.remove_trade(stub, args)
 	} else if function == "read" {
 		return t.read(stub, args)
@@ -197,14 +197,16 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 }
 
 // ============================================================================================================================
-// Delete - remove a key/value pair from state
+// delete_marble - remove a marble from state and from marble index
 // ============================================================================================================================
-func (t *SimpleChaincode) Delete(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func (t *SimpleChaincode) delete_marble(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	if len(args) != 1 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 1")
 	}
 
 	name := args[0]
+
+	//remove the marble
 	err := stub.DelState(name) //remove the key from chaincode state
 	if err != nil {
 		return nil, errors.New("Failed to delete state")

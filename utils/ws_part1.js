@@ -46,7 +46,7 @@ module.exports = function (webUser, marbles_lib, logger) {
 					async.eachLimit(resp.payload[0], 1, function(marble_id, cb) {
 						console.log('\nlooking at...', marble_id);
 						marbles_lib.get_marble(webUser, marble_id, function(err2, resp2){
-							if(resp2.payload && resp2.payload[0]) {
+							if(resp2.payload && resp2.payload[0] && resp2.payload[0].owner) {
 								sendMsg({msg: 'marbles', e: err2, marble: resp2.payload[0]});
 							}
 							else{
@@ -72,13 +72,22 @@ module.exports = function (webUser, marbles_lib, logger) {
 					});
 				}
 				else console.log('bad inputs for set owner', data);
-			}/*
+			}
+
+			//delete marble
 			else if(data.type == 'remove'){
 				console.log('removing msg');
 				if(data.name){
-					hfc_util.invokeCC(user, chaincodeID, 'delete', [data.name]);
+					//hfc_util.invokeCC(user, chaincodeID, 'delete', [data.name]);
+					marbles_lib.delete_marble(webUser, [data.name], function(err, resp){
+						/*setTimeout(function(){
+							
+						}, 2000);*/
+					});
 				}
 			}
+
+			/*
 			else if(data.type == 'chainstats'){
 				console.log('get chainstats');
 				hfc_util.getChainStats(peer, cb_chainstats);
