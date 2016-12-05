@@ -42,6 +42,18 @@ $(document).on('ready', function() {
 		$('input[name="name"]').val('r' + randStr(6));
 	});
 
+	$(document).on('click', '.marblesCloseSection', function(){
+		$(this).parent().fadeOut();
+	});
+
+	$(document).on('click', '.showUserPanel', function(){
+		var full_owner = $(this).parent().parent().attr('owner');
+		console.log('!', full_owner);
+		$('.marblesWrap[owner="' + full_owner + '"]').fadeIn();
+		/*$('.userPin').each(function(){
+			if($(this).attr('owner') === full_owner) $(this).fadeIn();
+		});*/
+	});
 	
 	//marble color picker
 	$(document).on('click', '.colorInput', function(){
@@ -300,8 +312,8 @@ function build_user_table_row(data){
 		data[i].company = escapeHtml(data[i].company);
 		if(data[i].company.toLowerCase() === bag.marble_company.toLowerCase()) colorClass = 'adminControl';
 
-		html += '<tr id="row' + id + '" class="userRow">';
-		html +=		'<td class="userPin"><span class="fa fa-thumb-tack"></span></td>';
+		html += '<tr owner="' + id + '" class="userRow">';
+		html +=		'<td class="userPin"><span class="fa fa-thumb-tack showUserPanel"></span></td>';
 		html +=		'<td class="userMarbles">0</td>';
 		html +=		'<td class="userName">' + toTitleCase(data[i].username) + '</td>';
 		html +=		'<td class="userCompany">' + data[i].company + '</td>';

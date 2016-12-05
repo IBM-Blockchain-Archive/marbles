@@ -116,6 +116,11 @@
 	position:absolute;
 	left: -25px;
 	top: 65px;
+	padding: 2px;
+}
+.marblesCloseSection:hover{
+	color: $acc_color0;
+	cursor: pointer;
 }
 /*
 #trashbin{

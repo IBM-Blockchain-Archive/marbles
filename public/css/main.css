@@ -319,7 +319,12 @@ label {
 .marblesCloseSection {
   position: absolute;
   left: -25px;
-  top: 65px; }
+  top: 65px;
+  padding: 2px; }
+
+.marblesCloseSection:hover {
+  color: #181C22;
+  cursor: pointer; }
 
 /*
 #trashbin{
