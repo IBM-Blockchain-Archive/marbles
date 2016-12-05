@@ -24,7 +24,7 @@ module.exports = function (webUser, marbles_lib, logger) {
 			
 			// create a new marble
 			if(data.type == 'create'){
-				console.log('[ws] create marbles msg');
+				console.log('[ws] create marbles req');
 				if(data.name && data.color && data.size && data.owner){
 					marbles_lib.create_a_marble(webUser, [data.name, data.color, data.size, data.owner], function(){
 						/*setTimeout(function(){
@@ -36,8 +36,8 @@ module.exports = function (webUser, marbles_lib, logger) {
 			}
 
 			//get all marbles
-			else if(data.type == 'get'){
-				console.log('[ws] get marbles msg');
+			else if(data.type == 'get_marbles'){
+				console.log('[ws] get marbles req');
 				//hfc_util.queryCC(user, chaincodeID, 'read', ['_marbleindex'], cb_got_index);
 				marbles_lib.get_marble_list(webUser, function(err, resp){
 					console.log('\n\n\nthis is wat i got - marbles:', resp.payload[0].length);
@@ -63,7 +63,7 @@ module.exports = function (webUser, marbles_lib, logger) {
 
 			//transfer a marble
 			else if(data.type == 'transfer'){
-				console.log('transfering msg');
+				console.log('transfering req');
 				if(data.name && data.owner){
 					marbles_lib.set_marble_owner(webUser, [data.name, data.owner], function(err, resp){
 						/*setTimeout(function(){
@@ -76,7 +76,7 @@ module.exports = function (webUser, marbles_lib, logger) {
 
 			//delete marble
 			else if(data.type == 'remove'){
-				console.log('removing msg');
+				console.log('removing req');
 				if(data.name){
 					//hfc_util.invokeCC(user, chaincodeID, 'delete', [data.name]);
 					marbles_lib.delete_marble(webUser, [data.name], function(err, resp){
@@ -89,7 +89,7 @@ module.exports = function (webUser, marbles_lib, logger) {
 
 			//get all owners and their company
 			else if(data.type == 'get_owners'){
-				console.log('[ws] get all owners msg');
+				console.log('[ws] get all owners req');
 				marbles_lib.get_owner_list(webUser, function(err, resp){
 					console.log('\n\n\nthis is what i got - owners:', resp.payload[0].length);
 					console.log(err, JSON.stringify(resp));

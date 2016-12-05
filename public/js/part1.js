@@ -115,9 +115,9 @@ $(document).on('ready', function() {
 		setTimeout(function(){
 			$('#user1wrap').html('');											//reset the panel
 			$('#user2wrap').html('');
-			ws.send(JSON.stringify({type: 'get', v: 1}));						//need to wait a bit
+			ws.send(JSON.stringify({type: 'get_marbles', v: 1}));				//need to wait a bit
 			//ws.send(JSON.stringify({type: 'chainstats', v: 1}));
-			ws.send(JSON.stringify({type: 'get_owners', v: 1}));
+			//ws.send(JSON.stringify({type: 'get_owners', v: 1}));
 		}, 1200);
 	}
 	
@@ -161,7 +161,7 @@ function connect_to_server(){
 		connected = true;
 		clear_blocks();
 		$('#errorNotificationPanel').fadeOut();
-		//ws.send(JSON.stringify({type: 'get', v:1}));
+		//ws.send(JSON.stringify({type: 'get_marbles', v:1}));
 		//ws.send(JSON.stringify({type: 'chainstats', v:1}));
 		ws.send(JSON.stringify({type: 'get_owners', v: 1}));
 	}
@@ -188,6 +188,9 @@ function connect_to_server(){
 								blockstats: msgObj.blockstats
 							};
 				new_block(temp);								//send to blockchain.js
+			}
+			else if(msgObj.msg === 'owners'){
+				ws.send(JSON.stringify({type: 'get_marbles', v:1}));
 			}
 			else console.log('rec', msgObj.msg, msgObj);
 		}
