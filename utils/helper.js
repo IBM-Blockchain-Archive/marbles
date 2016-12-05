@@ -1,13 +1,13 @@
 
 module.exports = function (logger) {
 
-	var helper = {}
+	var helper = {};
 	helper.creds = require(__dirname + '/../mycreds.json');
 
 //	console.log('Creds = ', helper.creds);
 	helper.getNetworkId = function() {
 		return helper.creds.credentials.network_id;
-	}
+	};
 
 	helper.getPeers = function (index) {
 		if (index === undefined || index == null) {
@@ -19,7 +19,7 @@ module.exports = function (logger) {
 				throw new Error('Peer index out of bounds. Total peers = ' + helper.creds.credentials.peers.length);
 			}
 		}
-	}
+	};
 
 	helper.getPeersUrl = function (index) {
 		if (index === undefined || index == null) {
@@ -34,7 +34,7 @@ module.exports = function (logger) {
 				throw new Error('Peer index out of bounds. Total peers = ' + helper.creds.credentials.peers.length);
 			}
 		}
-	}
+	};
 
 	helper.getMemberservices = function (index) {
 		if (index === undefined || index == null) {
@@ -48,7 +48,7 @@ module.exports = function (logger) {
 				throw new Error('Member Services index out of bounds. Total member services = '	+ helper.creds.credentials.memberservices.length);
 			}
 		}
-	}
+	};
 
 	helper.getMemberservicesUrl = function (index) {
 		if (index === undefined || index == null) {
@@ -60,7 +60,7 @@ module.exports = function (logger) {
 				throw new Error('Member Services index out of bounds. Total member services = ' + helper.creds.credentials.memberservices.length);
 			}
 		}
-	}
+	};
 
 	helper.getOrderers = function (index) {
 		if (index === undefined || index == null) {
@@ -74,7 +74,7 @@ module.exports = function (logger) {
 				throw new Error('Orderers index out of bounds. Total member services = '	+ helper.creds.credentials.orderers.length);
 			}
 		}
-	}
+	};
 
 	helper.getOrderersUrl = function (index) {
 		if (index === undefined || index == null) {
@@ -86,7 +86,7 @@ module.exports = function (logger) {
 				throw new Error('Orderers index out of bounds. Total member services = ' + helper.creds.credentials.orderers.length);
 			}
 		}
-	}
+	};
 
 	helper.getUsers = function (index) {
 		if (index === undefined || index == null) {
@@ -100,7 +100,7 @@ module.exports = function (logger) {
 				throw new Error('Users index out of bounds. Total member services = '	+ helper.creds.credentials.users.length);
 			}
 		}
-	}
+	};
 
 	return helper;
 };
