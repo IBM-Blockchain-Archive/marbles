@@ -40,10 +40,10 @@ module.exports = function (webUser, marbles_lib, logger) {
 				console.log('[ws] get marbles msg');
 				//hfc_util.queryCC(user, chaincodeID, 'read', ['_marbleindex'], cb_got_index);
 				marbles_lib.get_marble_list(webUser, function(err, resp){
-					console.log('\n\n\nthis is wat i got 1: marbles:', resp.payload[0].length);
+					console.log('\n\n\nthis is wat i got - marbles:', resp.payload[0].length);
 					console.log(err, JSON.stringify(resp));
 
-					/*async.eachLimit(resp.payload[0], 1, function(marble_id, cb) {
+					async.eachLimit(resp.payload[0], 1, function(marble_id, cb) {
 						console.log('\nlooking at...', marble_id);
 						marbles_lib.get_marble(webUser, marble_id, function(err2, resp2){
 							if(resp2.payload && resp2.payload[0] && resp2.payload[0].owner) {
@@ -57,7 +57,7 @@ module.exports = function (webUser, marbles_lib, logger) {
 					}, function() {
 						console.log('finished reading all marbles');
 						sendMsg({msg: 'action', e: null, status: 'finished'});
-					});*/
+					});
 				});
 			}
 
@@ -91,7 +91,7 @@ module.exports = function (webUser, marbles_lib, logger) {
 			else if(data.type == 'get_owners'){
 				console.log('[ws] get all owners msg');
 				marbles_lib.get_owner_list(webUser, function(err, resp){
-					console.log('\n\n\n?this is wat i got 1: owners:', resp.payload[0].length);
+					console.log('\n\n\nthis is what i got - owners:', resp.payload[0].length);
 					console.log(err, JSON.stringify(resp));
 
 					var ret = [];
@@ -113,45 +113,6 @@ module.exports = function (webUser, marbles_lib, logger) {
 				hfc_util.getChainStats(peer, cb_chainstats);
 			}*/
 		}
-
-		//got the marble index, lets get each marble
-		/*function cb_got_index(e, index){
-			if(e != null) console.log('[ws error] did not get marble index:', e);
-			else{
-				try{
-					console.log('Got index: ' + index[0].toString('utf8'));
-					if (index[0].toString('utf8') == 'null') {
-						console.log('Null index found, so no marbles.');
-						sendMsg({msg: 'action', e: e, status: 'finished'});
-						return;
-					}
-					var json = JSON.parse(index);
-					var keys = Object.keys(json);
-					var concurrency = 1;
-
-					//serialized version
-					async.eachLimit(keys, concurrency, function(key, cb) {
-						console.log('!', json[key]);
-						hfc_util.queryCC(user, chaincodeID, 'read', [json[key]], function(e, marble) {
-							if(e != null) console.log('[ws error] did not get marble:', e);
-							else {
-								if(marble) sendMsg({msg: 'marbles', e: e, marble: JSON.parse(marble)});
-								cb(null);
-							}
-						});
-					}, function() {
-						sendMsg({msg: 'action', e: e, status: 'finished'});
-					});
-				}
-				catch(e){
-					console.log('[ws error] could not parse response', e);
-				}
-			}
-		}*/
-
-		/*function cb_invoked(e, a){
-			console.log('response: ', e, a);
-		}*/
 
 		//call back for getting the blockchain stats, lets get the block stats now
 		/*function cb_chainstats(e, chain_stats){
