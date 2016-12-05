@@ -1,4 +1,5 @@
 /* global new_block,formatDate, randStr, bag, $, clear_blocks, document, WebSocket, escapeHtml, window */
+/* global toTitleCase*/
 var ws = {};
 var bgcolors = ['whitebg', 'blackbg', 'redbg', 'greenbg', 'bluebg', 'purplebg', 'pinkbg', 'orangebg', 'yellowbg'];
 
@@ -190,6 +191,8 @@ function connect_to_server(){
 				new_block(temp);								//send to blockchain.js
 			}
 			else if(msgObj.msg === 'owners'){
+				console.log('rec', msgObj.msg, msgObj);
+				build_user_panels(msgObj.owners);
 				ws.send(JSON.stringify({type: 'get_marbles', v:1}));
 			}
 			else console.log('rec', msgObj.msg, msgObj);
@@ -215,6 +218,7 @@ function connect_to_server(){
 // =================================================================================
 //	UI Building
 // =================================================================================
+//build a marble
 function build_ball(data){
 	var html = '';
 	var colorClass = '';
@@ -238,4 +242,26 @@ function build_ball(data){
 		}
 	}
 	return html;
+}
+
+//build all user panels
+function build_user_panels(data){
+	var html = '';
+		
+	for(var i in data){
+		var id = data[i].username + '.' + data[i].company;
+		console.log('building user', id);
+
+		var colorClass = '';
+		data[i].username = escapeHtml(data[i].username);
+		data[i].company = escapeHtml(data[i].company);
+		if(data[i].company.toLowerCase() === bag.marble_company.toLowerCase()) colorClass = 'adminControl';
+
+		html += '<div id="' + id + '" class="marblesWrap ' + colorClass +'">';
+		html +=		'<span class="fa fa-close marblesCloseSection"></span>';
+		html +=		'<div class="legend">' + toTitleCase(data[i].username) + '</div>';
+		html +=		'<ul class="sortable">&nbsp;</ul>';
+		html +=	'</div>';
+	}
+	$('#allUserPanelsWrap').html(html);
 }

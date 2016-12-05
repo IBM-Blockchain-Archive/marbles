@@ -67,23 +67,20 @@
 
 // --------- Home ---------
 .marblesWrap{
-	//width:42%;
 	display:block;
 	text-align: left;
 	color:#fff;
 	margin-bottom: 15px;
 	border: 1px $acc_color2 solid;
 	position: relative;
+	min-height: 150px;
 }
 .legend{
 	font-size:30px;
-	//border-bottom: 1px $acc_color2 solid;
-	//padding-bottom:5px;
 	padding: 10px;
 }
 
 #ownerWrap{
-	//text-align: center;
 	width: 820px;
 	margin: auto;
 }
@@ -99,7 +96,6 @@
 }
 
 #description{
-	//position: absolute;
 	margin: 60px 0 5px 0;
 	width:100%;
 	text-align: center;
@@ -125,6 +121,10 @@
 
 #user1wrap, #user2wrap{
 	min-height:100px;
+}
+
+.adminControl{
+	border-color: #fff;
 }
 
 
