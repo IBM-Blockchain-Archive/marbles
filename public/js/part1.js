@@ -1,4 +1,4 @@
-/* global new_block,formatDate, randStr, bag, $, clear_blocks, document, WebSocket, escapeHtml, window */
+/* global new_block, randStr, bag, $, clear_blocks, document, WebSocket, escapeHtml, window */
 /* global toTitleCase*/
 var ws = {};
 var bgcolors = ['whitebg', 'blackbg', 'redbg', 'greenbg', 'bluebg', 'purplebg', 'pinkbg', 'orangebg', 'yellowbg'];
@@ -20,7 +20,7 @@ $(document).on('ready', function() {
 						name: $('input[name="name"]').val().replace(' ', ''),
 						color: $('.colorSelected').attr('color'),
 						size: $('select[name="size"]').val(),
-						owner: $('select[name="user"]').val(),
+						owner: build_full_owner($('select[name="user"]').val(), bag.marble_company),
 						v: 1
 					};
 		if(obj.owner && obj.name && obj.color){
@@ -61,13 +61,13 @@ $(document).on('ready', function() {
 	
 	
 	//drag and drop marble
-	/*$('#user2wrap, #user1wrap, #trashbin').sortable({connectWith: '.sortable'}).disableSelection();
-	$('#user2wrap').droppable({drop:
+	$('#user2wrap, #user1wrap, #trashbin').sortable({connectWith: '.sortable'}).disableSelection();
+	/*$('#user2wrap').droppable({drop:
 		function( event, ui ) {
 			var user = $(ui.draggable).attr('user');
 			if(user.toLowerCase() != bag.setup.USER2){
 				$(ui.draggable).addClass('invalid');
-				transfer($(ui.draggable).attr('id'), bag.setup.USER2);
+				transfer_marble($(ui.draggable).attr('id'), bag.setup.USER2);
 			}
 		}
 	});
@@ -76,7 +76,7 @@ $(document).on('ready', function() {
 			var user = $(ui.draggable).attr('user');
 			if(user.toLowerCase() != bag.setup.USER1){
 				$(ui.draggable).addClass('invalid');
-				transfer($(ui.draggable).attr('id'), bag.setup.USER1);
+				transfer_marble($(ui.draggable).attr('id'), bag.setup.USER1);
 			}
 		}
 	});*/
@@ -108,27 +108,25 @@ function showHomePanel(){
 	$('#homePanel').fadeIn(300);
 	$('#createPanel').hide();
 	
-	var part = window.location.pathname.substring(0,3);
-	window.history.pushState({},'', part + '/home');						//put it in url so we can f5
+	window.history.pushState({},'', '/home');								//put it in url so we can f5
 	
 	console.log('getting new marbles!!!');
 	setTimeout(function(){
-		$('#user1wrap').html('');											//reset the panel
-		$('#user2wrap').html('');
+		$('.innerMarbleWrap').html('');										//reset the panels
 		ws.send(JSON.stringify({type: 'get_marbles', v: 1}));				//need to wait a bit
 		//ws.send(JSON.stringify({type: 'chainstats', v: 1}));
 		//ws.send(JSON.stringify({type: 'get_owners', v: 1}));
 	}, 1200);
 }
 
-//transfer selected ball to user
-function transfer(marbleName, user){
+//transfer_marble selected ball to user
+function transfer_marble(marbleName, owner){
 	if(marbleName){
-		console.log('transfering', marbleName);
+		console.log('transfering marble', marbleName);
 		var obj = 	{
-						type: 'transfer',
+						type: 'transfer_marble',
 						name: marbleName,
-						owner: user,
+						owner: owner,
 						v: 1
 					};
 		ws.send(JSON.stringify(obj));
@@ -192,6 +190,7 @@ function connect_to_server(){
 				console.log('rec', msgObj.msg, msgObj);
 				build_user_panels(msgObj.owners);
 				build_user_table_row(msgObj.owners);
+				show_company_users();
 				ws.send(JSON.stringify({type: 'get_marbles', v:1}));
 			}
 			else console.log('rec', msgObj.msg, msgObj);
@@ -236,9 +235,9 @@ function build_ball(data){
 		
 		$('.marblesWrap').each(function(){
 			var full_owner = $(this).attr('owner');
-
 			if(data.owner.toLowerCase() === full_owner.toLowerCase()){
-				$(this).append(html);
+				$(this).find('.innerMarbleWrap').append(html);
+				//$(this).append(html);
 				$(this).find('.tempMsg').remove();
 			}
 		});
@@ -252,7 +251,7 @@ function build_user_panels(data){
 	var id = '';
 		
 	for(var i in data){
-		id = data[i].username + '.' + data[i].company;
+		id = build_full_owner(data[i].username, data[i].company);
 		console.log('building user', id);
 
 		var colorClass = '';
@@ -260,28 +259,29 @@ function build_user_panels(data){
 		data[i].company = escapeHtml(data[i].company);
 		if(data[i].company.toLowerCase() === bag.marble_company.toLowerCase()) colorClass = 'adminControl';
 
-		//html += '<div id="' + id + '" class="marblesWrap ' + colorClass +'">';
-		html += '<div id="user' + i + 'wrap" owner="' + id + '" class="marblesWrap ' + colorClass +'">';
+		html += '<div id="user' + i + 'wrap" owner="' + id + '" company="' + data[i].company + '" class="marblesWrap ' + colorClass +'">';
 		html +=		'<span class="fa fa-close marblesCloseSection"></span>';
 		html +=		'<div class="legend">';
 		html +=			 toTitleCase(data[i].username);
 		html +=			'<span class="hint" style="float:right;">' + data[i].company + '</span>';
 		html +=		'</div>';
-		html +=		'<ul class="sortable">&nbsp;</ul>';
+		html +=		'<div class="innerMarbleWrap">&nbsp;</div>';
 		html +=		'<div class="tempMsg hint" style="text-align: center;">No marbles</div>';
 		html +=	'</div>';
 	}
 	$('#allUserPanelsWrap').html(html);
 
 	//drag and drop marble
-	$('.marblesWrap').sortable({connectWith: '.sortable'}).disableSelection();
-	$('.marblesWrap').droppable({drop:
+	$('.innerMarbleWrap').sortable({connectWith: '.innerMarbleWrap', items: 'span'}).disableSelection();
+	$('.innerMarbleWrap').droppable({drop:
 		function( event, ui ) {
-			var user = $(ui.draggable).attr('owner').toLowerCase();
-			var parent = $(ui.draggable).parent().attr('owner').toLowerCase();
-			if(user != parent){										//only make transfers for marbles that moved users
+			var dragged_user = $(ui.draggable).attr('owner').toLowerCase();
+			var dropped_user = $(event.target).parent().attr('owner').toLowerCase();
+			console.log('?', dragged_user, dropped_user);
+			if(dragged_user != dropped_user){										//only transfer marbles that changed owners
 				$(ui.draggable).addClass('invalid');
-				transfer($(ui.draggable).attr('id'), bag.setup.USER1);
+				transfer_marble($(ui.draggable).attr('id'), dropped_user);
+				return true;
 			}
 		}
 	});
@@ -292,7 +292,7 @@ function build_user_table_row(data){
 	var html = '';
 		
 	for(var i in data){
-		var id = data[i].username + '.' + data[i].company;
+		var id = build_full_owner(data[i].username, data[i].company);
 		console.log('building user', id);
 
 		var colorClass = '';
@@ -309,4 +309,19 @@ function build_user_table_row(data){
 		html +=	'</div>';
 	}
 	$('#userTable tbody').html(html);
+}
+
+//show users for this company
+function show_company_users(){
+	$('.marblesWrap').each(function(){
+		var company = $(this).attr('company');
+		if(bag.marble_company.toLowerCase() === company.toLowerCase()){
+			$(this).fadeIn(500);									//show the users for my company
+		}
+	});
+}
+
+//build the correct "full owner" string - concate username and company
+function build_full_owner(username, company){
+	return username.toLowerCase() + '.' + company.toLowerCase();
 }

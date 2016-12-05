@@ -75,8 +75,14 @@
 	position: relative;
 	min-height: 158px;
 	border-radius: 5px;
+	display:none;
+}
+.innerMarbleWrap{
+	min-height:100px;
 }
 .legend{
+	display:absolute;
+	z-index: 1;
 	font-size:30px;
 	padding: 10px;
 }
