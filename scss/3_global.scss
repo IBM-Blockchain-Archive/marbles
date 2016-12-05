@@ -73,7 +73,8 @@
 	margin-bottom: 15px;
 	border: 1px $acc_color2 solid;
 	position: relative;
-	min-height: 150px;
+	min-height: 158px;
+	border-radius: 5px;
 }
 .legend{
 	font-size:30px;
@@ -118,10 +119,6 @@
 	text-align: center;
 	margin-top:30px;
 }*/
-
-#user1wrap, #user2wrap{
-	min-height:100px;
-}
 
 .adminControl{
 	border-color: #fff;
