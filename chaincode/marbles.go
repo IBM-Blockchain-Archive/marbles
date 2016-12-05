@@ -77,12 +77,13 @@ type AllTrades struct {
 var ownerIndexStr = "_ownerindex"       //name for the key/value that will store a list of all known owners
 type Owner struct {
 	ObjectType string `json:"docType"`  //docType is used to distinguish the various types of objects in state database
-	Name       string `json:"name"`
+	Username   string `json:"username"`
 	Company    string `json:"company"`
+	Timestamp  int64   `json:"timestamp"` //utc timestamp of registration
 }
 type OwnersIndex struct {
 	ObjectType string   `json:"docType"` //docType is used to distinguish the various types of objects in state database
-	Owners    []string `json:"owners"`
+	Owners    []string  `json:"owners"`
 }
 
 /*
@@ -725,15 +726,16 @@ func (t *SimpleChaincode) init_owner(stub shim.ChaincodeStubInterface, args []st
 	var err error
 	fmt.Println("starting init_owner")
 
-	// ex: ['"docType": "owner", "name": "bob", "company": "united marbles"}'] <- this is an array of strings with size 1
+	// ex: ['"docType": "owner", "username": "bob", "company": "united marbles", "timestamp": 0}'] <- this is an array of strings with size 1
 	if len(args) != 1 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 1")
 	}
 
 	var owner Owner
 	json.Unmarshal([]byte(args[0]), &owner) //un stringify input, aka JSON.parse()
+	fmt.Println(owner)
 
-	var ownerName = owner.Name + "." + owner.Company;//concat owners name and the company name
+	var ownerName = owner.Username + "." + owner.Company;//concat owners name and the company name
 
 	//check if user already exists
 	ownerAsBytes, err := stub.GetState(ownerName)
@@ -743,10 +745,18 @@ func (t *SimpleChaincode) init_owner(stub shim.ChaincodeStubInterface, args []st
 	}
 	res := Owner{}
 	json.Unmarshal(ownerAsBytes, &res)
-	if res.Name == owner.Name {
+	if res.Username == owner.Username {
 		fmt.Println("This owner already exists: " + ownerName)
 		fmt.Println(res)
 		return nil, errors.New("This owner arleady exists") //all stop a marble by this name exists
+	}
+
+	//store user
+	json.Unmarshal(ownerAsBytes, &owner)
+	err = stub.PutState(ownerName, ownerAsBytes) 			//store owner with concated name as key
+	if err != nil {
+		fmt.Println("Could not store user")
+		return nil, err
 	}
 
 	//read existing owner index

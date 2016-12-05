@@ -49,14 +49,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use('/cc/summary', serve_static(path.join(__dirname, 'cc_summaries')) );												//for chaincode investigator
-app.use( serve_static(path.join(__dirname, 'public'), {maxAge: '1d', setHeaders: setCustomCC}) );							//1 day cache
-//app.use( serve_static(path.join(__dirname, 'public')) );
+//app.use( serve_static(path.join(__dirname, 'public'), {maxAge: '1d', setHeaders: setCustomCC}) );							//1 day cache
+app.use( serve_static(path.join(__dirname, 'public')) );
 app.use(session({secret:'Somethignsomething1234!test', resave:true, saveUninitialized:true}));
-function setCustomCC(res, path) {
+/*function setCustomCC(res, path) {
 	if (serve_static.mime.lookup(path) === 'image/jpeg')  res.setHeader('Cache-Control', 'public, max-age=2592000');		//30 days cache
 	else if (serve_static.mime.lookup(path) === 'image/png') res.setHeader('Cache-Control', 'public, max-age=2592000');
 	else if (serve_static.mime.lookup(path) === 'image/x-icon') res.setHeader('Cache-Control', 'public, max-age=2592000');
-}
+}*/
 // Enable CORS preflight across the board.
 app.options('*', cors());
 app.use(cors());
@@ -337,8 +337,8 @@ function setup_application(enrollUser){
 		}
 		catch(e){console.log('not json', e);}
 		async.eachLimit(build_users, 1, function(username, user_cb) { 			//iter through each one
-			var options = {username: username};
-			marbles_lib.create_marble_user(webUser, options, function(){
+			var owner_obj = {username: username, company: process.env.marble_company};
+			marbles_lib.register_owner(webUser, owner_obj, function(){
 				
 				// --- Create Marble(s) --- //
 				async.eachLimit([1,2], 1, function(block_height, marble_cb) {	//create two marbles for every user

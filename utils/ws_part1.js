@@ -43,7 +43,7 @@ module.exports = function (webUser, marbles_lib, logger) {
 					console.log('\n\n\nthis is wat i got 1: marbles:', resp.payload[0].length);
 					console.log(err, JSON.stringify(resp));
 
-					async.eachLimit(resp.payload[0], 1, function(marble_id, cb) {
+					/*async.eachLimit(resp.payload[0], 1, function(marble_id, cb) {
 						console.log('\nlooking at...', marble_id);
 						marbles_lib.get_marble(webUser, marble_id, function(err2, resp2){
 							if(resp2.payload && resp2.payload[0] && resp2.payload[0].owner) {
@@ -57,7 +57,7 @@ module.exports = function (webUser, marbles_lib, logger) {
 					}, function() {
 						console.log('finished reading all marbles');
 						sendMsg({msg: 'action', e: null, status: 'finished'});
-					});
+					});*/
 				});
 			}
 
@@ -85,6 +85,26 @@ module.exports = function (webUser, marbles_lib, logger) {
 						}, 2000);*/
 					});
 				}
+			}
+
+			//get all owners and their company
+			else if(data.type == 'get_owners'){
+				console.log('[ws] get all owners msg');
+				marbles_lib.get_owner_list(webUser, function(err, resp){
+					console.log('\n\n\n?this is wat i got 1: owners:', resp.payload[0].length);
+					console.log(err, JSON.stringify(resp));
+
+					var ret = [];
+					for(var i in resp.payload[0]){						//lets reformat it a bit, only need 1 peer's response
+						var pos = resp.payload[0][i].indexOf('.');
+						var temp = 	{
+										username: resp.payload[0][i].substring(0, pos),
+										company: resp.payload[0][i].substring(pos + 1)
+									};
+						ret.push(temp);
+					}
+					sendMsg({msg: 'owners', e: err, owners: ret});
+				});
 			}
 
 			/*

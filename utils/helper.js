@@ -27,7 +27,7 @@ module.exports = function (logger) {
 		}
 		else {
 			if (index < helper.creds.credentials.peers.length) {
-				console.log('Peer = ', helper.creds.credentials.peers[index]);
+				//console.log('Peer = ', helper.creds.credentials.peers[index]);
 				return 'grpc://' + helper.creds.credentials.peers[index].grpc_host + ':' + helper.creds.credentials.peers[index].grpc_port;
 			}
 			else {
