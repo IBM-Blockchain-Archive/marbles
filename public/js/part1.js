@@ -182,7 +182,7 @@ function connect_to_server(){
 			else if(msgObj.msg === 'chainstats'){
 				console.log('rec', msgObj.msg, ': ledger blockheight', msgObj.chainstats.height, 'block', msgObj.blockstats.height);
 				var e = formatDate(msgObj.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
-				$('#blockdate').html('<span style="color:#fff">TIME</span>&nbsp;&nbsp;' + e + ' UTC');
+				//$('#blockdate').html('<span style="color:#fff">TIME</span>&nbsp;&nbsp;' + e + ' UTC');
 				var temp =  {
 								id: msgObj.blockstats.height, 
 								blockstats: msgObj.blockstats

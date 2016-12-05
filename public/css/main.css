@@ -273,16 +273,20 @@ label {
   z-index: 4; }
 
 .marblesWrap {
-  width: 42%;
-  display: inline-block;
-  text-align: right;
-  color: #fff; }
+  display: block;
+  text-align: left;
+  color: #fff;
+  margin-bottom: 15px;
+  border: 1px #646B73 solid;
+  position: relative; }
 
 .legend {
   font-size: 30px;
-  border-bottom: 1px #646B73 solid;
-  padding-bottom: 5px;
-  text-align: left; }
+  padding: 10px; }
+
+#ownerWrap {
+  width: 820px;
+  margin: auto; }
 
 .ball {
   display: inline-block;
@@ -295,25 +299,28 @@ label {
   border-bottom: 1px #fff solid; }
 
 #description {
-  position: absolute;
-  bottom: 75px;
+  margin: 60px 0 5px 0;
   width: 100%;
   text-align: center; }
 
-#toolWrap {
-  width: 100%;
-  text-align: center;
-  position: fixed;
-  bottom: 55px;
-  margin-left: -50px; }
-
 #trashbin {
-  width: 200px;
-  height: 70px;
-  margin: auto;
+  display: inline-block;
   text-align: center;
-  margin-top: -70px; }
+  margin-left: 30px; }
 
+.marblesCloseSection {
+  position: absolute;
+  left: -25px;
+  top: 65px; }
+
+/*
+#trashbin{
+	width:200px;
+	height: 70px;
+	margin:auto;
+	text-align: center;
+	margin-top:30px;
+}*/
 #user1wrap, #user2wrap {
   min-height: 100px; }
 
@@ -340,14 +347,6 @@ label {
   margin: auto;
   text-align: right;
   margin-top: 50px; }
-
-#blockdate {
-  position: absolute;
-  top: 30px;
-  right: 10px;
-  font-size: 13px;
-  color: orange;
-  font-weight: bold; }
 
 .hint {
   font-size: 12px;
@@ -400,6 +399,39 @@ label {
   left: -19px;
   top: 45px;
   color: #222832; }
+
+#userTable {
+  width: 657px;
+  display: inline-block; }
+
+#userTable tbody {
+  max-height: 100px;
+  overflow: auto;
+  display: block; }
+
+.userRow {
+  border-bottom-width: 1px;
+  font-size: 14px; }
+
+.userRow td, .userRow th {
+  padding: 5px;
+  text-align: left;
+  margin: 0; }
+
+.userPin {
+  width: 50px; }
+
+.userMarbles {
+  width: 60px; }
+
+.userName {
+  width: 225px; }
+
+.userCompany {
+  width: 225px; }
+
+.userRights {
+  width: 60px; }
 
 #errorNotificationPanel {
   display: none;

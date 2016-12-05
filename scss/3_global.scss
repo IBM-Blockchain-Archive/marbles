@@ -67,19 +67,26 @@
 
 // --------- Home ---------
 .marblesWrap{
-	width:42%;
-	display:inline-block;
-	text-align: right;
+	//width:42%;
+	display:block;
+	text-align: left;
 	color:#fff;
+	margin-bottom: 15px;
+	border: 1px $acc_color2 solid;
+	position: relative;
 }
 .legend{
 	font-size:30px;
-	border-bottom: 1px $acc_color2 solid;
-	padding-bottom:5px;
-	text-align: left;
+	//border-bottom: 1px $acc_color2 solid;
+	//padding-bottom:5px;
+	padding: 10px;
 }
 
-
+#ownerWrap{
+	//text-align: center;
+	width: 820px;
+	margin: auto;
+}
 .ball{
 	display:inline-block;
 	margin:1px;
@@ -92,25 +99,29 @@
 }
 
 #description{
-	position: absolute;
-	bottom:75px;
+	//position: absolute;
+	margin: 60px 0 5px 0;
 	width:100%;
 	text-align: center;
 }
-#toolWrap{
-	width:100%;
+#trashbin{
+	display: inline-block;
 	text-align: center;
-	position: fixed;
-	bottom:55px;
-	margin-left:-50px;
+	margin-left: 30px;
 }
+.marblesCloseSection{
+	position:absolute;
+	left: -25px;
+	top: 65px;
+}
+/*
 #trashbin{
 	width:200px;
 	height: 70px;
 	margin:auto;
 	text-align: center;
-	margin-top:-70px;
-}
+	margin-top:30px;
+}*/
 
 #user1wrap, #user2wrap{
 	min-height:100px;
@@ -145,15 +156,6 @@
 
 
 // --------- common ---------
-#blockdate{
-	position: absolute;
-	top:30px;
-	right:10px;
-	font-size:13px;
-	color: $hi_color1;
-	font-weight:bold;
-}
-
 .hint{
 	font-size:12px;
 	font-weight:bold;
@@ -209,6 +211,43 @@
 	top: 45px; 
 	color:$acc_color1;
 }
+
+// -- Table -- //
+#userTable{
+	width: 657px;
+	display: inline-block;
+}
+
+#userTable tbody{
+	max-height: 100px;
+	overflow: auto;
+	display: block;
+}
+.userRow{
+	border-bottom-width: 1px;
+	font-size: 14px;
+}
+.userRow td, .userRow th{
+	padding: 5px;
+	text-align: left;
+	margin: 0;
+}
+.userPin{
+	width: 50px
+}
+.userMarbles{
+	width: 60px
+}
+.userName{
+	width: 225px
+}
+.userCompany{
+	width: 225px
+}
+.userRights{
+	width: 60px
+}
+
 
 
 // --------- error msg ---------
