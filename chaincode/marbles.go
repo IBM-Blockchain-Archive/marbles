@@ -34,8 +34,16 @@ import (
 type SimpleChaincode struct {
 }
 
+// ============================================================================================================================
+// Definitions
+// ============================================================================================================================
+
+// ----- Marbles ----- //
 var marbleIndexStr = "_marbleindex" //name for the key/value that will store a list of all known marbles
-var openTradesStr = "_opentrades"   //name for the key/value that will store all open trades
+type MarblesIndex struct {
+	ObjectType string   `json:"docType"` //docType is used to distinguish the various types of objects in state database
+	Marbles    []string `json:"marbles"`
+}
 
 type Marble struct {
 	ObjectType string `json:"docType"` //docType is used to distinguish the various types of objects in state database
@@ -45,6 +53,8 @@ type Marble struct {
 	Owner      string `json:"owner"`
 }
 
+// ----- Trades ----- //
+var openTradesStr = "_opentrades"      //name for the key/value that will store all open trades
 type Description struct {
 	ObjectType string `json:"docType"` //docType is used to distinguish the various types of objects in state database
 	Color      string `json:"color"`
@@ -63,10 +73,31 @@ type AllTrades struct {
 	OpenTrades []AnOpenTrade `json:"open_trades"`
 }
 
-type MarblesIndex struct {
-	ObjectType string   `json:"docType"` //docType is used to distinguish the various types of objects in state database
-	Marbles    []string `json:"marbles"`
+// ----- Owners ----- //
+var ownerIndexStr = "_ownerindex"       //name for the key/value that will store a list of all known owners
+type Owner struct {
+	ObjectType string `json:"docType"`  //docType is used to distinguish the various types of objects in state database
+	Name       string `json:"name"`
+	Company    string `json:"company"`
 }
+type OwnersIndex struct {
+	ObjectType string   `json:"docType"` //docType is used to distinguish the various types of objects in state database
+	Owners    []string `json:"owners"`
+}
+
+/*
+// ----- companies ----- //
+var companyIndexStr = "_companyindex"    //name for the key/value that will store a list of all known companies
+type Company struct {
+	ObjectType string `json:"docType"`  //docType is used to distinguish the various types of objects in state database
+	Name       string `json:"name"`
+	Timestamp int64   `json:"timestamp"` //utc timestamp of registration
+}
+type CompaniesIndex struct {
+	ObjectType string   `json:"docType"` //docType is used to distinguish the various types of objects in state database
+	Companies    []string `json:"companies"`
+}
+*/
 
 // ============================================================================================================================
 // Main
@@ -77,6 +108,7 @@ func main() {
 		fmt.Printf("Error starting Simple chaincode: %s", err)
 	}
 }
+
 
 // ============================================================================================================================
 // Init - reset all the things
@@ -112,8 +144,16 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) ([]byte, error)
 
 	var trades AllTrades
 	trades.ObjectType = "Trades"
-	jsonAsBytes, _ = json.Marshal(trades) //clear the open trade struct
+	jsonAsBytes, _ = json.Marshal(trades) 		//trades is empty, this clear the open trade index
 	err = stub.PutState(openTradesStr, jsonAsBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	var owner OwnersIndex
+	owner.ObjectType = "OwnerIndex"
+	jsonAsBytes, _ = json.Marshal(owner)		//owner is empty, this clears the owner index
+	err = stub.PutState(ownerIndexStr, jsonAsBytes)
 	if err != nil {
 		return nil, err
 	}
@@ -121,12 +161,13 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) ([]byte, error)
 	return nil, nil
 }
 
+
 // ============================================================================================================================
 // Invoke - Our entry point for Invocations
 // ============================================================================================================================
 func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) ([]byte, error) {
 	function, args := stub.GetFunctionAndParameters()
-	fmt.Println("invoke is running " + function)
+	fmt.Println("invoke is running: " + function)
 
 	// Handle different functions
 	if function == "init" { 				//initialize the chaincode state, used as reset
@@ -153,11 +194,14 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) ([]byte, erro
 		return t.remove_trade(stub, args)
 	} else if function == "read" {
 		return t.read(stub, args)
+	}else if function == "init_owner"{
+		return t.init_owner(stub, args)
 	}
-	fmt.Println("invoke did not find func: " + function) //error
 
+	fmt.Println("Received unknown invoke function name: " + function) //should not get here, its an error
 	return nil, errors.New("Received unknown invoke function name: '" + function + "'")
 }
+
 
 // ============================================================================================================================
 // Query - Our entry point for Queries
@@ -174,6 +218,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) ([]byte, error
 
 	return nil, errors.New("Received unknown function query")
 }
+
 
 // ============================================================================================================================
 // Read - read a variable from chaincode state
@@ -195,6 +240,7 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 
 	return valAsbytes, nil //send it onward
 }
+
 
 // ============================================================================================================================
 // delete_marble - remove a marble from state and from marble index
@@ -237,6 +283,7 @@ func (t *SimpleChaincode) delete_marble(stub shim.ChaincodeStubInterface, args [
 	return nil, nil
 }
 
+
 // ============================================================================================================================
 // Write - write variable into chaincode state
 // ============================================================================================================================
@@ -257,6 +304,7 @@ func (t *SimpleChaincode) Write(stub shim.ChaincodeStubInterface, args []string)
 	}
 	return nil, nil
 }
+
 
 // ============================================================================================================================
 // Init Marble - create a new marble, store into chaincode state
@@ -330,6 +378,7 @@ func (t *SimpleChaincode) init_marble(stub shim.ChaincodeStubInterface, args []s
 	return nil, nil
 }
 
+
 // ============================================================================================================================
 // Set Owner Permission on Marble
 // ============================================================================================================================
@@ -361,6 +410,7 @@ func (t *SimpleChaincode) set_owner(stub shim.ChaincodeStubInterface, args []str
 	fmt.Println("- end set owner")
 	return nil, nil
 }
+
 
 // ============================================================================================================================
 // Open Trade - create an open trade for a marble you want with marbles you have
@@ -433,6 +483,7 @@ func (t *SimpleChaincode) open_trade(stub shim.ChaincodeStubInterface, args []st
 	return nil, nil
 }
 
+
 // ============================================================================================================================
 // Perform Trade - close an open trade and move ownership
 // ============================================================================================================================
@@ -503,6 +554,7 @@ func (t *SimpleChaincode) perform_trade(stub shim.ChaincodeStubInterface, args [
 	return nil, nil
 }
 
+
 // ============================================================================================================================
 // findMarble4Trade - look for a matching marble that this user owns and return it
 // ============================================================================================================================
@@ -542,12 +594,14 @@ func findMarble4Trade(stub shim.ChaincodeStubInterface, owner string, color stri
 	return fail, errors.New("Did not find marble to use in this trade")
 }
 
+
 // ============================================================================================================================
 // Make Timestamp - create a timestamp in ms
 // ============================================================================================================================
 func makeTimestamp() int64 {
 	return time.Now().UnixNano() / (int64(time.Millisecond) / int64(time.Nanosecond))
 }
+
 
 // ============================================================================================================================
 // Remove Open Trade - close an open trade
@@ -592,6 +646,7 @@ func (t *SimpleChaincode) remove_trade(stub shim.ChaincodeStubInterface, args []
 	fmt.Println("- end remove trade")
 	return nil, nil
 }
+
 
 // ============================================================================================================================
 // Clean Up Open Trades - make sure open trades are still possible, remove choices that are no longer possible, remove trades that have no valid choices
@@ -659,4 +714,56 @@ func cleanTrades(stub shim.ChaincodeStubInterface) (err error) {
 
 	fmt.Println("- end clean trades")
 	return nil
+}
+
+
+
+// ============================================================================================================================
+// Init Owner - create a new owner aka end user, store into chaincode state
+// ============================================================================================================================
+func (t *SimpleChaincode) init_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	var err error
+	fmt.Println("starting init_owner")
+
+	// ex: ['"docType": "owner", "name": "bob", "company": "united marbles"}'] <- this is an array of strings with size 1
+	if len(args) != 1 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 1")
+	}
+
+	var owner Owner
+	json.Unmarshal([]byte(args[0]), &owner) //un stringify input, aka JSON.parse()
+
+	var ownerName = owner.Name + "." + owner.Company;//concat owners name and the company name
+
+	//check if user already exists
+	ownerAsBytes, err := stub.GetState(ownerName)
+	if err != nil {
+		fmt.Println("Failed to get owner ")
+		return nil, errors.New("Failed to get owner")
+	}
+	res := Owner{}
+	json.Unmarshal(ownerAsBytes, &res)
+	if res.Name == owner.Name {
+		fmt.Println("This owner already exists: " + ownerName)
+		fmt.Println(res)
+		return nil, errors.New("This owner arleady exists") //all stop a marble by this name exists
+	}
+
+	//read existing owner index
+	ownerIndexAsBytes, err := stub.GetState(ownerIndexStr)
+	if err != nil {
+		fmt.Println("Failed to get owner index")
+		return nil, errors.New("Failed to get owner index")
+	}
+	var ownersIndex OwnersIndex
+	json.Unmarshal(ownerIndexAsBytes, &ownersIndex) 		//un stringify it aka JSON.parse()
+
+	//append to list
+	ownersIndex.Owners = append(ownersIndex.Owners, ownerName) //add owner to index list
+	fmt.Println("! owner index: ", ownersIndex.Owners)
+	jsonAsBytes, _ := json.Marshal(ownersIndex)
+	err = stub.PutState(ownerIndexStr, jsonAsBytes) 			//store updated owner index
+
+	fmt.Println("- end init_owner marble")
+	return nil, nil
 }

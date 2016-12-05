@@ -9,3 +9,4 @@
 keyValStore*
 certificate.pem
 /chaincode/Dockerfile
+chaincode.exe
