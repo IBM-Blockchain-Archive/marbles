@@ -61,7 +61,7 @@ $(document).on('ready', function() {
 	
 	
 	//drag and drop marble
-	$('#user2wrap, #user1wrap, #trashbin').sortable({connectWith: '.sortable'}).disableSelection();
+	/*$('#user2wrap, #user1wrap, #trashbin').sortable({connectWith: '.sortable'}).disableSelection();
 	$('#user2wrap').droppable({drop:
 		function( event, ui ) {
 			var user = $(ui.draggable).attr('user');
@@ -79,7 +79,7 @@ $(document).on('ready', function() {
 				transfer($(ui.draggable).attr('id'), bag.setup.USER1);
 			}
 		}
-	});
+	});*/
 	$('#trashbin').droppable({drop:
 		function( event, ui ) {
 			var id = $(ui.draggable).attr('id');
@@ -99,44 +99,42 @@ $(document).on('ready', function() {
 			}
 		}
 	});
-	
-	
-	// =================================================================================
-	// Helper Fun
-	// ================================================================================
-	//show admin panel page
-	function showHomePanel(){
-		$('#homePanel').fadeIn(300);
-		$('#createPanel').hide();
-		
-		var part = window.location.pathname.substring(0,3);
-		window.history.pushState({},'', part + '/home');						//put it in url so we can f5
-		
-		console.log('getting new marbles!!!');
-		setTimeout(function(){
-			$('#user1wrap').html('');											//reset the panel
-			$('#user2wrap').html('');
-			ws.send(JSON.stringify({type: 'get_marbles', v: 1}));				//need to wait a bit
-			//ws.send(JSON.stringify({type: 'chainstats', v: 1}));
-			//ws.send(JSON.stringify({type: 'get_owners', v: 1}));
-		}, 1200);
-	}
-	
-	//transfer selected ball to user
-	function transfer(marbleName, user){
-		if(marbleName){
-			console.log('transfering', marbleName);
-			var obj = 	{
-							type: 'transfer',
-							name: marbleName,
-							owner: user,
-							v: 1
-						};
-			ws.send(JSON.stringify(obj));
-			showHomePanel();
-		}
-	}
 });
+// =================================================================================
+// Helper Fun
+// ================================================================================
+//show admin panel page
+function showHomePanel(){
+	$('#homePanel').fadeIn(300);
+	$('#createPanel').hide();
+	
+	var part = window.location.pathname.substring(0,3);
+	window.history.pushState({},'', part + '/home');						//put it in url so we can f5
+	
+	console.log('getting new marbles!!!');
+	setTimeout(function(){
+		$('#user1wrap').html('');											//reset the panel
+		$('#user2wrap').html('');
+		ws.send(JSON.stringify({type: 'get_marbles', v: 1}));				//need to wait a bit
+		//ws.send(JSON.stringify({type: 'chainstats', v: 1}));
+		//ws.send(JSON.stringify({type: 'get_owners', v: 1}));
+	}, 1200);
+}
+
+//transfer selected ball to user
+function transfer(marbleName, user){
+	if(marbleName){
+		console.log('transfering', marbleName);
+		var obj = 	{
+						type: 'transfer',
+						name: marbleName,
+						owner: user,
+						v: 1
+					};
+		ws.send(JSON.stringify(obj));
+		showHomePanel();
+	}
+}
 
 
 // =================================================================================
@@ -182,7 +180,7 @@ function connect_to_server(){
 			}
 			else if(msgObj.msg === 'chainstats'){
 				console.log('rec', msgObj.msg, ': ledger blockheight', msgObj.chainstats.height, 'block', msgObj.blockstats.height);
-				var e = formatDate(msgObj.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
+				//var e = formatDate(msgObj.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
 				//$('#blockdate').html('<span style="color:#fff">TIME</span>&nbsp;&nbsp;' + e + ' UTC');
 				var temp =  {
 								id: msgObj.blockstats.height, 
@@ -193,6 +191,7 @@ function connect_to_server(){
 			else if(msgObj.msg === 'owners'){
 				console.log('rec', msgObj.msg, msgObj);
 				build_user_panels(msgObj.owners);
+				build_user_table_row(msgObj.owners);
 				ws.send(JSON.stringify({type: 'get_marbles', v:1}));
 			}
 			else console.log('rec', msgObj.msg, msgObj);
@@ -233,19 +232,64 @@ function build_ball(data){
 		if(data.size == 16) size = 'fa-3x';
 		if(data.color) colorClass = data.color.toLowerCase();
 		
-		html += '<span id="' + data.name + '" class="fa fa-circle ' + size + ' ball ' + colorClass + ' title="' + data.name + '" user="' + data.owner + '"></span>';
-		if(data.owner && data.owner.toLowerCase() == bag.setup.USER1){
-			$('#user1wrap').append(html);
-		}
-		else if(data.owner && data.owner.toLowerCase() == bag.setup.USER2){
-			$('#user2wrap').append(html);
-		}
+		html += '<span id="' + data.name + '" class="fa fa-circle ' + size + ' ball ' + colorClass + ' title="' + data.name + '" owner="' + data.owner + '"></span>';
+		
+		$('.marblesWrap').each(function(){
+			var full_owner = $(this).attr('owner');
+			var pos = full_owner.indexOf('.');
+			var name = full_owner.substring(0, pos);
+
+			if(data.owner.toLowerCase() === name.toLowerCase()){
+				$(this).append(html);
+			}
+		});
 	}
 	return html;
 }
 
 //build all user panels
 function build_user_panels(data){
+	var html = '';
+	var id = '';
+		
+	for(var i in data){
+		id = data[i].username + '.' + data[i].company;
+		console.log('building user', id);
+
+		var colorClass = '';
+		data[i].username = escapeHtml(data[i].username);
+		data[i].company = escapeHtml(data[i].company);
+		if(data[i].company.toLowerCase() === bag.marble_company.toLowerCase()) colorClass = 'adminControl';
+
+		//html += '<div id="' + id + '" class="marblesWrap ' + colorClass +'">';
+		html += '<div id="user' + i + 'wrap" owner="' + id + '" class="marblesWrap ' + colorClass +'">';
+		html +=		'<span class="fa fa-close marblesCloseSection"></span>';
+		html +=		'<div class="legend">';
+		html +=			 toTitleCase(data[i].username);
+		html +=			'<span class="hint" style="float:right;">' + data[i].company + '</span>';
+		html +=		'</div>';
+		html +=		'<ul class="sortable">&nbsp;</ul>';
+		html +=	'</div>';
+	}
+	$('#allUserPanelsWrap').html(html);
+
+	//drag and drop marble
+	$('.marblesWrap').sortable({connectWith: '.sortable'}).disableSelection();
+	$('.marblesWrap').droppable({drop:
+		function( event, ui ) {
+			var user = $(ui.draggable).attr('user');
+			var parent = $(ui.draggable).parent().attr('user');
+			console.log('parent!', parent, user);
+			if(user.toLowerCase() != parent){
+				$(ui.draggable).addClass('invalid');
+				transfer($(ui.draggable).attr('id'), bag.setup.USER1);
+			}
+		}
+	});
+}
+
+//build all user table rows
+function build_user_table_row(data){
 	var html = '';
 		
 	for(var i in data){
@@ -257,11 +301,13 @@ function build_user_panels(data){
 		data[i].company = escapeHtml(data[i].company);
 		if(data[i].company.toLowerCase() === bag.marble_company.toLowerCase()) colorClass = 'adminControl';
 
-		html += '<div id="' + id + '" class="marblesWrap ' + colorClass +'">';
-		html +=		'<span class="fa fa-close marblesCloseSection"></span>';
-		html +=		'<div class="legend">' + toTitleCase(data[i].username) + '</div>';
-		html +=		'<ul class="sortable">&nbsp;</ul>';
+		html += '<tr id="row' + id + '" class="userRow">';
+		html +=		'<td class="userPin"><span class="fa fa-thumb-tack"></span></td>';
+		html +=		'<td class="userMarbles">0</td>';
+		html +=		'<td class="userName">' + toTitleCase(data[i].username) + '</td>';
+		html +=		'<td class="userCompany">' + data[i].company + '</td>';
+		html +=		'<td class="userRights"><span class="fa fa-check"></span></td>';
 		html +=	'</div>';
 	}
-	$('#allUserPanelsWrap').html(html);
+	$('#userTable tbody').html(html);
 }
