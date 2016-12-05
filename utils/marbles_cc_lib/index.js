@@ -21,6 +21,8 @@ module.exports = function (chain, chaincode_id, logger) {
 		deploy_cc.check_if_already_deployed(webUser, cb);
 	};
 
+
+
 	//create a marble
 	marbles_chaincode.create_a_marble = function (webUser, options, cb) {
 		marbles.create_a_marble(webUser, options, cb);
@@ -29,11 +31,6 @@ module.exports = function (chain, chaincode_id, logger) {
 	//reset marble index
 	marbles_chaincode.reset_marble_index = function (webUser, cb) {
 		marbles.reset_marble_index(webUser, cb);
-	};
-
-	//create a marble
-	marbles_chaincode.create_marble_user = function (webUser, options, cb) {
-		users.create_marble_user(webUser, options, cb);
 	};
 
 	//get list of marbles
@@ -54,6 +51,22 @@ module.exports = function (chain, chaincode_id, logger) {
 	//delete marble
 	marbles_chaincode.delete_marble = function (webUser, options, cb) {
 		marbles.delete_marble(webUser, options, cb);
+	};
+
+
+	//register a owner/user
+	marbles_chaincode.register_owner = function (webUser, owner_obj, cb) {
+		users.register_owner(webUser, owner_obj, cb);
+	};
+
+	//get a owner/user
+	marbles_chaincode.get_owner = function (webUser, options, cb) {
+		users.get_owner(webUser, options, cb);
+	};
+
+	//get the owner list
+	marbles_chaincode.get_owner_list = function (webUser, cb) {
+		users.get_owner_list(webUser, cb);
 	};
 
 	return marbles_chaincode;

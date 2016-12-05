@@ -5,7 +5,6 @@
 module.exports = function (chain, chaincode_id, logger) {
 	var hfc = require('../fabric-sdk-node2/index.js');
 	var helper = require(__dirname + '/../helper.js')();
-
 	var marbles = {};
 
 	//-------------------------------------------------------------------
