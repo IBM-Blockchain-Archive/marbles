@@ -317,12 +317,12 @@ function simple_hash(a_string){
 }
 
 //create random marble arguments (it is not important for it to be random, just more fun)
-function build_marble_options(username){
+function build_marble_options(username, company){
 	var colors = ['white', 'black', 'red', 'green', 'blue', 'purple', 'pink', 'orange', 'yellow'];
 	var sizes = ['35', '16'];
 	var color_index = simple_hash(more_entropy + username) % colors.length;	//build a psudeo random index to pick a color
 	var size_index = getRandomInt(0, sizes.length);					//build a random size for this marble
-	return [randStr(24), colors[color_index], sizes[size_index], username];
+	return [randStr(24), colors[color_index], sizes[size_index], marbles_lib.build_owner_name(username, company)];
 }
 
 //this only runs after we deploy
@@ -342,7 +342,7 @@ function setup_application(enrollUser){
 				
 				// --- Create Marble(s) --- //
 				async.eachLimit([1,2], 1, function(block_height, marble_cb) {	//create two marbles for every user
-					var randOptions = build_marble_options(username);
+					var randOptions = build_marble_options(username, process.env.marble_company);
 					console.log('\n\ngoing to create marble:', randOptions);
 					marbles_lib.create_a_marble(webUser, randOptions, function(){
 						setTimeout(function(){

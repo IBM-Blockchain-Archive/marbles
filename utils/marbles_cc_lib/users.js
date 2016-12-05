@@ -91,8 +91,8 @@ module.exports = function (chain, chaincode_id, logger) {
 	//-------------------------------------------------------------------
 	// Format Owner's Actual Key Name
 	//----------------------------------------------------
-	users.build_key_name = function(username, company){
-		return username + '.' + company;
+	users.build_owner_name = function(username, company){
+		return username.toLowerCase() + '.' + company.toLowerCase();
 	};
 	
 
@@ -100,12 +100,12 @@ module.exports = function (chain, chaincode_id, logger) {
 	// Get a Owner
 	//----------------------------------------------------
 	users.get_owner = function (webUser, opts, cb) {
-		console.log('\nfetching owner ' + users.build_key_name(opts.username, opts.company) + ' list...');
+		console.log('\nfetching owner ' + users.build_owner_name(opts.username, opts.company) + ' list...');
 		var request = {
 			targets: [hfc.getPeer(helper.getPeersUrl(0))],
 			chaincodeId: chaincode_id,
 			fcn: 'read',
-			args: [users.build_key_name(opts.username, opts.company)]
+			args: [users.build_owner_name(opts.username, opts.company)]
 		};
 
 		webUser.queryByChaincode(request)

@@ -54,6 +54,7 @@ module.exports = function (chain, chaincode_id, logger) {
 	};
 
 
+
 	//register a owner/user
 	marbles_chaincode.register_owner = function (webUser, owner_obj, cb) {
 		users.register_owner(webUser, owner_obj, cb);
@@ -67,6 +68,10 @@ module.exports = function (chain, chaincode_id, logger) {
 	//get the owner list
 	marbles_chaincode.get_owner_list = function (webUser, cb) {
 		users.get_owner_list(webUser, cb);
+	};
+
+	marbles_chaincode.build_owner_name = function (username, company) {
+		return users.build_owner_name(username, company);
 	};
 
 	return marbles_chaincode;
