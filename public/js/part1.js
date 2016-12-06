@@ -130,7 +130,7 @@ $(document).on('ready', function() {
 
 	//username/company search
 	$('#searchUsers').keyup(function(){
-		var input = $(this).val().toLowerCase();;
+		var input = $(this).val().toLowerCase();
 		if(input === '') $('tr.userRow').show();
 		else{
 			$('.userRow').each(function(){

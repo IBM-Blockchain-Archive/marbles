@@ -2,7 +2,7 @@
 
 /*Main Layout*/
 #headerPanel {
-  background:#fff;
+  background:$main_color;
   margin-top:10px;
 }
 
@@ -69,7 +69,7 @@
 .marblesWrap{
 	display:block;
 	text-align: left;
-	color:#fff;
+	color: $main_color;
 	margin-bottom: 15px;
 	border: 1px $acc_color2 solid;
 	position: relative;
@@ -99,7 +99,7 @@
 }
 .ball:hover{
 	cursor: pointer;
-	border-bottom:1px #fff solid;
+	border-bottom:1px $main_color solid;
 }
 
 #description{
@@ -132,7 +132,7 @@
 }*/
 
 .adminControl{
-	border-color: #fff;
+	border-color: $main_color;
 }
 
 

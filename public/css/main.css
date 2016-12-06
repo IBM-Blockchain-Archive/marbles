@@ -130,7 +130,7 @@ th {
   font-weight: normal;
   font-size: 12px;
   background: #343D48;
-  color: #7E90A0;
+  color: #646B73;
   text-align: center;
   font-weight: bold; }
 
@@ -177,7 +177,7 @@ input[type="text"], input[type="password"], select {
   padding: 3px 10px;
   margin: 5px;
   color: #fff;
-  border: 1px solid #7E90A0;
+  border: 1px solid #646B73;
   border-radius: 30px;
   background: #343D48;
   min-width: 120px; }
@@ -596,8 +596,8 @@ td.userRights, th.userRights {
   border-color: #2EB9D6; }
 
 .block:hover {
-  border: #22697A solid 1px;
-  color: #22697A; }
+  border: #6CC284 solid 1px;
+  color: #6CC284; }
 
 #details {
   background: #222832;
@@ -618,6 +618,9 @@ td.userRights, th.userRights {
 .line {
   background: #fff;
   height: 1px !important; }
+
+
+
 
 
 /* Example
