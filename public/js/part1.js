@@ -44,16 +44,28 @@ $(document).on('ready', function() {
 		$('input[name="name"]').val('r' + randStr(6));
 	});
 
-	$(document).on('click', '.marblesCloseSection', function(){
-		$(this).parent().fadeOut();
+	//open user panel
+	$(document).on('click', '.userRow', function(){
+		var full_owner = $(this).attr('full_owner');
+		if($('.marblesWrap[full_owner="' + full_owner + '"]').is(':visible')){
+			console.log('clicked to hide', full_owner);
+			$(this).removeClass('selectedRow');
+			$('.marblesWrap[full_owner="' + full_owner + '"]').fadeOut();
+		}
+		else{
+			console.log('clicked to show', full_owner);
+			$(this).addClass('selectedRow');
+			$('.marblesWrap[full_owner="' + full_owner + '"]').fadeIn();
+		}
 	});
 
-	$(document).on('click', '.showUserPanel', function(){
-		var full_owner = $(this).parent().parent().attr('full_owner');
-		console.log('clicked to show', full_owner);
-		$('.marblesWrap[full_owner="' + full_owner + '"]').fadeIn();
+	//close user panel
+	$(document).on('click', '.marblesCloseSection', function(){
+		$(this).parent().fadeOut();
+		var full_owner = $(this).parent().attr('full_owner');
+		$('.userRow[full_owner="' + full_owner + '"]').removeClass('selectedRow');
 	});
-	
+
 	//marble color picker
 	$(document).on('click', '.colorInput', function(){
 		$('.colorOptionsWrap').hide();											//hide any others
@@ -114,6 +126,7 @@ $(document).on('ready', function() {
 	$('#closeErrorPanel').click(function(){
 		hide_error_notice();
 	});
+
 });
 // =================================================================================
 // Helper Fun
@@ -207,7 +220,7 @@ function connect_to_server(){
 				console.log('rec', msgObj.msg, msgObj);
 				build_user_panels(msgObj.owners);
 				build_user_table_row(msgObj.owners);
-				show_company_users();
+				show_users_panels();
 				ws.send(JSON.stringify({type: 'get_marbles', v:1}));
 			}
 			else if(msgObj.msg === 'tx_error'){
@@ -300,7 +313,7 @@ function build_user_panels(data){
 		if(data[i].company.toLowerCase() === bag.marble_company.toLowerCase()) colorClass = 'adminControl';
 
 		html += '<div id="user' + i + 'wrap" username="' + data[i].username + '" company="' + data[i].company + '" full_owner="' + full_owner +'" class="marblesWrap ' + colorClass +'">';
-		html +=		'<span class="fa fa-close marblesCloseSection"></span>';
+		html +=		'<span class="fa fa-close marblesCloseSectionPos marblesCloseSection"></span>';
 		html +=		'<div class="legend">';
 		html +=			 toTitleCase(data[i].username);
 		html +=			'<span class="hint" style="float:right;">' + data[i].company + '</span>';
@@ -331,34 +344,41 @@ function build_user_panels(data){
 //build all user table rows
 function build_user_table_row(data){
 	var html = '';
-		
+	var opened = 0;
+
 	for(var i in data){
 		var full_owner = build_full_owner(data[i].username, data[i].company);
 		console.log('building user', full_owner);
 
-		var colorClass = '';
+		var icon = '<span class="fa fa-circle-thin"></span>';
+		var rowCss = '';
 		data[i].username = escapeHtml(data[i].username);
 		data[i].company = escapeHtml(data[i].company);
-		if(data[i].company.toLowerCase() === bag.marble_company.toLowerCase()) colorClass = 'adminControl';
+		if(data[i].company.toLowerCase() === bag.marble_company.toLowerCase()) {		//open all users for my company
+			icon = '<span class="fa fa-check"></span>';
+			rowCss = 'selectedRow';
+			opened++;
+		}
+		else if(opened < 4){															//open up to 4 from other companies
+			rowCss = 'selectedRow';
+			opened++;
+		}
 
-		html += '<tr full_owner="' + full_owner + '" class="userRow">';
-		html +=		'<td class="userPin"><span class="fa fa-thumb-tack showUserPanel"></span></td>';
+		html += '<tr full_owner="' + full_owner + '" class="userRow ' + rowCss  +'">';
 		html +=		'<td class="userMarbles">0</td>';
 		html +=		'<td class="userName">' + toTitleCase(data[i].username) + '</td>';
 		html +=		'<td class="userCompany">' + data[i].company + '</td>';
-		html +=		'<td class="userRights"><span class="fa fa-check"></span></td>';
+		html +=		'<td class="userRights">' + icon  +'</td>';
 		html +=	'</div>';
 	}
 	$('#userTable tbody').html(html);
 }
 
-//show users for this company
-function show_company_users(){
-	$('.marblesWrap').each(function(){
-		var company = $(this).attr('company');
-		if(bag.marble_company.toLowerCase() === company.toLowerCase()){
-			$(this).fadeIn(500);									//show the users for my company
-		}
+//show user panels that are selected in table
+function show_users_panels(){
+	$('.selectedRow').each(function(){
+		var full_owner = $(this).attr('full_owner');
+		$('.marblesWrap[full_owner="' + full_owner + '"]').fadeIn(500);
 	});
 }
 
