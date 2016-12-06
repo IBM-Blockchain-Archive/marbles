@@ -76,7 +76,7 @@ gulp.task('start_mtc1', function () {
 	env['marble_port'] = 3000;
 	var color_theme = fs.readFileSync('./scss/color_theme01.scss').toString();
 	fs.writeFileSync('./scss/color_theme.scss', color_theme);
-	gulp.task('temp', ['build-sass']);
+	//gulp.task('temp', ['build-sass']);
 });
 
 // MTC Member 2
@@ -91,7 +91,7 @@ gulp.task('start_mtc2', function () {
 	env['marble_port'] = 3001;
 	var color_theme = fs.readFileSync('./scss/color_theme02.scss').toString();
 	fs.writeFileSync('./scss/color_theme.scss', color_theme);
-	gulp.task('temp', ['build-sass']);
+	//gulp.task('temp', ['build-sass']);
 });
 
 // MTC Member 3
@@ -106,5 +106,5 @@ gulp.task('start_mtc3', function () {
 	env['marble_port'] = 3002;
 	var color_theme = fs.readFileSync('./scss/color_theme03.scss').toString();
 	fs.writeFileSync('./scss/color_theme.scss', color_theme);
-	gulp.task('temp', ['build-sass']);
+	//gulp.task('temp', ['build-sass']);
 });
