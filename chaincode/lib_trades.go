@@ -37,6 +37,7 @@ func open_trade(stub shim.ChaincodeStubInterface, args []string) ([]byte, error)
 	var err error
 	var will_size int
 	var trade_away Description
+	fmt.Println("starting open_trade")
 
 	//	0        1      2     3      4      5       6
 	//["bob", "blue", "16", "red", "16"] *"blue", "35*
@@ -57,7 +58,6 @@ func open_trade(stub shim.ChaincodeStubInterface, args []string) ([]byte, error)
 	open.Timestamp = makeTimestamp() //use timestamp as an ID
 	open.Want.Color = args[1]
 	open.Want.Size = size1
-	fmt.Println("- start open trade")
 	jsonAsBytes, _ := json.Marshal(open)
 	err = stub.PutState("_debug1", jsonAsBytes)
 
@@ -97,7 +97,7 @@ func open_trade(stub shim.ChaincodeStubInterface, args []string) ([]byte, error)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("- end open trade")
+	fmt.Println("- end open_trade")
 	return nil, nil
 }
 
@@ -107,6 +107,7 @@ func open_trade(stub shim.ChaincodeStubInterface, args []string) ([]byte, error)
 // ============================================================================================================================
 func perform_trade(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var err error
+	fmt.Println("starting perform_trade")
 
 	//	0		1					2					3				4					5
 	//[data.id, data.closer.user, data.closer.name, data.opener.user, data.opener.color, data.opener.size]
@@ -114,7 +115,6 @@ func perform_trade(stub shim.ChaincodeStubInterface, args []string) ([]byte, err
 		return nil, errors.New("Incorrect number of arguments. Expecting 6")
 	}
 
-	fmt.Println("- start close trade")
 	timestamp, err := strconv.ParseInt(args[0], 10, 64)
 	if err != nil {
 		return nil, errors.New("1st argument must be a numeric string")
@@ -168,7 +168,8 @@ func perform_trade(stub shim.ChaincodeStubInterface, args []string) ([]byte, err
 			}
 		}
 	}
-	fmt.Println("- end close trade")
+
+	fmt.Println("- end perform_trade")
 	return nil, nil
 }
 
@@ -178,7 +179,7 @@ func perform_trade(stub shim.ChaincodeStubInterface, args []string) ([]byte, err
 // ============================================================================================================================
 func findMarble4Trade(stub shim.ChaincodeStubInterface, owner string, color string, size int) (m Marble, err error) {
 	var fail Marble
-	fmt.Println("- start find marble 4 trade")
+	fmt.Println("starting findMarble4Trade")
 	fmt.Println("looking for " + owner + ", " + color + ", " + strconv.Itoa(size))
 
 	//get the marble index
@@ -208,7 +209,7 @@ func findMarble4Trade(stub shim.ChaincodeStubInterface, owner string, color stri
 		}
 	}
 
-	fmt.Println("- end find marble 4 trade - error")
+	fmt.Println("- end findMarble4Trade - error")
 	return fail, errors.New("Did not find marble to use in this trade")
 }
 
@@ -218,6 +219,7 @@ func findMarble4Trade(stub shim.ChaincodeStubInterface, owner string, color stri
 // ============================================================================================================================
 func remove_trade(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var err error
+	fmt.Println("starting remove_trade")
 
 	//	0
 	//[data.id]
@@ -225,7 +227,6 @@ func remove_trade(stub shim.ChaincodeStubInterface, args []string) ([]byte, erro
 		return nil, errors.New("Incorrect number of arguments. Expecting 1")
 	}
 
-	fmt.Println("- start remove trade")
 	timestamp, err := strconv.ParseInt(args[0], 10, 64)
 	if err != nil {
 		return nil, errors.New("1st argument must be a numeric string")
@@ -253,7 +254,7 @@ func remove_trade(stub shim.ChaincodeStubInterface, args []string) ([]byte, erro
 		}
 	}
 
-	fmt.Println("- end remove trade")
+	fmt.Println("- end remove_trade")
 	return nil, nil
 }
 
@@ -263,7 +264,7 @@ func remove_trade(stub shim.ChaincodeStubInterface, args []string) ([]byte, erro
 // ============================================================================================================================
 func cleanTrades(stub shim.ChaincodeStubInterface) (err error) {
 	var didWork = false
-	fmt.Println("- start clean trades")
+	fmt.Println("starting clean_trades")
 
 	//get the open trade struct
 	tradesAsBytes, err := stub.GetState(openTradesStr)
@@ -322,6 +323,6 @@ func cleanTrades(stub shim.ChaincodeStubInterface) (err error) {
 		fmt.Println("! all open trades are fine")
 	}
 
-	fmt.Println("- end clean trades")
+	fmt.Println("- end clean_trades")
 	return nil
 }

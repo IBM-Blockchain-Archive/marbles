@@ -33,6 +33,8 @@ import (
 // delete_marble - remove a marble from state and from marble index
 // ============================================================================================================================
 func delete_marble(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("starting delete_marble")
+
 	if len(args) != 1 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 1")
 	}
@@ -67,6 +69,8 @@ func delete_marble(stub shim.ChaincodeStubInterface, args []string) ([]byte, err
 	}
 	jsonAsBytes, _ := json.Marshal(marblesIndex) //save new index
 	err = stub.PutState(marbleIndexStr, jsonAsBytes)
+
+	fmt.Println("- end delete_marble")
 	return nil, nil
 }
 
@@ -76,6 +80,7 @@ func delete_marble(stub shim.ChaincodeStubInterface, args []string) ([]byte, err
 // ============================================================================================================================
 func init_marble(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var err error
+	fmt.Println("starting init_marble")
 
 	//   0       1       2     3
 	// "asdf", "blue", "35", "bob"
@@ -84,7 +89,6 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) ([]byte, error
 	}
 
 	//input sanitation
-	fmt.Println("- start init marble")
 	if len(args[0]) <= 0 {
 		return nil, errors.New("1st argument must be a non-empty string")
 	}
@@ -139,6 +143,6 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) ([]byte, error
 	jsonAsBytes, _ := json.Marshal(marblesIndex)
 	err = stub.PutState(marbleIndexStr, jsonAsBytes) //store name of marble
 
-	fmt.Println("- end init marble")
+	fmt.Println("- end init_marble")
 	return nil, nil
 }

@@ -35,6 +35,7 @@ import (
 // ============================================================================================================================
 func set_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var err error
+	fmt.Println("starting set_owner")
 
 	//   0       1
 	// "name", "bob"
@@ -42,7 +43,6 @@ func set_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) 
 		return nil, errors.New("Incorrect number of arguments. Expecting 2")
 	}
 
-	fmt.Println("- start set owner")
 	fmt.Println(args[0] + " - " + args[1])
 	marbleAsBytes, err := stub.GetState(args[0])
 	if err != nil {

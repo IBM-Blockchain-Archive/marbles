@@ -154,7 +154,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) ([]byte, error)
 // ============================================================================================================================
 func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) ([]byte, error) {
 	function, args := stub.GetFunctionAndParameters()
-	fmt.Println("invoke is running: " + function)
+	fmt.Println("starting invoke, for: " + function)
 
 	// Handle different functions
 	if function == "init" { 				//initialize the chaincode state, used as reset
@@ -164,7 +164,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) ([]byte, erro
 		cleanTrades(stub) 					//lets make sure all open trades are still valid
 		return res, err
 	} else if function == "write" { 		//writes a value to the chaincode state
-		return t.Write(stub, args)
+		return write(stub, args)
 	} else if function == "init_marble" { 	//create a new marble
 		return init_marble(stub, args)
 	} else if function == "set_owner" { 	//change owner of a marble
@@ -180,7 +180,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) ([]byte, erro
 	} else if function == "remove_trade" { 	//cancel an open trade order
 		return remove_trade(stub, args)
 	} else if function == "read" {
-		return t.read(stub, args)
+		return read(stub, args)
 	}else if function == "init_owner"{
 		return init_owner(stub, args)
 	}
@@ -189,30 +189,13 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) ([]byte, erro
 	return nil, errors.New("Received unknown invoke function name: '" + function + "'")
 }
 
-
-// ============================================================================================================================
-// Query - Our entry point for Queries
-// ============================================================================================================================
-func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) ([]byte, error) {
-	function, args := stub.GetFunctionAndParameters()
-	fmt.Println("query is running " + function)
-
-	// Handle different functions
-	if function == "read" { //read a variable
-		return t.read(stub, args)
-	}
-	fmt.Println("query did not find func: " + function) //error
-
-	return nil, errors.New("Received unknown function query")
-}
-
-
 // ============================================================================================================================
 // Read - read a variable from chaincode state
 // ============================================================================================================================
-func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func read(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var name, jsonResp string
 	var err error
+	fmt.Println("starting read")
 
 	if len(args) != 1 {
 		return nil, errors.New("Incorrect number of arguments. Expecting name of the var to query")
@@ -225,16 +208,17 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 		return nil, errors.New(jsonResp)
 	}
 
+	fmt.Println("- end read")
 	return valAsbytes, nil //send it onward
 }
 
 // ============================================================================================================================
 // Write - write variable into chaincode state
 // ============================================================================================================================
-func (t *SimpleChaincode) Write(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func write(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var name, value string // Entities
 	var err error
-	fmt.Println("running write()")
+	fmt.Println("starting write")
 
 	if len(args) != 2 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 2. name of the variable and value to set")
@@ -246,6 +230,8 @@ func (t *SimpleChaincode) Write(stub shim.ChaincodeStubInterface, args []string)
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Println("- end write")
 	return nil, nil
 }
 
