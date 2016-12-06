@@ -39,24 +39,24 @@ type SimpleChaincode struct {
 // ============================================================================================================================
 
 // ----- Marbles ----- //
-var marbleIndexStr = "_marbleindex" //name for the key/value that will store a list of all known marbles
+var marbleIndexStr = "_marbleindex"             //name for the key/value that will store a list of all known marbles
 type MarblesIndex struct {
-	ObjectType string   `json:"docType"` //docType is used to distinguish the various types of objects in state database
+	ObjectType string   `json:"docType"`        //docType is used to distinguish the various types of objects in state database
 	Marbles    []string `json:"marbles"`
 }
 
 type Marble struct {
-	ObjectType string `json:"docType"` //docType is used to distinguish the various types of objects in state database
-	Name       string `json:"name"`    //the fieldtags are needed to keep case from bouncing around
-	Color      string `json:"color"`
-	Size       int    `json:"size"`
-	Owner      string `json:"owner"`
+	ObjectType string        `json:"docType"`
+	Name       string        `json:"name"`     //the fieldtags are needed to keep case from bouncing around
+	Color      string        `json:"color"`
+	Size       int           `json:"size"`
+	Owner      OwnerRelation `json:"owner"`
 }
 
 // ----- Trades ----- //
-var openTradesStr = "_opentrades"      //name for the key/value that will store all open trades
+var openTradesStr = "_opentrades"               //name for the key/value that will store all open trades
 type Description struct {
-	ObjectType string `json:"docType"` //docType is used to distinguish the various types of objects in state database
+	ObjectType string `json:"docType"`
 	Color      string `json:"color"`
 	Size       int    `json:"size"`
 }
@@ -74,16 +74,20 @@ type AllTrades struct {
 }
 
 // ----- Owners ----- //
-var ownerIndexStr = "_ownerindex"       //name for the key/value that will store a list of all known owners
+var ownerIndexStr = "_ownerindex"             //name for the key/value that will store a list of all known owners
 type Owner struct {
-	ObjectType string `json:"docType"`  //docType is used to distinguish the various types of objects in state database
+	ObjectType string `json:"docType"`
 	Username   string `json:"username"`
 	Company    string `json:"company"`
-	Timestamp  int64   `json:"timestamp"` //utc timestamp of registration
+	Timestamp  int64  `json:"timestamp"`      //utc timestamp of registration
 }
 type OwnersIndex struct {
-	ObjectType string   `json:"docType"` //docType is used to distinguish the various types of objects in state database
+	ObjectType string   `json:"docType"`
 	Owners    []string  `json:"owners"`
+}
+type OwnerRelation struct {
+	Username   string `json:"username"`
+	Company    string `json:"company"`
 }
 
 // ============================================================================================================================
@@ -123,7 +127,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) ([]byte, error)
 
 	var marbles MarblesIndex
 	marbles.ObjectType = "MarbleIndex"
-	jsonAsBytes, _ := json.Marshal(marbles) //marshal a marbles index struct with emtpy array of strings to clear the index
+	jsonAsBytes, _ := json.Marshal(marbles)      //marshal a marbles index struct with emtpy array of strings to clear the index
 	err = stub.PutState(marbleIndexStr, jsonAsBytes)
 	if err != nil {
 		return nil, err
@@ -131,7 +135,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) ([]byte, error)
 
 	var trades AllTrades
 	trades.ObjectType = "Trades"
-	jsonAsBytes, _ = json.Marshal(trades) 		//trades is empty, this clear the open trade index
+	jsonAsBytes, _ = json.Marshal(trades)        //trades is empty, this clear the open trade index
 	err = stub.PutState(openTradesStr, jsonAsBytes)
 	if err != nil {
 		return nil, err
@@ -139,7 +143,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) ([]byte, error)
 
 	var owner OwnersIndex
 	owner.ObjectType = "OwnerIndex"
-	jsonAsBytes, _ = json.Marshal(owner)		//owner is empty, this clears the owner index
+	jsonAsBytes, _ = json.Marshal(owner)         //owner is empty, this clears the owner index
 	err = stub.PutState(ownerIndexStr, jsonAsBytes)
 	if err != nil {
 		return nil, err
@@ -190,6 +194,22 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) ([]byte, erro
 }
 
 // ============================================================================================================================
+// Query - Our entry point for Queries
+// ============================================================================================================================
+func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) ([]byte, error) {
+	function, args := stub.GetFunctionAndParameters()
+	fmt.Println("starting query")
+
+	// Handle different functions
+	if function == "read" {                                //read a variable
+		return read(stub, args)
+	}
+	fmt.Println("query did not find func: " + function)    //error
+
+	return nil, errors.New("Received unknown function query")
+}
+
+// ============================================================================================================================
 // Read - read a variable from chaincode state
 // ============================================================================================================================
 func read(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
@@ -202,21 +222,21 @@ func read(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	}
 
 	name = args[0]
-	valAsbytes, err := stub.GetState(name) //get the var from chaincode state
+	valAsbytes, err := stub.GetState(name)           //get the var from chaincode state
 	if err != nil {
 		jsonResp = "{\"Error\":\"Failed to get state for " + name + "\"}"
 		return nil, errors.New(jsonResp)
 	}
 
 	fmt.Println("- end read")
-	return valAsbytes, nil //send it onward
+	return valAsbytes, nil                           //send it onward
 }
 
 // ============================================================================================================================
 // Write - write variable into chaincode state
 // ============================================================================================================================
 func write(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	var name, value string // Entities
+	var name, value string                           // Entities
 	var err error
 	fmt.Println("starting write")
 
@@ -224,9 +244,9 @@ func write(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 		return nil, errors.New("Incorrect number of arguments. Expecting 2. name of the variable and value to set")
 	}
 
-	name = args[0] //rename for funsies
+	name = args[0]                                   //rename for funsies
 	value = args[1]
-	err = stub.PutState(name, []byte(value)) //write the variable into the chaincode state
+	err = stub.PutState(name, []byte(value))         //write the variable into the chaincode state
 	if err != nil {
 		return nil, err
 	}
