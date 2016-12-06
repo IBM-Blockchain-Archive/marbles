@@ -272,7 +272,8 @@ function build_ball(marble){
 	marble.color = escapeHtml(marble.color);
 	marble.owner.username = escapeHtml(marble.owner.username);
 	marble.owner.company = escapeHtml(marble.owner.company);
-	
+	var full_owner = build_full_owner(marble.owner.username, marble.owner.company);
+
 	console.log('got a marble: ', marble.color);
 	if(!$('#' + marble.name).length){								//only populate if it doesn't exists
 		if(marble.size == 16) size = 'fa-3x';
@@ -294,6 +295,9 @@ function build_ball(marble){
 				}
 			}
 		});
+
+		var count = $('.userRow[full_owner="' + full_owner +'"]').find('.userMarbles').html();
+		$('.userRow[full_owner="' + full_owner +'"]').find('.userMarbles').html(Number(count) + 1);
 	}
 	return html;
 }
