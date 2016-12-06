@@ -48,6 +48,24 @@ module.exports = function (logger) {
 		return {ret: ret, error: error};
 	};
 
+
+	//format chaincode string error message
+	common.format_error_msg = function (error_message){
+		var temp = 'could not format error';
+		try{
+			temp = error_message.toString();
+			var pos = temp.lastIndexOf(':');
+			console.log('*', pos);
+			if(pos >= 0){
+				temp = temp.substring(pos + 2);
+			}
+		}
+		catch(e){
+			console.log('could not format error');
+		}
+		return temp;
+	};
+
 	return common;
 };
 

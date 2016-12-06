@@ -24,7 +24,7 @@ import (
 	"errors"
 	"fmt"
 	//"strconv"
-	//"strings"
+	"strings"
 	//"time"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
@@ -37,22 +37,35 @@ func set_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) 
 	var err error
 	fmt.Println("starting set_owner")
 
-	//   0       1
-	// "name", "bob", "united_marbles"
-	if len(args) < 3 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 3")
+	//   0   ,     1  ,        2                 3
+	// marble, to user,       to company,  company that auth the transfer
+	// "name",   "bob", "united_marbles", "united_mables" 
+	if len(args) < 4 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 4")
 	}
 
-	fmt.Println(args[0] + " - " + args[1])
-	marbleAsBytes, err := stub.GetState(args[0])
+	var marble_id = args[0]
+	var new_user = strings.ToLower(args[1])
+	var new_company = strings.ToLower(args[2])
+	var authed_by_company = strings.ToLower(args[3])
+	fmt.Println(marble_id + "->" + new_user + " - " + new_company + ":" + authed_by_company)
+
+	// get marble's current state 
+	marbleAsBytes, err := stub.GetState(marble_id)
 	if err != nil {
-		return nil, errors.New("Failed to get thing")
+		return nil, errors.New("Failed to get marble")
 	}
 	res := Marble{}
 	json.Unmarshal(marbleAsBytes, &res)          //un stringify it aka JSON.parse()
-	res.Owner.Username = args[1]                 //change the owner
-	res.Owner.Company = args[2]                  //change the owner
 
+	//check authorizing company
+	if strings.ToLower(res.Owner.Company) != authed_by_company{
+		return nil, errors.New("The company '" + authed_by_company + "' cannot authorize transfers for '" + res.Owner.Company + "'.")
+	}
+
+	//transfer the marble
+	res.Owner.Username = new_user                 //change the owner
+	res.Owner.Company = new_company               //change the owner
 	jsonAsBytes, _ := json.Marshal(res)
 	err = stub.PutState(args[0], jsonAsBytes)    //rewrite the marble with id as key
 	if err != nil {

@@ -130,18 +130,18 @@ function showHomePanel(){
 }
 
 //transfer_marble selected ball to user
-function transfer_marble(marbleName, to_username, req_by_company){
+function transfer_marble(marbleName, to_username, to_company){
 	if(marbleName){
-		console.log('transfering marble', marbleName, 'to', to_username);
+		console.log('transfering marble', marbleName, 'to', to_username, to_company);
 		var obj = 	{
 						type: 'transfer_marble',
 						name: marbleName,
 						username: to_username,
-						//company: req_by_company,					//set this server side
+						company: to_company,
 						v: 1
 					};
 		ws.send(JSON.stringify(obj));
-		showHomePanel();
+		//showHomePanel();
 	}
 }
 
@@ -295,10 +295,11 @@ function build_user_panels(data){
 		function( event, ui ) {
 			var dragged_user = $(ui.draggable).attr('username').toLowerCase();
 			var dropped_user = $(event.target).parent().attr('username').toLowerCase();
-			console.log('?', dragged_user, dropped_user);
+			var dropped_company = $(event.target).parent().attr('company').toLowerCase();
+			console.log('dropped a marble', dragged_user, dropped_user, dropped_company);
 			if(dragged_user != dropped_user){										//only transfer marbles that changed owners
 				$(ui.draggable).addClass('invalid');
-				transfer_marble($(ui.draggable).attr('id'), dropped_user, bag.marble_company.toLowerCase());
+				transfer_marble($(ui.draggable).attr('id'), dropped_user, dropped_company);
 				return true;
 			}
 		}

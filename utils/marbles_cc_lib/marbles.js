@@ -1,10 +1,11 @@
 //var async = require('async');
-//var path = require('path');
+var path = require('path');
 //var url = require('url');
 
 module.exports = function (chain, chaincode_id, logger) {
 	var hfc = require('../fabric-sdk-node2/index.js');
 	var helper = require(__dirname + '/../helper.js')();
+	var common = require(path.join(__dirname, './common.js'))();
 	var marbles = {};
 
 	//-------------------------------------------------------------------
@@ -46,7 +47,8 @@ module.exports = function (chain, chaincode_id, logger) {
 			}
 		).catch(
 			function (err) {
-				console.log('Failed, in catch block' + err.stack ? err.stack : err);
+				console.log('unexpected error', err);
+				if(cb) return cb(err, null);
 			}
 		);
 	};
@@ -101,7 +103,8 @@ module.exports = function (chain, chaincode_id, logger) {
 				}
 				).catch(
 				function (err) {
-					console.log('Failed, in catch block' + err.stack ? err.stack : err);
+					console.log('unexpected error', err);
+					if(cb) return cb(err, null);
 				}
 				);
 		});
@@ -129,13 +132,14 @@ module.exports = function (chain, chaincode_id, logger) {
 				else{
 
 					// -- send formated response -- //
-					var formated = format_query_resp(response_payloads, 'marbles');
+					var formated = common.format_query_resp(response_payloads, 'marbles');
 					if(cb) return cb(formated.error, formated.ret);
 				}
 			}
 		)
 		.catch(
 			function (err) {
+				console.log('unexpected error', err);
 				if(cb) return cb(err, null);
 			}
 		);
@@ -164,19 +168,20 @@ module.exports = function (chain, chaincode_id, logger) {
 				else{
 
 					// -- send formated response -- //
-					var formated = format_query_resp(response_payloads);
+					var formated = common.format_query_resp(response_payloads);
 					if(cb) return cb(formated.error, formated.ret);
 				}
 			}
 		).catch(
 			function (err) {
+				console.log('unexpected error', err);
 				if(cb) return cb(err, null);
 			}
 		);
 	};
 
 	//-------------------------------------------------------------------
-	// Set Marble Owner - options are [marble_id, owner]
+	// Set Marble Owner 
 	//-------------------------------------------------------------------
 	marbles.set_marble_owner = function (webUser, options, cb) {
 		console.log('\nsetting marble owner...');
@@ -186,33 +191,36 @@ module.exports = function (chain, chaincode_id, logger) {
 			targets: [hfc.getPeer(helper.getPeersUrl(0))],
 			chaincodeId: chaincode_id,
 			fcn: 'set_owner',
-			args: options 									//args == ["name", "bob", "united_marbles"]
+			args: options 									//args == ["name", "bob", "united_marbles", "united_marbles"]
 		};
 		webUser.sendTransactionProposal(request)
 		.then(
 			function (results) {
 				var proposalResponses = results[0];
 				var proposal = results[1];
-				if (proposalResponses[0].response.status === 200) {
+				if (proposalResponses[0] && proposalResponses[0].response && proposalResponses[0].response.status === 200) {
 					console.log('Successfully obtained transaction endorsement.' + JSON.stringify(proposalResponses));
 					return webUser.sendTransaction(proposalResponses, proposal);
 				}
 				else {
-					console.log('Failed to obtain transaction endorsement. Error code: ' + proposalResponses[0].response.status);
+					console.log('Failed to obtain transaction endorsement. Error msg: ', proposalResponses[0]);
+					throw common.format_error_msg(proposalResponses[0]);
 				}
 			}
 		).then(
 			function (response) {
 				if (response.Status === 'SUCCESS') {
 					console.log('Successfully ordered endorsement transaction.');
-					if (cb) cb();
+					if(cb) return cb(null, null);
 				}
 				else {
-					console.log('Failed to order the endorsement of the transaction. Error code: ' + response.status);
+					console.log('Failed to order the endorsement of the transaction. Error code: ', response);
+					throw response;
 				}
 			}
 		).catch(
 			function (err) {
+				console.log('caught error', err);		//to do - this format everywhere
 				if(cb) return cb(err, null);
 			}
 		);
@@ -256,53 +264,11 @@ module.exports = function (chain, chaincode_id, logger) {
 			}
 		).catch(
 			function (err) {
-				console.log('Failed, in catch block' + err.stack ? err.stack : err);
+				console.log('unexpected error', err);
+				if (cb) cb();
 			}
 		);
 	};
-
-	//format query response
-	function format_query_resp(peer_responses, grab_inner_field){
-		var ret = 	{
-						peers_agree: true,
-						payload: []
-					};
-		var last = null;
-		var error = null;
-
-		// -- iter on each peer's response -- //
-		for(var i in peer_responses) {					//pray to the gods that i===peer_id and they never move
-			var as_string = peer_responses[i].toString('utf8');
-			var as_obj = {marbles: null};
-			console.log('Peer' + i, 'payload says:', as_string);
-
-			try{
-				// -- don't parse buffers -- //
-				if(as_string !== ''){
-					as_obj = JSON.parse(as_string);
-				}
-
-				if(grab_inner_field) ret.payload.push(as_obj[grab_inner_field]);	//only return inner field
-				else ret.payload.push(as_obj);
-				
-				// -- compare peer responses -- //
-				if(last != null){							//check if all peers agree
-					if(last !== as_string) {
-						console.log('warning - some peers do not agree on query', last, as_string);
-						ret.peers_agree = false;
-					}
-					last = as_string;
-				}
-			}
-
-			// -- JSON Error -- //
-			catch(e){
-				error = {error: 'payload not valid json', payload: peer_responses};
-			}
-		}
-
-		return {ret: ret, error: error};
-	}
 
 	return marbles;
 };
