@@ -38,7 +38,7 @@ module.exports = function (chain, chaincode_id, logger) {
 			}
 		).then(
 			function (response) {
-				if (response.Status === 'SUCCESS') {
+				if (response && response.Status === 'SUCCESS') {
 					console.log('Successfully ordered endorsement transaction.');
 					if(cb) cb(null, null);
 				}
@@ -155,7 +155,7 @@ module.exports = function (chain, chaincode_id, logger) {
 			}
 		).then(
 			function (response) {
-				if (response.Status === 'SUCCESS') {
+				if (response && response.Status === 'SUCCESS') {
 					console.log('Successfully ordered endorsement transaction.');
 					if(cb) return cb(null, null);
 				}
@@ -201,7 +201,7 @@ module.exports = function (chain, chaincode_id, logger) {
 			}
 		).then(
 			function (response) {
-				if (response.Status === 'SUCCESS') {
+				if (response && response.Status === 'SUCCESS') {
 					console.log('Successfully ordered endorsement transaction.');
 					if(cb) return cb(null, null);
 				}

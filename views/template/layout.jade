@@ -30,7 +30,7 @@ html
 				if(bag.e && bag.e.msg) {
 					$("#errorName").html("Start Up Error");
 					$("#errorNoticeText").html(JSON.stringify(bag.e.msg, null, 4));
-					$("#errorNotificationPanel").show();							//show the error/warning
+					//$("#errorNotificationPanel").show();							//show the error/warning
 				}
 				
 				//Tab Navigation, show the corresponding panel
@@ -113,7 +113,7 @@ html
 					span.fa.fa-minus-circle#errorNoticeIcon
 					h2#errorName Error
 					#errorNoticeText &nbsp;
-					p.hint This application cannot run without the blockchain network :(
+					button(type="button")#closeErrorPanel Dismiss
 				
 			#footerPanel
 				block footer

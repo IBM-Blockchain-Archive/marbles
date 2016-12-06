@@ -349,7 +349,7 @@ function connect_to_server(){
 		console.log('WS CONNECTED');
 		connected = true;
 		clear_blocks();
-		$('#errorNotificationPanel').fadeOut();
+		//$('#errorNotificationPanel').fadeOut();
 		ws.send(JSON.stringify({type: 'chainstats', v:2}));
 		ws.send(JSON.stringify({type: 'get_open_trades', v: 2}));
 		ws.send(JSON.stringify({type: 'get', v:2}));
@@ -399,11 +399,11 @@ function connect_to_server(){
 	function onError(evt){
 		console.log('ERROR ', evt);
 		if(!connected && bag.e == null){											//don't overwrite an error message
-			$('#errorName').html('Warning');
+			/*$('#errorName').html('Warning');
 			$('#errorNoticeText').html('Waiting on the node server to open up so we can talk to the blockchain. ');
 			$('#errorNoticeText').append('This app is likely still starting up. ');
 			$('#errorNoticeText').append('Check the server logs if this message does not go away in 1 minute. ');
-			$('#errorNotificationPanel').fadeIn();
+			$('#errorNotificationPanel').fadeIn();*/
 		}
 	}
 }

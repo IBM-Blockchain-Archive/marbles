@@ -154,23 +154,24 @@ pre {
   padding-left: 15px; }
 
 input[type="submit"], input[type="button"], button {
-  font-size: 11px;
+  font-size: 13px;
   cursor: pointer;
   padding: 5px 10px;
-  background: #6CC284;
-  color: #222832;
+  background: #222832;
+  color: #7E90A0;
   border: 0;
   transition: background-color 0.2s ease;
-  border-radius: 30px;
+  border-radius: 5px;
   min-width: 130px;
-  box-shadow: -1px 4px 2px -2px rgba(0, 0, 0, 0.75); }
+  border: 2px #7E90A0 solid; }
 
 input:focus, select:focus, button:focus {
   outline: none !important;
   border-color: #fff !important; }
 
-input[type="submit"]:hover, input[type="button"]:hover, button:hover {
-  background: #fff; }
+input[type="submit"]:hover, input[type="button"]:hover, button:hover, button.activeButton, button.activeButton:focus {
+  color: orange;
+  border-color: orange !important; }
 
 input[type="text"], input[type="password"], select {
   padding: 3px 10px;
@@ -414,7 +415,7 @@ label {
   color: #222832; }
 
 #userTable {
-  width: 657px;
+  width: 667px;
   display: inline-block; }
 
 #userTable tbody {
@@ -438,13 +439,14 @@ label {
   width: 60px; }
 
 .userName {
-  width: 225px; }
+  width: 200px; }
 
 .userCompany {
   width: 225px; }
 
-.userRights {
-  width: 60px; }
+td.userRights, th.userRights {
+  width: 70px;
+  text-align: center; }
 
 #errorNotificationPanel {
   display: none;

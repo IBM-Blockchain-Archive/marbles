@@ -2,6 +2,7 @@
 /* global toTitleCase*/
 var ws = {};
 var bgcolors = ['whitebg', 'blackbg', 'redbg', 'greenbg', 'bluebg', 'purplebg', 'pinkbg', 'orangebg', 'yellowbg'];
+var autoCloseError = null;
 
 // =================================================================================
 // On Load
@@ -109,6 +110,10 @@ $(document).on('ready', function() {
 			}
 		}
 	});
+
+	$('#closeErrorPanel').click(function(){
+		hide_error_notice();
+	});
 });
 // =================================================================================
 // Helper Fun
@@ -168,7 +173,8 @@ function connect_to_server(){
 		console.log('WS CONNECTED');
 		connected = true;
 		clear_blocks();
-		$('#errorNotificationPanel').fadeOut();
+		//$('#errorNotificationPanel').fadeOut();
+		
 		//ws.send(JSON.stringify({type: 'get_marbles', v:1}));
 		//ws.send(JSON.stringify({type: 'chainstats', v:1}));
 		ws.send(JSON.stringify({type: 'get_owners', v: 1}));
@@ -204,6 +210,15 @@ function connect_to_server(){
 				show_company_users();
 				ws.send(JSON.stringify({type: 'get_marbles', v:1}));
 			}
+			else if(msgObj.msg === 'tx_error'){
+				console.log('rec', msgObj.msg, msgObj);
+				$('#closeErrorPanel').removeClass('activeButton');
+				$('#errorNoticeText').html(escapeHtml(msgObj.e));
+				$('#errorNotificationPanel').animate({width:'toggle'});
+				autoCloseError = setTimeout(function(){
+					hide_error_notice();
+				}, 10000);
+			}
 			else console.log('rec', msgObj.msg, msgObj);
 		}
 		catch(e){
@@ -214,15 +229,22 @@ function connect_to_server(){
 	function onError(evt){
 		console.log('ERROR ', evt);
 		if(!connected && bag.e == null){											//don't overwrite an error message
+			/*
 			$('#errorName').html('Warning');
 			$('#errorNoticeText').html('Waiting on the node server to open up so we can talk to the blockchain. ');
 			$('#errorNoticeText').append('This app is likely still starting up. ');
 			$('#errorNoticeText').append('Check the server logs if this message does not go away in 1 minute. ');
 			$('#errorNotificationPanel').fadeIn();
+			*/
 		}
 	}
 }
 
+function hide_error_notice(){
+	$('#closeErrorPanel').addClass('activeButton');
+	$('#errorNotificationPanel').animate({width:'toggle'});
+	clearTimeout(autoCloseError);
+}
 
 // =================================================================================
 //	UI Building

@@ -43,23 +43,25 @@ hr{height:1px; border:none; background: $acc_color2;}
 hr:first-of-type{height:2px;}
 pre{padding-left:15px;}
 input[type="submit"],input[type="button"], button{
-	font-size:11px; 
+	font-size:13px; 
 	cursor:pointer; 
 	padding:5px 10px; 
-	background: $hi_color3; 
-	color:$acc_color1;
+	background: $acc_color1; 
+	color: $acc_color3;
 	border:0; 
 	transition:background-color 0.2s ease;
-	border-radius:30px;
+	border-radius:5px;
 	min-width:130px;
-	box-shadow: -1px 4px 2px -2px rgba(0,0,0,0.75);
+	//box-shadow: -1px 4px 2px -2px rgba(0,0,0,0.75);
+	border: 2px $acc_color3 solid;
 }
 input:focus, select:focus, button:focus{
 	outline: none !important;
-	border-color: #fff !important;
+	border-color: $main_color !important;
 }
-input[type="submit"]:hover,input[type="button"]:hover, button:hover{
-	background:$main_color;
+input[type="submit"]:hover,input[type="button"]:hover, button:hover, button.activeButton, button.activeButton:focus{
+	color: $hi_color1;
+	border-color: $hi_color1 !important;
 }
 input[type="text"], input[type="password"], select{
 	padding:3px 10px; 
