@@ -61,7 +61,7 @@ module.exports = function (webUser, marbles_lib, logger) {
 			//transfer a marble
 			else if(data.type == 'transfer_marble'){
 				console.log('transfering req');
-				marbles_lib.set_marble_owner(webUser, [data.name, data.username, data.company, process.env.marble_company +'2'], function(err, resp){
+				marbles_lib.set_marble_owner(webUser, [data.name, data.username, data.company, process.env.marble_company], function(err, resp){
 					if(err != null) send_err(err, data);
 				});
 			}

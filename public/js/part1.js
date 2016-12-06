@@ -141,7 +141,7 @@ function transfer_marble(marbleName, to_username, to_company){
 						v: 1
 					};
 		ws.send(JSON.stringify(obj));
-		//showHomePanel();
+		showHomePanel();
 	}
 }
 
