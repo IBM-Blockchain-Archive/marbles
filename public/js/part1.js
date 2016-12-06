@@ -157,7 +157,7 @@ function showHomePanel(){
 	console.log('getting new marbles!!!');
 	setTimeout(function(){
 		$('.innerMarbleWrap').html('');										//reset the panels
-		$('.userRow').find('.userMarbles').html('0');
+		$('.userRow').find('td.userMarbles').html('0');
 		ws.send(JSON.stringify({type: 'get_marbles', v: 1}));				//need to wait a bit
 		//ws.send(JSON.stringify({type: 'chainstats', v: 1}));
 		//ws.send(JSON.stringify({type: 'get_owners', v: 1}));
