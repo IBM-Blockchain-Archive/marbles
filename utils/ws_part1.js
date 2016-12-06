@@ -67,7 +67,7 @@ module.exports = function (webUser, marbles_lib, logger) {
 			}
 
 			//delete marble
-			else if(data.type == 'remove'){
+			else if(data.type == 'delete_marble'){
 				console.log('removing req');
 				//hfc_util.invokeCC(user, chaincodeID, 'delete', [data.name]);
 				marbles_lib.delete_marble(webUser, [data.name], function(err, resp){

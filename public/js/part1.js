@@ -109,7 +109,7 @@ $(document).on('ready', function() {
 			if(id){
 				console.log('removing marble', id);
 				var obj = 	{
-								type: 'remove',
+								type: 'delete_marble',
 								name: id,
 								v: 1
 							};
@@ -117,7 +117,7 @@ $(document).on('ready', function() {
 				$(ui.draggable).fadeOut();
 				setTimeout(function(){
 					$(ui.draggable).remove();
-				}, 300);
+				}, 1500);
 				showHomePanel();
 			}
 		}
