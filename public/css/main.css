@@ -416,7 +416,8 @@ label {
 
 #userTable {
   width: 667px;
-  display: inline-block; }
+  display: inline-block;
+  vertical-align: top; }
 
 #userTable tbody {
   max-height: 124px;

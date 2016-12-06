@@ -123,10 +123,26 @@ $(document).on('ready', function() {
 		}
 	});
 
+	//dismiss error panel
 	$('#closeErrorPanel').click(function(){
 		hide_error_notice();
 	});
 
+	//username/company search
+	$('#searchUsers').keyup(function(){
+		var input = $(this).val().toLowerCase();;
+		if(input === '') $('tr.userRow').show();
+		else{
+			$('.userRow').each(function(){
+				var full_owner = $(this).attr('full_owner');
+				if(full_owner){
+					full_owner = full_owner.toLowerCase();
+					if(full_owner.indexOf(input) === -1) $(this).hide();
+					else $(this).show();
+				}
+			});
+		}
+	});
 });
 // =================================================================================
 // Helper Fun
