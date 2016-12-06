@@ -28,11 +28,6 @@ module.exports = function (chain, chaincode_id, logger) {
 		marbles.create_a_marble(webUser, options, cb);
 	};
 
-	//reset marble index
-	marbles_chaincode.reset_marble_index = function (webUser, cb) {
-		marbles.reset_marble_index(webUser, cb);
-	};
-
 	//get list of marbles
 	marbles_chaincode.get_marble_list = function (webUser, cb) {
 		marbles.get_marble_list(webUser, cb);

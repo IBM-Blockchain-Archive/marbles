@@ -33,22 +33,25 @@ module.exports = function (chain, chaincode_id, logger) {
 					return webUser.sendTransaction(proposalResponses, proposal);
 				}
 				else {
-					console.log('Failed to obtain transaction endorsement. Error code: ' + proposalResponses[0].response.status);
+					console.log('Failed to obtain transaction endorsement');
+					throw common.format_error_msg(proposalResponses[0]);
 				}
 			}
 		).then(
 			function (response) {
 				if (response.Status === 'SUCCESS') {
 					console.log('Successfully ordered endorsement transaction.');
-					if (cb) cb();
+					if(cb) cb(null, null);
 				}
 				else {
-					console.log('Failed to order the endorsement of the transaction. Error code: ' + response.status);
+					console.log('Failed to order the endorsement of the transaction. Error code: ', response);
+					throw response;
 				}
 			}
 		).catch(
 			function (err) {
-				console.log('Failed, in catch block' + err.stack ? err.stack : err);
+				console.log('caught error', err);
+				if(cb) return cb(err, null);
 			}
 		);
 	};

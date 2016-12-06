@@ -32,83 +32,29 @@ module.exports = function (chain, chaincode_id, logger) {
 					return webUser.sendTransaction(proposalResponses, proposal);
 				}
 				else {
-					console.log('Failed to obtain transaction endorsement. Error code: ' + proposalResponses[0].response.status);
+					console.log('Failed to obtain transaction endorsement');
+					throw common.format_error_msg(proposalResponses[0]);
 				}
 			}
 		).then(
 			function (response) {
 				if (response.Status === 'SUCCESS') {
 					console.log('Successfully ordered endorsement transaction.');
-					if (cb) cb();
+					if(cb) cb(null, null);
 				}
 				else {
-					console.log('Failed to order the endorsement of the transaction. Error code: ' + response.status);
+					console.log('Failed to order the endorsement of the transaction.');
+					throw response;
 				}
 			}
 		).catch(
 			function (err) {
-				console.log('unexpected error', err);
+				console.log('caught error', err);
 				if(cb) return cb(err, null);
 			}
 		);
 	};
 
-
-	//-------------------------------------------------------------------
-	// Create Marble - delete all marbles from index (this will make the app 'forget' them)
-	//-------------------------------------------------------------------
-	marbles.reset_marble_index = function (webUser, cb) {
-		console.log('\nremoving marbles from index...');
-		return new Promise(function (resolve, reject) {
-			chain.enroll('admin', 'adminpw')
-				.then(
-				function () {
-					// send proposal to endorser
-					var request = {
-						targets: [hfc.getPeer(helper.getPeersUrl(0))],
-						chaincodeId : chaincode_id,
-						fcn: 'init',
-						args: ['99']
-					};
-					return webUser.sendTransactionProposal(request);
-				},
-				function (err) {
-					console.log('Failed to send invoke due to error: ' + err.stack ? err.stack : err);
-				}
-				).then(
-				function (results) {
-					var proposalResponses = results[0];
-					var proposal = results[1];
-					if (proposalResponses[0].response.status === 200) {
-						console.log('Successfully obtained transaction endorsement.' + JSON.stringify(proposalResponses));
-						return webUser.sendTransaction(proposalResponses, proposal);
-					} else {
-						console.log('Failed to obtain transaction endorsement. Error code: ' + proposalResponses[0].response.status);
-					}
-				},
-				function (err) {
-					console.log('Failed to send transaction proposal due to error: ' + err.stack ? err.stack : err);
-				}
-				).then(
-				function (response) {
-					if (response.Status === 'SUCCESS') {
-						console.log('Successfully ordered endorsement transaction.');
-						if (cb) cb();
-					} else {
-						console.log('Failed to order the endorsement of the transaction. Error code: ' + response.status);
-					}
-				},
-				function (err) {
-					console.log('Failed to send transaction proposal due to error: ' + err.stack ? err.stack : err);
-				}
-				).catch(
-				function (err) {
-					console.log('unexpected error', err);
-					if(cb) return cb(err, null);
-				}
-				);
-		});
-	};
 
 	//-------------------------------------------------------------------
 	// Get Marble Index List
@@ -126,7 +72,7 @@ module.exports = function (chain, chaincode_id, logger) {
 		.then(
 			function(response_payloads) {
 				if(response_payloads.length <= 0){
-					console.log('! Query response is empty: ');
+					console.log('Query response is empty: ');
 					if(cb) return cb({error: 'query response is empty'}, null);
 				}
 				else{
@@ -139,7 +85,7 @@ module.exports = function (chain, chaincode_id, logger) {
 		)
 		.catch(
 			function (err) {
-				console.log('unexpected error', err);
+				console.log('caught error', err);
 				if(cb) return cb(err, null);
 			}
 		);
@@ -162,7 +108,7 @@ module.exports = function (chain, chaincode_id, logger) {
 		.then(
 			function(response_payloads) {
 				if(response_payloads.length <= 0){
-					console.log('! Query response is empty: ');
+					console.log('Query response is empty: ');
 					if(cb) return cb({error: 'query response is empty'}, null);
 				}
 				else{
@@ -174,7 +120,7 @@ module.exports = function (chain, chaincode_id, logger) {
 			}
 		).catch(
 			function (err) {
-				console.log('unexpected error', err);
+				console.log('caught error', err);
 				if(cb) return cb(err, null);
 			}
 		);
@@ -214,13 +160,13 @@ module.exports = function (chain, chaincode_id, logger) {
 					if(cb) return cb(null, null);
 				}
 				else {
-					console.log('Failed to order the endorsement of the transaction. Error code: ', response);
+					console.log('Failed to order the endorsement of the transaction');
 					throw response;
 				}
 			}
 		).catch(
 			function (err) {
-				console.log('caught error', err);		//to do - this format everywhere
+				console.log('caught error', err);
 				if(cb) return cb(err, null);
 			}
 		);
@@ -250,22 +196,24 @@ module.exports = function (chain, chaincode_id, logger) {
 				}
 				else {
 					console.log('Failed to obtain transaction endorsement. Error code: ' + proposalResponses[0].response.status);
+					throw common.format_error_msg(proposalResponses[0]);
 				}
 			}
 		).then(
 			function (response) {
 				if (response.Status === 'SUCCESS') {
 					console.log('Successfully ordered endorsement transaction.');
-					if (cb) cb();
+					if(cb) return cb(null, null);
 				}
 				else {
-					console.log('Failed to order the endorsement of the transaction. Error code: ' + response.status);
+					console.log('Failed to order the endorsement of the transaction.');
+					throw response;
 				}
 			}
 		).catch(
 			function (err) {
-				console.log('unexpected error', err);
-				if (cb) cb();
+				console.log('caught error', err);
+				if(cb) return cb(err, null);
 			}
 		);
 	};
