@@ -202,7 +202,7 @@ func findMarble4Trade(stub shim.ChaincodeStubInterface, owner string, color stri
 		//fmt.Println("looking @ " + res.Owner + ", " + res.Color + ", " + strconv.Itoa(res.Size));
 
 		//check for owner && color && size
-		if strings.ToLower(res.Owner) == strings.ToLower(owner) && strings.ToLower(res.Color) == strings.ToLower(color) && res.Size == size {
+		if strings.ToLower(res.Owner.Username) == strings.ToLower(owner) && strings.ToLower(res.Color) == strings.ToLower(color) && res.Size == size {
 			fmt.Println("found a marble: " + res.Name)
 			fmt.Println("! end find marble 4 trade")
 			return res, nil

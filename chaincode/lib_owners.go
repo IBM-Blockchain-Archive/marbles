@@ -38,9 +38,9 @@ func set_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) 
 	fmt.Println("starting set_owner")
 
 	//   0       1
-	// "name", "bob"
-	if len(args) < 2 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 2")
+	// "name", "bob", "united_marbles"
+	if len(args) < 3 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 3")
 	}
 
 	fmt.Println(args[0] + " - " + args[1])
@@ -49,11 +49,12 @@ func set_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) 
 		return nil, errors.New("Failed to get thing")
 	}
 	res := Marble{}
-	json.Unmarshal(marbleAsBytes, &res) //un stringify it aka JSON.parse()
-	res.Owner = args[1]                 //change the owner
+	json.Unmarshal(marbleAsBytes, &res)          //un stringify it aka JSON.parse()
+	res.Owner.Username = args[1]                 //change the owner
+	res.Owner.Company = args[2]                  //change the owner
 
 	jsonAsBytes, _ := json.Marshal(res)
-	err = stub.PutState(args[0], jsonAsBytes) //rewrite the marble with id as key
+	err = stub.PutState(args[0], jsonAsBytes)    //rewrite the marble with id as key
 	if err != nil {
 		return nil, err
 	}

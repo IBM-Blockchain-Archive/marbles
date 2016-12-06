@@ -82,10 +82,10 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) ([]byte, error
 	var err error
 	fmt.Println("starting init_marble")
 
-	//   0       1       2     3
-	// "asdf", "blue", "35", "bob"
-	if len(args) != 4 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 4")
+	//   0       1       2     3      4
+	// "asdf", "blue", "35", "bob", "united marbles"
+	if len(args) != 5 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 5")
 	}
 
 	//input sanitation
@@ -101,9 +101,13 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) ([]byte, error
 	if len(args[3]) <= 0 {
 		return nil, errors.New("4th argument must be a non-empty string")
 	}
+	if len(args[4]) <= 0 {
+		return nil, errors.New("5th argument must be a non-empty string")
+	}
 	name := args[0]
 	color := strings.ToLower(args[1])
-	owner := strings.ToLower(args[3])
+	username := strings.ToLower(args[3])
+	company := strings.ToLower(args[4])
 	size, err := strconv.Atoi(args[2])
 	if err != nil {
 		return nil, errors.New("3rd argument must be a numeric string")
@@ -123,7 +127,7 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) ([]byte, error
 	}
 
 	//build the marble json string manually
-	str := `{"docType":"Marble",  "name": "` + name + `", "color": "` + color + `", "size": ` + strconv.Itoa(size) + `, "owner": "` + owner + `"}`
+	str := `{"docType":"Marble",  "name": "` + name + `", "color": "` + color + `", "size": ` + strconv.Itoa(size) + `, "owner": {"username": "` + username + `", "company": "` + company + `"}}`
 	err = stub.PutState(name, []byte(str)) //store marble with id as key
 	if err != nil {
 		return nil, err

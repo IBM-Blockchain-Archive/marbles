@@ -8,7 +8,7 @@ module.exports = function (chain, chaincode_id, logger) {
 	var marbles = {};
 
 	//-------------------------------------------------------------------
-	// Create Marble - options are [marble_id, color, size, owner]
+	// Create Marble
 	//-------------------------------------------------------------------
 	marbles.create_a_marble = function (webUser, options, cb) {
 		console.log('\ncreating a marble...');
@@ -18,8 +18,9 @@ module.exports = function (chain, chaincode_id, logger) {
 			targets: [hfc.getPeer(helper.getPeersUrl(0))],
 			chaincodeId: chaincode_id,
 			fcn: 'init_marble',
-			args: options 									//args == [marble_id, color, size, owner]
+			args: options 									//args == [marble_id, color, size, username, company]
 		};
+		console.log('!', options);
 		webUser.sendTransactionProposal(request)
 		.then(
 			function (results) {
@@ -185,7 +186,7 @@ module.exports = function (chain, chaincode_id, logger) {
 			targets: [hfc.getPeer(helper.getPeersUrl(0))],
 			chaincodeId: chaincode_id,
 			fcn: 'set_owner',
-			args: options 									//args == ["name", "bob"]
+			args: options 									//args == ["name", "bob", "united_marbles"]
 		};
 		webUser.sendTransactionProposal(request)
 		.then(
