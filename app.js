@@ -239,28 +239,12 @@ var marbles_lib = null;
 
 //make chaincode name unique-ish
 function set_chaincode_id(cb){
-	//find a go file
-	fs.readdir(ccPath, function(err, files){
-		if(err != null){
-			console.log('Error - cannot find chaincode directory: ' + ccPath);
-			process.exit();
-		}
-		for(var i in files){
-			if(files[i].indexOf('.go') === -1) continue;
-			else build_id_from_ts(ccPath + '/' + files[i]);
-			break;												//first .go file we found is good enough
-		}
+	fs.stat(ccPath + '/marbles.go', function(err, fstats){
+		var temp = new Date(fstats.mtime);
+		chaincode_id = chaincode_prefix + '.' + temp.getTime();	//get the modified timestamp for the go file
+		console.log('chaincode id', chaincode_id);
+		cb();
 	});
- 
-	//get the modified timestamp for the go file
-	function build_id_from_ts(file_path){
-		fs.stat(file_path, function(err, fstats){
-			var temp = new Date(fstats.mtime);
-			chaincode_id = chaincode_prefix + '.' + temp.getTime();
-			console.log('chaincode id', chaincode_id);
-			cb();
-		});
-	}
 }
 
 // -------------------------------------------------------------------
@@ -312,7 +296,7 @@ function randStr(length){
 //real simple hash
 function simple_hash(a_string){
 	var hash = 0;
-	for(var i in a_string) hash += a_string.charCodeAt(i);
+	for(var i in a_string) hash ^= a_string.charCodeAt(i);
 	return hash;
 }
 
