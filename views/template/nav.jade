@@ -12,10 +12,9 @@
 	span.fa.fa-user#userIcon
 	span#userField #{bag.session.username}
 	span &nbsp;
-	span.fa.fa-angle-down
+	span.fa.fa-angle-down#carrot
 	
+
 	#userSelect
-		.userLine(name="#{bag.setup.USER1}")
-			span #{bag.setup.USER1.toUpperCase()} &nbsp;&nbsp;
-		.userLine(name="#{bag.setup.USER2}")
-			span #{bag.setup.USER2.toUpperCase()}&nbsp;&nbsp;
+		#triangle
+		a(href="/logout").userLine(style="color: #fff; font-weight: 100;") Logout

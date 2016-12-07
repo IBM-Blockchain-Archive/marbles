@@ -152,6 +152,18 @@ $(document).on('ready', function() {
 		//user count
 		$('#foundUsers').html(count);
 	});
+
+	//login events
+	$('#whoAmI').click(function(){													//drop down for login
+		if($('#userSelect').is(':visible')){
+			$('#userSelect').fadeOut();
+			$('#carrot').removeClass('fa-angle-up').addClass('fa-angle-down');
+		}
+		else{
+			$('#userSelect').fadeIn();
+			$('#carrot').removeClass('fa-angle-down').addClass('fa-angle-up');
+		}
+	});
 });
 // =================================================================================
 // Helper Fun

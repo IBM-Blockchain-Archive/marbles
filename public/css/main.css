@@ -570,6 +570,16 @@ td.userRights, th.userRights {
   padding: 20px;
   text-align: center; }
 
+#triangle {
+  border: 10px solid #7E90A0;
+  border-top-color: transparent;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  width: 0;
+  left: 45%;
+  position: absolute;
+  top: -20px; }
+
 #blockWrap {
   position: relative;
   margin: 15px 25px; }
@@ -723,14 +733,13 @@ td.userRights, th.userRights {
 #userSelect {
   display: none;
   position: absolute;
-  top: 65px;
-  z-index: 2;
+  top: 72px;
   right: -10px;
+  z-index: 2;
   color: #646B73;
-  padding: 10px 0;
-  background: #222832;
+  background: #7E90A0;
   border-radius: 10px;
-  width: 150px;
+  width: 140px;
   text-align: center;
   font-size: 11px;
   font-weight: bold; }
@@ -739,9 +748,6 @@ td.userRights, th.userRights {
   line-height: 40px;
   height: 40px;
   cursor: pointer; }
-
-.userLine:hover {
-  background: #181C22; }
 
 .invalid {
   opacity: 0.3; }

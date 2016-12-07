@@ -354,3 +354,14 @@ td.userRights, th.userRights{
 	padding: 20px;
 	text-align: center;
 }
+
+#triangle{
+	border: 10px solid $acc_color3;
+	border-top-color: transparent;
+	border-left-color: transparent;
+	border-right-color: transparent;
+	width: 0;
+	left: 45%;
+	position: absolute;
+	top: -20px;
+}
