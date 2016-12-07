@@ -53,7 +53,7 @@ module.exports = function (webUser, marbles_lib, logger) {
 						});
 					}, function() {
 						console.log('finished reading all marbles');
-						sendMsg({msg: 'action', e: null, status: 'finished'});
+						sendMsg({msg: 'all_marbles_sent', e: null});
 					});
 				});
 			}

@@ -275,7 +275,7 @@ label {
 .marblesWrap {
   display: inline-block;
   display: none;
-  width: 30%;
+  width: 31%;
   text-align: left;
   color: #fff;
   margin-bottom: 15px;
@@ -386,7 +386,7 @@ label {
 
 #notificationPanel {
   display: none;
-  width: 450px;
+  width: 0;
   position: absolute;
   right: 0;
   top: 90px;
@@ -398,7 +398,7 @@ label {
   border-bottom-left-radius: 10px;
   text-align: center; }
 
-#noticeText, #errorNoticeText {
+#errorNoticeText {
   margin-bottom: 10px;
   font-size: 13px;
   width: 88%;
@@ -533,8 +533,8 @@ td.userRights, th.userRights {
 
 .colorInput {
   width: 105px;
-  border: 1px solid #7E90A0;
-  border-radius: 20px;
+  border: 1px solid #646B73;
+  border-radius: 5px;
   padding: 5px;
   font-size: 13px; }
 

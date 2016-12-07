@@ -53,13 +53,21 @@ router.route('/logout').get(function(req, res){
 // Home
 // ============================================================================================================================
 router.route('/home').get(function(req, res){
+	route_me(req, res);
+});
+
+router.route('/create').get(function(req, res){
+	route_me(req, res);
+});
+
+function route_me(req, res){
 	if(!req.session.user || !req.session.user.username){
 		res.redirect('/login');
 	}
 	else{
 		res.render('marbles', {title: 'Marbles - Home', bag: build_bag(req)});
 	}
-});
+}
 
 // ============================================================================================================================
 // Part 2

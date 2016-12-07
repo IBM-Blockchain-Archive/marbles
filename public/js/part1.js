@@ -3,6 +3,8 @@
 var ws = {};
 var bgcolors = ['whitebg', 'blackbg', 'redbg', 'greenbg', 'bluebg', 'purplebg', 'pinkbg', 'orangebg', 'yellowbg'];
 var autoCloseError = null;
+var known_companies = [];
+var start_up = true;
 
 // =================================================================================
 // On Load
@@ -258,6 +260,7 @@ function connect_to_server(){
 				console.log('rec', msgObj.msg, msgObj);
 				build_user_panels(msgObj.owners);
 				build_user_table_row(msgObj.owners);
+				build_user_options(msgObj.owners);
 				show_users_panels();
 				ws.send(JSON.stringify({type: 'get_marbles', v:1}));
 			}
@@ -269,6 +272,10 @@ function connect_to_server(){
 				autoCloseError = setTimeout(function(){
 					hide_error_notice();
 				}, 10000);
+			}
+			else if(msgObj.msg === 'all_marbles_sent'){
+				console.log('rec', msgObj.msg, msgObj);
+				start_up = false;
 			}
 			else console.log('rec', msgObj.msg, msgObj);
 		}
@@ -340,6 +347,23 @@ function build_marble(marble){
 	return html;
 }
 
+//record the compan, show notice if its new
+function record_company(company){
+	for(var i in known_companies){
+		if(known_companies[i] === company) return;
+	}
+
+	// -- Show the new company Notification -- //
+	if(start_up === false){
+		console.log('this is a new company!', company);
+		$('#noticeText').html(company);
+		$('#notificationPanel').show().animate({width:'450px'});
+	}
+
+	console.log('recorded company', company);
+	known_companies.push(company);
+}
+
 //build all user panels
 function build_user_panels(data){
 	var html = '';
@@ -349,6 +373,7 @@ function build_user_panels(data){
 		var colorClass = '';
 		data[i].username = escapeHtml(data[i].username);
 		data[i].company = escapeHtml(data[i].company);
+		record_company(data[i].company);
 
 		full_owner = build_full_owner(data[i].username, data[i].company);
 		console.log('building user', full_owner);
@@ -432,3 +457,17 @@ function show_users_panels(){
 function build_full_owner(username, company){
 	return username.toLowerCase() + '.' + company.toLowerCase();
 }
+
+
+function build_user_options(user_list){
+	var html = '<option disabled="disabled" selected="selected">User</option>';
+	for(var i in user_list){
+		var full_owner = build_full_owner(user_list[i].username, user_list[i].company);
+
+		if(user_list[i].company.toLowerCase() === bag.marble_company.toLowerCase()) {				//only add users for my company
+			html += '<option value="' + full_owner +'">' + toTitleCase(user_list[i].username) + '</option>';
+		}
+	}
+	$('select[name="user"]').html(html);
+}
+
