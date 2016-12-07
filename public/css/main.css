@@ -624,6 +624,21 @@ td.userRights, th.userRights {
   position: absolute;
   top: -20px; }
 
+#welcomePanel {
+  text-align: center;
+  max-width: 550px;
+  margin: auto;
+  margin-top: 120px;
+  margin-bottom: 100px;
+  font-size: 15px; }
+
+.split1x3 {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  width: 33%;
+  vertical-align: top; }
+
 #blockWrap {
   position: relative;
   margin: 15px 25px; }

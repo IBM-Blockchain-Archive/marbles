@@ -18,10 +18,50 @@ block navpanel
 block content
 	#contentPanel
 		
-		
+		// --------------- Welcome Panel
+		#welcomePanel
+			h2 WELCOME TO MARBLES
+			br
+			br
+			p 
+				span This application allows you to simulate a simple asset transaction over a Hyperledger Fabric blockchain. 
+				span Connect multiple peers to trade with a larger marble userbase. 
+				span In this application, you can: 
+			
+			br
+			br
+
+			#split1x3Wrap
+				.split1x3
+					span Trade
+					br
+					span Assets
+					br
+					img(src="/imgs/welcome_img1.png" style="width:90%;").welcomeImg
+				.split1x3
+					span Create
+					br
+					span New Marbles
+					br
+					img(src="/imgs/welcome_img2.png" style="width:35%;").welcomeImg
+				.split1x3
+					span Verify
+					br
+					span Asset Ownership
+					br
+					img(src="/imgs/welcome_img3.png" style="width:70%;").welcomeImg
+			br
+			br
+
+			p 
+				span For more information, please visit our 
+				a(href="https://github.com/IBM-Blockchain/marbles/tree/v3.0") GitHub
+				span.
+
+
 		// --------------- Login Panel
 		form#loginPanel(method="POST" action="#")
-			p Welcome
+			p Enter
 			hr
 			input(type="text" placeholder="username" value="admin" name="username")
 			button(type="submit") Login

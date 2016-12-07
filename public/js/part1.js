@@ -1,4 +1,4 @@
-/* global new_block, randStr, bag, $, clear_blocks, document, WebSocket, escapeHtml, window */
+/* global new_block, randStr, bag, $, clear_blocks, document, WebSocket, escapeHtml */
 /* global toTitleCase*/
 var ws = {};
 var bgcolors = ['whitebg', 'blackbg', 'redbg', 'greenbg', 'bluebg', 'purplebg', 'pinkbg', 'orangebg', 'yellowbg'];
