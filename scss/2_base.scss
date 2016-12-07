@@ -30,12 +30,12 @@ th{
 	font-weight:normal; 
 	font-size: 12px; 
 	background: $main_bg; 
-	color: $acc_color2; 
+	color: $main_color; 
 	text-align:center; 
 	font-weight: bold;
 }
 thead tr{
-	border-top:1px $acc_color2 solid;
+	//border-top:1px $acc_color2 solid;
 	border-bottom:1px $acc_color2 solid;
 }
 p{margin:5px; padding:0;}

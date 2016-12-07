@@ -130,12 +130,11 @@ th {
   font-weight: normal;
   font-size: 12px;
   background: #343D48;
-  color: #646B73;
+  color: #fff;
   text-align: center;
   font-weight: bold; }
 
 thead tr {
-  border-top: 1px #646B73 solid;
   border-bottom: 1px #646B73 solid; }
 
 p {
@@ -274,7 +273,9 @@ label {
   z-index: 4; }
 
 .marblesWrap {
-  display: block;
+  display: inline-block;
+  display: none;
+  width: 30%;
   text-align: left;
   color: #fff;
   margin-bottom: 15px;
@@ -282,7 +283,8 @@ label {
   position: relative;
   min-height: 158px;
   border-radius: 5px;
-  display: none; }
+  margin-left: 15px;
+  vertical-align: top; }
 
 .innerMarbleWrap {
   min-height: 100px; }
@@ -315,28 +317,26 @@ label {
 #trashbin {
   display: inline-block;
   text-align: center;
-  margin-left: 30px; }
+  margin-left: 30px;
+  margin-top: 30px; }
 
 .marblesCloseSectionPos {
-  position: absolute;
-  left: -25px;
-  top: 65px;
-  padding: 2px; }
+  padding: 2px;
+  font-size: 16px;
+  float: right; }
 
 .marblesCloseSection:hover, .marblesOpenSection:hover {
-  color: #181C22;
+  color: orange;
   cursor: pointer; }
 
-/*
-#trashbin{
-	width:200px;
-	height: 70px;
-	margin:auto;
-	text-align: center;
-	margin-top:30px;
-}*/
 .adminControl {
   border-color: #fff; }
+
+.noMarblesMsg {
+  text-align: center;
+  position: absolute;
+  top: 85px;
+  left: 40%; }
 
 .createball {
   font-size: 275px;
@@ -415,7 +415,7 @@ label {
   color: #222832; }
 
 #userTable {
-  width: 667px;
+  width: 612px;
   display: inline-block;
   vertical-align: top; }
 

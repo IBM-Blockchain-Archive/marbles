@@ -55,14 +55,14 @@ $(document).on('ready', function() {
 		else{
 			console.log('clicked to show', full_owner);
 			$(this).addClass('selectedRow');
-			$('.marblesWrap[full_owner="' + full_owner + '"]').fadeIn();
+			$('.marblesWrap[full_owner="' + full_owner + '"]').css('display', 'inline-block');
 		}
 	});
 
 	//close user panel
 	$(document).on('click', '.marblesCloseSection', function(){
-		$(this).parent().fadeOut();
-		var full_owner = $(this).parent().attr('full_owner');
+		$(this).parents('.marblesWrap').fadeOut();
+		var full_owner = $(this).parents('.marblesWrap').attr('full_owner');
 		$('.userRow[full_owner="' + full_owner + '"]').removeClass('selectedRow');
 	});
 
@@ -130,18 +130,27 @@ $(document).on('ready', function() {
 
 	//username/company search
 	$('#searchUsers').keyup(function(){
+		var count = 0;
 		var input = $(this).val().toLowerCase();
-		if(input === '') $('tr.userRow').show();
+		if(input === '') {
+			$('tr.userRow').show();
+			count = $('#totalUsers').html();
+		}
 		else{
 			$('.userRow').each(function(){
 				var full_owner = $(this).attr('full_owner');
 				if(full_owner){
 					full_owner = full_owner.toLowerCase();
 					if(full_owner.indexOf(input) === -1) $(this).hide();
-					else $(this).show();
+					else {
+						count++;
+						$(this).show();
+					}
 				}
 			});
 		}
+		//user count
+		$('#foundUsers').html(count);
 	});
 });
 // =================================================================================
@@ -158,6 +167,7 @@ function showHomePanel(){
 	setTimeout(function(){
 		$('.innerMarbleWrap').html('');										//reset the panels
 		$('.userRow').find('td.userMarbles').html('0');
+		$('.noMarblesMsg').show();
 		ws.send(JSON.stringify({type: 'get_marbles', v: 1}));				//need to wait a bit
 		//ws.send(JSON.stringify({type: 'chainstats', v: 1}));
 		//ws.send(JSON.stringify({type: 'get_owners', v: 1}));
@@ -220,7 +230,7 @@ function connect_to_server(){
 			var msgObj = JSON.parse(msg.data);
 			if(msgObj.marble){
 				console.log('rec', msgObj.msg, msgObj);
-				build_ball(msgObj.marble);
+				build_marble(msgObj.marble);
 			}
 			else if(msgObj.msg === 'chainstats'){
 				console.log('rec', msgObj.msg, ': ledger blockheight', msgObj.chainstats.height, 'block', msgObj.blockstats.height);
@@ -279,7 +289,7 @@ function hide_error_notice(){
 //	UI Building
 // =================================================================================
 //build a marble
-function build_ball(marble){
+function build_marble(marble){
 	var html = '';
 	var colorClass = '';
 	var size = 'fa-5x';
@@ -307,7 +317,7 @@ function build_ball(marble){
 			if(marble.owner.username.toLowerCase() === panel.username.toLowerCase()){		//match the username
 				if(marble.owner.company.toLowerCase() === panel.company.toLowerCase()){		//match the company
 					$(this).find('.innerMarbleWrap').append(html);
-					$(this).find('.tempMsg').remove();
+					$(this).find('.noMarblesMsg').hide();
 				}
 			}
 		});
@@ -333,13 +343,13 @@ function build_user_panels(data){
 		if(data[i].company.toLowerCase() === bag.marble_company.toLowerCase()) colorClass = 'adminControl';
 
 		html += '<div id="user' + i + 'wrap" username="' + data[i].username + '" company="' + data[i].company + '" full_owner="' + full_owner +'" class="marblesWrap ' + colorClass +'">';
-		html +=		'<span class="fa fa-close marblesCloseSectionPos marblesCloseSection"></span>';
 		html +=		'<div class="legend">';
-		html +=			 toTitleCase(data[i].username);
-		html +=			'<span class="hint" style="float:right;">' + data[i].company + '</span>';
+		html +=			toTitleCase(data[i].username);
+		html +=			'<span class="fa fa-close marblesCloseSectionPos marblesCloseSection" title="Hide"></span>';
 		html +=		'</div>';
 		html +=		'<div class="innerMarbleWrap">&nbsp;</div>';
-		html +=		'<div class="tempMsg hint" style="text-align: center;">No marbles</div>';
+		html +=		'<div class="noMarblesMsg hint">No marbles</div>';
+		html +=		'<p class="hint" style="text-align:center;">' + data[i].company + '</p>';
 		html +=	'</div>';
 	}
 	$('#allUserPanelsWrap').html(html);
@@ -349,8 +359,8 @@ function build_user_panels(data){
 	$('.innerMarbleWrap').droppable({drop:
 		function( event, ui ) {
 			var dragged_user = $(ui.draggable).attr('username').toLowerCase();
-			var dropped_user = $(event.target).parent().attr('username').toLowerCase();
-			var dropped_company = $(event.target).parent().attr('company').toLowerCase();
+			var dropped_user = $(event.target).parents('.marblesWrap').attr('username').toLowerCase();
+			var dropped_company = $(event.target).parents('.marblesWrap').attr('company').toLowerCase();
 			console.log('dropped a marble', dragged_user, dropped_user, dropped_company);
 			if(dragged_user != dropped_user){										//only transfer marbles that changed owners
 				$(ui.draggable).addClass('invalid');
@@ -359,6 +369,10 @@ function build_user_panels(data){
 			}
 		}
 	});
+
+	//user count
+	$('#foundUsers').html(data.length);
+	$('#totalUsers').html(data.length);
 }
 
 //build all user table rows
@@ -398,7 +412,7 @@ function build_user_table_row(data){
 function show_users_panels(){
 	$('.selectedRow').each(function(){
 		var full_owner = $(this).attr('full_owner');
-		$('.marblesWrap[full_owner="' + full_owner + '"]').fadeIn(500);
+		$('.marblesWrap[full_owner="' + full_owner + '"]').css('display', 'inline-block');
 	});
 }
 

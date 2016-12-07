@@ -67,7 +67,9 @@
 
 // --------- Home ---------
 .marblesWrap{
-	display:block;
+	display: inline-block;
+	display:none;
+	width: 30%;
 	text-align: left;
 	color: $main_color;
 	margin-bottom: 15px;
@@ -75,7 +77,8 @@
 	position: relative;
 	min-height: 158px;
 	border-radius: 5px;
-	display:none;
+	margin-left: 15px;
+	vertical-align: top;
 }
 .innerMarbleWrap{
 	min-height:100px;
@@ -111,30 +114,27 @@
 	display: inline-block;
 	text-align: center;
 	margin-left: 30px;
+	margin-top: 30px;
 }
 .marblesCloseSectionPos{
-	position:absolute;
-	left: -25px;
-	top: 65px;
 	padding: 2px;
+	font-size: 16px;
+	float:right;
 }
 .marblesCloseSection:hover, .marblesOpenSection:hover{
-	color: $acc_color0;
+	color: $hi_color1;
 	cursor: pointer;
 }
-/*
-#trashbin{
-	width:200px;
-	height: 70px;
-	margin:auto;
-	text-align: center;
-	margin-top:30px;
-}*/
 
 .adminControl{
 	border-color: $main_color;
 }
-
+.noMarblesMsg{
+	text-align: center;
+	position: absolute;
+	top: 85px;
+	left: 40%;
+}
 
 // --------- Create ---------
 .createball{
@@ -222,7 +222,7 @@
 
 // -- Table -- //
 #userTable{
-	width: 667px;
+	width: 612px;
 	display: inline-block;
 	vertical-align: top;
 }
