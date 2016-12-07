@@ -391,7 +391,7 @@ label {
   top: 75px;
   background: #343d48;
   border: 1px #646b73 solid;
-  z-index: 200;
+  z-index: 1005;
   padding: 50px;
   left: 23%; }
 
@@ -404,7 +404,7 @@ label {
   right: 0;
   width: 100%;
   height: 100%;
-  z-index: 100; }
+  z-index: 1001; }
 
 .hint {
   font-size: 12px;

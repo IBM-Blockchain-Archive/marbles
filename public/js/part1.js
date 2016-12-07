@@ -87,24 +87,6 @@ $(document).on('ready', function() {
 	
 	//drag and drop marble
 	$('#user2wrap, #user1wrap, #trashbin').sortable({connectWith: '.sortable'}).disableSelection();
-	/*$('#user2wrap').droppable({drop:
-		function( event, ui ) {
-			var user = $(ui.draggable).attr('user');
-			if(user.toLowerCase() != bag.setup.USER2){
-				$(ui.draggable).addClass('invalid');
-				transfer_marble($(ui.draggable).attr('id'), bag.setup.USER2);
-			}
-		}
-	});
-	$('#user1wrap').droppable({drop:
-		function( event, ui ) {
-			var user = $(ui.draggable).attr('user');
-			if(user.toLowerCase() != bag.setup.USER1){
-				$(ui.draggable).addClass('invalid');
-				transfer_marble($(ui.draggable).attr('id'), bag.setup.USER1);
-			}
-		}
-	});*/
 	$('#trashbin').droppable({drop:
 		function( event, ui ) {
 			var id = $(ui.draggable).attr('id');
@@ -195,7 +177,7 @@ function showHomePanel(){
 	
 	console.log('getting new marbles!!!');
 	setTimeout(function(){
-		$('.innerMarbleWrap').html('<span class="fa fa-plus addMarble"></span>');//reset the panels
+		$('.innerMarbleWrap').html('<i class="fa fa-plus addMarble"></i>');//reset the panels
 		$('.userRow').find('td.userMarbles').html('0');
 		$('.noMarblesMsg').show();
 		ws.send(JSON.stringify({type: 'get_marbles', v: 1}));					//need to wait a bit
@@ -399,7 +381,7 @@ function build_user_panels(data){
 		html +=			toTitleCase(data[i].username);
 		html +=			'<span class="fa fa-close marblesCloseSectionPos marblesCloseSection" title="Hide"></span>';
 		html +=		'</div>';
-		html +=		'<div class="innerMarbleWrap"><span class="fa fa-plus addMarble"></span></div>';
+		html +=		'<div class="innerMarbleWrap"><i class="fa fa-plus addMarble"></i></div>';
 		html +=		'<div class="noMarblesMsg hint">No marbles</div>';
 		html +=		'<p class="hint" style="text-align:center;">' + data[i].company + '</p>';
 		html +=	'</div>';
