@@ -89,28 +89,33 @@ func init_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error)
 	}
 
 	var owner Owner
-	json.Unmarshal([]byte(args[0]), &owner) //un stringify input, aka JSON.parse()
+	json.Unmarshal([]byte(args[0]), &owner)                   //un stringify input, aka JSON.parse()
+	owner.Username = strings.ToLower(owner.Username)
+	//owner.Company = strings.ToLower(owner.Company)
 	fmt.Println(owner)
 
-	var ownerName = owner.Username + "." + owner.Company;//concat owners name and the company name
+	var fullOwner = owner.Username + "." + owner.Company;     //concat owners name and the company name
 
 	//check if user already exists
-	ownerAsBytes, err := stub.GetState(ownerName)
+	existingOwnerAsBytes, err := stub.GetState(fullOwner)     //this will always succeed, even if it doesn't exist
 	if err != nil {
-		fmt.Println("Failed to get owner ")
-		return nil, errors.New("Failed to get owner")
+		fmt.Println("Failed to get owner - strange")
+		return nil, errors.New("Failed to get owner - strange")
 	}
 	res := Owner{}
-	json.Unmarshal(ownerAsBytes, &res)
-	if res.Username == owner.Username {
-		fmt.Println("This owner already exists: " + ownerName)
-		fmt.Println(res)
-		return nil, errors.New("This owner arleady exists") //all stop a marble by this name exists
+	json.Unmarshal(existingOwnerAsBytes, &res)
+	fmt.Println(res)
+	var existingFullOwner = res.Username + "." + res.Company;
+
+	if existingFullOwner == fullOwner {
+		fmt.Println("This owner already exists: " + fullOwner)
+		return nil, errors.New("This owner arleady exists")   //all stop, a user by this name exists
 	}
 
 	//store user
+	var ownerAsBytes []byte;
 	json.Unmarshal(ownerAsBytes, &owner)
-	err = stub.PutState(ownerName, ownerAsBytes) 			//store owner with concated name as key
+	err = stub.PutState(fullOwner, ownerAsBytes)              //store owner with concated name as key
 	if err != nil {
 		fmt.Println("Could not store user")
 		return nil, err
@@ -123,13 +128,13 @@ func init_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error)
 		return nil, errors.New("Failed to get owner index")
 	}
 	var ownersIndex OwnersIndex
-	json.Unmarshal(ownerIndexAsBytes, &ownersIndex) 		//un stringify it aka JSON.parse()
+	json.Unmarshal(ownerIndexAsBytes, &ownersIndex)           //un stringify it aka JSON.parse()
 
 	//append to list
-	ownersIndex.Owners = append(ownersIndex.Owners, ownerName) //add owner to index list
+	ownersIndex.Owners = append(ownersIndex.Owners, fullOwner)//add owner to index list
 	fmt.Println("! owner index: ", ownersIndex.Owners)
 	jsonAsBytes, _ := json.Marshal(ownersIndex)
-	err = stub.PutState(ownerIndexStr, jsonAsBytes) 			//store updated owner index
+	err = stub.PutState(ownerIndexStr, jsonAsBytes)           //store updated owner index
 
 	fmt.Println("- end init_owner marble")
 	return nil, nil
