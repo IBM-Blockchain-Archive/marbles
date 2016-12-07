@@ -1,5 +1,5 @@
 #createPanel(hidden).panel
-	h1 Create Marble
+	h2 Create Marble
 	hr
 	
 	#innerWrap
@@ -22,9 +22,10 @@
 					option(value="16") Small
 			br
 			legend 
-				select(name="user")
-					option(value="#{bag.setup.USER1}" disabled="disabled" selected="selected") User
-			button(type="button")#submit
+				select(name="user" disabled="disabled")
+					option(value="" disabled="disabled" selected="selected") User
+			input(type="hidden" name="company" value="")
+			button(type="button")#createMarbleButton
 				span.fa.fa-check &nbsp;&nbsp;
 				span CREATE
 			

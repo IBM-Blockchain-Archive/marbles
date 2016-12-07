@@ -181,6 +181,9 @@ input[type="text"], input[type="password"], select {
   background: #343D48;
   min-width: 120px; }
 
+input[type="text"]:disabled, input[type="password"]:disabled, select:disabled {
+  color: #646B73; }
+
 small {
   font-size: 10pt; }
 
@@ -240,7 +243,10 @@ label {
 #footerPanel {
   position: fixed;
   bottom: 0;
-  width: 100%; }
+  width: 100%;
+  background: #222832;
+  border-top: 1px #646B73 solid;
+  height: 40px; }
 
 .nav {
   color: #7E90A0;
@@ -275,16 +281,16 @@ label {
 .marblesWrap {
   display: inline-block;
   display: none;
-  width: 31%;
+  width: 30%;
   text-align: left;
   color: #fff;
   margin-bottom: 15px;
-  border: 1px #646B73 solid;
   position: relative;
   min-height: 158px;
   border-radius: 5px;
   margin-left: 15px;
-  vertical-align: top; }
+  vertical-align: top;
+  background: #222832; }
 
 .innerMarbleWrap {
   min-height: 100px; }
@@ -293,7 +299,12 @@ label {
   display: absolute;
   z-index: 1;
   font-size: 30px;
-  padding: 10px; }
+  padding-top: 10px; }
+
+.legend {
+  padding-left: 10px;
+  padding-right: 10px;
+  margin: 0; }
 
 #ownerWrap {
   width: 820px;
@@ -301,9 +312,11 @@ label {
 
 .ball {
   display: inline-block;
-  margin: 1px;
-  border: 1px #343D48 solid;
-  padding: 0 3px; }
+  margin: 0 10px;
+  margin-right: 0;
+  border: 1px transparent solid;
+  padding: 0;
+  vertical-align: bottom; }
 
 .ball:hover {
   cursor: pointer;
@@ -329,8 +342,8 @@ label {
   color: orange;
   cursor: pointer; }
 
-.adminControl {
-  border-color: #fff; }
+.notAdminControl {
+  background: #39424D; }
 
 .noMarblesMsg {
   text-align: center;
@@ -338,29 +351,60 @@ label {
   top: 85px;
   left: 40%; }
 
+.addMarble {
+  height: 80px;
+  width: 50px;
+  line-height: 75px;
+  margin-left: 10px;
+  font-size: 20px;
+  vertical-align: bottom; }
+
+.addMarble:hover {
+  color: orange;
+  cursor: pointer; }
+
 .createball {
   font-size: 275px;
   float: left;
   color: transparent;
   border: 2px dashed #fff;
   border-radius: 200px;
-  width: 270px;
-  height: 270px; }
+  width: 250px;
+  height: 250px; }
 
 #createform {
-  float: left;
-  margin-left: 40px;
-  margin-top: 40px; }
+  float: right;
+  margin-top: 40px;
+  margin-left: 15px; }
 
 .createLegend {
   width: 45px;
   display: inline-block; }
 
 #innerWrap {
-  width: 800px;
   margin: auto;
   text-align: right;
   margin-top: 50px; }
+
+#createPanel {
+  position: absolute;
+  top: 75px;
+  background: #343d48;
+  border: 1px #646b73 solid;
+  z-index: 200;
+  padding: 50px;
+  left: 23%; }
+
+#tint {
+  display: none;
+  background: #000;
+  opacity: .5;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100; }
 
 .hint {
   font-size: 12px;

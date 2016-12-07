@@ -72,6 +72,10 @@ input[type="text"], input[type="password"], select{
 	background:$main_bg;
 	min-width:120px;
 }
+
+input[type="text"]:disabled, input[type="password"]:disabled, select:disabled{
+	color: $acc_color2;
+}
 small{font-size:10pt;}
 img{border:0; max-width:100%;}
 a, a:visited{color:#2e6da4; cursor:pointer;}
