@@ -60,35 +60,36 @@ This data is used by IBM to track metrics around deployments of sample applicati
 ## Build v1 Fabric
 ```
 # Clone the repository
-git clone --recursive https://github.ibm.com/dshuffma/marbles-v1
+git clone --recursive https://github.ibm.com/IBM-Blockchain/fabric_images
 
 # Build the fabric images
-cd marbles-v1
 cd fabric_images/v1.0/build-scripts/
 sudo ./build_linux.sh 
 ```
 
 ## Run Marbles
  ```
+# Clone the repository
+git clone https://github.ibm.com/dshuffma/marbles-v1
 # Run Marbles
-cd ../../../docker-compose/
+cd docker-compose
 export MARBLES_LOCATION=${PWD}/../
 export CREDS_LOCATION=${PWD}
 
 # Run Cop, Orderer & Peer 1
-sudo docker-compose -f ../fabric_images/v1.0/docker-compose/docker-compose-no-cdb.yml -f marbles.yml up -d cop orderer peer-01 
+sudo docker-compose -f ../../fabric_images/v1.0/docker-compose/docker-compose-no-cdb.yml -f marbles.yml up -d cop orderer peer-01 
 
 # Run Peer 2 & MTC 01
-sudo docker-compose -f ../fabric_images/v1.0/docker-compose/docker-compose-no-cdb.yml -f marbles.yml up -d peer-02 mtc-01
+sudo docker-compose -f ../../fabric_images/v1.0/docker-compose/docker-compose-no-cdb.yml -f marbles.yml up -d peer-02 mtc-01
 #2m58s
 sudo docker logs -f mtc-01
 
 # Run Peer 3 & MTC 02
-sudo docker-compose -f ../fabric_images/v1.0/docker-compose/docker-compose-no-cdb.yml -f marbles.yml up -d peer-03 mtc-02
+sudo docker-compose -f ../../fabric_images/v1.0/docker-compose/docker-compose-no-cdb.yml -f marbles.yml up -d peer-03 mtc-02
 sudo docker logs -f mtc-02
 
 # Delete Everything
-sudo docker-compose -f ../fabric_images/v1.0/docker-compose/docker-compose-no-cdb.yml -f marbles.yml down
+sudo docker-compose -f ../../fabric_images/v1.0/docker-compose/docker-compose-no-cdb.yml -f marbles.yml down
 ```
 
 
