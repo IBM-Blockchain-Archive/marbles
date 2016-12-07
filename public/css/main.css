@@ -173,11 +173,11 @@ input[type="submit"]:hover, input[type="button"]:hover, button:hover, button.act
   border-color: orange !important; }
 
 input[type="text"], input[type="password"], select {
-  padding: 3px 10px;
+  padding: 5px 10px;
   margin: 5px;
   color: #fff;
   border: 1px solid #646B73;
-  border-radius: 30px;
+  border-radius: 5px;
   background: #343D48;
   min-width: 120px; }
 
@@ -561,6 +561,14 @@ td.userRights, th.userRights {
 
 .colorValue {
   margin-left: 10px; }
+
+#loginPanel {
+  width: 400px;
+  margin: auto;
+  border: 1px #646B73 solid;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center; }
 
 #blockWrap {
   position: relative;

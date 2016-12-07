@@ -1,0 +1,31 @@
+extends ./template/layout.jade
+	
+	
+// --------------- Header -------------- //
+block custom_header
+	script(src='/js/part1.js?v=#{bag.jshash}')
+	script(type='text/javascript').
+		$(document).ready(function(){
+			
+		});
+		
+		
+// --------------- Navigation Bar  -------------- //
+block navpanel
+	div(style="color:#fff; text-align:center;") #{bag.marble_company}
+	
+	
+// --------------- Main Stuff  -------------- //
+block content
+	#contentPanel
+		
+		
+		// --------------- Login Panel
+		form#loginPanel(method="POST" action="#")
+			p Welcome
+			hr
+			input(type="text" placeholder="username" value="admin" name="username")
+			button(type="submit") Login
+		
+block footer
+	//include ./template/blockchain.jade

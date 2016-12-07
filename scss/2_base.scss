@@ -64,11 +64,11 @@ input[type="submit"]:hover,input[type="button"]:hover, button:hover, button.acti
 	border-color: $hi_color1 !important;
 }
 input[type="text"], input[type="password"], select{
-	padding:3px 10px; 
+	padding:5px 10px; 
 	margin:5px; 
 	color:$main_color;
 	border: 1px solid $acc_color2;
-	border-radius:30px;
+	border-radius:5px;
 	background:$main_bg;
 	min-width:120px;
 }

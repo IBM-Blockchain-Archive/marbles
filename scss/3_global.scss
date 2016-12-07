@@ -345,3 +345,12 @@ td.userRights, th.userRights{
 .colorValue{
 	margin-left:10px;
 }
+
+#loginPanel{
+	width: 400px;
+	margin: auto;
+	border: 1px $acc_color2 solid;
+	border-radius: 5px;
+	padding: 20px;
+	text-align: center;
+}
