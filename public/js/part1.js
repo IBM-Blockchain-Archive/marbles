@@ -1,8 +1,9 @@
 /* global new_block, randStr, bag, $, clear_blocks, document, WebSocket, escapeHtml */
-/* global toTitleCase*/
+/* global toTitleCase, formatDate*/
 var ws = {};
 var bgcolors = ['whitebg', 'blackbg', 'redbg', 'greenbg', 'bluebg', 'purplebg', 'pinkbg', 'orangebg', 'yellowbg'];
 var autoCloseError = null;
+var autoCloseNoticePanel = null;
 var known_companies = [];
 var start_up = true;
 
@@ -163,6 +164,21 @@ $(document).on('ready', function() {
 		$(this).fadeOut();
 		$('#createPanel').fadeOut();
 	});
+
+
+	//notification drawer
+	$('#notificationHandle').click(function(){
+		if($('#noticeScrollWrap').is(':visible')){
+			closeNoticePanel();
+		}
+		else{
+			openNoticePanel();
+		}
+	});
+
+	$(document).on('click', '.closeNotification', function(){
+		$(this).parents('.notificationWrap').fadeOut();
+	});
 });
 // =================================================================================
 // Helper Fun
@@ -263,12 +279,10 @@ function connect_to_server(){
 			}
 			else if(msgObj.msg === 'tx_error'){
 				console.log('rec', msgObj.msg, msgObj);
-				$('#closeErrorPanel').removeClass('activeButton');
-				$('#errorNoticeText').html(escapeHtml(msgObj.e));
-				$('#errorNotificationPanel').animate({width:'toggle'});
-				autoCloseError = setTimeout(function(){
-					hide_error_notice();
-				}, 10000);
+				//$('#closeErrorPanel').removeClass('activeButton');
+				//$('#errorNoticeText').html(escapeHtml(msgObj.e));
+				//$('#errorNotificationPanel').animate({width:'toggle'});
+				show_notification(build_notification(true, escapeHtml(msgObj.e)));
 			}
 			else if(msgObj.msg === 'all_marbles_sent'){
 				console.log('rec', msgObj.msg, msgObj);
@@ -293,12 +307,6 @@ function connect_to_server(){
 			*/
 		}
 	}
-}
-
-function hide_error_notice(){
-	$('#closeErrorPanel').addClass('activeButton');
-	$('#errorNotificationPanel').animate({width:'toggle'});
-	clearTimeout(autoCloseError);
 }
 
 // =================================================================================
@@ -353,8 +361,7 @@ function record_company(company){
 	// -- Show the new company Notification -- //
 	if(start_up === false){
 		console.log('this is a new company!', company);
-		$('#noticeText').html(company);
-		$('#notificationPanel').show().animate({width:'450px'});
+		show_notification(build_notification(false, 'Detected a new company "' + company + '"!'));
 	}
 
 	console.log('recorded company', company);
@@ -468,3 +475,43 @@ function build_user_options(user_list){
 	$('select[name="user"]').html(html);
 }
 */
+
+function build_notification(error, msg){
+	var html = '';
+
+	var css = '';
+	var iconClass = 'fa-check';
+	if(error) {
+		css = 'warningNotice';
+		iconClass = 'fa-minus-circle';
+	}
+
+	html +=	'<div class="notificationWrap ' + css + '">';
+	html +=		'<span class="fa ' + iconClass + ' notificationIcon"></span>';
+	html +=		'<span class="noticeTime">' + formatDate(Date.now(), '%M/%d %I:%m:%s') + '&nbsp;&nbsp;</span>';
+	html +=		'<span>' + msg + '</span>';
+	html +=		'<span class="fa fa-close closeNotification"></span>';
+	html +=	'</div>';
+	return html;
+}
+
+function show_notification(html){
+	$('#emptyNotifications').hide();
+	$('#noticeScrollWrap').prepend(html);
+	openNoticePanel();
+
+	autoCloseNoticePanel = setTimeout(function(){
+		closeNoticePanel();
+	}, 10000);
+}
+
+function openNoticePanel(){
+	$('#noticeScrollWrap').slideDown();
+	$('#notificationHandle').children().removeClass('fa-angle-down').addClass('fa-angle-up');
+}
+
+function closeNoticePanel(){
+	$('#noticeScrollWrap').slideUp();
+	$('#notificationHandle').children().removeClass('fa-angle-up').addClass('fa-angle-down');
+	clearTimeout(autoCloseNoticePanel);
+}

@@ -70,30 +70,54 @@
 	margin-top:20px;
 }
 #notificationsWrap{
-	height: 80px;
+	//height: 80px;
 	position: absolute;
-	top: 62px;
+	top: 60px;
 	width: 100%;
-	right: 5px;
-	overflow: auto;
-	text-align: right;
+	right: 0;
+	background:$acc_color2;
+	z-index: 2;
+	text-align: center;
+	//border-bottom: 2px $acc_color2 solid;
+	padding-bottom:2px;
+}
+#noticeScrollWrap{
+	display: none;
+	height: 90px;
+	overflow-y: auto;
 }
 .notificationWrap{
-	width: 70%;
-	background: #222832;
-	margin: 1px;
+	width: 95%;
+	margin: auto;
+	background: $acc_color1;
+	margin: 1px 0;
 	padding: 5px;
-	//float:right;
-	border-radius: 5px;
+	border-radius: 2px;
 	border-left: 5px $hi_color3 solid;	//success color
 	color: $acc_color3;
 	font-size: 14px;
-	display:inline-block;
+	display: inline-block;
 	text-align: left;
+}
+#notificationHandle{
+	background: $acc_color2;
+	width: 100px;
+	display:inline-block;
+	height: 15px;
+	border-bottom-right-radius: 3px;
+	border-bottom-left-radius: 3px; 
+	text-align: center;
+	position: absolute;
+	bottom: -15px;
+	margin-left:-50px;
+}
+#notificationHandle:hover{
+	cursor: pointer;
+	color: $hi_color1;
 }
 .closeNotification{
 	float: right;
-	margin-right: 10px;
+	margin-right: 5px;
 	cursor: pointer;
 }
 .closeNotification:hover{
@@ -108,6 +132,14 @@
 }
 .warningNotice .notificationIcon{
 	color: $hi_color1;					//warning color
+}
+#emptyNotifications{
+	color: $acc_color1-5;
+	margin-top: 30px;
+}
+.noticeTime{
+	//color: #ccc;
+	font-size: 11px;
 }
 
 
