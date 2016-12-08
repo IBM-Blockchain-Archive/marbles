@@ -5,7 +5,62 @@ extends ./template/layout.jade
 block custom_header
 	script(type='text/javascript').
 		$(document).ready(function(){
+
+			/*
+			//roll_ball();
+			function roll_ball() {
+				$('#testBall').removeClass('hideBorders');
+				$('#testBall2').hide();
+				$('#testBall3').hide();
+				$('#testBallLeft').hide();
+				$('#testBallRight').hide();
+				var move = 200;
+				$('#testBall').animate({left: '+='+move}, {
+					duration: 2000,
+					step: function(distance) {
+						var degree = distance * 360 / move;
+						$('#testBall').css('transform','rotate(' + degree + 'deg)');
+					},
+					complete: shrink_ball
+				});
+			}
+
+			var dist = 50;
+			$('#testBall2').animate({top: '+=' + dist}, {duration: 2000});
+			$('#testBall3').animate({top: '-=' + dist}, {duration: 2000});
+			$('#testBallLeft').animate({left: '+=' + dist}, {duration: 2000});
+			$('#testBallRight').animate({left: '-=' + dist}, {duration: 2000});
 			
+
+			var move = 200;
+			$('#dummy').animate({left: '+=' + move}, {
+				duration: 2000,
+				step: function(distance) {
+					var degree = distance * 360 / move;
+					$('#ballWrap').css('transform','rotate(' + degree + 'deg)');
+				},
+				complete: roll_ball
+			});
+
+			function shrink_ball(){
+				$('#testBall').animate({width: 0, height:0}, {
+					duration: 300,
+					complete: function(){
+						$('#testBall').hide();
+						setTimeout(function(){grow_ball();},1000);
+					}
+				});
+			}
+
+			function grow_ball(){
+				$('#testBall').show();
+				$('#testBall').animate({width: 40, height:40}, {
+					duration: 600,
+					complete: function(){
+						//$('#testBall').hide();
+					}
+				});
+			}*/
 		});
 		
 		
@@ -16,6 +71,8 @@ block navpanel
 	
 // --------------- Main Stuff  -------------- //
 block content
+	#notificationWrap
+	
 	#contentPanel
 		
 		// --------------- Welcome Panel
@@ -65,6 +122,16 @@ block content
 			hr
 			input(type="text" placeholder="username" value="admin" name="username")
 			button(type="submit") Login
+
+
+		//#test(style="position: relative;")
+			#ballWrap
+				div.ball#testBall.hideBorders
+				div.ball#testBall2
+				div.ball#testBall3
+				div.ball#testBallLeft
+				div.ball#testBallRight
+			#dummy
 		
 block footer
 	//include ./template/blockchain.jade

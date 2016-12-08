@@ -22,7 +22,7 @@
 #contentPanel {
 	min-height:500px;
 	position: relative;
-	margin:30px 50px auto;
+	margin:35px 50px auto;
 }
 
 #footerPanel{
@@ -60,11 +60,54 @@
 	color: $acc_color3;
 	display:inline-block;
 	margin-left: 20px;
-	font-size: 18px;
+	//font-size: 18px;
 	font-weight: 600;
 	background: $acc_color1;
 	position: relative;
 	z-index:4;
+}
+.panel{
+	margin-top:20px;
+}
+#notificationsWrap{
+	height: 80px;
+	position: absolute;
+	top: 62px;
+	width: 100%;
+	right: 5px;
+	overflow: auto;
+	text-align: right;
+}
+.notificationWrap{
+	width: 70%;
+	background: #222832;
+	margin: 1px;
+	padding: 5px;
+	//float:right;
+	border-radius: 5px;
+	border-left: 5px $hi_color3 solid;	//success color
+	color: $acc_color3;
+	font-size: 14px;
+	display:inline-block;
+	text-align: left;
+}
+.closeNotification{
+	float: right;
+	margin-right: 10px;
+	cursor: pointer;
+}
+.closeNotification:hover{
+	color: $hi_color1;
+}
+.notificationIcon{
+	margin: 0 10px;
+	color: $hi_color3;					//success color
+}
+.warningNotice{
+	border-left: 5px $hi_color1 solid;	//warning color
+}
+.warningNotice .notificationIcon{
+	color: $hi_color1;					//warning color
 }
 
 
@@ -424,4 +467,83 @@ td.userRights, th.userRights{
 	margin: 0;
 	width: 33%;
 	vertical-align: top;
+}
+
+
+#testBall, #testBall2, #testBall3, #testBallLeft, #testBallRight{
+	border: 5px solid $acc_color0;
+	border-top-color: $hi_color3;
+	border-bottom-color: $hi_color3;
+	height: 30px;
+	width: 30px;
+	position: relative;
+	position: absolute;
+	top:0;
+	left:0;
+	background: transparent;
+	margin:0;
+	padding: 0;
+}
+/*
+#testBall:before {
+	content: " ";
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	height: 26px;
+	width: 26px;
+	border: 2px solid #343d48;
+	border-radius: 100px;
+}*/
+
+.ball{
+	border-radius:1000px;
+}
+
+#testBall.hideBorders{
+	border-color: transparent;
+}
+
+#testBall{
+	//border-color: transparent;
+	background: #fff;
+}
+
+#ballWrap{
+	height: 40px;
+	width: 40px;
+	position: absolute;
+}
+
+#testBall2{
+	color: transparent;
+	border-left-color: transparent;
+	border-bottom-color: transparent;
+	border-right-color: transparent;
+	top:-50px;
+}
+
+#testBall3{
+	color: transparent;
+	border-left-color: transparent;
+	border-top-color: transparent;
+	border-right-color: transparent;
+	top:50px;
+}
+
+#testBallLeft{
+	color: transparent;
+	border-bottom-color: transparent;
+	border-top-color: transparent;
+	border-right-color: transparent;
+	left:-50px;
+}
+
+#testBallRight{
+	color: transparent;
+	border-left-color: transparent;
+	border-top-color: transparent;
+	border-bottom-color: transparent;
+	left:50px;
 }
