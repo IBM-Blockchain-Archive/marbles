@@ -6,11 +6,11 @@
 		span.createball
 		
 		form(action="/create" method="POST")#createform
-			legend 
-				input(type="text" name="name" placeholder="Name Your Marble")
-				span.hint &nbsp;&nbsp;RANDOM OR CUSTOM STRING
+			//legend 
+			input(type="hidden" name="name" placeholder="Name Your Marble")
+			//span.hint &nbsp;&nbsp;RANDOM OR CUSTOM STRING
 			
-			br
+			//br
 			legend
 				include ./template/color_options.jade
 				
@@ -25,6 +25,10 @@
 				select(name="user" disabled="disabled")
 					option(value="" disabled="disabled" selected="selected") User
 			input(type="hidden" name="company" value="")
+
+			br
+			br
+			
 			button(type="button")#createMarbleButton
 				span.fa.fa-check &nbsp;&nbsp;
 				span CREATE
