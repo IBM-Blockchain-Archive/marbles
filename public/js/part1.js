@@ -2,7 +2,6 @@
 /* global toTitleCase, formatDate*/
 var ws = {};
 var bgcolors = ['whitebg', 'blackbg', 'redbg', 'greenbg', 'bluebg', 'purplebg', 'pinkbg', 'orangebg', 'yellowbg'];
-var autoCloseError = null;
 var autoCloseNoticePanel = null;
 var known_companies = [];
 var start_up = true;
@@ -106,11 +105,6 @@ $(document).on('ready', function() {
 				showHomePanel();
 			}
 		}
-	});
-
-	//dismiss error panel
-	$('#closeErrorPanel').click(function(){
-		hide_error_notice();
 	});
 
 	//username/company search
@@ -279,10 +273,7 @@ function connect_to_server(){
 			}
 			else if(msgObj.msg === 'tx_error'){
 				console.log('rec', msgObj.msg, msgObj);
-				//$('#closeErrorPanel').removeClass('activeButton');
-				//$('#errorNoticeText').html(escapeHtml(msgObj.e));
-				//$('#errorNotificationPanel').animate({width:'toggle'});
-				show_notification(build_notification(true, escapeHtml(msgObj.e)), true);
+				addshow_notification(build_notification(true, escapeHtml(msgObj.e)), true);
 			}
 			else if(msgObj.msg === 'all_marbles_sent'){
 				console.log('rec', msgObj.msg, msgObj);
@@ -361,10 +352,10 @@ function record_company(company){
 	// -- Show the new company Notification -- //
 	if(start_up === false){
 		console.log('this is a new company!', company);
-		show_notification(build_notification(false, 'Detected a new company "' + company + '"!'), true);
+		addshow_notification(build_notification(false, 'Detected a new company "' + company + '"!'), true);
 	}
 
-	show_notification(build_notification(false, 'Detected company "' + company + '".'), false);
+	addshow_notification(build_notification(false, 'Detected company "' + company + '".'), false);
 
 	console.log('recorded company', company);
 	known_companies.push(company);
@@ -478,6 +469,7 @@ function build_user_options(user_list){
 }
 */
 
+//build a notification msg, `error` is boolean
 function build_notification(error, msg){
 	var html = '';
 
@@ -497,23 +489,26 @@ function build_notification(error, msg){
 	return html;
 }
 
-function show_notification(html, expandPanelNow){
+//add notification to the panel, show panel now if you want with 2nd param
+function addshow_notification(html, expandPanelNow){
 	$('#emptyNotifications').hide();
 	$('#noticeScrollWrap').prepend(html);
 
 	if(expandPanelNow === true){
 		openNoticePanel();
-		autoCloseNoticePanel = setTimeout(function(){
+		autoCloseNoticePanel = setTimeout(function(){		//auto close, xx seconds from now
 			closeNoticePanel();
 		}, 10000);
 	}
 }
 
+//open the notice panel
 function openNoticePanel(){
 	$('#noticeScrollWrap').slideDown();
 	$('#notificationHandle').children().removeClass('fa-angle-down').addClass('fa-angle-up');
 }
 
+//close the notice panel
 function closeNoticePanel(){
 	$('#noticeScrollWrap').slideUp();
 	$('#notificationHandle').children().removeClass('fa-angle-up').addClass('fa-angle-down');
