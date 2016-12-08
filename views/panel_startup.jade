@@ -1,0 +1,107 @@
+#startUpPanel
+
+	//----------------- Step 1 Content
+	.stepWrap
+		span.stepIcon.fa.fa-user.fa-5x
+		.stepHeader Enrolling Admin
+		a(href="#").stepEdit Edit
+		.loadingdiv.stepLoading
+			span
+			span
+			span
+			span
+			span
+			div
+		.stepDescription 
+			span Enrollment will download transactions certificates from the COP. 
+			span These certficates are used to sign transactions such as transfering marbles. 
+		.stepCircleStatus
+
+	.stepNext
+		.stepNextIcon.fa.fa-angle-double-right.fa-5x
+
+	//----------------- Step 2 Content
+	.stepWrap.inactiveStep
+		.stepIcon.fa.fa-file-text.fa-5x
+		.stepHeader Finding Chaincode 
+		a(href="#").stepEdit Edit
+		.loadingdiv.stepLoading
+			span
+			span
+			span
+			span
+			span
+			div
+		.stepDescription 
+			span The chaincode defines the rules of the entire application. 
+			span It only needs to be deployed once.
+		.stepCircleStatus
+
+	.stepNext
+		.stepNextIcon.fa.fa-angle-double-right.fa-5x
+
+	//----------------- Step 3 Content
+	.stepWrap.inactiveStep
+		.stepIcon.fa.fa-group.fa-5x
+		.stepHeader Register Marble Owners
+		a(href="#").stepEdit Edit
+		.loadingdiv.stepLoading
+			span
+			span
+			span
+			span
+			span
+			div
+		.stepDescription 
+			span As a marbles trading company you may register your userbase. 
+			span Bring new identies onboard that can own marbles.
+		.stepCircleStatus
+
+	//----------------- Help Content
+	.stepHelpWrap#adminStep
+		h2 Enroll Admin
+		br
+		br
+		.stepHelpTxt
+			span Sorry, we could not enroll the admin against the COP. 
+			span Edit it below to try again.
+		br
+		input(type="text" placeholder="COP ex: 192.168.99.100:8888" name="copUrl").longer
+		br
+		input(type="text" placeholder="Enroll Id" name="enrollId")
+		input(type="text" placeholder="Enroll Secret" name="enrollSecret")
+		br
+		br
+		button(type="button") Retry
+
+	.stepHelpWrap#chaincodeStep
+		h2 Find Chaincode
+		br
+		br
+		.stepHelpTxt
+			span Sorry, we could not find the deployed chaincode on your peer. 
+			span Edit the chaincode ID to try again. 
+			strong OR 
+			span Deploy the chaincode. 
+		br
+		input(type="text" placeholder="Peer ex: 192.168.99.100:7051" name="peerUrl").longer
+		br
+		input(type="text" placeholder="Chaincode ID").longer
+		br
+		br
+		button(type="button") Retry
+		span &nbsp; OR &nbsp;
+		button(type="button") Deploy
+
+	.stepHelpWrap#regUserStep
+		h2 Register Marble Owners
+		br
+		br
+		.stepHelpTxt
+			span Bring your marble owners onboard by providing a comma seperated list of usernames.
+			span These are the identies that can own marbles.
+		br
+		input(type="text" placeholder="bob, bill, amy").longer
+		br
+		br
+		button(type="button") Register

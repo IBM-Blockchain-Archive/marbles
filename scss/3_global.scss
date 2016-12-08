@@ -613,3 +613,75 @@ td.userRights, th.userRights{
 	border-bottom-color: transparent;
 	left:50px;
 }
+
+
+//-- start up panel -- //
+#startUpPanel{
+	position: absolute;
+	top: 100px;
+	background: #343d48;
+	border: 1px #646b73 solid;
+	z-index: 1005;
+	padding: 40px;
+	width: 90%;
+	left: 2%;
+}
+.stepWrap{
+	display: inline-block;
+	width: 25%;
+	text-align: center;
+	vertical-align: top;
+}
+.stepNext{
+	display: inline-block;
+	width:10%;
+	vertical-align: top;
+	margin-top: 65px;
+}
+.stepHeader{
+	font-weight: 600;
+	margin-top: 10px;
+	//margin-bottom: 20px;
+}
+.stepCircleStatus{
+	margin-top: 35px;
+	height: 20px;
+	width: 20px;
+	display: inline-block;
+	background: $main_color;
+	border-radius: 100px;
+}
+.stepDescription{
+	font-size: 13px;
+	text-align: left;
+	height: 100px;
+}
+.stepLoading{
+	margin: 10px 0;
+}
+.stepEdit{
+	font-size: 12px;
+	padding-bottom: 20px;
+}
+.inactiveStep{
+	opacity: 0.3;
+}
+.inactiveStep .loadingdiv, .stepComplete .loadingdiv, .stepFailed .loadingdiv{
+	opacity: 0;
+}
+.stepComplete .stepCircleStatus{
+	background: #6CC284;
+}
+.stepFailed .stepCircleStatus{
+	background: #f14646;
+}
+.stepHelpWrap{
+	display: none;
+	text-align: center;
+	border-top: 2px #ccc solid;
+	margin-top: 30px;
+	padding-top: 30px;
+}
+.stepHelpTxt {
+	font-size: 13px;
+}

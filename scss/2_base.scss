@@ -76,6 +76,9 @@ input[type="text"], input[type="password"], select{
 input[type="text"]:disabled, input[type="password"]:disabled, select:disabled{
 	color: $acc_color2;
 }
+input.longer{
+	min-width:370px;
+}
 small{font-size:10pt;}
 img{border:0; max-width:100%;}
 a, a:visited{color:#2e6da4; cursor:pointer;}
@@ -86,5 +89,5 @@ label{text-align:left;}
 .white{color:#fff !important;}
 .php_error{color:orange; font-weight:bold;}
 .floatFixer{width:100%; clear:both; height:1px;}
-
+strong{font-weight: 600;}
 

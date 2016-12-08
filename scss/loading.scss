@@ -13,17 +13,18 @@
 .loadingdiv{
 	height: 30px;
 	margin: 10px 5px;
-	display: inline-block;
+	display: block;
 }
 .loadingdiv span{
 	display: inline-block;
 	vertical-align: middle;
 	width: 4px;
-	background: $main_bg;
+	background: $main_color;
 	border-radius: 3px;
 	-webkit-animation: loading 0.8s infinite alternate;
 	-moz-animation: loading 0.8s infinite alternate;
-	box-shadow:1px 1px 1px $main_bg;
+	//box-shadow:1px 1px 1px $main_color;
+	margin-left: 5px;
 }
 .loadingdiv div{
 	height:30px;
