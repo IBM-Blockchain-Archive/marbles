@@ -66,7 +66,7 @@ block custom_header
 		
 // --------------- Navigation Bar  -------------- //
 block navpanel
-	div(style="color:#fff; text-align:center;") #{bag.marble_company}
+	#loginTitle Marbles
 	
 	
 // --------------- Main Stuff  -------------- //
@@ -77,9 +77,13 @@ block content
 		
 		// --------------- Welcome Panel
 		#welcomePanel
-			h2 WELCOME TO MARBLES
-			br
-			br
+			h2(style="font-weight: 600;") WELCOME TO THE MARBLES DEMO APP
+
+			#adminText
+				span Hello 
+				span#loginCompany #{bag.marble_company} 
+				span admin.
+
 			p 
 				span This application allows you to simulate a simple asset transaction over a Hyperledger Fabric blockchain. 
 				span Connect multiple peers to trade with a larger marble userbase. 
@@ -87,26 +91,33 @@ block content
 			
 			br
 			br
+			br
 
 			#split1x3Wrap
 				.split1x3
-					span Trade
+					.welcomeTitle
+						span Trade
+						//br
+							span Assets
 					br
-					span Assets
-					br
-					img(src="/imgs/welcome_img1.png" style="width:90%;").welcomeImg
+					.blub1x3 Transfer assets/marbles across the marbles user base
+					img(src="/imgs/welcome_img1.png").welcomeImg
 				.split1x3
-					span Create
+					.welcomeTitle
+						span Create
+						//br
+							span Marbles
 					br
-					span New Marbles
-					br
-					img(src="/imgs/welcome_img2.png" style="width:35%;").welcomeImg
+					.blub1x3 Create new assets/marbles
+					img(src="/imgs/welcome_img2.png").welcomeImg
 				.split1x3
-					span Verify
+					.welcomeTitle
+						span Verify
+						//br
+							span Ownership
 					br
-					span Asset Ownership
-					br
-					img(src="/imgs/welcome_img3.png" style="width:70%;").welcomeImg
+					.blub1x3 Verify marble transactions and ownership
+					img(src="/imgs/welcome_img3.png").welcomeImg
 			br
 			br
 

@@ -46,22 +46,22 @@ input[type="submit"],input[type="button"], button{
 	font-size:13px; 
 	cursor:pointer; 
 	padding:5px 10px; 
-	background: $acc_color1; 
-	color: $acc_color3;
-	border:0; 
+	background: $hi_color2; 
+	color: $main_color;
 	transition:background-color 0.2s ease;
 	border-radius:5px;
 	min-width:130px;
 	//box-shadow: -1px 4px 2px -2px rgba(0,0,0,0.75);
-	border: 2px $acc_color3 solid;
+	border: 2px transparent solid;
+	transition: all .25s linear;
 }
 input:focus, select:focus, button:focus{
 	outline: none !important;
 	border-color: $main_color !important;
+	transition: all .25s linear;
 }
 input[type="submit"]:hover,input[type="button"]:hover, button:hover, button.activeButton, button.activeButton:focus{
-	color: $hi_color1;
-	border-color: $hi_color1 !important;
+	border-color: $main_color !important;
 }
 input[type="text"], input[type="password"], select{
 	padding:5px 10px; 
