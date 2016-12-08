@@ -736,9 +736,6 @@ td.userRights, th.userRights {
 	border: 2px solid #343d48;
 	border-radius: 100px;
 }*/
-.ball {
-  border-radius: 1000px; }
-
 #testBall.hideBorders {
   border-color: transparent; }
 

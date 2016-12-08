@@ -282,7 +282,7 @@ function connect_to_server(){
 				//$('#closeErrorPanel').removeClass('activeButton');
 				//$('#errorNoticeText').html(escapeHtml(msgObj.e));
 				//$('#errorNotificationPanel').animate({width:'toggle'});
-				show_notification(build_notification(true, escapeHtml(msgObj.e)));
+				show_notification(build_notification(true, escapeHtml(msgObj.e)), true);
 			}
 			else if(msgObj.msg === 'all_marbles_sent'){
 				console.log('rec', msgObj.msg, msgObj);
@@ -361,8 +361,10 @@ function record_company(company){
 	// -- Show the new company Notification -- //
 	if(start_up === false){
 		console.log('this is a new company!', company);
-		show_notification(build_notification(false, 'Detected a new company "' + company + '"!'));
+		show_notification(build_notification(false, 'Detected a new company "' + company + '"!'), true);
 	}
+
+	show_notification(build_notification(false, 'Detected company "' + company + '".'), false);
 
 	console.log('recorded company', company);
 	known_companies.push(company);
@@ -495,14 +497,16 @@ function build_notification(error, msg){
 	return html;
 }
 
-function show_notification(html){
+function show_notification(html, expandPanelNow){
 	$('#emptyNotifications').hide();
 	$('#noticeScrollWrap').prepend(html);
-	openNoticePanel();
 
-	autoCloseNoticePanel = setTimeout(function(){
-		closeNoticePanel();
-	}, 10000);
+	if(expandPanelNow === true){
+		openNoticePanel();
+		autoCloseNoticePanel = setTimeout(function(){
+			closeNoticePanel();
+		}, 10000);
+	}
 }
 
 function openNoticePanel(){
