@@ -631,6 +631,7 @@ td.userRights, th.userRights{
 
 //-- start up panel -- //
 #startUpPanel{
+	display: none;
 	position: absolute;
 	top: 100px;
 	background: #343d48;

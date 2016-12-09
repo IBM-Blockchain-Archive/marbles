@@ -835,6 +835,7 @@ td.userRights, th.userRights{
   left: 50px; }
 
 #startUpPanel {
+  display: none;
   position: absolute;
   top: 100px;
   background: #343d48;

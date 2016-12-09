@@ -1,10 +1,15 @@
-/* global $, document, ws */
+/* global $, window, document, ws */
 /* exported show_start_up_step */
+var lsKey = 'marbles';
+var fromLS = {};
 
 // =================================================================================
 // On Load
 // =================================================================================
 $(document).on('ready', function() {
+	fromLS = window.localStorage.getItem(lsKey);
+	if(fromLS) fromLS = JSON.parse(fromLS);
+	else fromLS = {};
 	
 	// =================================================================================
 	// jQuery UI Events
@@ -102,9 +107,11 @@ function show_start_up_step(state){
 	//'starting', 'failed_enroll', 'enrolled', 'no_chaincode', 'found_chaincode', 'registered_owners'
 
 	if(state === 'starting'){
+		$('#startUpPanel').fadeIn();
 		//nothing to do but wait
 	}
 	else if(state === 'failed_enroll'){						//could not enroll
+		$('#startUpPanel').fadeIn();
 		$('#step1').addClass('stepFailed');
 		$('#step1, #step2').removeClass('inactiveStep');
 		$('#step2, #step3').addClass('inactiveStep');
@@ -113,9 +120,11 @@ function show_start_up_step(state){
 		$('#adminStep').slideDown();						//show help
 	}
 	else if(state === 'enrolled'){							//enroll good, trying to find chaincode
+		$('#startUpPanel').fadeIn();
 		step1_success();
 	}
 	else if(state === 'no_chaincode'){						//could not find chaincode
+		$('#startUpPanel').fadeIn();
 		$('#step1').removeClass('stepFailed');
 		$('#step2').addClass('stepFailed');
 		$('#step1, #step2').removeClass('inactiveStep');
@@ -126,19 +135,32 @@ function show_start_up_step(state){
 		$('#chaincodeStep').slideDown();					//show help
 	}
 	else if(state === 'found_chaincode'){					//found chaincode, trying to register users
+		$('#startUpPanel').fadeIn();
 		step1_success(function(){
 			step2_success();
 		});
 	}
 	else if(state === 'registered_owners'){					//register complete
-		step1_success(function(){
-			step2_success(function(){
-				step3_success(function(){
-					$('#startUpPanel').hide();
-					ws.send(JSON.stringify({type: 'get_owners', v: 1}));
+		if(fromLS.startedUpBefore === true){
+			start_marbles();
+		}
+		else{
+			$('#startUpPanel').fadeIn();
+			step1_success(function(){
+				step2_success(function(){
+					step3_success(function(){
+						start_marbles();
+					});
 				});
 			});
-		});
+		}
+	}
+
+	function start_marbles(){
+		$('#startUpPanel').hide();
+		ws.send(JSON.stringify({type: 'get_owners', v: 1}));
+		fromLS.startedUpBefore = true;
+		window.localStorage.setItem(lsKey, JSON.stringify(fromLS));		//save
 	}
 
 	function step1_success(cb){
