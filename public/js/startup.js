@@ -94,7 +94,7 @@ $(document).on('ready', function() {
 // Start Up Fun
 // ================================================================================
 
-//
+//show the current step from the start up panel
 function show_start_up_step(state){
 	console.log('marbles is in state', state);
 
@@ -102,7 +102,7 @@ function show_start_up_step(state){
 	//'starting', 'failed_enroll', 'enrolled', 'no_chaincode', 'found_chaincode', 'registered_owners'
 
 	if(state === 'starting'){
-		//$()
+		//nothing to do but wait
 	}
 	else if(state === 'failed_enroll'){						//could not enroll
 		$('#step1').addClass('stepFailed');

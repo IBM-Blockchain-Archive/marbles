@@ -204,7 +204,7 @@ process.env['GRPC_SSL_CIPHER_SUITES'] = 'ECDHE-RSA-AES128-GCM-SHA256:' +
     'ECDHE-ECDSA-AES256-SHA384:' +
     'ECDHE-ECDSA-AES256-GCM-SHA384';
 //let ccPath = process.env['GOPATH']+'/src/local/marbles-hfc/marbles-v1/chaincode';
-let ccPath = __dirname + '/chaincode';
+//let ccPath = __dirname + '/chaincode';
 var network_id = helper.getNetworkId();
 var uuid = network_id;
 var webUser = null;
@@ -222,6 +222,7 @@ chain.setKeyValueStore(
 //chain.setOrderer(helper.getOrderersUrl(0));
 
 //make chaincode name unique-ish
+/*
 function set_chaincode_id(cb){
 	fs.stat(ccPath + '/marbles.go', function(err, fstats){
 		var temp = new Date(fstats.mtime);
@@ -231,7 +232,7 @@ function set_chaincode_id(cb){
 		cb(null, cc_id);
 	});
 }
-
+*/
 
 // -------------------------------------------------------------------
 // Blockchain Stuff Starts Here! - below
@@ -334,13 +335,6 @@ function setup_application(build_marbles_users){
 
 	// --- Create Each user --- //
 	if(build_marbles_users && build_marbles_users.length > 0){
-		/*var build_users = [];
-		try{
-			build_users = JSON.parse(build_marbles_users);
-			console.log('building ' + build_users.length + ' users');
-		}
-		catch(e){console.log('not json', e);}
-		*/
 		async.eachLimit(build_marbles_users, 1, function(username, user_cb) { 			//iter through each one
 			var owner_obj = {username: username, company: process.env.marble_company};
 			marbles_lib.register_owner(webUser, [hfc.getPeer(helper.getPeersUrl(0))], owner_obj, function(){
