@@ -1,7 +1,7 @@
 #startUpPanel
 
 	//----------------- Step 1 Content
-	.stepWrap
+	.stepWrap#step1
 		span.stepIcon.fa.fa-user.fa-5x
 		.stepHeader Enrolling Admin
 		a(href="#").stepEdit Edit
@@ -21,7 +21,7 @@
 		.stepNextIcon.fa.fa-angle-double-right.fa-5x
 
 	//----------------- Step 2 Content
-	.stepWrap.inactiveStep
+	.stepWrap.inactiveStep#step2
 		.stepIcon.fa.fa-file-text.fa-5x
 		.stepHeader Finding Chaincode 
 		a(href="#").stepEdit Edit
@@ -41,7 +41,7 @@
 		.stepNextIcon.fa.fa-angle-double-right.fa-5x
 
 	//----------------- Step 3 Content
-	.stepWrap.inactiveStep
+	.stepWrap.inactiveStep#step3
 		.stepIcon.fa.fa-group.fa-5x
 		.stepHeader Register Marble Owners
 		a(href="#").stepEdit Edit
@@ -84,9 +84,11 @@
 			strong OR 
 			span Deploy the chaincode. 
 		br
+		input(type="text" placeholder="Orderer ex: 192.168.99.100:5151" name="ordererUrl").longer
+		br
 		input(type="text" placeholder="Peer ex: 192.168.99.100:7051" name="peerUrl").longer
 		br
-		input(type="text" placeholder="Chaincode ID").longer
+		input(type="text" placeholder="Chaincode ID" name="chaincode_id").longer
 		br
 		br
 		button(type="button") Retry

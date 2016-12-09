@@ -3,22 +3,22 @@ var path = require('path');
 //var url = require('url');
 
 module.exports = function (chain, chaincode_id, logger) {
-	var hfc = require('../fabric-sdk-node2/index.js');
-	var helper = require(path.join(__dirname, '/../helper.js'))();
+	//var hfc = require('../fabric-sdk-node2/index.js');
+	//var helper = require(path.join(__dirname, '/../helper.js'))();
 	var common = require(path.join(__dirname, './common.js'))();
 	var users = {};
 
 	//-------------------------------------------------------------------
 	// Create User - options are {username: bob}
 	//-------------------------------------------------------------------
-	users.register_owner = function (webUser, owner_obj, cb) {
+	users.register_owner = function (webUser, peerUrls, owner_obj, cb) {
 		console.log('\nCreating a user\n');
 		owner_obj.docType = 'owner';
 		owner_obj.timestamp = Date.now();
 
 		// send proposal to endorser
 		var request = {
-			targets: [hfc.getPeer(helper.getPeersUrl(0))],
+			targets: peerUrls,
 			chaincodeId: chaincode_id,
 			fcn: 'init_owner',
 			args: [JSON.stringify(owner_obj)] 						//args == ['"docType": "owner", "username": "bob", "company": "united marbles"}']
@@ -59,10 +59,10 @@ module.exports = function (chain, chaincode_id, logger) {
 	//-------------------------------------------------------------------
 	// Get Owner Index List
 	//----------------------------------------------------
-	users.get_owner_list = function (webUser, cb) {
+	users.get_owner_list = function (webUser, peerUrls, cb) {
 		console.log('\nfetching owner index list...');
 		var request = {
-			targets: [hfc.getPeer(helper.getPeersUrl(0))],
+			targets: peerUrls,
 			chaincodeId: chaincode_id,
 			fcn: 'read',
 			args: ['_ownerindex']
@@ -102,10 +102,10 @@ module.exports = function (chain, chaincode_id, logger) {
 	//-------------------------------------------------------------------
 	// Get a Owner
 	//----------------------------------------------------
-	users.get_owner = function (webUser, opts, cb) {
+	users.get_owner = function (webUser, peerUrls, opts, cb) {
 		console.log('\nfetching owner ' + users.build_owner_name(opts.username, opts.company) + ' list...');
 		var request = {
-			targets: [hfc.getPeer(helper.getPeersUrl(0))],
+			targets: peerUrls,
 			chaincodeId: chaincode_id,
 			fcn: 'read',
 			args: [users.build_owner_name(opts.username, opts.company)]

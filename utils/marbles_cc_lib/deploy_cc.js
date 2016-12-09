@@ -3,17 +3,17 @@
 //var url = require('url');
 
 module.exports = function (chain, chaincode_id, logger) {
-	var hfc = require('../fabric-sdk-node2/index.js');
+	//var hfc = require('../fabric-sdk-node2/index.js');
 	var deploy_cc = {};
-	var helper = require(__dirname + '/../helper.js')();
-
+	//var helper = require(__dirname + '/../helper.js')();
+	//hfc.getPeer(helper.getPeersUrl(0))
 	//-------------------------------------------------------------------
 	// Check if Chaincode Is Already Deployed
 	//----------------------------------------------------
-	deploy_cc.check_if_already_deployed = function (webUser, cb) {
+	deploy_cc.check_if_already_deployed = function (webUser, peerUrls, cb) {
 		// send query
 		var request = {
-			targets: [hfc.getPeer(helper.getPeersUrl(0))],
+			targets: peerUrls,
 			chaincodeId : chaincode_id,
 			fcn: 'read',
 			args: ['_marbleindex']
@@ -46,10 +46,10 @@ module.exports = function (chain, chaincode_id, logger) {
 	//-------------------------------------------------------------------
 	// Deploy Chaincode
 	//-------------------------------------------------------------------
-	deploy_cc.deploy_chaincode = function (webUser, cb) {
+	deploy_cc.deploy_chaincode = function (webUser, peerUrls, cb) {
 		// send proposal to endorser
 		var request = {
-			targets: [hfc.getPeer(helper.getPeersUrl(0))],
+			targets: peerUrls,
 			chaincodePath: './chaincode',
 			chaincodeId: chaincode_id,
 			fcn: 'init',
@@ -96,7 +96,7 @@ module.exports = function (chain, chaincode_id, logger) {
 			function() {
 				// send query
 				var request = {
-					targets: [hfc.getPeer(helper.getPeersUrl(0))],
+					targets: peerUrls,
 					chaincodeId : chaincode_id,
 					fcn: 'read',
 					args: ['_marbleindex']
