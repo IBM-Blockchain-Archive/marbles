@@ -117,19 +117,28 @@ module.exports = function (logger) {
 
 		if(obj.ordererUrl){
 			parsed = url.parse(obj.ordererUrl, true);
-			creds_file.credentials.orderers[0].host = parsed.host;
-			creds_file.credentials.orderers[0].port = parsed.port;
+			creds_file.credentials.orderers[0].host = parsed.hostname;
+			creds_file.credentials.orderers[0].port = Number(parsed.port);
 		}
 		if(obj.peerUrl){
 			parsed = url.parse(obj.peerUrl, true);
-			creds_file.credentials.peers[0].grpc_host = parsed.host;
-			creds_file.credentials.peers[0].grpc_port = parsed.port;
+			creds_file.credentials.peers[0].grpc_host = parsed.hostname;
+			creds_file.credentials.peers[0].grpc_port = Number(parsed.port);
+		}
+		if(obj.copUrl){
+			parsed = url.parse(obj.copUrl, true);
+			creds_file.credentials.memberservices[0].host = parsed.hostname;
+			creds_file.credentials.memberservices[0].port = Number(parsed.port);
 		}
 		if(obj.chaincodeId){
-			console.log('yes');
 			creds_file.credentials.chaincode_id = obj.chaincodeId;
 		}
-
+		if(obj.enrollId && obj.enrollSecret){
+			creds_file.credentials.users[0] = 	{
+													enrollId: obj.enrollId, 
+													enrollSecret: obj.enrollSecret
+												};
+		}
 		fs.writeFileSync(creds_path, JSON.stringify(creds_file, null, 4), 'utf8');							//save to file
 		helper.creds = creds_file;													//replace old copy
 	};

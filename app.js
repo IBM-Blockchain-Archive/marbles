@@ -212,11 +212,12 @@ var marbles_lib = null;
 
 utils.setConfigSetting('crypto-keysize', 256);
 utils.setConfigSetting('crypto-hash-algo', 'SHA2');
+/*
 chain.setKeyValueStore(
 	hfc.newKeyValueStore({
 		path: __dirname + '/keyValStore-' + uuid
 	})
-);
+);*/
 //chain.setMemberServicesUrl(helper.getMemberservicesUrl(0));
 //chain.setOrderer(helper.getOrderersUrl(0));
 
@@ -270,8 +271,14 @@ function setup_marbles_lib(chaincode_id, orderer_url, peer_url){
 
 //enroll admin
 function enroll_admin(id, secret, cop, cb){
+	var keyValueStoreObj =	 {
+								path: path.join(__dirname, './keyValStore-' + uuid) 
+							};
+	chain.setKeyValueStore(hfc.newKeyValueStore(keyValueStoreObj));
 	chain.setMemberServicesUrl(cop);
-	console.log('!!!!!!!!!!!using id', id, 'secret', secret);
+
+	console.log('! using id', id, 'secret', secret);
+
 	chain.enroll(id, secret).then(
 		function(enrolledUser) {
 			console.log('Successfully enrolled ' + id);
@@ -385,29 +392,28 @@ function setupWebSocket(){
 			try{
 				var data = JSON.parse(message);
 				if(data.type == 'setup'){
-					console.log('!!!! [ws] setup message', data);
-					if(data.configure == 'enrollment'){
-						/*enroll_admin(data.enrollId, data.enrollSecret, data.copUrl, function(e){
+					console.log('! [ws] setup message', data);
+					if(data.configure === 'enrollment'){
+						helper.write(data);
+						enroll_admin(helper.getUsers(0).enrollId, helper.getUsers(0).enrollSecret, helper.getMemberservicesUrl(0), function(e){
 							if(e == null){
-								set_chaincode_id(function(e, cc_id){
-									setup_marbles_lib(cc_id, [hfc.getPeer(helper.getPeersUrl(0))]);
-								});
+								setup_marbles_lib(helper.getChaincodeId(), [hfc.getPeer(helper.getPeersUrl(0))]);
 							}
-						});*/
+						});
 					}
-					else if(data.configure == 'find_chaincode'){
-						//helper.write(data);
+					else if(data.configure === 'find_chaincode'){
+						helper.write(data);
 						setup_marbles_lib(helper.getChaincodeId(), helper.getOrderersUrl(0), [hfc.getPeer(helper.getPeersUrl(0))]);
 					}
-					else if(data.configure == 'deploy_chaincode'){
-						//helper.write(data);
+					else if(data.configure === 'deploy_chaincode'){
+						helper.write(data);
 						chain.setOrderer(helper.getOrderersUrl(0));
 						var temp_marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, helper.getChaincodeId(), null);
 						temp_marbles_lib.deploy_chaincode(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(){
 							setup_marbles_lib(helper.getChaincodeId(), helper.getOrderersUrl(0), [hfc.getPeer(helper.getPeersUrl(0))]);
 						});
 					}
-					else if(data.configure == 'register'){
+					else if(data.configure === 'register'){
 						setup_application(data.build_marble_owners);
 					}
 				}

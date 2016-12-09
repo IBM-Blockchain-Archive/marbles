@@ -66,14 +66,19 @@
 			p Sorry, we could not enroll the admin against the COP. 
 			p Edit it below to try again.
 		br
-		input(type="text" placeholder="COP ex: 192.168.99.100:8888" name="copUrl").longer
+		.stepInputLegend COP 
+		input(type="text" placeholder="COP ex: 192.168.99.100:8888" name="copUrl" value="#{bag.creds.cop}").longer
 		br
-		input(type="text" placeholder="Enroll Id" name="enrollId" value="#{bag.creds.admin_id}")
-		input(type="text" placeholder="Enroll Secret" name="enrollSecret" value="#{bag.creds.admin_secret}")
+		.stepInputLegend Enroll ID 
+		input(type="text" placeholder="Enroll Id" name="enrollId" value="#{bag.creds.admin_id}").longer
+		br
+		.stepInputLegend Enroll Secret 
+		input(type="text" placeholder="Enroll Secret" name="enrollSecret" value="#{bag.creds.admin_secret}").longer
 		br
 		br
-		button(type="button") Retry
+		button(type="button")#enrollAdmin Retry
 
+	//---------- Find Chaincode Help
 	.stepHelpWrap#chaincodeStep
 		h2 Find Chaincode
 		br
@@ -99,6 +104,7 @@
 		span &nbsp; OR &nbsp;
 		button(type="button")#deployButton Deploy
 
+	//---------- Register User Help
 	.stepHelpWrap#regUserStep
 		h2 Register Marble Owners
 		br
@@ -107,6 +113,11 @@
 			p Bring your marble owners onboard by providing a comma seperated list of usernames.
 			p These are the identies that can own marbles.
 		br
+		.stepInputLegend Company 
+		input(type="text" value="#{bag.marble_company}" disabled="disabled").longer
+		br
+
+		.stepInputLegend Owners 
 		input(type="text" placeholder="bob, bill, amy" name="marbleOwners" value="#{bag.creds.marble_owners}").longer
 		br
 		br

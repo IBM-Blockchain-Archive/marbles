@@ -43,7 +43,7 @@
 		"users": [
 			{
 				"enrollId": "admin",
-				"enrollSecret": "admin"
+				"enrollSecret": "adminpw"
 			}
 		],
 		"cert": "https://blockchain-certs.mybluemix.net/us.blockchain.ibm.com.cert",

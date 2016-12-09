@@ -52,15 +52,41 @@ $(document).on('ready', function() {
 						configure: 'register',
 						build_marble_owners: owners,
 					};
-		console.log('gogog', obj);
 		ws.send(JSON.stringify(obj));
 		$('#regUserStep').slideUp();
 		$('#step2').removeClass('stepFailed').removeClass('stepComplete');
 	});
 
+	//enroll admin
+	$('#enrollAdmin').click(function(){
+		var obj = 	{
+						type: 'setup',
+						configure: 'enrollment',
+						copUrl: $('input[name="copUrl"]').val(),
+						enrollId: $('input[name="enrollId"]').val(),
+						enrollSecret: $('input[name="enrollSecret"]').val(),
+					};
+		ws.send(JSON.stringify(obj));
+		$('#adminStep').slideUp();
+		$('#step1').removeClass('stepFailed').removeClass('stepComplete');
+	});
+
 	// ----------------------------- Nav -------------------------------------
-	//show settings panel
+	//show register user panel
+	$('#step1 .stepEdit').click(function(){
+		$('.stepHelpWrap').hide();
+		$('#adminStep').slideDown();
+	});
+
+	//show register user panel
+	$('#step2 .stepEdit').click(function(){
+		$('.stepHelpWrap').hide();
+		$('#chaincodeStep').slideDown();
+	});
+
+	//show find chaincode panel
 	$('#step3 .stepEdit').click(function(){
+		$('.stepHelpWrap').hide();
 		$('#regUserStep').slideDown();
 	});
 });
@@ -77,26 +103,17 @@ function show_start_up_step(state){
 
 	if(state === 'starting'){
 		//$()
-
-		delay_try_again(1000);
 	}
 	else if(state === 'failed_enroll'){						//could not enroll
-		$('#step1').removeClass('stepFailed');
+		$('#step1').addClass('stepFailed');
 		$('#step1, #step2').removeClass('inactiveStep');
 		$('#step2, #step3').addClass('inactiveStep');
 
 		$('.stepHelpWrap').hide();
 		$('#adminStep').slideDown();						//show help
-
-		delay_try_again(2000);
 	}
 	else if(state === 'enrolled'){							//enroll good, trying to find chaincode
-		$('#step1').removeClass('stepFailed');
-		$('#step1, #step2').removeClass('inactiveStep');
-		$('#step3').addClass('inactiveStep');
-		$('#step1').addClass('stepComplete');
-
-		delay_try_again(2000);
+		step1_success();
 	}
 	else if(state === 'no_chaincode'){						//could not find chaincode
 		$('#step1').removeClass('stepFailed');
@@ -107,28 +124,57 @@ function show_start_up_step(state){
 
 		$('.stepHelpWrap').hide();
 		$('#chaincodeStep').slideDown();					//show help
-
-		delay_try_again(3000);
 	}
 	else if(state === 'found_chaincode'){					//found chaincode, trying to register users
+		step1_success(function(){
+			step2_success();
+		});
+	}
+	else if(state === 'registered_owners'){					//register complete
+		step1_success(function(){
+			step2_success(function(){
+				step3_success(function(){
+					$('#startUpPanel').hide();
+					ws.send(JSON.stringify({type: 'get_owners', v: 1}));
+				});
+			});
+		});
+	}
+
+	function step1_success(cb){
+		console.log('success step 1');
+		$('#step1').removeClass('stepFailed');
+		$('#step1, #step2').removeClass('inactiveStep');
+		$('#step3').addClass('inactiveStep');
+		$('#step1').addClass('stepComplete');
+		if(cb){
+			setTimeout(function(){
+				cb();
+			}, 1500);
+		}
+	}
+
+	function step2_success(cb){
+		console.log('success step 2');
 		$('#step1, #step2').removeClass('stepFailed');
 		$('#step1, #step2, #step3').removeClass('inactiveStep');
 		$('#step1, #step2').addClass('stepComplete');
-
-		delay_try_again(3000);
+		if(cb){
+			setTimeout(function(){
+				cb();
+			}, 1000);
+		}
 	}
-	else if(state === 'registered_owners'){					//register complete
+
+	function step3_success(cb){
+		console.log('success step 3');
 		$('#step1, #step2, #step3').removeClass('stepFailed');
 		$('#step1, #step2, #step3').removeClass('inactiveStep');
 		$('#step1, #step2, #step3').addClass('stepComplete');
-		$('#startUpPanel').hide();
-
-		ws.send(JSON.stringify({type: 'get_owners', v: 1}));
-	}
-
-	function delay_try_again(delay_ms){
-		setTimeout(function(){
-			ws.send(JSON.stringify({type: 'get_owners', v: 1}));
-		}, delay_ms);
+		if(cb){
+			setTimeout(function(){
+				cb();
+			}, 1500);
+		}
 	}
 }
