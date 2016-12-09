@@ -64,6 +64,7 @@ exports.SERVER.vcap_app = vcap_app;
 ////////////////////////////////////////     Common     ////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
 exports.DEBUG = vcap_app;
+/*
 var marbles_users = ['unknown1', 'unknown2'];
 try{
 	marbles_users = JSON.parse(process.env.marbles_users);
@@ -73,3 +74,4 @@ catch(e){
 }
 exports.USER1 = marbles_users[0];				//left username
 exports.USER2 = marbles_users[1];				//right username
+*/

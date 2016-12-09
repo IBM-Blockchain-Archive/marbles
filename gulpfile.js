@@ -56,55 +56,47 @@ gulp.task('watch-server', ['server'], function () {
 
 ////// Tasks //////
 gulp.task('default', ['watch-js', 'watch-sass', 'watch-server']);
+gulp.task('marbles', ['default']);
 gulp.task('united_marbles', ['start_mtc1', 'default']);
 gulp.task('marble_market', ['start_mtc2', 'default']);
 gulp.task('emarbles', ['start_mtc3', 'default']);
 
-gulp.task('init_united_marbles', ['init_mtc1', 'start_mtc1', 'default']);
-gulp.task('init_marble_market', ['init_mtc2', 'start_mtc2', 'default']);
-gulp.task('init_emarbles', ['init_mtc3', 'start_mtc3', 'default']);
+//generic marbles
+gulp.task('marbles', function () {
+	var creds = require('./mycreds.json');
+	env['marble_company'] = creds.marble_company;
+	env['marble_port'] = 3000;
+	console.log('\n[International Marbles Trading Consortium] - Member " ' + env['marble_company'] + '"\n');
+	var color_theme = fs.readFileSync('./scss/color_theme01.scss').toString();
+	fs.writeFileSync('./scss/color_theme.scss', color_theme);
+});
 
 // MTC Member 1
-var build_users1 = ['amy', 'alice', 'amber'];
-gulp.task('init_mtc1', function () {
-	env['build_marbles_users'] = JSON.stringify(build_users1);		//copy to environmental vars
-});
 gulp.task('start_mtc1', function () {
 	console.log('\n[International Marbles Trading Consortium] - Member "United Marbles"\n');
-	env['marbles_users'] = JSON.stringify(build_users1);				//copy to environmental vars
-	env['marble_company'] = 'United Marbles';
+	var creds = require('./creds_united_marbles.json');
+	env['marble_company'] = creds.marble_company;
 	env['marble_port'] = 3000;
 	var color_theme = fs.readFileSync('./scss/color_theme01.scss').toString();
 	fs.writeFileSync('./scss/color_theme.scss', color_theme);
-	//gulp.task('temp', ['build-sass']);
 });
 
 // MTC Member 2
-var build_users2 = ['bob', 'bill'];
-gulp.task('init_mtc2', function () {
-	env['build_marbles_users'] = JSON.stringify(build_users2);		//copy to environmental vars
-});
 gulp.task('start_mtc2', function () {
 	console.log('\n[International Marbles Trading Consortium] - Member "Marble Market"\n');
-	env['marbles_users'] = JSON.stringify(build_users2);				//copy to environmental vars
-	env['marble_company'] = 'Marble Market';
+	var creds = require('./creds_marble_market.json');
+	env['marble_company'] = creds.marble_company;
 	env['marble_port'] = 3001;
-	var color_theme = fs.readFileSync('./scss/color_theme02.scss').toString();
+	var color_theme = fs.readFileSync('./scss/color_theme01.scss').toString();
 	fs.writeFileSync('./scss/color_theme.scss', color_theme);
-	//gulp.task('temp', ['build-sass']);
 });
 
 // MTC Member 3
-var build_users3 = ['cliff', 'cody'];
-gulp.task('init_mtc3', function () {
-	env['build_marbles_users'] = JSON.stringify(build_users3);		//copy to environmental vars
-});
 gulp.task('start_mtc3', function () {
 	console.log('\n[International Marbles Trading Consortium] - Member "eMarbles"\n');
-	env['marbles_users'] = JSON.stringify(build_users3);				//copy to environmental vars
-	env['marble_company'] = 'eMarbles';
-	env['marble_port'] = 3002;
-	var color_theme = fs.readFileSync('./scss/color_theme03.scss').toString();
+	var creds = require('./creds_emarbles.json');
+	env['marble_company'] = creds.marble_company;
+	env['marble_port'] = 3001;
+	var color_theme = fs.readFileSync('./scss/color_theme01.scss').toString();
 	fs.writeFileSync('./scss/color_theme.scss', color_theme);
-	//gulp.task('temp', ['build-sass']);
 });
