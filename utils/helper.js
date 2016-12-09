@@ -143,5 +143,10 @@ module.exports = function (logger) {
 		helper.creds = creds_file;													//replace old copy
 	};
 
+	helper.getMarbleUsers = function(){
+		if(helper.creds.credentials.build_marbles_users) return helper.creds.credentials.build_marbles_users;
+		else return null;
+	};
+
 	return helper;
 };
