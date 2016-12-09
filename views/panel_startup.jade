@@ -107,7 +107,7 @@
 			p Bring your marble owners onboard by providing a comma seperated list of usernames.
 			p These are the identies that can own marbles.
 		br
-		input(type="text" placeholder="bob, bill, amy" value="#{bag.creds.marble_owners}").longer
+		input(type="text" placeholder="bob, bill, amy" name="marbleOwners" value="#{bag.creds.marble_owners}").longer
 		br
 		br
-		button(type="button") Register
+		button(type="button")#registerOwners Register

@@ -9,6 +9,12 @@ $(document).on('ready', function() {
 	// =================================================================================
 	// jQuery UI Events
 	// =================================================================================
+	$('#showStartupPanel').click(function(){
+		$('#startUpPanel').fadeIn();
+	});
+	
+	// ----------------------------- Actions-------------------------------------
+	//find chaincode again
 	$('#retryDeploy').click(function(){
 		var obj = 	{
 						type: 'setup',
@@ -22,6 +28,7 @@ $(document).on('ready', function() {
 		$('#step2').removeClass('stepFailed');
 	});
 
+	//deploy chaincode
 	$('#deployButton').click(function(){
 		var obj = 	{
 						type: 'setup',
@@ -33,6 +40,24 @@ $(document).on('ready', function() {
 		ws.send(JSON.stringify(obj));
 		$('#chaincodeStep').slideUp();
 		$('#step2').removeClass('stepFailed');
+	});
+
+	//register new marble owners
+	$('#registerOwners').click(function(){
+		var obj = 	{
+						type: 'setup',
+						configure: 'register',
+						build_marble_owners: JSON.parse('[' + $('input[name="marbleOwners]').val() + ']'),
+					};
+		ws.send(JSON.stringify(obj));
+		$('#regUserStep').slideUp();
+		$('#step2').removeClass('stepFailed').removeClass('stepComplete');
+	});
+
+	// ----------------------------- Nav -------------------------------------
+	//show settings panel
+	$('#step3 .stepEdit').click(function(){
+		$('#regUserStep').slideDown();
 	});
 });
 // =================================================================================

@@ -263,7 +263,7 @@ function setup_marbles_lib(chaincode_id, orderer_url, peer_url){
 			console.log('\n\nChaincode already deployed\n\n');
 			process.env.app_state = 'found_chaincode';
 			broadcast_state();
-			setup_application(enrollUser); 						//builds marbles, then starts webapp
+			setup_application(); 						//builds marbles, then starts webapp
 		}
 	});
 }
@@ -321,14 +321,14 @@ function build_marble_options(username, company){
 }
 
 //this only runs after we deploy
-function setup_application(enrollUser){
+function setup_application(build_marbles_users){
 	console.log('setting up application');
 
 	// --- Create Each user --- //
-	if(process.env.build_marbles_users){
+	if(build_marbles_users && build_marbles_users.length > 0){
 		var build_users = [];
 		try{
-			build_users = JSON.parse(process.env.build_marbles_users);
+			build_users = JSON.parse(build_marbles_users);
 			console.log('building ' + build_users.length + ' users');
 		}
 		catch(e){console.log('not json', e);}
@@ -406,7 +406,7 @@ function setupWebSocket(){
 						});
 					}
 					else if(data.configure == 'register'){
-
+						setup_application(data.build_marble_owners);
 					}
 				}
 				else{
