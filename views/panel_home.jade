@@ -4,34 +4,23 @@
 		hr
 
 		#ownerWrap
-			button#showStartupPanel
-				span.fa.fa-gear 
-				span &nbsp;&nbsp; Settings
+			div#toolbarWrap
+				.bottomAlign
+					input(type="text" placeholder="Search" style="margin-left: 0; border-radius:2px;")#searchUsers.longer
+					span.hint(style="margin-left: 10px;") 
+						span#foundUsers 0
+						span /
+						span#totalUsers 0
+				button#showStartupPanel
+					span.fa.fa-gear 
+					span &nbsp;&nbsp; Settings
 
-			div(style="margin-left: 0; border-radius:2px; text-align:left;")
-				input(type="text" placeholder="Search" style="margin-left: 0; border-radius:2px;")#searchUsers
-				span.hint(style="margin-left: 10px;") 
-					span#foundUsers 0
-					span /
-					span#totalUsers 0
-				//span.hint(style="margin-left: 115px;") SELECT USERS TO MANAGE
-
-			#dummy(style="width:70%; display:inline-block; max-height: 124px; overflow: auto;")
-				table#userTable
-					thead
-						tr.userRow
-							th.userMarbles Marbles
-							th.userName Username
-							th.userCompany Company
-							th.userRights Admin
-					tbody
-
-			#trashbin.sortable
-				span.fa.fa-trash-o.fa-3x
-				span#trashText Drag and drop marble to remove
+				#trashbin.sortable
+					span.fa.fa-trash-o.fa-3x
+					span#trashText Drag and drop marble to remove
 			
 
-		#description.hint DRAG AND DROP A MARBLE TO TRANSFER IT
+		//#description.hint DRAG AND DROP A MARBLE TO TRANSFER IT
 
 		#allUserPanelsWrap
 

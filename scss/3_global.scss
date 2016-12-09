@@ -146,7 +146,7 @@
 // --------- Home ---------
 .marblesWrap{
 	display: inline-block;
-	display:none;
+	//display:none;
 	width: 30%;
 	text-align: left;
 	color: $main_color;
@@ -154,11 +154,11 @@
 	//border: 1px $acc_color2 solid;
 	position: relative;
 	min-height: 158px;
-	border-radius: 5px;
+	border-radius: 3px;
 	margin-left: 10px;
 	margin-right: 10px;
 	vertical-align: top;
-	background: $acc_color1;
+	background: $acc_color1-5;
 }
 .innerMarbleWrap{
 	min-height:100px;
@@ -174,11 +174,32 @@
 	padding-right: 10px;
 	margin: 0;
 }
-/*
-#ownerWrap{
-	width: 820px;
-	margin: auto;
-}*/
+.companyPanel{
+	background: $acc_color2;
+	padding: 0;
+	border-radius: 3px;
+	margin-bottom: 5px;
+	color: $main_color;
+}
+.floatRight{
+	float: right;
+}
+.ownerWrap{
+	padding: 20px;
+}
+.companyNameWrap{
+	border-bottom: 1px $acc_color1-5 solid;
+	padding: 16px;
+}
+.companyName{
+	margin-left: 10px;
+}
+#toolbarWrap{
+	margin: 0; 
+	text-align:left;
+	position: relative;
+	height: 100px;
+}
 .ball{
 	display:inline-block;
 	margin: 0 10px;
@@ -198,15 +219,19 @@
 	text-align: center;
 }
 #trashbin{
-	width: 20%;
-	display: inline-block;
 	text-align: center;
-	margin-left: 30px;
-	margin-top: 22px;
-	padding: 15px;
-	border: 1px $acc_color2 solid;
+	padding: 15px 25px;
+	border: 1px $acc_color2 dashed;
 	border-radius:3px;
 	vertical-align: top;
+	position: absolute;
+	right: 0px;
+	bottom: 15px;
+}
+.bottomAlign{
+	position: absolute;
+	bottom: 0px;
+
 }
 #trashText{
 	vertical-align: top;
@@ -217,12 +242,15 @@
 	font-weight: 100;
 	font-size: 12px;
 }
-.marblesCloseSectionPos{
+.marblesFix{
 	padding: 2px;
-	font-size: 16px;
+	font-size: 12px;
 	float:right;
 }
-.marblesCloseSection:hover, .marblesOpenSection:hover{
+.marblesFixed{
+	transform: rotate(45deg)
+}
+.marblesFix:hover, .marblesOpenSection:hover{
 	color: $hi_color1;
 	cursor: pointer;
 }
