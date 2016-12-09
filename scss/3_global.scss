@@ -87,7 +87,7 @@
 	overflow-y: auto;
 }
 .notificationWrap{
-	width: 95%;
+	width: 97%;
 	margin: auto;
 	background: $acc_color1;
 	margin: 1px 0;
@@ -155,7 +155,8 @@
 	position: relative;
 	min-height: 158px;
 	border-radius: 5px;
-	margin-left: 15px;
+	margin-left: 10px;
+	margin-right: 10px;
 	vertical-align: top;
 	background: $acc_color1;
 }
@@ -173,11 +174,11 @@
 	padding-right: 10px;
 	margin: 0;
 }
-
+/*
 #ownerWrap{
 	width: 820px;
 	margin: auto;
-}
+}*/
 .ball{
 	display:inline-block;
 	margin: 0 10px;
@@ -197,10 +198,24 @@
 	text-align: center;
 }
 #trashbin{
+	width: 20%;
 	display: inline-block;
 	text-align: center;
 	margin-left: 30px;
-	margin-top: 30px;
+	margin-top: 22px;
+	padding: 15px;
+	border: 1px $acc_color2 solid;
+	border-radius:3px;
+	vertical-align: top;
+}
+#trashText{
+	vertical-align: top;
+	display: inline-block;
+	margin-top: 17px;
+	margin-left: 10px;
+	color: $main_color;
+	font-weight: 100;
+	font-size: 12px;
 }
 .marblesCloseSectionPos{
 	padding: 2px;
@@ -225,11 +240,15 @@
 // --------- Create ---------
 .addMarble{
 	height: 80px;
-	width: 50px;
+	width: 80px;
 	line-height: 75px;
 	margin-left: 10px;
 	font-size: 20px;
 	vertical-align: bottom;
+	border: 1px dashed #fff;
+	border-radius: 100%;
+	text-align: center;
+	line-height: 80px;
 }
 .addMarble:hover{
 	color: $hi_color1;
@@ -263,7 +282,7 @@
 	position: absolute;
 	top: 75px;
 	background: #343d48;
-	border: 1px #646b73 solid;
+	//border: 1px #646b73 solid;
 	z-index: 1005;
 	padding: 50px;
 	left: 23%;
@@ -271,7 +290,7 @@
 #tint{
 	display:none;
 	background: #000;
-	opacity: .5;
+	opacity: .85;
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -339,26 +358,25 @@
 
 // -- Table -- //
 #userTable{
-	width: 612px;
-	display: inline-block;
+	//width: 612px;
 	vertical-align: top;
 }
-
+/*
 #userTable tbody{
 	max-height: 124px;
 	overflow: auto;
-	display: block;
-}
+	//display: block;
+}*/
 .userRow{
 	border-bottom-width: 1px;
-	font-size: 14px;
+	font-size: 12px;
 	cursor: pointer;
 }
 .userRow td, .userRow th{
 	padding: 5px;
 	text-align: left;
 	margin: 0;
-}
+}/*
 .userMarbles{
 	width: 60px;
 }
@@ -371,7 +389,7 @@
 td.userRights, th.userRights{
 	width: 70px;
 	text-align: center;
-}
+}*/
 
 .selectedRow{
 	background: $acc_color1;
@@ -487,18 +505,46 @@ td.userRights, th.userRights{
 //------------ Login ------------//
 #welcomePanel{
 	text-align: center;
-	max-width: 550px;
+	max-width: 575px;
 	margin: auto;
 	margin-top: 120px;
 	margin-bottom: 100px;
-	font-size: 15px;
+	font-size: 12px;
 }
 .split1x3{
 	display: inline-block;
 	padding:0;
 	margin: 0;
-	width: 33%;
+	width: 25%;
+	margin-right: 8%;
 	vertical-align: top;
+}
+.welcomeTitle{
+	font-weight: 600;
+	font-size: 15px;
+}
+#loginCompany{
+	color:$hi_color1; 
+	text-align:center;
+}
+#loginTitle{
+	margin-left: 15px;
+	font-weight: 600;
+	color: $main_color;
+	font-size: 16px;
+}
+#adminText{
+	font-size: 15px;
+	margin-top: 15px;
+	margin-bottom: 35px;
+}
+.blub1x3{
+	display:inline-block;
+	height: 28px;
+	margin-bottom: 20px;
+}
+.welcomeImg{
+	height: 75px;
 }
 
 
@@ -580,4 +626,83 @@ td.userRights, th.userRights{
 	border-top-color: transparent;
 	border-bottom-color: transparent;
 	left:50px;
+}
+
+
+//-- start up panel -- //
+#startUpPanel{
+	position: absolute;
+	top: 100px;
+	background: #343d48;
+	border: 1px #646b73 solid;
+	z-index: 1005;
+	padding: 40px;
+	width: 90%;
+	left: 2%;
+}
+.stepWrap{
+	display: inline-block;
+	width: 25%;
+	text-align: center;
+	vertical-align: top;
+}
+.stepNext{
+	display: inline-block;
+	width:10%;
+	vertical-align: top;
+	margin-top: 65px;
+}
+.stepHeader{
+	font-weight: 600;
+	margin-top: 10px;
+	height: 40px;
+}
+.stepCircleStatus{
+	margin-top: 35px;
+	height: 20px;
+	width: 20px;
+	display: inline-block;
+	background: $main_color;
+	border-radius: 100px;
+}
+.stepDescription{
+	font-size: 13px;
+	text-align: left;
+	height: 100px;
+}
+.stepLoading{
+	margin: 10px 0;
+}
+.stepEdit{
+	font-size: 12px;
+	padding-bottom: 20px;
+}
+.inactiveStep{
+	opacity: 0.3;
+}
+.inactiveStep .stepLoading, .stepComplete .stepLoading, .stepFailed .stepLoading{
+	opacity: 0;
+}
+.stepComplete .stepCircleStatus{
+	background: #6CC284;
+}
+.stepFailed .stepCircleStatus{
+	background: #f14646;
+}
+.stepHelpWrap{
+	display: none;
+	text-align: center;
+	border-top: 2px #ccc solid;
+	margin-top: 30px;
+	padding-top: 30px;
+}
+.stepHelpTxt {
+	font-size: 13px;
+}
+.stepInputLegend{
+	display: inline-block;
+	text-align: right;
+	width: 100px;
+	font-size: 13px;
+	margin-right: 5px;
 }

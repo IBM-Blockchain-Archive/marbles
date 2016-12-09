@@ -40,7 +40,7 @@ gulp.task('server', function() {
 
 ////// Watch Tasks //////
 gulp.task('watch-sass', ['build-sass'], function () {
-	gulp.watch(path.join(__dirname, '/scss/*.scss'), ['build-sass', 'server']);
+	gulp.watch(path.join(__dirname, '/scss/*.scss'), ['build-sass']);
 });
 
 gulp.task('watch-js', ['build-js-hash'], function () {

@@ -63,7 +63,7 @@ body {
   background: #343D48; }
 
 h1 {
-  font-size: 44px;
+  font-size: 30px;
   font-weight: normal;
   margin: 0; }
 
@@ -156,21 +156,21 @@ input[type="submit"], input[type="button"], button {
   font-size: 13px;
   cursor: pointer;
   padding: 5px 10px;
-  background: #222832;
-  color: #7E90A0;
-  border: 0;
+  background: #2EB9D6;
+  color: #fff;
   transition: background-color 0.2s ease;
   border-radius: 5px;
   min-width: 130px;
-  border: 2px #7E90A0 solid; }
+  border: 2px transparent solid;
+  transition: all .35s linear; }
 
 input:focus, select:focus, button:focus {
   outline: none !important;
-  border-color: #fff !important; }
+  border-color: #fff !important;
+  transition: all .35s linear; }
 
 input[type="submit"]:hover, input[type="button"]:hover, button:hover, button.activeButton, button.activeButton:focus {
-  color: orange;
-  border-color: orange !important; }
+  border-color: #fff !important; }
 
 input[type="text"], input[type="password"], select {
   padding: 5px 10px;
@@ -179,10 +179,14 @@ input[type="text"], input[type="password"], select {
   border: 1px solid #646B73;
   border-radius: 5px;
   background: #343D48;
-  min-width: 120px; }
+  min-width: 120px;
+  font-family: monospace; }
 
 input[type="text"]:disabled, input[type="password"]:disabled, select:disabled {
   color: #646B73; }
+
+input.longer {
+  min-width: 250px; }
 
 small {
   font-size: 10pt; }
@@ -218,6 +222,9 @@ label {
   width: 100%;
   clear: both;
   height: 1px; }
+
+strong {
+  font-weight: 600; }
 
 /*Main Layout*/
 #headerPanel {
@@ -296,7 +303,7 @@ label {
   overflow-y: auto; }
 
 .notificationWrap {
-  width: 95%;
+  width: 97%;
   margin: auto;
   background: #222832;
   margin: 1px 0;
@@ -359,7 +366,8 @@ label {
   position: relative;
   min-height: 158px;
   border-radius: 5px;
-  margin-left: 15px;
+  margin-left: 10px;
+  margin-right: 10px;
   vertical-align: top;
   background: #222832; }
 
@@ -377,10 +385,11 @@ label {
   padding-right: 10px;
   margin: 0; }
 
-#ownerWrap {
-  width: 820px;
-  margin: auto; }
-
+/*
+#ownerWrap{
+	width: 820px;
+	margin: auto;
+}*/
 .ball {
   display: inline-block;
   margin: 0 10px;
@@ -399,10 +408,24 @@ label {
   text-align: center; }
 
 #trashbin {
+  width: 20%;
   display: inline-block;
   text-align: center;
   margin-left: 30px;
-  margin-top: 30px; }
+  margin-top: 22px;
+  padding: 15px;
+  border: 1px #646B73 solid;
+  border-radius: 3px;
+  vertical-align: top; }
+
+#trashText {
+  vertical-align: top;
+  display: inline-block;
+  margin-top: 17px;
+  margin-left: 10px;
+  color: #fff;
+  font-weight: 100;
+  font-size: 12px; }
 
 .marblesCloseSectionPos {
   padding: 2px;
@@ -424,11 +447,15 @@ label {
 
 .addMarble {
   height: 80px;
-  width: 50px;
+  width: 80px;
   line-height: 75px;
   margin-left: 10px;
   font-size: 20px;
-  vertical-align: bottom; }
+  vertical-align: bottom;
+  border: 1px dashed #fff;
+  border-radius: 100%;
+  text-align: center;
+  line-height: 80px; }
 
 .addMarble:hover {
   color: orange;
@@ -461,7 +488,6 @@ label {
   position: absolute;
   top: 75px;
   background: #343d48;
-  border: 1px #646b73 solid;
   z-index: 1005;
   padding: 50px;
   left: 23%; }
@@ -469,7 +495,7 @@ label {
 #tint {
   display: none;
   background: #000;
-  opacity: .5;
+  opacity: .85;
   position: absolute;
   top: 0;
   right: 0;
@@ -530,18 +556,17 @@ label {
   color: #222832; }
 
 #userTable {
-  width: 612px;
-  display: inline-block;
   vertical-align: top; }
 
-#userTable tbody {
-  max-height: 124px;
-  overflow: auto;
-  display: block; }
-
+/*
+#userTable tbody{
+	max-height: 124px;
+	overflow: auto;
+	//display: block;
+}*/
 .userRow {
   border-bottom-width: 1px;
-  font-size: 14px;
+  font-size: 12px;
   cursor: pointer; }
 
 .userRow td, .userRow th {
@@ -549,19 +574,20 @@ label {
   text-align: left;
   margin: 0; }
 
-.userMarbles {
-  width: 60px; }
-
-.userName {
-  width: 200px; }
-
-.userCompany {
-  width: 225px; }
-
-td.userRights, th.userRights {
-  width: 70px;
-  text-align: center; }
-
+/*
+.userMarbles{
+	width: 60px;
+}
+.userName{
+	width: 200px;
+}
+.userCompany{
+	width: 225px;
+}
+td.userRights, th.userRights{
+	width: 70px;
+	text-align: center;
+}*/
 .selectedRow {
   background: #222832; }
 
@@ -697,18 +723,46 @@ td.userRights, th.userRights {
 
 #welcomePanel {
   text-align: center;
-  max-width: 550px;
+  max-width: 575px;
   margin: auto;
   margin-top: 120px;
   margin-bottom: 100px;
-  font-size: 15px; }
+  font-size: 12px; }
 
 .split1x3 {
   display: inline-block;
   padding: 0;
   margin: 0;
-  width: 33%;
+  width: 25%;
+  margin-right: 8%;
   vertical-align: top; }
+
+.welcomeTitle {
+  font-weight: 600;
+  font-size: 15px; }
+
+#loginCompany {
+  color: orange;
+  text-align: center; }
+
+#loginTitle {
+  margin-left: 15px;
+  font-weight: 600;
+  color: #fff;
+  font-size: 16px; }
+
+#adminText {
+  font-size: 15px;
+  margin-top: 15px;
+  margin-bottom: 35px; }
+
+.blub1x3 {
+  display: inline-block;
+  height: 28px;
+  margin-bottom: 20px; }
+
+.welcomeImg {
+  height: 75px; }
 
 #testBall, #testBall2, #testBall3, #testBallLeft, #testBallRight {
   border: 5px solid #181C22;
@@ -779,6 +833,82 @@ td.userRights, th.userRights {
   border-top-color: transparent;
   border-bottom-color: transparent;
   left: 50px; }
+
+#startUpPanel {
+  position: absolute;
+  top: 100px;
+  background: #343d48;
+  border: 1px #646b73 solid;
+  z-index: 1005;
+  padding: 40px;
+  width: 90%;
+  left: 2%; }
+
+.stepWrap {
+  display: inline-block;
+  width: 25%;
+  text-align: center;
+  vertical-align: top; }
+
+.stepNext {
+  display: inline-block;
+  width: 10%;
+  vertical-align: top;
+  margin-top: 65px; }
+
+.stepHeader {
+  font-weight: 600;
+  margin-top: 10px;
+  height: 40px; }
+
+.stepCircleStatus {
+  margin-top: 35px;
+  height: 20px;
+  width: 20px;
+  display: inline-block;
+  background: #fff;
+  border-radius: 100px; }
+
+.stepDescription {
+  font-size: 13px;
+  text-align: left;
+  height: 100px; }
+
+.stepLoading {
+  margin: 10px 0; }
+
+.stepEdit {
+  font-size: 12px;
+  padding-bottom: 20px; }
+
+.inactiveStep {
+  opacity: 0.3; }
+
+.inactiveStep .stepLoading, .stepComplete .stepLoading, .stepFailed .stepLoading {
+  opacity: 0; }
+
+.stepComplete .stepCircleStatus {
+  background: #6CC284; }
+
+.stepFailed .stepCircleStatus {
+  background: #f14646; }
+
+.stepHelpWrap {
+  display: none;
+  text-align: center;
+  border-top: 2px #ccc solid;
+  margin-top: 30px;
+  padding-top: 30px; }
+
+.stepHelpTxt {
+  font-size: 13px; }
+
+.stepInputLegend {
+  display: inline-block;
+  text-align: right;
+  width: 100px;
+  font-size: 13px;
+  margin-right: 5px; }
 
 #blockWrap {
   position: relative;
@@ -854,17 +984,17 @@ td.userRights, th.userRights {
 .loadingdiv {
   height: 30px;
   margin: 10px 5px;
-  display: inline-block; }
+  display: block; }
 
 .loadingdiv span {
   display: inline-block;
   vertical-align: middle;
   width: 4px;
-  background: #343D48;
+  background: #fff;
   border-radius: 3px;
   -webkit-animation: loading 0.8s infinite alternate;
   -moz-animation: loading 0.8s infinite alternate;
-  box-shadow: 1px 1px 1px #343D48; }
+  margin-left: 5px; }
 
 .loadingdiv div {
   height: 30px;

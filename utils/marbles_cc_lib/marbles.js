@@ -3,20 +3,20 @@ var path = require('path');
 //var url = require('url');
 
 module.exports = function (chain, chaincode_id, logger) {
-	var hfc = require('../fabric-sdk-node2/index.js');
-	var helper = require(__dirname + '/../helper.js')();
+	//var hfc = require('../fabric-sdk-node2/index.js');
+	//var helper = require(__dirname + '/../helper.js')();
 	var common = require(path.join(__dirname, './common.js'))();
 	var marbles = {};
 
 	//-------------------------------------------------------------------
 	// Create Marble
 	//-------------------------------------------------------------------
-	marbles.create_a_marble = function (webUser, options, cb) {
+	marbles.create_a_marble = function (webUser, peerUrls, options, cb) {
 		console.log('\ncreating a marble...');
 		
 		// send proposal to endorser
 		var request = {
-			targets: [hfc.getPeer(helper.getPeersUrl(0))],
+			targets: peerUrls,
 			chaincodeId: chaincode_id,
 			fcn: 'init_marble',
 			args: options 									//args == [marble_id, color, size, username, company]
@@ -59,10 +59,10 @@ module.exports = function (chain, chaincode_id, logger) {
 	//-------------------------------------------------------------------
 	// Get Marble Index List
 	//----------------------------------------------------
-	marbles.get_marble_list = function (webUser, cb) {
+	marbles.get_marble_list = function (webUser, peerUrls, cb) {
 		console.log('\nfetching marble index list...');
 		var request = {
-			targets: [hfc.getPeer(helper.getPeersUrl(0))],
+			targets: peerUrls,
 			chaincodeId: chaincode_id,
 			fcn: 'read',
 			args: ['_marbleindex']
@@ -95,10 +95,10 @@ module.exports = function (chain, chaincode_id, logger) {
 	//-------------------------------------------------------------------
 	// Get a Marble
 	//----------------------------------------------------
-	marbles.get_marble = function (webUser, marble_name, cb) {
+	marbles.get_marble = function (webUser, peerUrls, marble_name, cb) {
 		console.log('\nfetching marble ' + marble_name +' list...');
 		var request = {
-			targets: [hfc.getPeer(helper.getPeersUrl(0))],
+			targets: peerUrls,
 			chaincodeId: chaincode_id,
 			fcn: 'read',
 			args: [marble_name]
@@ -129,12 +129,12 @@ module.exports = function (chain, chaincode_id, logger) {
 	//-------------------------------------------------------------------
 	// Set Marble Owner 
 	//-------------------------------------------------------------------
-	marbles.set_marble_owner = function (webUser, options, cb) {
+	marbles.set_marble_owner = function (webUser, peerUrls, options, cb) {
 		console.log('\nsetting marble owner...');
 
 		// send proposal to endorser
 		var request = {
-			targets: [hfc.getPeer(helper.getPeersUrl(0))],
+			targets: peerUrls,
 			chaincodeId: chaincode_id,
 			fcn: 'set_owner',
 			args: options 									//args == ["name", "bob", "united_marbles", "united_marbles"]
@@ -175,12 +175,12 @@ module.exports = function (chain, chaincode_id, logger) {
 	//-------------------------------------------------------------------
 	// Delete Marble - options are [marble_id]
 	//-------------------------------------------------------------------
-	marbles.delete_marble = function (webUser, options, cb) {
+	marbles.delete_marble = function (webUser, peerUrls, options, cb) {
 		console.log('\ndeleting a marble...');
 		
 		// send proposal to endorser
 		var request = {
-			targets: [hfc.getPeer(helper.getPeersUrl(0)), hfc.getPeer(helper.getPeersUrl(1))],
+			targets: peerUrls,
 			chaincodeId: chaincode_id,
 			fcn: 'delete_marble',
 			args: options 									//args == [marble_id]

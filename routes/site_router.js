@@ -20,8 +20,27 @@ function build_bag(req){
 				e: process.error,							//send any setup errors
 				jshash: process.env.cachebust_js,			//js cache busting hash (not important)
 				csshash: process.env.cachebust_css,			//css cache busting hash (not important)
-				marble_company: process.env.marble_company
+				marble_company: process.env.marble_company,
+				creds: get_credential_data()
 			};
+}
+
+//get cred data
+function get_credential_data(){
+	var helper = require(__dirname + '/../utils/helper.js')(console);
+	var ret =	{
+					admin_id: helper.getUsers(0).enrollId,
+					admin_secret: helper.getUsers(0).enrollSecret,
+					orderer: helper.getOrderersUrl(0),
+					cop: helper.getMemberservicesUrl(0),
+					peer: helper.getPeersUrl(0),
+					chaincode_id: helper.getChaincodeId(),
+					marble_owners: ''
+				};
+	for(var i in ret){
+		if(ret[i] == null) ret[i] = '';			//set to blank if not found
+	}
+	return ret;
 }
 
 // ============================================================================================================================

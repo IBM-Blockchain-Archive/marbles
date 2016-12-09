@@ -1,5 +1,5 @@
 /* global new_block, randStr, bag, $, clear_blocks, document, WebSocket, escapeHtml */
-/* global toTitleCase, formatDate*/
+/* global toTitleCase, formatDate, show_start_up_step*/
 var ws = {};
 var bgcolors = ['whitebg', 'blackbg', 'redbg', 'greenbg', 'bluebg', 'purplebg', 'pinkbg', 'orangebg', 'yellowbg'];
 var autoCloseNoticePanel = null;
@@ -223,7 +223,8 @@ function connect_to_server(){
 	function connect(){
 		var wsUri = 'ws://' + document.location.hostname + ':' + document.location.port;
 		console.log('Connectiong to websocket', wsUri);
-		
+		addshow_notification(build_notification(false, 'Connected to Marbles application'), false);
+
 		ws = new WebSocket(wsUri);
 		ws.onopen = function(evt) { onOpen(evt); };
 		ws.onclose = function(evt) { onClose(evt); };
@@ -238,12 +239,13 @@ function connect_to_server(){
 		//$('#errorNotificationPanel').fadeOut();
 		
 		//ws.send(JSON.stringify({type: 'chainstats', v:1}));
-		ws.send(JSON.stringify({type: 'get_owners', v: 1}));
+		//ws.send(JSON.stringify({type: 'get_owners', v: 1}));
 	}
 
 	function onClose(evt){
 		console.log('WS DISCONNECTED', evt);
 		connected = false;
+		addshow_notification(build_notification(true, 'Lost connection to Marbles application'), true);
 		setTimeout(function(){ connect(); }, 5000);					//try again one more time, server restarts are quick
 	}
 
@@ -278,6 +280,12 @@ function connect_to_server(){
 			else if(msgObj.msg === 'all_marbles_sent'){
 				console.log('rec', msgObj.msg, msgObj);
 				start_up = false;
+			}
+			else if(msgObj.msg === 'app_state'){
+				console.log('rec', msgObj.msg, msgObj);
+				setTimeout(function(){
+					show_start_up_step(msgObj.state);
+				}, 1000);
 			}
 			else console.log('rec', msgObj.msg, msgObj);
 		}
@@ -496,6 +504,7 @@ function addshow_notification(html, expandPanelNow){
 
 	if(expandPanelNow === true){
 		openNoticePanel();
+		clearTimeout(autoCloseNoticePanel);
 		autoCloseNoticePanel = setTimeout(function(){		//auto close, xx seconds from now
 			closeNoticePanel();
 		}, 10000);
