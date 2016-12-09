@@ -223,7 +223,8 @@ function connect_to_server(){
 	function connect(){
 		var wsUri = 'ws://' + document.location.hostname + ':' + document.location.port;
 		console.log('Connectiong to websocket', wsUri);
-		
+		addshow_notification(build_notification(false, 'Connected to Marbles application'), false);
+
 		ws = new WebSocket(wsUri);
 		ws.onopen = function(evt) { onOpen(evt); };
 		ws.onclose = function(evt) { onClose(evt); };
@@ -244,6 +245,7 @@ function connect_to_server(){
 	function onClose(evt){
 		console.log('WS DISCONNECTED', evt);
 		connected = false;
+		addshow_notification(build_notification(true, 'Lost connection to Marbles application'), true);
 		setTimeout(function(){ connect(); }, 5000);					//try again one more time, server restarts are quick
 	}
 
@@ -502,6 +504,7 @@ function addshow_notification(html, expandPanelNow){
 
 	if(expandPanelNow === true){
 		openNoticePanel();
+		clearTimeout(autoCloseNoticePanel);
 		autoCloseNoticePanel = setTimeout(function(){		//auto close, xx seconds from now
 			closeNoticePanel();
 		}, 10000);

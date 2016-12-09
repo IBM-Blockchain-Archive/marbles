@@ -44,11 +44,15 @@ $(document).on('ready', function() {
 
 	//register new marble owners
 	$('#registerOwners').click(function(){
+		var owners =  $('input[name="marbleOwners"]').val();
+		owners = owners.split(',');
+		console.log('owners', owners);
 		var obj = 	{
 						type: 'setup',
 						configure: 'register',
-						build_marble_owners: JSON.parse('[' + $('input[name="marbleOwners]').val() + ']'),
+						build_marble_owners: owners,
 					};
+		console.log('gogog', obj);
 		ws.send(JSON.stringify(obj));
 		$('#regUserStep').slideUp();
 		$('#step2').removeClass('stepFailed').removeClass('stepComplete');

@@ -47,7 +47,7 @@
 			}
 		],
 		"cert": "https://blockchain-certs.mybluemix.net/us.blockchain.ibm.com.cert",
-		"chaincode_id":"marbles",
+		"chaincode_id":"marbles.148112223311",
 		"build_marbles_users":[]
 	}
 }

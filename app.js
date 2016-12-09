@@ -271,6 +271,7 @@ function setup_marbles_lib(chaincode_id, orderer_url, peer_url){
 //enroll admin
 function enroll_admin(id, secret, cop, cb){
 	chain.setMemberServicesUrl(cop);
+	console.log('!!!!!!!!!!!using id', id, 'secret', secret);
 	chain.enroll(id, secret).then(
 		function(enrolledUser) {
 			console.log('Successfully enrolled ' + id);
@@ -326,13 +327,14 @@ function setup_application(build_marbles_users){
 
 	// --- Create Each user --- //
 	if(build_marbles_users && build_marbles_users.length > 0){
-		var build_users = [];
+		/*var build_users = [];
 		try{
 			build_users = JSON.parse(build_marbles_users);
 			console.log('building ' + build_users.length + ' users');
 		}
 		catch(e){console.log('not json', e);}
-		async.eachLimit(build_users, 1, function(username, user_cb) { 			//iter through each one
+		*/
+		async.eachLimit(build_marbles_users, 1, function(username, user_cb) { 			//iter through each one
 			var owner_obj = {username: username, company: process.env.marble_company};
 			marbles_lib.register_owner(webUser, [hfc.getPeer(helper.getPeersUrl(0))], owner_obj, function(){
 				
@@ -383,7 +385,7 @@ function setupWebSocket(){
 			try{
 				var data = JSON.parse(message);
 				if(data.type == 'setup'){
-					console.log('!!!! [ws] setup message');
+					console.log('!!!! [ws] setup message', data);
 					if(data.configure == 'enrollment'){
 						/*enroll_admin(data.enrollId, data.enrollSecret, data.copUrl, function(e){
 							if(e == null){
@@ -394,11 +396,11 @@ function setupWebSocket(){
 						});*/
 					}
 					else if(data.configure == 'find_chaincode'){
-						helper.write(data);
+						//helper.write(data);
 						setup_marbles_lib(helper.getChaincodeId(), helper.getOrderersUrl(0), [hfc.getPeer(helper.getPeersUrl(0))]);
 					}
 					else if(data.configure == 'deploy_chaincode'){
-						helper.write(data);
+						//helper.write(data);
 						chain.setOrderer(helper.getOrderersUrl(0));
 						var temp_marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, helper.getChaincodeId(), null);
 						temp_marbles_lib.deploy_chaincode(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(){
