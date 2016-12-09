@@ -19,7 +19,7 @@ services:
       - ${CREDS_LOCATION}/mtc1.json:/app/mycreds.json
       - ${CREDS_LOCATION}/keyValStore-1:/app/keyValStore-asdf
     container_name: mtc-01
-    entrypoint: gulp mtc1
+    entrypoint: gulp init_united_marbles
 
   mtc-02:
     build: ${MARBLES_LOCATION}/
@@ -38,6 +38,6 @@ services:
       - ${CREDS_LOCATION}/mtc2.json:/app/mycreds.json
       - ${CREDS_LOCATION}/keyValStore-2:/app/keyValStore-asdf
     container_name: mtc-02
-    entrypoint: gulp mtc2
+    entrypoint: gulp init_marble_market
 
 
