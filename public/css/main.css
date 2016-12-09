@@ -63,7 +63,7 @@ body {
   background: #343D48; }
 
 h1 {
-  font-size: 44px;
+  font-size: 30px;
   font-weight: normal;
   margin: 0; }
 
@@ -365,7 +365,8 @@ strong {
   position: relative;
   min-height: 158px;
   border-radius: 5px;
-  margin-left: 15px;
+  margin-left: 10px;
+  margin-right: 10px;
   vertical-align: top;
   background: #222832; }
 
@@ -383,10 +384,11 @@ strong {
   padding-right: 10px;
   margin: 0; }
 
-#ownerWrap {
-  width: 820px;
-  margin: auto; }
-
+/*
+#ownerWrap{
+	width: 820px;
+	margin: auto;
+}*/
 .ball {
   display: inline-block;
   margin: 0 10px;
@@ -405,10 +407,24 @@ strong {
   text-align: center; }
 
 #trashbin {
+  width: 20%;
   display: inline-block;
   text-align: center;
   margin-left: 30px;
-  margin-top: 30px; }
+  margin-top: 22px;
+  padding: 15px;
+  border: 1px #646B73 solid;
+  border-radius: 3px;
+  vertical-align: top; }
+
+#trashText {
+  vertical-align: top;
+  display: inline-block;
+  margin-top: 17px;
+  margin-left: 10px;
+  color: #fff;
+  font-weight: 100;
+  font-size: 12px; }
 
 .marblesCloseSectionPos {
   padding: 2px;
@@ -471,7 +487,6 @@ strong {
   position: absolute;
   top: 75px;
   background: #343d48;
-  border: 1px #646b73 solid;
   z-index: 1005;
   padding: 50px;
   left: 23%; }
@@ -479,7 +494,7 @@ strong {
 #tint {
   display: none;
   background: #000;
-  opacity: .5;
+  opacity: .85;
   position: absolute;
   top: 0;
   right: 0;
@@ -540,18 +555,17 @@ strong {
   color: #222832; }
 
 #userTable {
-  width: 612px;
-  display: inline-block;
   vertical-align: top; }
 
-#userTable tbody {
-  max-height: 124px;
-  overflow: auto;
-  display: block; }
-
+/*
+#userTable tbody{
+	max-height: 124px;
+	overflow: auto;
+	//display: block;
+}*/
 .userRow {
   border-bottom-width: 1px;
-  font-size: 14px;
+  font-size: 12px;
   cursor: pointer; }
 
 .userRow td, .userRow th {
@@ -559,19 +573,20 @@ strong {
   text-align: left;
   margin: 0; }
 
-.userMarbles {
-  width: 60px; }
-
-.userName {
-  width: 200px; }
-
-.userCompany {
-  width: 225px; }
-
-td.userRights, th.userRights {
-  width: 70px;
-  text-align: center; }
-
+/*
+.userMarbles{
+	width: 60px;
+}
+.userName{
+	width: 200px;
+}
+.userCompany{
+	width: 225px;
+}
+td.userRights, th.userRights{
+	width: 70px;
+	text-align: center;
+}*/
 .selectedRow {
   background: #222832; }
 
