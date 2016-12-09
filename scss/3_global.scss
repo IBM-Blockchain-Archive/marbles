@@ -655,7 +655,7 @@ td.userRights, th.userRights{
 .stepHeader{
 	font-weight: 600;
 	margin-top: 10px;
-	//margin-bottom: 20px;
+	height: 40px;
 }
 .stepCircleStatus{
 	margin-top: 35px;
@@ -680,7 +680,7 @@ td.userRights, th.userRights{
 .inactiveStep{
 	opacity: 0.3;
 }
-.inactiveStep .loadingdiv, .stepComplete .loadingdiv, .stepFailed .loadingdiv{
+.inactiveStep .stepLoading, .stepComplete .stepLoading, .stepFailed .stepLoading{
 	opacity: 0;
 }
 .stepComplete .stepCircleStatus{
@@ -698,4 +698,11 @@ td.userRights, th.userRights{
 }
 .stepHelpTxt {
 	font-size: 13px;
+}
+.stepInputLegend{
+	display: inline-block;
+	text-align: right;
+	width: 100px;
+	font-size: 13px;
+	margin-right: 5px;
 }

@@ -1,5 +1,5 @@
 /* global new_block, randStr, bag, $, clear_blocks, document, WebSocket, escapeHtml */
-/* global toTitleCase, formatDate*/
+/* global toTitleCase, formatDate, show_start_up_step*/
 var ws = {};
 var bgcolors = ['whitebg', 'blackbg', 'redbg', 'greenbg', 'bluebg', 'purplebg', 'pinkbg', 'orangebg', 'yellowbg'];
 var autoCloseNoticePanel = null;
@@ -281,7 +281,9 @@ function connect_to_server(){
 			}
 			else if(msgObj.msg === 'app_state'){
 				console.log('rec', msgObj.msg, msgObj);
-				show_start_up_step(msgObj.state);
+				setTimeout(function(){
+					show_start_up_step(msgObj.state);
+				}, 1000);
 			}
 			else console.log('rec', msgObj.msg, msgObj);
 		}
@@ -517,47 +519,4 @@ function closeNoticePanel(){
 	$('#noticeScrollWrap').slideUp();
 	$('#notificationHandle').children().removeClass('fa-angle-up').addClass('fa-angle-down');
 	clearTimeout(autoCloseNoticePanel);
-}
-
-
-//
-function show_start_up_step(state){
-	console.log('marbles is in state', state);
-	// 'starting','enrolled', 'no_chaincode', found_chaincode', 'registered_owners'
-
-	if(state === 'starting'){
-		//$()
-
-		delay_try_again(1000);
-	}
-	else if(state === 'enrolled'){
-		$('#step2').removeClass('inactiveStep');
-
-		delay_try_again(2000);
-	}
-	else if(state === 'no_chaincode'){
-		$('#step2').removeClass('inactiveStep');
-		$('#step3').removeClass('inactiveStep');
-
-		delay_try_again(3000);
-	}
-	else if(state === 'found_chaincode'){
-		$('#step2').removeClass('inactiveStep');
-		$('#step3').removeClass('inactiveStep');
-
-		delay_try_again(3000);
-	}
-	else if(state === 'registered_owners'){
-		$('#step2').removeClass('inactiveStep');
-		$('#step3').removeClass('inactiveStep');
-		$('#startUpPanel').hide();
-
-		ws.send(JSON.stringify({type: 'get_owners', v: 1}));
-	}
-
-	function delay_try_again(delay_ms){
-		setTimeout(function(){
-			ws.send(JSON.stringify({type: 'get_owners', v: 1}));
-		}, delay_ms);
-	}
 }

@@ -226,6 +226,7 @@ function set_chaincode_id(cb){
 		var temp = new Date(fstats.mtime);
 		var cc_id = 'marbles.' + temp.getTime();					//get the modified timestamp for the go file
 		console.log('chaincode id', cc_id);
+		helper.write({chaincodeId: cc_id});							//pass it to file
 		cb(null, cc_id);
 	});
 }
@@ -239,9 +240,9 @@ process.env.app_state = 'starting';									//'starting','enrolled','no_chaincod
 setupWebSocket();
 enroll_admin(helper.getUsers(0).enrollId, helper.getUsers(0).enrollSecret, helper.getMemberservicesUrl(0), function(e){
 	if(e == null){
-		set_chaincode_id(function(e, cc_id){
-			setup_marbles_lib(cc_id, helper.getOrderersUrl(0));
-		});
+		//set_chaincode_id(function(e, cc_id){
+			setup_marbles_lib(helper.getChaincodeId(), helper.getOrderersUrl(0));
+		//});
 	}
 });
 // -------------------------------------------------------------------
@@ -256,10 +257,12 @@ function setup_marbles_lib(chaincode_id, orderer_url, peer_url){
 		if(not_deployed){										//if this is truthy we have not yet deployed.... error
 			console.log('\n\nChaincode was not detected, all stop\n\n');
 			process.env.app_state = 'no_chaincode';
+			broadcast_state();
 		}
 		else{													//else we already deployed
 			console.log('\n\nChaincode already deployed\n\n');
 			process.env.app_state = 'found_chaincode';
+			broadcast_state();
 			setup_application(enrollUser); 						//builds marbles, then starts webapp
 		}
 	});
@@ -273,11 +276,14 @@ function enroll_admin(id, secret, cop, cb){
 			console.log('Successfully enrolled ' + id);
 			webUser = enrolledUser;									//push var to higher scope
 			process.env.app_state = 'enrolled';
+			broadcast_state();
 			if(cb) cb();
 		}
 	).catch(
 		function(err) {
 			console.log('Failed to enroll ' + id, err.stack ? err.stack : err);
+			process.env.app_state = 'failed_enroll';
+			broadcast_state();
 			if(cb) cb(err);
 		}
 	);
@@ -348,6 +354,7 @@ function setup_application(enrollUser){
 			if(err == null) {
 				setTimeout(function(){											//marble owner creation finished
 					process.env.app_state = 'registered_owners';				//rdy to use marbles
+					broadcast_state();
 				}, 2000);
 			}
 		});
@@ -355,7 +362,12 @@ function setup_application(enrollUser){
 	else{
 		console.log('there are no new users to create');
 		process.env.app_state = 'registered_owners';							//rdy to use marbles
+		broadcast_state();
 	}
+}
+
+function broadcast_state(){
+	wss.broadcast({msg: 'app_state', state: process.env.app_state});		//tell client our app state
 }
 
 
@@ -371,30 +383,31 @@ function setupWebSocket(){
 			try{
 				var data = JSON.parse(message);
 				if(data.type == 'setup'){
-					console.log('[ws] setup message');
-					/*if(data.configure == 'enrollment'){
-						enroll_admin(data.enrollId, data.enrollSecret, data.copUrl, function(e){
+					console.log('!!!! [ws] setup message');
+					if(data.configure == 'enrollment'){
+						/*enroll_admin(data.enrollId, data.enrollSecret, data.copUrl, function(e){
 							if(e == null){
 								set_chaincode_id(function(e, cc_id){
 									setup_marbles_lib(cc_id, [hfc.getPeer(helper.getPeersUrl(0))]);
 								});
 							}
-						});
+						});*/
 					}
 					else if(data.configure == 'find_chaincode'){
-						setup_marbles_lib(data.chaincode_id, data.peerUrl);
+						helper.write(data);
+						setup_marbles_lib(helper.getChaincodeId(), helper.getOrderersUrl(0), [hfc.getPeer(helper.getPeersUrl(0))]);
 					}
 					else if(data.configure == 'deploy_chaincode'){
-						chain.setOrderer(data.ordererUrl);				//this is wrong, should file i/o first!
-						marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, data.chaincode_id, null);
-						part1.setup(webUser, marbles_lib, null);
-						marbles_lib.deploy_chaincode(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(){
-
+						helper.write(data);
+						chain.setOrderer(helper.getOrderersUrl(0));
+						var temp_marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, helper.getChaincodeId(), null);
+						temp_marbles_lib.deploy_chaincode(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(){
+							setup_marbles_lib(helper.getChaincodeId(), helper.getOrderersUrl(0), [hfc.getPeer(helper.getPeersUrl(0))]);
 						});
 					}
 					else if(data.configure == 'register'){
 
-					}*/
+					}
 				}
 				else{
 					part1.process_msg(ws, data);										//pass the websocket msg to part 1 processing

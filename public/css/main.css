@@ -162,12 +162,12 @@ input[type="submit"], input[type="button"], button {
   border-radius: 5px;
   min-width: 130px;
   border: 2px transparent solid;
-  transition: all .25s linear; }
+  transition: all .35s linear; }
 
 input:focus, select:focus, button:focus {
   outline: none !important;
   border-color: #fff !important;
-  transition: all .25s linear; }
+  transition: all .35s linear; }
 
 input[type="submit"]:hover, input[type="button"]:hover, button:hover, button.activeButton, button.activeButton:focus {
   border-color: #fff !important; }
@@ -179,13 +179,14 @@ input[type="text"], input[type="password"], select {
   border: 1px solid #646B73;
   border-radius: 5px;
   background: #343D48;
-  min-width: 120px; }
+  min-width: 120px;
+  font-family: monospace; }
 
 input[type="text"]:disabled, input[type="password"]:disabled, select:disabled {
   color: #646B73; }
 
 input.longer {
-  min-width: 370px; }
+  min-width: 250px; }
 
 small {
   font-size: 10pt; }
@@ -857,7 +858,8 @@ td.userRights, th.userRights{
 
 .stepHeader {
   font-weight: 600;
-  margin-top: 10px; }
+  margin-top: 10px;
+  height: 40px; }
 
 .stepCircleStatus {
   margin-top: 35px;
@@ -882,7 +884,7 @@ td.userRights, th.userRights{
 .inactiveStep {
   opacity: 0.3; }
 
-.inactiveStep .loadingdiv, .stepComplete .loadingdiv, .stepFailed .loadingdiv {
+.inactiveStep .stepLoading, .stepComplete .stepLoading, .stepFailed .stepLoading {
   opacity: 0; }
 
 .stepComplete .stepCircleStatus {
@@ -900,6 +902,13 @@ td.userRights, th.userRights{
 
 .stepHelpTxt {
   font-size: 13px; }
+
+.stepInputLegend {
+  display: inline-block;
+  text-align: right;
+  width: 100px;
+  font-size: 13px;
+  margin-right: 5px; }
 
 #blockWrap {
   position: relative;

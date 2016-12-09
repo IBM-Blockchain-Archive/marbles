@@ -1,8 +1,11 @@
+var fs = require('fs');
+var url = require('url');
+var path = require('path');
 
 module.exports = function (logger) {
-
 	var helper = {};
-	helper.creds = require(__dirname + '/../mycreds.json');
+	var creds_path = path.join(__dirname, '../mycreds.json');
+	helper.creds = require(creds_path);
 
 //	console.log('Creds = ', helper.creds);
 	helper.getNetworkId = function() {
@@ -100,6 +103,35 @@ module.exports = function (logger) {
 				throw new Error('Users index out of bounds. Total member services = '	+ helper.creds.credentials.users.length);
 			}
 		}
+	};
+
+	helper.getChaincodeId = function () {
+		if(helper.creds.credentials.chaincode_id) return helper.creds.credentials.chaincode_id;
+		else return null;
+	};
+
+	helper.write = function(obj){
+		var creds_file = JSON.parse(fs.readFileSync(creds_path, 'utf8'));
+		var parsed = '';
+		console.log('hey there', obj);
+
+		if(obj.ordererUrl){
+			parsed = url.parse(obj.ordererUrl, true);
+			creds_file.credentials.orderers[0].host = parsed.host;
+			creds_file.credentials.orderers[0].port = parsed.port;
+		}
+		if(obj.peerUrl){
+			parsed = url.parse(obj.peerUrl, true);
+			creds_file.credentials.peers[0].grpc_host = parsed.host;
+			creds_file.credentials.peers[0].grpc_port = parsed.port;
+		}
+		if(obj.chaincodeId){
+			console.log('yes');
+			creds_file.credentials.chaincode_id = obj.chaincodeId;
+		}
+
+		fs.writeFileSync(creds_path, JSON.stringify(creds_file, null, 4), 'utf8');							//save to file
+		helper.creds = creds_file;													//replace old copy
 	};
 
 	return helper;

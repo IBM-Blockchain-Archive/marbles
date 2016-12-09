@@ -63,13 +63,13 @@
 		br
 		br
 		.stepHelpTxt
-			span Sorry, we could not enroll the admin against the COP. 
-			span Edit it below to try again.
+			p Sorry, we could not enroll the admin against the COP. 
+			p Edit it below to try again.
 		br
 		input(type="text" placeholder="COP ex: 192.168.99.100:8888" name="copUrl").longer
 		br
-		input(type="text" placeholder="Enroll Id" name="enrollId")
-		input(type="text" placeholder="Enroll Secret" name="enrollSecret")
+		input(type="text" placeholder="Enroll Id" name="enrollId" value="#{bag.creds.admin_id}")
+		input(type="text" placeholder="Enroll Secret" name="enrollSecret" value="#{bag.creds.admin_secret}")
 		br
 		br
 		button(type="button") Retry
@@ -79,31 +79,35 @@
 		br
 		br
 		.stepHelpTxt
-			span Sorry, we could not find the deployed chaincode on your peer. 
-			span Edit the chaincode ID to try again. 
-			strong OR 
-			span Deploy the chaincode. 
+			p Sorry, we could not find the deployed chaincode on your peer. 
+			p 
+				span Edit the chaincode ID to try again 
+				strong OR 
+				span deploy the chaincode. 
 		br
-		input(type="text" placeholder="Orderer ex: 192.168.99.100:5151" name="ordererUrl").longer
+		.stepInputLegend Orderer 
+		input(type="text" placeholder="Orderer ex: 192.168.99.100:5151" name="ordererUrl" value="#{bag.creds.orderer}").longer
 		br
-		input(type="text" placeholder="Peer ex: 192.168.99.100:7051" name="peerUrl").longer
+		.stepInputLegend Peer 
+		input(type="text" placeholder="Peer ex: 192.168.99.100:7051" name="peerUrl" value="#{bag.creds.peer}").longer
 		br
-		input(type="text" placeholder="Chaincode ID" name="chaincode_id").longer
+		.stepInputLegend Chaincode ID 
+		input(type="text" placeholder="Chaincode ID" name="chaincodeId" value="#{bag.creds.chaincode_id}").longer
 		br
 		br
-		button(type="button") Retry
+		button(type="button")#retryDeploy Retry
 		span &nbsp; OR &nbsp;
-		button(type="button") Deploy
+		button(type="button")#deployButton Deploy
 
 	.stepHelpWrap#regUserStep
 		h2 Register Marble Owners
 		br
 		br
 		.stepHelpTxt
-			span Bring your marble owners onboard by providing a comma seperated list of usernames.
-			span These are the identies that can own marbles.
+			p Bring your marble owners onboard by providing a comma seperated list of usernames.
+			p These are the identies that can own marbles.
 		br
-		input(type="text" placeholder="bob, bill, amy").longer
+		input(type="text" placeholder="bob, bill, amy" value="#{bag.creds.marble_owners}").longer
 		br
 		br
 		button(type="button") Register
