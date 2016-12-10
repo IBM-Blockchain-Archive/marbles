@@ -18,7 +18,6 @@ var bodyParser = require('body-parser');
 var http = require('http');
 var app = express();
 var url = require('url');
-var setup = require('./setup');
 var fs = require('fs');
 var cors = require('cors');
 var async = require('async');
@@ -28,10 +27,17 @@ var ws = require('ws');													//websocket module
 var hfc = require('./utils/fabric-sdk-node2/index.js');
 var more_entropy = randStr(24);
 var part1 = require('./utils/ws_part1')(null, null, null);
-var helper = require(__dirname + '/utils/helper.js')(console);
-var host = setup.SERVER.HOST;
-var port = setup.SERVER.PORT;
+var helper = require(__dirname + '/utils/helper.js')(process.env.creds_filename, console);
+var host = 'localhost';
+var port = helper.getMarblesPort();
 var wss = {};
+process.env.marble_company = helper.getCompanyName();
+
+// ------------- Bluemix Detection ------------- //
+if(process.env.VCAP_APP_HOST && process.env.PRODUCTION){
+	host = process.env.VCAP_APP_HOST;
+	port = process.env.VCAP_APP_PORT;
+}
 
 // --- Pathing and Module Setup --- //
 app.set('views', path.join(__dirname, 'views'));
@@ -203,6 +209,8 @@ function setup_marbles_lib(chaincode_id, orderer_url, peer_url){
 	chain.setOrderer(orderer_url);
 	marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, chaincode_id, null);
 	part1.setup(webUser, marbles_lib, null);
+
+	console.log('Checking if chaincode is already deployed or not');
 	marbles_lib.check_if_already_deployed(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(not_deployed, enrollUser){
 		if(not_deployed){										//if this is truthy we have not yet deployed.... error
 			console.log('\n\nChaincode was not detected, all stop\n\n');
@@ -234,7 +242,9 @@ function enroll_admin(id, secret, cop, cb){
 			console.log('Successfully enrolled ' + id);
 			webUser = enrolledUser;									//push var to higher scope
 			broadcast_state('enrolled');
-			if(cb) cb();
+			setTimeout(function(){
+				if(cb) cb();
+			}, 2000);
 		}
 	).catch(
 		function(err) {												//error with enrollment
@@ -347,7 +357,7 @@ function setupWebSocket(){
 						helper.write(data);
 						enroll_admin(helper.getUsers(0).enrollId, helper.getUsers(0).enrollSecret, helper.getMemberservicesUrl(0), function(e){
 							if(e == null){
-								setup_marbles_lib(helper.getChaincodeId(), helper.getOrderersUrl(0));
+								setup_marbles_lib(helper.getChaincodeId(), helper.getOrderersUrl(0), [hfc.getPeer(helper.getPeersUrl(0))]);
 							}
 						});
 					}

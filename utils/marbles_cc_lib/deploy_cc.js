@@ -3,10 +3,8 @@
 //var url = require('url');
 
 module.exports = function (chain, chaincode_id, logger) {
-	//var hfc = require('../fabric-sdk-node2/index.js');
 	var deploy_cc = {};
-	//var helper = require(__dirname + '/../helper.js')();
-	//hfc.getPeer(helper.getPeersUrl(0))
+	
 	//-------------------------------------------------------------------
 	// Check if Chaincode Is Already Deployed
 	//----------------------------------------------------

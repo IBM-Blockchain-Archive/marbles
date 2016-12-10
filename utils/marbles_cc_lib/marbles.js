@@ -3,8 +3,6 @@ var path = require('path');
 //var url = require('url');
 
 module.exports = function (chain, chaincode_id, logger) {
-	//var hfc = require('../fabric-sdk-node2/index.js');
-	//var helper = require(__dirname + '/../helper.js')();
 	var common = require(path.join(__dirname, './common.js'))();
 	var marbles = {};
 

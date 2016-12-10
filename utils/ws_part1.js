@@ -9,7 +9,7 @@ var path = require('path');
 //-------------------------------------------------------------------
 module.exports = function (webUser, marbles_lib, logger) {
 	var hfc = require(path.join(__dirname, '../utils/fabric-sdk-node2/index.js'));
-	var helper = require(path.join(__dirname, './helper.js'))();
+	var helper = require(path.join(__dirname, './helper.js'))(process.env.creds_filename, console);
 	var part1 = {};
 
 	part1.setup = function(l_webUser, l_marbles_lib, logger){

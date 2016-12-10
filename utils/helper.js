@@ -3,9 +3,9 @@ var url = require('url');
 var path = require('path');
 var crypto = require('crypto');
 
-module.exports = function (logger) {
+module.exports = function (config_filename, logger) {
 	var helper = {};
-	var creds_path = path.join(__dirname, '../mycreds.json');
+	var creds_path = path.join(__dirname, '../config/' + config_filename);
 	helper.creds = require(creds_path);
 
 	//hash of credential json file
@@ -114,8 +114,7 @@ module.exports = function (logger) {
 	};
 
 	helper.getChaincodeId = function () {
-		if(helper.creds.credentials.chaincode_id) return helper.creds.credentials.chaincode_id;
-		else return null;
+		return getMarblesField('chaincode_id');
 	};
 
 	helper.write = function(obj){
@@ -139,7 +138,7 @@ module.exports = function (logger) {
 			creds_file.credentials.memberservices[0].port = Number(parsed.port);
 		}
 		if(obj.chaincodeId){
-			creds_file.credentials.chaincode_id = obj.chaincodeId;
+			creds_file.credentials.marbles.chaincode_id = obj.chaincodeId;
 		}
 		if(obj.enrollId && obj.enrollSecret){
 			creds_file.credentials.users[0] = 	{
@@ -152,9 +151,33 @@ module.exports = function (logger) {
 	};
 
 	helper.getMarbleUsers = function(){
-		if(helper.creds.credentials.build_marbles_users) return helper.creds.credentials.build_marbles_users;
-		else return null;
+		return getMarblesField('marbles_users');
 	};
+
+	helper.getCompanyName = function(){
+		return getMarblesField('company');
+	};
+
+	helper.getMarblesPort = function(){
+		return getMarblesField('port');
+	};
+
+	//safely retrieve marbles fields
+	function getMarblesField(marbles_field){
+		try{
+			if(helper.creds.credentials.marbles[marbles_field]) {
+				return helper.creds.credentials.marbles[marbles_field];
+			}
+			else {
+				console.log('Error - "' + marbles_field +'" not found in creds json');
+				return null;
+			}
+		}
+		catch(e){
+			console.log('Error - "' + marbles_field +'" not found in creds json');
+			return null;
+		}
+	}
 
 	return helper;
 };

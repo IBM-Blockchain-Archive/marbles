@@ -5,8 +5,6 @@
             {
                 "grpc_host": "192.168.99.100",
                 "grpc_port": 7051,
-                "api_host": "192.168.99.100",
-                "api_port": 7051,
                 "type": "peer",
                 "network_id": "asdf",
                 "id": "peer1"
@@ -14,8 +12,6 @@
             {
                 "grpc_host": "192.168.99.100",
                 "grpc_port": 7056,
-                "api_host": "192.168.99.100",
-                "api_port": 7056,
                 "type": "peer",
                 "network_id": "asdf",
                 "id": "peer1"
@@ -47,8 +43,11 @@
             }
         ],
         "cert": "https://blockchain-certs.mybluemix.net/us.blockchain.ibm.com.cert",
-        "chaincode_id": "marbles.148112223311",
-        "marble_company": "eMarbles",
-        "build_marbles_users": ["cliff", "cody"]
+		"marbles":{
+       		"company": "eMarbles",
+			"chaincode_id": "marbles",
+       		"marbles_users": ["cliff", "cody"],
+			"port": 3000
+		}
     }
 }

@@ -8,13 +8,11 @@
  *******************************************************************************/
 var express = require('express');
 var router = express.Router();
-var setup = require('../setup.js');
 
 //anything in here gets passed to JADE template engine
 function build_bag(req){
 	return {
 				session: req.session.user,					//pass session info
-				setup: setup,								//static vars for configuration settings
 				e: process.error,							//send any setup errors
 				jshash: process.env.cachebust_js,			//js cache busting hash (not important)
 				csshash: process.env.cachebust_css,			//css cache busting hash (not important)
@@ -25,7 +23,7 @@ function build_bag(req){
 
 //get cred data
 function get_credential_data(){
-	var helper = require(__dirname + '/../utils/helper.js')(console);
+	var helper = require(__dirname + '/../utils/helper.js')(process.env.creds_filename, console);
 	var ret =	{
 					admin_id: helper.getUsers(0).enrollId,
 					admin_secret: helper.getUsers(0).enrollSecret,
