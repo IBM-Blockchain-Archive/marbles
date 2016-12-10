@@ -460,7 +460,7 @@ function build_company_panel(company){
 	var html = '';
 	html += '<div class="companyPanel" company="' + company + '">';
 	html +=		'<div class="companyNameWrap">';
-	html +=			'<span class="companyName">' + company.toUpperCase() + '</span>';
+	html +=			'<span class="companyName">' + toTitleCase(company) + '</span>';
 	html +=			'<span class="fa fa-angle-double-down floatRight"></span>';
 	if(company.toLowerCase() === bag.marble_company.toLowerCase()) {
 		html +=			'<span class="fa fa-angle-double-up floatRight"></span>';
