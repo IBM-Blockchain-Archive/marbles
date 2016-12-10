@@ -43,6 +43,10 @@ function get_credential_data(){
 	return ret;
 }
 
+function toTitleCase(str){
+	return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+}
+
 // ============================================================================================================================
 // Root
 // ============================================================================================================================
@@ -58,7 +62,7 @@ router.route('/login').get(function(req, res){
 });
 
 router.route('/login').post(function(req, res){
-	req.session.user = {username: req.body.username};
+	req.session.user = {username: toTitleCase(req.body.username)};
 	res.redirect('/home');
 });
 

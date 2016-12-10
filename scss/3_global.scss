@@ -10,8 +10,9 @@
 	height:60px;
 	line-height: 60px;
 	width:100%;
-	background: $acc_color1;
+	background: $acc_color3;
 	font-size: 15px;
+	color: $acc_color1-5;
 }
 
 #mainPanel{
@@ -57,50 +58,52 @@
 	z-index: 2;
 }
 #logo{
-	color: $acc_color3;
 	display:inline-block;
-	margin-left: 20px;
-	//font-size: 18px;
 	font-weight: 600;
-	background: $acc_color1;
 	position: relative;
 	z-index:4;
+	font-size: 24px;
+}
+#logoIcon{
+	display:inline-block;
+	vertical-align: middle;
+	height: 25px;
+	margin-right: 15px;
+	margin-left: 15px;
 }
 .panel{
 	margin-top:20px;
 }
 #notificationsWrap{
-	//height: 80px;
 	position: absolute;
 	top: 60px;
 	width: 100%;
 	right: 0;
-	background:$acc_color2;
+	background:$hi_color2;
 	z-index: 2;
 	text-align: center;
-	//border-bottom: 2px $acc_color2 solid;
 	padding-bottom:2px;
 }
 #noticeScrollWrap{
 	display: none;
-	height: 90px;
+	height: 78px;
 	overflow-y: auto;
 }
 .notificationWrap{
 	width: 97%;
 	margin: auto;
-	background: $acc_color1;
+	background: $main_color;
 	margin: 1px 0;
 	padding: 5px;
 	border-radius: 2px;
 	border-left: 5px $hi_color3 solid;	//success color
-	color: $acc_color3;
+	color: $acc_color1;
 	font-size: 14px;
 	display: inline-block;
 	text-align: left;
 }
 #notificationHandle{
-	background: $acc_color2;
+	background: $hi_color2;
 	width: 100px;
 	display:inline-block;
 	height: 15px;
@@ -119,6 +122,11 @@
 	float: right;
 	margin-right: 5px;
 	cursor: pointer;
+	color: $hi_color3;
+}
+#tips{
+	font-size: 13px;
+	margin-bottom: 35px;
 }
 .closeNotification:hover{
 	color: $hi_color1;
@@ -214,13 +222,15 @@
 }
 
 #description{
-	margin: 60px 0 5px 0;
-	width:100%;
+	margin-left: 20px;
+	position: absolute;
+	width: 100%;
 	text-align: center;
+	bottom: 10px;
 }
 #trashbin{
 	text-align: center;
-	padding: 15px 25px;
+	padding: 15px 50px;
 	border: 1px $acc_color2 dashed;
 	border-radius:3px;
 	vertical-align: top;
@@ -230,7 +240,7 @@
 }
 .bottomAlign{
 	position: absolute;
-	bottom: 0px;
+	bottom: 5px;
 
 }
 #trashText{
@@ -247,8 +257,9 @@
 	font-size: 12px;
 	float:right;
 }
-.marblesFixed{
-	transform: rotate(45deg)
+.marblesWrap.marblesFixed .legend .marblesFix{
+	transform: rotate(45deg);
+	color: $hi_color2;
 }
 .marblesFix:hover, .marblesOpenSection:hover{
 	color: $hi_color1;
@@ -281,6 +292,9 @@
 .addMarble:hover{
 	color: $hi_color1;
 	cursor: pointer;
+}
+.addMarble, .ball{
+	margin-bottom: 8px;
 }
 .createball{
 	font-size:275px;
@@ -533,11 +547,14 @@ td.userRights, th.userRights{
 //------------ Login ------------//
 #welcomePanel{
 	text-align: center;
-	max-width: 575px;
+	max-width: 610px;
 	margin: auto;
-	margin-top: 120px;
+	margin-top: 80px;
 	margin-bottom: 100px;
-	font-size: 12px;
+	font-size: 13px;
+}
+#split1x3Wrap{
+	margin-top: 100px;
 }
 .split1x3{
 	display: inline-block;
@@ -565,6 +582,7 @@ td.userRights, th.userRights{
 	font-size: 15px;
 	margin-top: 15px;
 	margin-bottom: 35px;
+	font-weight: 700;
 }
 .blub1x3{
 	display:inline-block;

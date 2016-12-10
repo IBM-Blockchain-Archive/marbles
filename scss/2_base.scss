@@ -11,7 +11,7 @@ body{margin:0 auto;
 	background: $main_bg;
 }
 h1{font-size:30px; font-weight:normal; margin:0;}
-h2{font-size:22px; font-weight:normal; margin:0; display:inline;}
+h2{font-size:24px; font-weight:normal; margin:0; display:inline;}
 h3{font-size:20pt; font-weight:normal; margin:0;}
 h4{font-size:16pt; font-weight:normal; margin:0;}
 h5{font-size:14px; font-weight:normal; margin:0;}
@@ -71,7 +71,7 @@ input[type="text"], input[type="password"], select{
 	border-radius:5px;
 	background:$main_bg;
 	min-width:120px;
-	font-family: monospace;
+	//font-family: monospace;
 }
 
 input[type="text"]:disabled, input[type="password"]:disabled, select:disabled{

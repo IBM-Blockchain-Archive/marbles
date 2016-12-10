@@ -66,7 +66,7 @@ block custom_header
 		
 // --------------- Navigation Bar  -------------- //
 block navpanel
-	#loginTitle Marbles
+	include ./template/nav.jade
 	
 	
 // --------------- Main Stuff  -------------- //
@@ -80,19 +80,15 @@ block content
 			h2(style="font-weight: 600;") WELCOME TO THE MARBLES DEMO APP
 
 			#adminText
-				span Hello 
+				span Hello again 
 				span#loginCompany #{bag.marble_company} 
-				span admin.
+				span admin !
 
 			p 
 				span This application allows you to simulate a simple asset transaction over a Hyperledger Fabric blockchain. 
 				span Connect multiple peers to trade with a larger marble userbase. 
 				span In this application, you can: 
 			
-			br
-			br
-			br
-
 			#split1x3Wrap
 				.split1x3
 					.welcomeTitle
@@ -116,7 +112,7 @@ block content
 						//br
 							span Ownership
 					br
-					.blub1x3 Verify marble transactions and ownership
+					.blub1x3 Verify marble transactions
 					img(src="/imgs/welcome_img3.png").welcomeImg
 			br
 			br
