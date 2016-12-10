@@ -271,8 +271,8 @@ function simple_hash(a_string){
 function build_marble_options(username, company){
 	var colors = ['white', 'black', 'red', 'green', 'blue', 'purple', 'pink', 'orange', 'yellow'];
 	var sizes = ['35', '16'];
-	var color_index = simple_hash(more_entropy + username) % colors.length;	//build a psudeo random index to pick a color
-	var size_index = getRandomInt(0, sizes.length);							//build a random size for this marble
+	var color_index = simple_hash(more_entropy + username) % colors.length;		//build a psudeo random index to pick a color
+	var size_index = getRandomInt(0, sizes.length);								//build a random size for this marble
 	return [randStr(24), colors[color_index], sizes[size_index], username, company];
 }
 
@@ -282,7 +282,7 @@ function create_assets(build_marbles_users){
 
 	// --- Create Each user --- //
 	if(build_marbles_users && build_marbles_users.length > 0){
-		async.eachLimit(build_marbles_users, 1, function(username, user_cb) { 			//iter through each one
+		async.eachLimit(build_marbles_users, 1, function(username, user_cb) { 	//iter through each one
 			var owner_obj = {username: username, company: process.env.marble_company};
 			marbles_lib.register_owner(webUser, [hfc.getPeer(helper.getPeersUrl(0))], owner_obj, function(){
 				
@@ -326,7 +326,7 @@ function build_state_msg(){
 //send to all connected clients
 function broadcast_state(new_state){
 	process.env.app_state = new_state;
-	wss.broadcast(build_state_msg());															//tell client our app state
+	wss.broadcast(build_state_msg());											//tell client our app state
 }
 
 
@@ -335,7 +335,7 @@ function broadcast_state(new_state){
 // ============================================================================================================================
 function setupWebSocket(){
 	console.log('------------------------------------------ Websocket Up ------------------------------------------');
-	wss = new ws.Server({server: server});												//start the websocket now
+	wss = new ws.Server({server: server});										//start the websocket now
 	wss.on('connection', function connection(ws) {
 		ws.on('message', function incoming(message) {
 			console.log('received ws msg:', message);
@@ -368,7 +368,7 @@ function setupWebSocket(){
 					}
 				}
 				else{
-					part1.process_msg(ws, data);										//pass the websocket msg to part 1 processing
+					part1.process_msg(ws, data);								//pass the websocket msg to part 1 processing
 				}
 			}
 			catch(e){
@@ -377,10 +377,10 @@ function setupWebSocket(){
 		});
 		ws.on('error', function(e){console.log('ws error', e);});
 		ws.on('close', function(){console.log('ws closed');});
-		ws.send(JSON.stringify(build_state_msg()));		//tell client our app state
+		ws.send(JSON.stringify(build_state_msg()));								//tell client our app state
 	});
 
-	wss.broadcast = function broadcast(data) {											//send to all connections
+	wss.broadcast = function broadcast(data) {									//send to all connections
 		wss.clients.forEach(function each(client) {
 			try{
 				client.send(JSON.stringify(data));
@@ -394,7 +394,7 @@ function setupWebSocket(){
 	// ========================================================
 	// Monitor the height of the blockchain
 	// ========================================================
-	/*hfc_util.monitor_blockheight(hfc.getPeer(peer_url), function(chain_stats) {										//there is a new block, lets refresh everything that has a state
+	/*hfc_util.monitor_blockheight(hfc.getPeer(peer_url), function(chain_stats) {		//there is a new block, lets refresh everything that has a state
 		if(chain_stats && chain_stats.height){
 			console.log('\nHey new block, lets refresh and broadcast to all', chain_stats.height-1);
 			hfc_util.getBlockStats(peer, chain_stats.height - 1, cb_blockstats);
