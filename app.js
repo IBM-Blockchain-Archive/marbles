@@ -218,11 +218,8 @@ function setup_marbles_lib(chaincode_id, orderer_url, peer_url){
 		}
 		else{													//else we already deployed
 			console.log('\n\nChaincode already deployed\n\n');
-			process.env.app_first_setup = false;
 			broadcast_state('found_chaincode');
-			var state_file = {hash: helper.getHash()};			//write state file so we know we started before
-			fs.writeFileSync(app_state_file, JSON.stringify(state_file, null, 4), 'utf8');
-			
+
 			var user_base = null;
 			if(process.env.app_first_setup) user_base = helper.getMarbleUsernames();
 			create_assets(user_base); 							//builds marbles, then starts webapp
@@ -316,15 +313,22 @@ function create_assets(build_marbles_users){
 			console.log('finished creating assets, waiting for peer catch up');
 			if(err == null) {
 				setTimeout(function(){											//marble owner creation finished
-					broadcast_state('registered_owners');						//delay for peer catch up
+					all_done();													//delay for peer catch up
 				}, 1500);
 			}
 		});
 	}
 	else{
 		console.log('there are no new marble owners to create');
-		broadcast_state('registered_owners');
+		all_done();
 	}
+}
+
+function all_done(){
+	broadcast_state('registered_owners');
+	process.env.app_first_setup = false;
+	var state_file = {hash: helper.getHash()};									//write state file so we know we started before
+	fs.writeFileSync(app_state_file, JSON.stringify(state_file, null, 4), 'utf8');
 }
 
 //message to client to communicate where we are in the start up
