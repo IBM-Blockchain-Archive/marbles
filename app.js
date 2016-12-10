@@ -7,9 +7,6 @@
  * All rights reserved.
  *
  *******************************************************************************/
-/////////////////////////////////////////
-///////////// Setup Node.js /////////////
-/////////////////////////////////////////
 var express = require('express');
 var session = require('express-session');
 var compression = require('compression');
@@ -25,16 +22,18 @@ var setup = require('./setup');
 var fs = require('fs');
 var cors = require('cors');
 var async = require('async');
+var ws = require('ws');													//websocket module
 
-//// Set Things ////
+// --- Set Our Things --- //
 var hfc = require('./utils/fabric-sdk-node2/index.js');
 var more_entropy = randStr(24);
 var part1 = require('./utils/ws_part1')(null, null, null);
 var helper = require(__dirname + '/utils/helper.js')(console);
 var host = setup.SERVER.HOST;
 var port = setup.SERVER.PORT;
+var wss = {};
 
-////////  Pathing and Module Setup  ////////
+// --- Pathing and Module Setup --- //
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.engine('.html', require('jade').__express);
@@ -45,8 +44,6 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use( serve_static(path.join(__dirname, 'public')) );
 app.use( session({secret:'Somethignsomething1234!test', resave:true, saveUninitialized:true}) );
-
-// Enable CORS preflight across the board.
 app.options('*', cors());
 app.use(cors());
 
@@ -59,8 +56,9 @@ process.env.cachebust_js = bust_js['public/js/singlejshash'];			//i'm just makin
 process.env.cachebust_css = bust_css['public/css/singlecsshash'];		//i'm just making 1 hash against all css for easier jade implementation
 console.log('cache busting hash js', process.env.cachebust_js, 'css', process.env.cachebust_css);
 
-
-//// Router ////
+// ============================================================================================================================
+// 													Webserver Routing
+// ============================================================================================================================
 app.use(function(req, res, next){
 	var keys;
 	console.log('------------------------------------------ incoming request ------------------------------------------');
@@ -78,9 +76,7 @@ app.use(function(req, res, next){
 });
 app.use('/', require('./routes/site_router'));
 
-////////////////////////////////////////////
-////////////// Error Handling //////////////
-////////////////////////////////////////////
+// ------ Error Handling --------
 app.use(function(req, res, next) {
 	var err = new Error('Not Found');
 	err.status = 404;
@@ -109,20 +105,6 @@ else console.log('Running using Developer settings');
 
 
 // ============================================================================================================================
-// 														Deployment Tracking
-// ============================================================================================================================
-console.log('- Tracking Deployment');
-require('cf-deployment-tracker-client').track();		//reports back to us, this helps us judge interest! feel free to remove it
-
-
-// ============================================================================================================================
-// ============================================================================================================================
-// ============================================================================================================================
-// ============================================================================================================================
-// ============================================================================================================================
-// ============================================================================================================================
-
-// ============================================================================================================================
 // 														Warning
 // ============================================================================================================================
 
@@ -133,8 +115,6 @@ require('cf-deployment-tracker-client').track();		//reports back to us, this hel
 // ============================================================================================================================
 // 														Work Area
 // ============================================================================================================================
-var ws = require('ws');																			//websocket mod
-var wss = {};
 
 // ==================================
 // Set up the blockchain sdk
@@ -152,7 +132,6 @@ process.env['GRPC_SSL_CIPHER_SUITES'] = 'ECDHE-RSA-AES128-GCM-SHA256:' +
     'ECDHE-ECDSA-AES256-SHA384:' +
     'ECDHE-ECDSA-AES256-GCM-SHA384';
 //let ccPath = process.env['GOPATH']+'/src/local/marbles-hfc/marbles-v1/chaincode';
-//let ccPath = __dirname + '/chaincode';
 var network_id = helper.getNetworkId();
 var uuid = network_id;
 var webUser = null;
@@ -183,7 +162,7 @@ function set_chaincode_id(cb){
 */
 
 // -------------------------------------------------------------------
-// Life Starts Here! - below
+// Life Starts Here!
 // -------------------------------------------------------------------
 var webUser = null;
 var app_state_file = './app_state.json';
@@ -227,17 +206,15 @@ function setup_marbles_lib(chaincode_id, orderer_url, peer_url){
 	marbles_lib.check_if_already_deployed(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(not_deployed, enrollUser){
 		if(not_deployed){										//if this is truthy we have not yet deployed.... error
 			console.log('\n\nChaincode was not detected, all stop\n\n');
-			process.env.app_state = 'no_chaincode';
-			broadcast_state();
+			broadcast_state('no_chaincode');
 		}
 		else{													//else we already deployed
 			console.log('\n\nChaincode already deployed\n\n');
-			process.env.app_state = 'found_chaincode';
 			process.env.app_first_setup = false;
-			broadcast_state();
+			broadcast_state('found_chaincode');
 			var state_file = {hash: helper.getHash()};			//write state file so we know we started before
 			fs.writeFileSync(app_state_file, JSON.stringify(state_file, null, 4), 'utf8');
-			create_assets(); 								//builds marbles, then starts webapp
+			create_assets(); 									//builds marbles, then starts webapp
 		}
 	});
 }
@@ -256,15 +233,13 @@ function enroll_admin(id, secret, cop, cb){
 		function(enrolledUser) {
 			console.log('Successfully enrolled ' + id);
 			webUser = enrolledUser;									//push var to higher scope
-			process.env.app_state = 'enrolled';
-			broadcast_state();
+			broadcast_state('enrolled');
 			if(cb) cb();
 		}
 	).catch(
-		function(err) {
+		function(err) {												//error with enrollment
 			console.log('Failed to enroll ' + id, err.stack ? err.stack : err);
-			process.env.app_state = 'failed_enroll';
-			broadcast_state();
+			broadcast_state('failed_enroll');
 			if(cb) cb(err);
 		}
 	);
@@ -328,19 +303,18 @@ function create_assets(build_marbles_users){
 			console.log('finished creating assets, waiting for peer catch up');
 			if(err == null) {
 				setTimeout(function(){											//marble owner creation finished
-					process.env.app_state = 'registered_owners';				//rdy to use marbles
-					broadcast_state();
+					broadcast_state('registered_owners');
 				}, 2000);
 			}
 		});
 	}
 	else{
 		console.log('there are no new marble owners to create');
-		process.env.app_state = 'registered_owners';							//rdy to use marbles
-		broadcast_state();
+		broadcast_state('registered_owners');
 	}
 }
 
+//message to client to communicate where we are in the start up
 function build_state_msg(){
 	return 	{
 				msg: 'app_state', 
@@ -349,7 +323,9 @@ function build_state_msg(){
 			};
 }
 
-function broadcast_state(){
+//send to all connected clients
+function broadcast_state(new_state){
+	process.env.app_state = new_state;
 	wss.broadcast(build_state_msg());															//tell client our app state
 }
 
