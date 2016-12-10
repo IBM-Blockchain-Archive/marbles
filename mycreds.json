@@ -48,7 +48,11 @@
         ],
         "cert": "https://blockchain-certs.mybluemix.net/us.blockchain.ibm.com.cert",
         "chaincode_id": "marbles.148112223311",
-		"marbles_company": "Daves Marbles",
-        "build_marbles_users": ["David", "Dale", "Dhyey"]
+        "marbles_company": "Daves Marbles",
+        "build_marbles_users": [
+            "David",
+            "Dale",
+            "Dhyey"
+        ]
     }
 }

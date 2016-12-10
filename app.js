@@ -25,7 +25,6 @@ var setup = require('./setup');
 var fs = require('fs');
 var cors = require('cors');
 var async = require('async');
-var fs = require('fs');
 
 //// Set Things ////
 var hfc = require('./utils/fabric-sdk-node2/index.js');
@@ -138,49 +137,6 @@ var ws = require('ws');																			//websocket mod
 var wss = {};
 
 // ==================================
-// load peers manually or from VCAP, VCAP will overwrite hardcoded list!
-// ==================================
-//this hard coded list is intentionaly left here, feel free to use it when initially starting out
-//please create your own network when you are up and running
-try{
-	var manual = JSON.parse(fs.readFileSync('mycreds.json', 'utf8'));
-	var peers = manual.credentials.peers;
-	console.log('loading hardcoded peers');
-	var users = null;																			//users are only found if security is on
-
-	if(manual.credentials.users) users = manual.credentials.users;
-	console.log('loading hardcoded users');
-}
-catch(e){
-	console.log('Error - could not find hardcoded peers/users, this is okay if running in bluemix');
-}
-
-// ---- Load From VCAP aka Bluemix Services ---- //
-if(process.env.VCAP_SERVICES){																	//load from vcap, search for service, 1 of the 3 should be found...
-	var servicesObject = JSON.parse(process.env.VCAP_SERVICES);
-	for(var i in servicesObject){
-		if(i.indexOf('ibm-blockchain') >= 0){													//looks close enough
-			if(servicesObject[i][0].credentials.error){
-				console.log('!\n!\n! Error from Bluemix: \n', servicesObject[i][0].credentials.error, '!\n!\n');
-				peers = null;
-				users = null;
-				process.error = {type: 'network', msg: 'Due to overwhelming demand the IBM Blockchain Network service is at maximum capacity.  Please try recreating this service at a later date.'};
-			}
-			if(servicesObject[i][0].credentials && servicesObject[i][0].credentials.peers){		//found the blob, copy it to 'peers'
-				console.log('overwritting peers, loading from a vcap service: ', i);
-				peers = servicesObject[i][0].credentials.peers;
-				if(servicesObject[i][0].credentials.users){										//user field may or maynot exist, depends on if there is membership services or not for the network
-					console.log('overwritting users, loading from a vcap service: ', i);
-					users = servicesObject[i][0].credentials.users;
-				}
-				else users = null;																//no security
-				break;
-			}
-		}
-	}
-}
-
-// ==================================
 // Set up the blockchain sdk
 // ==================================
 var utils = require('./utils/fabric-sdk-node2/lib/utils.js');
@@ -227,18 +183,39 @@ function set_chaincode_id(cb){
 */
 
 // -------------------------------------------------------------------
-// Blockchain Stuff Starts Here! - below
+// Life Starts Here! - below
 // -------------------------------------------------------------------
 var webUser = null;
-process.env.app_state = 'starting';									//'starting','enrolled','no_chaincode',found_chaincode','registered_owners'
+var app_state_file = './app_state.json';
+process.env.app_state = 'starting';
+process.env.app_first_setup = true;
 setupWebSocket();
-enroll_admin(helper.getUsers(0).enrollId, helper.getUsers(0).enrollSecret, helper.getMemberservicesUrl(0), function(e){
-	if(e == null){
-		//set_chaincode_id(function(e, cc_id){
-			setup_marbles_lib(helper.getChaincodeId(), helper.getOrderersUrl(0));
-		//});
+
+try{
+	var state = require(app_state_file);
+	if(state.hash === helper.getHash()){
+		console.log('\n\nDetected that we have launched successfully before');
+		console.log('Welcome back - Initiating start up\n\n');
+		process.env.app_first_setup = false;
+		enroll_admin(helper.getUsers(0).enrollId, helper.getUsers(0).enrollSecret, helper.getMemberservicesUrl(0), function(e){
+			if(e == null){
+				setup_marbles_lib(helper.getChaincodeId(), helper.getOrderersUrl(0));
+			}
+		});
 	}
-});
+	else wait_to_init();
+	
+}
+catch(e){
+	wait_to_init();
+}
+
+function wait_to_init(){
+	process.env.app_state = 'start_waiting';
+	process.env.app_first_setup = true;
+	console.log('\n\nDetected that we have NOT launched successfully yet');
+	console.log('Open your browser to http://' + host + ':' + port + ' to initiate startup\n\n');
+}
 // -------------------------------------------------------------------
 
 
@@ -256,8 +233,11 @@ function setup_marbles_lib(chaincode_id, orderer_url, peer_url){
 		else{													//else we already deployed
 			console.log('\n\nChaincode already deployed\n\n');
 			process.env.app_state = 'found_chaincode';
+			process.env.app_first_setup = false;
 			broadcast_state();
-			setup_application(); 						//builds marbles, then starts webapp
+			var state_file = {hash: helper.getHash()};			//write state file so we know we started before
+			fs.writeFileSync(app_state_file, JSON.stringify(state_file, null, 4), 'utf8');
+			create_assets(); 								//builds marbles, then starts webapp
 		}
 	});
 }
@@ -322,8 +302,8 @@ function build_marble_options(username, company){
 }
 
 //this only runs after we deploy
-function setup_application(build_marbles_users){
-	console.log('setting up application');
+function create_assets(build_marbles_users){
+	console.log('creating marble owners and marbles');
 
 	// --- Create Each user --- //
 	if(build_marbles_users && build_marbles_users.length > 0){
@@ -345,7 +325,7 @@ function setup_application(build_marbles_users){
 				});
 			});
 		}, function(err) {
-			console.log('finished setup_application, waiting for catch up');
+			console.log('finished creating assets, waiting for peer catch up');
 			if(err == null) {
 				setTimeout(function(){											//marble owner creation finished
 					process.env.app_state = 'registered_owners';				//rdy to use marbles
@@ -355,14 +335,22 @@ function setup_application(build_marbles_users){
 		});
 	}
 	else{
-		console.log('there are no new users to create');
+		console.log('there are no new marble owners to create');
 		process.env.app_state = 'registered_owners';							//rdy to use marbles
 		broadcast_state();
 	}
 }
 
+function build_state_msg(){
+	return 	{
+				msg: 'app_state', 
+				state: process.env.app_state, 
+				first_setup: process.env.app_first_setup
+			};
+}
+
 function broadcast_state(){
-	wss.broadcast({msg: 'app_state', state: process.env.app_state});		//tell client our app state
+	wss.broadcast(build_state_msg());															//tell client our app state
 }
 
 
@@ -383,7 +371,7 @@ function setupWebSocket(){
 						helper.write(data);
 						enroll_admin(helper.getUsers(0).enrollId, helper.getUsers(0).enrollSecret, helper.getMemberservicesUrl(0), function(e){
 							if(e == null){
-								setup_marbles_lib(helper.getChaincodeId(), [hfc.getPeer(helper.getPeersUrl(0))]);
+								setup_marbles_lib(helper.getChaincodeId(), helper.getOrderersUrl(0));
 							}
 						});
 					}
@@ -400,7 +388,7 @@ function setupWebSocket(){
 						});
 					}
 					else if(data.configure === 'register'){
-						setup_application(data.build_marble_owners);
+						create_assets(data.build_marble_owners);
 					}
 				}
 				else{
@@ -413,7 +401,7 @@ function setupWebSocket(){
 		});
 		ws.on('error', function(e){console.log('ws error', e);});
 		ws.on('close', function(){console.log('ws closed');});
-		ws.send(JSON.stringify({msg: 'app_state', state: process.env.app_state}));		//tell client our app state
+		ws.send(JSON.stringify(build_state_msg()));		//tell client our app state
 	});
 
 	wss.broadcast = function broadcast(data) {											//send to all connections

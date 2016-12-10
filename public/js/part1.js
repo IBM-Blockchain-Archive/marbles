@@ -1,4 +1,4 @@
-/* global new_block, randStr, bag, $, clear_blocks, document, WebSocket, escapeHtml */
+/* global new_block, randStr, bag, $, document, WebSocket, escapeHtml */
 /* global toTitleCase, show_start_up_step, build_notification, build_marble, build_user_panels, build_company_panel*/
 /* exported transfer_marble, record_company*/
 var ws = {};
@@ -211,11 +211,11 @@ function connect_to_server(){
 	function onOpen(evt){
 		console.log('WS CONNECTED');
 		connected = true;
+		known_companies = {};					//reset
+		start_up = true;						//reset
+		$('#allUserPanelsWrap').html('');		//reset
 		//clear_blocks();
-		//$('#errorNotificationPanel').fadeOut();
-		
 		//ws.send(JSON.stringify({type: 'chainstats', v:1}));
-		//ws.send(JSON.stringify({type: 'get_owners', v: 1}));
 	}
 
 	function onClose(evt){
@@ -260,7 +260,7 @@ function connect_to_server(){
 			else if(msgObj.msg === 'app_state'){
 				console.log('rec', msgObj.msg, msgObj);
 				setTimeout(function(){
-					show_start_up_step(msgObj.state);
+					show_start_up_step(msgObj);
 				}, 1000);
 			}
 			else console.log('rec', msgObj.msg, msgObj);

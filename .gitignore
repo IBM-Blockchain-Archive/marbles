@@ -10,3 +10,4 @@ keyValStore*
 certificate.pem
 /chaincode/Dockerfile
 chaincode.exe
+app_state.json

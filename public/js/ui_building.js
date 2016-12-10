@@ -80,7 +80,6 @@ function build_user_panels(data){
 		$('.companyPanel[company="' + data[i].company + '"]').find('.companyCount').html(known_companies[data[i].company].count);
 
 	}
-	//$('#allUserPanelsWrap').html(html);
 
 	//drag and drop marble
 	$('.innerMarbleWrap').sortable({connectWith: '.innerMarbleWrap', items: 'span'}).disableSelection();

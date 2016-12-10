@@ -1,11 +1,19 @@
 var fs = require('fs');
 var url = require('url');
 var path = require('path');
+var crypto = require('crypto');
 
 module.exports = function (logger) {
 	var helper = {};
 	var creds_path = path.join(__dirname, '../mycreds.json');
 	helper.creds = require(creds_path);
+
+	//hash of credential json file
+	helper.getHash = function(){
+		var shasum = crypto.createHash('sha1');
+		shasum.update(JSON.stringify(helper.creds));
+		return shasum.digest('hex').toString();
+	};
 
 //	console.log('Creds = ', helper.creds);
 	helper.getNetworkId = function() {

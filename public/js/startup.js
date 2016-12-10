@@ -100,8 +100,9 @@ $(document).on('ready', function() {
 // ================================================================================
 
 //show the current step from the start up panel
-function show_start_up_step(state){
-	console.log('marbles is in state', state);
+function show_start_up_step(obj){
+	var state = obj.state;
+	console.log('marbles is in state', state, 'first?', obj.first_setup);
 
 	//outcome of the last step
 	//'starting', 'failed_enroll', 'enrolled', 'no_chaincode', 'found_chaincode', 'registered_owners'
@@ -110,10 +111,22 @@ function show_start_up_step(state){
 		$('#startUpPanel').fadeIn();
 		//nothing to do but wait
 	}
+	else if(state === 'start_waiting'){						//lets start it up
+		$('#startUpPanel').fadeIn();
+		$('#step1').removeClass('stepFailed');
+		$('#step1').removeClass('inactiveStep');
+		$('#step2, #step3').addClass('inactiveStep');
+
+		var json = 	{
+						type: 'setup',
+						configure: 'enrollment',
+					};
+		ws.send(JSON.stringify(json));						//send msg to start
+	}
 	else if(state === 'failed_enroll'){						//could not enroll
 		$('#startUpPanel').fadeIn();
 		$('#step1').addClass('stepFailed');
-		$('#step1, #step2').removeClass('inactiveStep');
+		$('#step1').removeClass('inactiveStep');
 		$('#step2, #step3').addClass('inactiveStep');
 
 		$('.stepHelpWrap').hide();
@@ -136,22 +149,16 @@ function show_start_up_step(state){
 	}
 	else if(state === 'found_chaincode'){					//found chaincode, trying to register users
 		$('#startUpPanel').fadeIn();
-		step1_success(function(){
-			step2_success();
-		});
+		step2_success();
 	}
 	else if(state === 'registered_owners'){					//register complete
-		if(fromLS.startedUpBefore === true){
+		if(obj.first_setup === 'false'){
 			start_marbles();
 		}
 		else{
 			$('#startUpPanel').fadeIn();
-			step1_success(function(){
-				step2_success(function(){
-					step3_success(function(){
-						start_marbles();
-					});
-				});
+			step3_success(function(){
+				start_marbles();
 			});
 		}
 	}
