@@ -172,7 +172,7 @@ function show_start_up_step(obj){
 	}, 2000);
 
 	function start_marbles(){
-		$('#startUpPanel').hide();
+		$('#startUpPanel, #tint').hide();
 		ws.send(JSON.stringify({type: 'get_owners', v: 1}));
 		fromLS.startedUpBefore = true;
 		window.localStorage.setItem(lsKey, JSON.stringify(fromLS));		//save

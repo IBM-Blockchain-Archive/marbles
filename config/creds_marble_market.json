@@ -43,11 +43,14 @@
             }
         ],
         "cert": "https://blockchain-certs.mybluemix.net/us.blockchain.ibm.com.cert",
-		"marbles":{
-       		"company": "Marble Market",
-			"chaincode_id": "marbles",
-       		"usernames": ["bob", "bill"],
-			"port": 3000
-		}
+        "marbles": {
+            "company": "Marble Market",
+            "chaincode_id": "marbles",
+            "usernames": [
+                "bob",
+                "bill"
+            ],
+            "port": 3001
+        }
     }
 }

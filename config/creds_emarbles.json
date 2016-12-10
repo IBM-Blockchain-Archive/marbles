@@ -47,7 +47,7 @@
        		"company": "eMarbles",
 			"chaincode_id": "marbles",
        		"usernames": ["cliff", "cody"],
-			"port": 3000
+			"port": 3002
 		}
     }
 }
