@@ -45,7 +45,15 @@ function build_marble(marble){
 	return html;
 }
 
-
+//crayp resize - dsh to do, dynamic one
+function size_user_name(name){
+	var style = '';
+	if(name.length >= 10) style = 'font-size: 22px;';
+	if(name.length >= 15) style = 'font-size: 18px;';
+	if(name.length >= 20) style = 'font-size: 15px;';
+	if(name.length >= 25) style = 'font-size: 11px;';
+	return style;
+}
 
 //build all user panels
 function build_user_panels(data){
@@ -66,7 +74,7 @@ function build_user_panels(data){
 		//if(data[i].company.toLowerCase() !== bag.marble_company.toLowerCase()) colorClass = 'notAdminControl';
 
 		html += '<div id="user' + i + 'wrap" username="' + data[i].username + '" company="' + data[i].company + '" full_owner="' + full_owner +'" class="marblesWrap ' + colorClass +'">';
-		html +=		'<div class="legend">';
+		html +=		'<div class="legend" style="' + size_user_name(data[i].username) + '">';
 		html +=			toTitleCase(data[i].username);
 		html +=			'<span class="fa fa-thumb-tack marblesCloseSectionPos marblesFix" title="Never Hide Owner"></span>';
 		html +=		'</div>';

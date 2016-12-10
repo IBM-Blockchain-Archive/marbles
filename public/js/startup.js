@@ -96,7 +96,7 @@ $(document).on('ready', function() {
 	});
 
 	$('#closeStartUp').click(function(){
-		$('#createPanel, #startUpPanel, #tint').fadeOut();
+		$('#createPanel, #startUpPanel, #tint, .stepHelpWrap').fadeOut();
 	});
 });
 // =================================================================================
