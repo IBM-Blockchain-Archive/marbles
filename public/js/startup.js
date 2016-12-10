@@ -156,10 +156,7 @@ function show_start_up_step(obj){
 		step2_success();
 	}
 	else if(state === 'registered_owners'){					//register complete
-		if(obj.first_setup === 'false'){
-
-		}
-		else{
+		if(obj.first_setup === 'yes'){
 			$('#startUpPanel, #tint').fadeIn();
 		}
 		step3_success(function(){

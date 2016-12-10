@@ -31,6 +31,8 @@ var helper = require(__dirname + '/utils/helper.js')(process.env.creds_filename,
 var host = 'localhost';
 var port = helper.getMarblesPort();
 var wss = {};
+var known_marble_owners = [];
+var checkInterval = null;
 process.env.marble_company = helper.getCompanyName();
 
 // ------------- Bluemix Detection ------------- //
@@ -173,7 +175,7 @@ function set_chaincode_id(cb){
 var webUser = null;
 var app_state_file = './app_state.json';
 process.env.app_state = 'starting';
-process.env.app_first_setup = true;
+process.env.app_first_setup = 'yes';
 setupWebSocket();
 
 try{
@@ -181,7 +183,7 @@ try{
 	if(state.hash === helper.getHash()){
 		console.log('\n\nDetected that we have launched successfully before');
 		console.log('Welcome back - Initiating start up\n\n');
-		process.env.app_first_setup = false;
+		process.env.app_first_setup = 'no';
 		enroll_admin(helper.getUsers(0).enrollId, helper.getUsers(0).enrollSecret, helper.getMemberservicesUrl(0), function(e){
 			if(e == null){
 				setup_marbles_lib(helper.getChaincodeId(), helper.getOrderersUrl(0));
@@ -197,7 +199,7 @@ catch(e){
 
 function wait_to_init(){
 	process.env.app_state = 'start_waiting';
-	process.env.app_first_setup = true;
+	process.env.app_first_setup = 'yes';
 	console.log('\n\nDetected that we have NOT launched successfully yet');
 	console.log('Open your browser to http://' + host + ':' + port + ' to initiate startup\n\n');
 }
@@ -221,7 +223,7 @@ function setup_marbles_lib(chaincode_id, orderer_url, peer_url){
 			broadcast_state('found_chaincode');
 
 			var user_base = null;
-			if(process.env.app_first_setup) user_base = helper.getMarbleUsernames();
+			if(process.env.app_first_setup === 'yes') user_base = helper.getMarbleUsernames();
 			create_assets(user_base); 							//builds marbles, then starts webapp
 		}
 	});
@@ -288,7 +290,7 @@ function build_marble_options(username, company){
 
 //this only runs after we deploy
 function create_assets(build_marbles_users){
-	console.log('creating marble owners and marbles');
+	console.log('Creating marble owners and marbles');
 
 	// --- Create Each user --- //
 	if(build_marbles_users && build_marbles_users.length > 0){
@@ -310,7 +312,7 @@ function create_assets(build_marbles_users){
 				});
 			});
 		}, function(err) {
-			console.log('finished creating assets, waiting for peer catch up');
+			console.log('- finished creating assets, waiting for peer catch up');
 			if(err == null) {
 				setTimeout(function(){											//marble owner creation finished
 					all_done();													//delay for peer catch up
@@ -319,16 +321,20 @@ function create_assets(build_marbles_users){
 		});
 	}
 	else{
-		console.log('there are no new marble owners to create');
+		console.log('- there are no new marble owners to create');
 		all_done();
 	}
 }
 
 function all_done(){
 	broadcast_state('registered_owners');
-	process.env.app_first_setup = false;
+	process.env.app_first_setup = 'no';
 	var state_file = {hash: helper.getHash()};									//write state file so we know we started before
 	fs.writeFileSync(app_state_file, JSON.stringify(state_file, null, 4), 'utf8');
+
+	if(checkInterval === null){
+		checkInterval = setInterval(function(){check_for_new_users();}, 15000);	//check perodically
+	}
 }
 
 //message to client to communicate where we are in the start up
@@ -483,4 +489,33 @@ function setupWebSocket(){
 			}
 		}
 	});*/
+}
+
+//see if there are new users
+function check_for_new_users(){
+	marbles_lib.get_owner_list(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(err, resp){
+		console.log('\n\n[periodic] number of owners:', resp.payload[0].length);
+
+		var latestList = [];
+		for(var i in resp.payload[0]){						//lets reformat it a bit, only need 1 peer's response
+			var pos = resp.payload[0][i].indexOf('.');
+			var temp = 	{
+							username: resp.payload[0][i].substring(0, pos),
+							company: resp.payload[0][i].substring(pos + 1)
+						};
+			latestList.push(temp);
+		}
+
+		var knownAsString = JSON.stringify(known_marble_owners);
+		var latestListAsString = JSON.stringify(latestList);
+
+		if(knownAsString === latestListAsString){
+			console.log('[periodic] same owners as last time');
+		}
+		else{
+			console.log('[periodic] new owners, sending to users');
+			known_marble_owners = latestList;
+			wss.broadcast({msg: 'owners', e: err, owners: latestList});
+		}
+	});
 }

@@ -239,13 +239,13 @@ function connect_to_server(){
 								id: msgObj.blockstats.height, 
 								blockstats: msgObj.blockstats
 							};
-				new_block(temp);								//send to blockchain.js
+				new_block(temp);														//send to blockchain.js
 			}
 			else if(msgObj.msg === 'owners'){
 				console.log('rec', msgObj.msg, msgObj);
+				$('.innerMarbleWrap').html('<i class="fa fa-plus addMarble"></i>');		//reset the panels
+				$('.noMarblesMsg').show();
 				build_user_panels(msgObj.owners);
-				//build_user_table_row(msgObj.owners);
-				//show_users_panels();
 				ws.send(JSON.stringify({type: 'get_marbles', v:1}));
 			}
 			else if(msgObj.msg === 'tx_error'){
@@ -289,17 +289,11 @@ function connect_to_server(){
 // ================================================================================
 //show admin panel page
 function showHomePanel(){
-	//$('#homePanel').fadeIn(300);
 	$('#createPanel').fadeOut();
 	$('#tint').fadeOut();
-	
-	//window.history.pushState({},'', '/home');									//put it in url so we can f5
-	
-	console.log('getting new marbles!!!');
+		
 	setTimeout(function(){
-		$('.innerMarbleWrap').html('<i class="fa fa-plus addMarble"></i>');//reset the panels
-		$('.userRow').find('td.userMarbles').html('0');
-		$('.noMarblesMsg').show();
+		console.log('getting new marbles!!!');
 		ws.send(JSON.stringify({type: 'get_marbles', v: 1}));					//need to wait a bit
 		//ws.send(JSON.stringify({type: 'chainstats', v: 1}));
 		//ws.send(JSON.stringify({type: 'get_owners', v: 1}));
