@@ -150,8 +150,8 @@ module.exports = function (config_filename, logger) {
 		helper.creds = creds_file;													//replace old copy
 	};
 
-	helper.getMarbleUsers = function(){
-		return getMarblesField('marbles_users');
+	helper.getMarbleUsernames = function(){
+		return getMarblesField('usernames');
 	};
 
 	helper.getCompanyName = function(){

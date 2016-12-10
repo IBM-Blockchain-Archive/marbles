@@ -222,7 +222,10 @@ function setup_marbles_lib(chaincode_id, orderer_url, peer_url){
 			broadcast_state('found_chaincode');
 			var state_file = {hash: helper.getHash()};			//write state file so we know we started before
 			fs.writeFileSync(app_state_file, JSON.stringify(state_file, null, 4), 'utf8');
-			create_assets(); 									//builds marbles, then starts webapp
+			
+			var user_base = null;
+			if(process.env.app_first_setup) user_base = helper.getMarbleUsernames();
+			create_assets(user_base); 							//builds marbles, then starts webapp
 		}
 	});
 }
@@ -244,7 +247,7 @@ function enroll_admin(id, secret, cop, cb){
 			broadcast_state('enrolled');
 			setTimeout(function(){
 				if(cb) cb();
-			}, 2000);
+			}, 1500);
 		}
 	).catch(
 		function(err) {												//error with enrollment
@@ -313,8 +316,8 @@ function create_assets(build_marbles_users){
 			console.log('finished creating assets, waiting for peer catch up');
 			if(err == null) {
 				setTimeout(function(){											//marble owner creation finished
-					broadcast_state('registered_owners');
-				}, 2000);
+					broadcast_state('registered_owners');						//delay for peer catch up
+				}, 1500);
 			}
 		});
 	}

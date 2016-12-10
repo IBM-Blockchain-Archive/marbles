@@ -46,7 +46,7 @@
 		"marbles":{
        		"company": "Marble Market",
 			"chaincode_id": "marbles",
-       		"marbles_users": ["bob", "bill"],
+       		"usernames": ["bob", "bill"],
 			"port": 3000
 		}
     }

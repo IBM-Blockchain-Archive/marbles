@@ -46,7 +46,7 @@
 		"marbles":{
        		"company": "Daves Marbles",
 			"chaincode_id": "marbles",
-       		"marbles_users": ["amy", "alice", "amber"],
+       		"usernames": ["amy", "alice", "amber"],
 			"port": 3000
 		}
 	}

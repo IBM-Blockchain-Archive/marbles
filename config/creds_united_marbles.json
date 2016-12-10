@@ -46,7 +46,7 @@
         "marbles": {
             "company": "United Marbles",
             "chaincode_id": "marbles",
-            "marbles_users": [
+            "usernames": [
                 "amy",
                 "alice",
                 "amber"

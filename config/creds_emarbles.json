@@ -46,7 +46,7 @@
 		"marbles":{
        		"company": "eMarbles",
 			"chaincode_id": "marbles",
-       		"marbles_users": ["cliff", "cody"],
+       		"usernames": ["cliff", "cody"],
 			"port": 3000
 		}
     }
