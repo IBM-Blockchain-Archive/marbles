@@ -5,8 +5,6 @@
  *
  * All rights reserved. 
  *
- * Contributors:
- *   David Huffman - Initial implementation
  *******************************************************************************/
 var express = require('express');
 var router = express.Router();

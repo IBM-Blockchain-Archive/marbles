@@ -6,8 +6,6 @@
  *
  * All rights reserved.
  *
- * Contributors:
- *   David Huffman - Initial implementation
  *******************************************************************************/
 /////////////////////////////////////////
 ///////////// Setup Node.js /////////////
@@ -46,15 +44,9 @@ app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
-app.use('/cc/summary', serve_static(path.join(__dirname, 'cc_summaries')) );												//for chaincode investigator
-//app.use( serve_static(path.join(__dirname, 'public'), {maxAge: '1d', setHeaders: setCustomCC}) );							//1 day cache
 app.use( serve_static(path.join(__dirname, 'public')) );
-app.use(session({secret:'Somethignsomething1234!test', resave:true, saveUninitialized:true}));
-/*function setCustomCC(res, path) {
-	if (serve_static.mime.lookup(path) === 'image/jpeg')  res.setHeader('Cache-Control', 'public, max-age=2592000');		//30 days cache
-	else if (serve_static.mime.lookup(path) === 'image/png') res.setHeader('Cache-Control', 'public, max-age=2592000');
-	else if (serve_static.mime.lookup(path) === 'image/x-icon') res.setHeader('Cache-Control', 'public, max-age=2592000');
-}*/
+app.use( session({secret:'Somethignsomething1234!test', resave:true, saveUninitialized:true}) );
+
 // Enable CORS preflight across the board.
 app.options('*', cors());
 app.use(cors());

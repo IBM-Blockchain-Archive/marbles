@@ -4,8 +4,6 @@
  *
  * All rights reserved.
  *
- * Contributors:
- *   David Huffman - Initial implementation
  *******************************************************************************/
 //Environments are either:
 // 	1 - Bluemix Production
