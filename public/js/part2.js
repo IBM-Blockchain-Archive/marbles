@@ -1,4 +1,4 @@
-/* global new_block,formatDate, randStr, bag, $, clear_blocks, document, WebSocket, escapeHtml, window */
+/* global new_block,formatDate, randStr, bag, $, document, WebSocket, escapeHtml, window */
 var ws = {};
 var user = {username: bag.setup.USER1};
 var bgcolors = ['whitebg', 'blackbg', 'redbg', 'greenbg', 'bluebg', 'purplebg', 'pinkbg', 'orangebg', 'yellowbg'];
