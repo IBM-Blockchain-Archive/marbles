@@ -198,8 +198,7 @@ function connect_to_server(){
 	
 	function connect(){
 		var wsUri = 'ws://' + document.location.hostname + ':' + document.location.port;
-		console.log('Connectiong to websocket', wsUri);
-		addshow_notification(build_notification(false, 'Connected to Marbles application'), false);
+		console.log('Connecting to websocket', wsUri);
 
 		ws = new WebSocket(wsUri);
 		ws.onopen = function(evt) { onOpen(evt); };
@@ -210,6 +209,7 @@ function connect_to_server(){
 	
 	function onOpen(evt){
 		console.log('WS CONNECTED');
+		addshow_notification(build_notification(false, 'Connected to Marbles application'), false);
 		connected = true;
 		known_companies = {};					//reset
 		start_up = true;						//reset
@@ -359,6 +359,12 @@ function record_company(company){
 function addshow_notification(html, expandPanelNow){
 	$('#emptyNotifications').hide();
 	$('#noticeScrollWrap').prepend(html);
+
+	var i = 0;
+	$('.notificationWrap').each(function(){
+		i++;
+		if(i > 10) $(this).remove();
+	});
 
 	if(expandPanelNow === true){
 		openNoticePanel();

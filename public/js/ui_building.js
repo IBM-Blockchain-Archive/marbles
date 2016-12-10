@@ -110,9 +110,11 @@ function build_company_panel(company){
 	html +=			'<span class="companyName">' + toTitleCase(company) + '&nbsp;-&nbsp;</span>';
 	html +=			'<span class="companyVisible">0</span>/';
 	html +=			'<span class="companyCount">0</span>';
-	html +=			'<span class="fa fa-angle-double-down floatRight"></span>';
 	if(company.toLowerCase() === bag.marble_company.toLowerCase()) {
-		html +=			'<span class="fa fa-angle-double-up floatRight"></span>';
+		html +=			'<span class="fa fa-exchange floatRight"></span>';
+	}
+	else{
+		html +=			'<span class="fa fa-long-arrow-left floatRight"></span>';
 	}
 	html +=		'</div>';
 	html +=		'<div class="ownerWrap"></div>';
