@@ -121,6 +121,11 @@ $(document).on('ready', function() {
 			$('.marblesWrap').show();
 			count = $('#totalUsers').html();
 			$('.companyPanel').fadeIn();
+			for(i in known_companies){
+				known_companies[i].visible = known_companies[i].count;
+				$('.companyPanel[company="' + i + '"]').find('.companyVisible').html(known_companies[i].visible);
+				$('.companyPanel[company="' + i + '"]').find('.companyCount').html(known_companies[i].count);
+			}
 		}
 		else{
 			var parts = input.split(',');
@@ -148,6 +153,7 @@ $(document).on('ready', function() {
 				}
 			});
 			for(i in known_companies){
+				$('.companyPanel[company="' + i + '"]').find('.companyVisible').html(known_companies[i].visible);
 				if(known_companies[i].visible === 0) {
 					console.log('hiding company', i);
 					$('.companyPanel[company="' + i + '"]').fadeOut();
@@ -431,6 +437,9 @@ function build_user_panels(data){
 		html +=	'</div>';
 
 		$('.companyPanel[company="' + data[i].company + '"]').find('.ownerWrap').append(html);
+		$('.companyPanel[company="' + data[i].company + '"]').find('.companyVisible').html(known_companies[data[i].company].visible);
+		$('.companyPanel[company="' + data[i].company + '"]').find('.companyCount').html(known_companies[data[i].company].count);
+
 	}
 	//$('#allUserPanelsWrap').html(html);
 
@@ -460,7 +469,9 @@ function build_company_panel(company){
 	var html = '';
 	html += '<div class="companyPanel" company="' + company + '">';
 	html +=		'<div class="companyNameWrap">';
-	html +=			'<span class="companyName">' + toTitleCase(company) + '</span>';
+	html +=			'<span class="companyName">' + toTitleCase(company) + '&nbsp;-&nbsp;</span>';
+	html +=			'<span class="companyVisible">0</span>/';
+	html +=			'<span class="companyCount">0</span>';
 	html +=			'<span class="fa fa-angle-double-down floatRight"></span>';
 	if(company.toLowerCase() === bag.marble_company.toLowerCase()) {
 		html +=			'<span class="fa fa-angle-double-up floatRight"></span>';
