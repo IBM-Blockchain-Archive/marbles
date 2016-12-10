@@ -15,7 +15,7 @@ $(document).on('ready', function() {
 	// jQuery UI Events
 	// =================================================================================
 	$('#showStartupPanel').click(function(){
-		$('#startUpPanel').fadeIn();
+		$('#startUpPanel, #tint').fadeIn();
 	});
 	
 	// ----------------------------- Actions-------------------------------------
@@ -94,6 +94,10 @@ $(document).on('ready', function() {
 		$('.stepHelpWrap').hide();
 		$('#regUserStep').slideDown();
 	});
+
+	$('#closeStartUp').click(function(){
+		$('#createPanel, #startUpPanel, #tint').fadeOut();
+	});
 });
 // =================================================================================
 // Start Up Fun
@@ -108,11 +112,11 @@ function show_start_up_step(obj){
 	//'starting', 'failed_enroll', 'enrolled', 'no_chaincode', 'found_chaincode', 'registered_owners'
 
 	if(state === 'starting'){
-		$('#startUpPanel').fadeIn();
+		$('#startUpPanel, #tint').fadeIn();
 		//nothing to do but wait
 	}
 	else if(state === 'start_waiting'){						//lets start it up
-		$('#startUpPanel').fadeIn();
+		$('#startUpPanel, #tint').fadeIn();
 		$('#step1').removeClass('stepFailed');
 		$('#step1').removeClass('inactiveStep');
 		$('#step2, #step3').addClass('inactiveStep');
@@ -124,7 +128,7 @@ function show_start_up_step(obj){
 		ws.send(JSON.stringify(json));						//send msg to start
 	}
 	else if(state === 'failed_enroll'){						//could not enroll
-		$('#startUpPanel').fadeIn();
+		$('#startUpPanel, #tint').fadeIn();
 		$('#step1').addClass('stepFailed');
 		$('#step1').removeClass('inactiveStep');
 		$('#step2, #step3').addClass('inactiveStep');
@@ -133,11 +137,11 @@ function show_start_up_step(obj){
 		$('#adminStep').slideDown();						//show help
 	}
 	else if(state === 'enrolled'){							//enroll good, trying to find chaincode
-		$('#startUpPanel').fadeIn();
+		$('#startUpPanel, #tint').fadeIn();
 		step1_success();
 	}
 	else if(state === 'no_chaincode'){						//could not find chaincode
-		$('#startUpPanel').fadeIn();
+		$('#startUpPanel, #tint').fadeIn();
 		$('#step1').removeClass('stepFailed');
 		$('#step2').addClass('stepFailed');
 		$('#step1, #step2').removeClass('inactiveStep');
@@ -148,20 +152,24 @@ function show_start_up_step(obj){
 		$('#chaincodeStep').slideDown();					//show help
 	}
 	else if(state === 'found_chaincode'){					//found chaincode, trying to register users
-		$('#startUpPanel').fadeIn();
+		$('#startUpPanel, #tint').fadeIn();
 		step2_success();
 	}
 	else if(state === 'registered_owners'){					//register complete
 		if(obj.first_setup === 'false'){
-			start_marbles();
+
 		}
 		else{
-			$('#startUpPanel').fadeIn();
-			step3_success(function(){
-				start_marbles();
-			});
+			$('#startUpPanel, #tint').fadeIn();
 		}
+		step3_success(function(){
+			start_marbles();
+		});
 	}
+
+	setTimeout(function(){
+		$('#showStartupPanel, #showSettingsPanel').prop('disabled', false);
+	}, 2000);
 
 	function start_marbles(){
 		$('#startUpPanel').hide();

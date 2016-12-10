@@ -168,8 +168,7 @@ $(document).on('ready', function() {
 
 	//close create marble panel
 	$('#tint').click(function(){
-		$(this).fadeOut();
-		$('#createPanel').fadeOut();
+		$('#createPanel, #startUpPanel, #tint').fadeOut();
 	});
 
 	//notification drawer

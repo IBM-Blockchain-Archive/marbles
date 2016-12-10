@@ -1,5 +1,7 @@
 #startUpPanel
 
+	span.fa.fa-close#closeStartUp
+
 	//----------------- Step 1 Content
 	.stepWrap#step1
 		span.stepIcon.fa.fa-user.fa-5x
@@ -13,8 +15,11 @@
 			span
 			div
 		.stepDescription 
-			span Enrollment will download transactions certificates from the COP. 
-			span These certficates are used to sign transactions such as transfering marbles. 
+			span Enrollment will verify your admin identity. 
+			span If succesful this application will download transactions certificates. 
+			br
+			br
+			span The admin's certficates are used to sign and authorize marble transactions. 
 		.stepCircleStatus
 
 	.stepNext
@@ -33,8 +38,11 @@
 			span
 			div
 		.stepDescription 
-			span The chaincode defines the rules of the entire application. 
-			span It only needs to be deployed once.
+			span Marbles chaincode defines the rules of the application. 
+			span It describes the assets (marbles) and the rules around marble transfers.
+			br
+			br
+			span It only needs to be deployed once per network. 
 		.stepCircleStatus
 
 	.stepNext
@@ -53,8 +61,8 @@
 			span
 			div
 		.stepDescription 
-			span As a marbles trading company you may register your userbase. 
-			span Bring new identies onboard that can own marbles.
+			span As a marbles trading company you may bring new identies onboard that can own marbles. 
+			span These marble owners are your userbase.
 		.stepCircleStatus
 
 	//----------------- Help Content
@@ -64,7 +72,7 @@
 		br
 		.stepHelpTxt
 			p Sorry, we could not enroll the admin against the COP. 
-			p Edit it below to try again.
+			p Edit the details below to try again.
 		br
 		.stepInputLegend COP 
 		input(type="text" placeholder="COP ex: 192.168.99.100:8888" name="copUrl" value="#{bag.creds.cop}").longer
@@ -84,11 +92,14 @@
 		br
 		br
 		.stepHelpTxt
-			p Sorry, we could not find the deployed chaincode on your peer. 
+			p Sorry, we could not find the chaincode on your peer. 
 			p 
 				span Edit the chaincode ID to try again 
 				strong OR 
 				span deploy the chaincode. 
+
+			br
+			p If this is the first time running the demo you will need to choose "Deploy".
 		br
 		.stepInputLegend Orderer 
 		input(type="text" placeholder="Orderer ex: 192.168.99.100:5151" name="ordererUrl" value="#{bag.creds.orderer}").longer
