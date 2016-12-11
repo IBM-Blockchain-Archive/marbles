@@ -52,6 +52,19 @@ func get_owner(stub shim.ChaincodeStubInterface, username string, company string
 }
 
 // ============================================================================================================================
+// Get Array of All Owners
+// ============================================================================================================================
+func get_complete_owner_index(stub shim.ChaincodeStubInterface) ([]string, error) {
+	var ownersIndex OwnersIndex
+	ownerIndexAsBytes, err := stub.GetState(ownerIndexStr)
+	if err != nil {
+		return ownersIndex.Owners, errors.New("Failed to get owner index")
+	}
+	json.Unmarshal(ownerIndexAsBytes, &ownersIndex)           //un stringify it aka JSON.parse()
+	return ownersIndex.Owners, nil
+}
+
+// ============================================================================================================================
 // Set Owner Permission on Marble
 // ============================================================================================================================
 func set_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
@@ -143,17 +156,15 @@ func init_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error)
 	}
 
 	//read existing owner index
-	ownerIndexAsBytes, err := stub.GetState(ownerIndexStr)
+	ownersIndex, err := get_complete_owner_index(stub)
 	if err != nil {
 		fmt.Println("Failed to get owner index")
 		return nil, errors.New("Failed to get owner index")
 	}
-	var ownersIndex OwnersIndex
-	json.Unmarshal(ownerIndexAsBytes, &ownersIndex)           //un stringify it aka JSON.parse()
 
 	//append to list
-	ownersIndex.Owners = append(ownersIndex.Owners, fullOwner)//add owner to index list
-	fmt.Println("! owner index: ", ownersIndex.Owners)
+	ownersIndex = append(ownersIndex, fullOwner)//add owner to index list
+	fmt.Println("! owner index: ", ownersIndex)
 	jsonAsBytes, _ := json.Marshal(ownersIndex)
 	err = stub.PutState(ownerIndexStr, jsonAsBytes)           //store updated owner index
 

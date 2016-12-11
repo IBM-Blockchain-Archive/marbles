@@ -158,12 +158,13 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) ([]byte, erro
 	} else if function == "init_marble" { 	//create a new marble
 		return init_marble(stub, args)
 	} else if function == "set_owner" { 	//change owner of a marble
-		res, err := set_owner(stub, args)
-		return res, err
+		return set_owner(stub, args)
 	} else if function == "read" {
 		return read(stub, args)
 	}else if function == "init_owner"{
 		return init_owner(stub, args)
+	}else if function == "compelte_marble_index"{
+		return get_complete__marble_index(stub)
 	}
 
 	fmt.Println("Received unknown invoke function name: " + function) //should not get here, its an error

@@ -43,6 +43,39 @@ func get_marble(stub shim.ChaincodeStubInterface, name string) (Marble, error) {
 }
 
 // ============================================================================================================================
+// Get Array of All Marble Names
+// ============================================================================================================================
+func get_complete__marble_index(stub shim.ChaincodeStubInterface) ([]byte, error) {
+	var arrayAsBytes []byte
+	var completedMarbleIndex [] string
+
+	//read owner index
+	ownersIndex, err := get_complete_owner_index(stub)
+	if err != nil {
+		fmt.Println("Failed to get owner index")
+		return nil, errors.New("Failed to get owner index")
+	}
+
+	for i:= range ownersIndex{                                      //iter through all the owners
+		//fmt.Println("looking @ owner name: " + ownersIndex[i]);
+		ownerAsBytes, err := stub.GetState(ownersIndex[i])          //grab each owner
+		if err != nil {
+			return arrayAsBytes, errors.New("Failed to get marble")
+		}
+		owner := Owner{}
+		json.Unmarshal(ownerAsBytes, &owner)                        //un stringify it aka JSON.parse()
+		
+		//append to array
+		completedMarbleIndex = append(completedMarbleIndex, owner.Marbles...) //add this owner's marble list to complete list
+		fmt.Println("marble index so far: ", completedMarbleIndex)
+	}
+
+	//change to array of bytes
+	arrayAsBytes, _ = json.Marshal(completedMarbleIndex)
+	return arrayAsBytes, nil
+}
+
+// ============================================================================================================================
 // delete_marble - remove a marble from state and from marble index
 // ============================================================================================================================
 func delete_marble(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
