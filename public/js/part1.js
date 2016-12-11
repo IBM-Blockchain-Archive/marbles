@@ -66,7 +66,6 @@ $(document).on('ready', function() {
 	});
 	
 	//drag and drop marble
-	//$('#user2wrap, #user1wrap, #trashbin').sortable({connectWith: '.sortable'}).disableSelection();
 	$('#trashbin').droppable({drop:
 		function( event, ui ) {
 			var id = $(ui.draggable).attr('id');
@@ -213,8 +212,6 @@ function connect_to_server(){
 		known_companies = {};					//reset
 		start_up = true;						//reset
 		$('#allUserPanelsWrap').html('');		//reset
-		//clear_blocks();
-		//ws.send(JSON.stringify({type: 'chainstats', v:1}));
 	}
 
 	function onClose(evt){
@@ -227,10 +224,10 @@ function connect_to_server(){
 	function onMessage(msg){
 		try{
 			var msgObj = JSON.parse(msg.data);
+			
 			//marbles
 			if(msgObj.msg === 'users_marbles'){
 				console.log('rec', msgObj.msg, msgObj);
-				//build_marble(msgObj.marble);
 				populate_users_marbles(msgObj);
 			}
 
@@ -279,21 +276,12 @@ function connect_to_server(){
 			else console.log('rec', msgObj.msg, msgObj);
 		}
 		catch(e){
-			console.log('ERROR', e);
+			console.log('onMessage ERROR', e);
 		}
 	}
 
 	function onError(evt){
-		console.log('ERROR ', evt);
-		if(!connected && bag.e == null){											//don't overwrite an error message
-			/*
-			$('#errorName').html('Warning');
-			$('#errorNoticeText').html('Waiting on the node server to open up so we can talk to the blockchain. ');
-			$('#errorNoticeText').append('This app is likely still starting up. ');
-			$('#errorNoticeText').append('Check the server logs if this message does not go away in 1 minute. ');
-			$('#errorNotificationPanel').fadeIn();
-			*/
-		}
+		console.log('ws ERROR ', evt);
 	}
 }
 
@@ -307,10 +295,8 @@ function showHomePanel(){
 	$('#tint').fadeOut();
 		
 	setTimeout(function(){
-		console.log('getting new marbles!!!');
+		console.log('getting new marbles!');
 		ws.send(JSON.stringify({type: 'get_marbles', v: 1}));					//need to wait a bit
-		//ws.send(JSON.stringify({type: 'chainstats', v: 1}));
-		//ws.send(JSON.stringify({type: 'get_owners', v: 1}));
 	}, 1500);
 }
 
@@ -329,16 +315,6 @@ function transfer_marble(marbleName, to_username, to_company){
 		showHomePanel();
 	}
 }
-
-/*
-//show user panels that are selected in table
-function show_users_panels(){
-	$('.selectedRow').each(function(){
-		var full_owner = $(this).attr('full_owner');
-		$('.marblesWrap[full_owner="' + full_owner + '"]').css('display', 'inline-block');
-	});
-}
-*/
 
 //record the compan, show notice if its new
 function record_company(company){

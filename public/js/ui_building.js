@@ -91,7 +91,6 @@ function build_user_panels(data){
 		$('.companyPanel[company="' + data[i].company + '"]').find('.ownerWrap').append(html);
 		$('.companyPanel[company="' + data[i].company + '"]').find('.companyVisible').html(known_companies[data[i].company].visible);
 		$('.companyPanel[company="' + data[i].company + '"]').find('.companyCount').html(known_companies[data[i].company].count);
-
 	}
 
 	//drag and drop marble
