@@ -88,14 +88,4 @@ function route_me(req, res){
 	}
 }
 
-// ============================================================================================================================
-// Part 2
-// ============================================================================================================================
-router.route('/p2').get(function(req, res){
-	res.render('part2', {title: 'Marbles Part 2', bag: build_bag(req)});
-});
-router.route('/p2/:page?').get(function(req, res){
-	res.render('part2', {title: 'Marbles Part 2', bag: build_bag(req)});
-});
-
 module.exports = router;
