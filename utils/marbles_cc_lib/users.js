@@ -91,7 +91,7 @@ module.exports = function (chain, chaincode_id, logger) {
 	// Format Owner's Actual Key Name
 	//----------------------------------------------------
 	users.build_owner_name = function(username, company){
-		return username.toLowerCase() + '.' + company.toLowerCase();
+		return username.toLowerCase() + '.' + company;
 	};
 	
 

@@ -541,16 +541,43 @@ function check_for_new_marbles(){
 		var marbleIndex = resp.payload[0];
 		console.log('\n\n[periodic] number of marbles:', marbleIndex.length);
 
-		var knownAsString = JSON.stringify(known_marbles);		//stringify for easy comparison (order should stay the same)
-		var latestListAsString = JSON.stringify(marbleIndex);
+		var by_user = {};
+		async.eachLimit(resp.payload[0], 1, function(marble_id, cb) {
+			marbles_lib.get_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], marble_id, function(err2, resp2){
+				if(resp2.payload && resp2.payload[0] && resp2.payload[0].owner) {
+					var marble = resp2.payload[0];
+					if(!by_user[marble.owner.username]) {
+						by_user[marble.owner.username] = [];
+					}
+					by_user[marble.owner.username].push(marble);					//organize marbles by their owner
+				}
+				else{
+					console.log('[periodic] !warning - did not find marble data in resp');
+				}
+				cb();
+			});
+		}, function() {
+			console.log('[periodic] finished getting all marbles');
+			var knownAsString = JSON.stringify(known_marbles);		//stringify for easy comparison (order should stay the same)
+			var latestListAsString = JSON.stringify(by_user);
 
-		if(knownAsString === latestListAsString){
-			console.log('[periodic] same marbles as last time');
-		}
-		else{													//detected new marbles, send owner msg, client will ask for marbles next
-			console.log('[periodic] new marbles, sending owner msg to start cycle');
-			known_marbles = marbleIndex;
-			//wss.broadcast({msg: 'owners', e: err, owners: known_marble_owners});
-		}
+			if(knownAsString === latestListAsString){
+				console.log('[periodic] same marbles as last time');
+			}
+			else{													//detected new marbles, send owner msg, client will ask for marbles next
+				console.log('[periodic] new marbles, sending users marbles msg');
+				known_marbles = by_user;
+				for(var i in by_user){
+					var obj = 	{
+									msg: 'users_marbles',
+									e: null,
+									username: i,
+									company: by_user[i][0].owner.company,
+									marbles: by_user[i]
+								};
+					wss.broadcast(obj);								//send each marble owner's marbles
+				}
+			}
+		});
 	});
 }

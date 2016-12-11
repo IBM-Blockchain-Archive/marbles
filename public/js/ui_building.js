@@ -30,8 +30,8 @@ function build_marble(marble){
 							company : $(this).attr('company')
 						};
 
-			if(marble.owner.username.toLowerCase() === panel.username.toLowerCase()){		//match the username
-				if(marble.owner.company.toLowerCase() === panel.company.toLowerCase()){		//match the company
+			if(marble.owner.username.toLowerCase() === panel.username.toLowerCase()){	//match the username
+				if(marble.owner.company === panel.company){								//match the company
 					$(this).find('.innerMarbleWrap').prepend(html);
 					$(this).find('.noMarblesMsg').hide();
 				}
@@ -78,7 +78,6 @@ function build_user_panels(data){
 
 		full_owner = build_full_owner(data[i].username, data[i].company);
 		console.log('building user', full_owner);
-		//if(data[i].company.toLowerCase() !== bag.marble_company.toLowerCase()) colorClass = 'notAdminControl';
 
 		html += '<div id="user' + i + 'wrap" username="' + data[i].username + '" company="' + data[i].company + '" full_owner="' + full_owner +'" class="marblesWrap ' + colorClass +'">';
 		html +=		'<div class="legend" style="' + size_user_name(data[i].username) + '">';
@@ -87,7 +86,6 @@ function build_user_panels(data){
 		html +=		'</div>';
 		html +=		'<div class="innerMarbleWrap"><i class="fa fa-plus addMarble"></i></div>';
 		html +=		'<div class="noMarblesMsg hint">No marbles</div>';
-		//html +=		'<p class="hint" style="text-align:center;">' + data[i].company + '</p>';
 		html +=	'</div>';
 
 		$('.companyPanel[company="' + data[i].company + '"]').find('.ownerWrap').append(html);
@@ -102,7 +100,7 @@ function build_user_panels(data){
 		function( event, ui ) {
 			var dragged_user = $(ui.draggable).attr('username').toLowerCase();
 			var dropped_user = $(event.target).parents('.marblesWrap').attr('username').toLowerCase();
-			var dropped_company = $(event.target).parents('.marblesWrap').attr('company').toLowerCase();
+			var dropped_company = $(event.target).parents('.marblesWrap').attr('company');
 			console.log('dropped a marble', dragged_user, dropped_user, dropped_company);
 			if(dragged_user != dropped_user){										//only transfer marbles that changed owners
 				$(ui.draggable).addClass('invalid');
@@ -125,7 +123,7 @@ function build_company_panel(company){
 	html +=			'<span class="companyName">' + toTitleCase(company) + '&nbsp;-&nbsp;</span>';
 	html +=			'<span class="companyVisible">0</span>/';
 	html +=			'<span class="companyCount">0</span>';
-	if(company.toLowerCase() === bag.marble_company.toLowerCase()) {
+	if(company === bag.marble_company) {
 		html +=			'<span class="fa fa-exchange floatRight"></span>';
 	}
 	else{
@@ -137,69 +135,10 @@ function build_company_panel(company){
 	$('#allUserPanelsWrap').append(html);
 }
 
-/*
-//build all user table rows
-function build_user_table_row(data){
-	var html = '';
-	var opened = 0;
-
-	for(var i in data){
-		var full_owner = build_full_owner(data[i].username, data[i].company);
-		console.log('building user', full_owner);
-
-		var icon = '<span class="fa fa-circle-thin"></span>';
-		var rowCss = '';
-		data[i].username = escapeHtml(data[i].username);
-		data[i].company = escapeHtml(data[i].company);
-		if(data[i].company.toLowerCase() === bag.marble_company.toLowerCase()) {		//open all users for my company
-			icon = '<span class="fa fa-check"></span>';
-			rowCss = 'selectedRow';
-			opened++;
-		}
-		else if(opened < 4){															//open up to 4 from other companies
-			rowCss = 'selectedRow';
-			opened++;
-		}
-
-		html += '<tr full_owner="' + full_owner + '" class="userRow ' + rowCss  +'">';
-		html +=		'<td class="userMarbles">0</td>';
-		html +=		'<td class="userName">' + toTitleCase(data[i].username) + '</td>';
-		html +=		'<td class="userCompany">' + data[i].company + '</td>';
-		html +=		'<td class="userRights">' + icon  +'</td>';
-		html +=	'</div>';
-	}
-	$('#userTable tbody').html(html);
-}
-*/
-
-/*
-//show user panels that are selected in table
-function show_users_panels(){
-	$('.selectedRow').each(function(){
-		var full_owner = $(this).attr('full_owner');
-		$('.marblesWrap[full_owner="' + full_owner + '"]').css('display', 'inline-block');
-	});
-}
-*/
-
 //build the correct "full owner" string - concate username and company
 function build_full_owner(username, company){
-	return username.toLowerCase() + '.' + company.toLowerCase();
+	return username.toLowerCase() + '.' + company;
 }
-
-/*
-function build_user_options(user_list){
-	var html = '<option disabled="disabled" selected="selected">User</option>';
-	for(var i in user_list){
-		var full_owner = build_full_owner(user_list[i].username, user_list[i].company);
-
-		if(user_list[i].company.toLowerCase() === bag.marble_company.toLowerCase()) {				//only add users for my company
-			html += '<option value="' + full_owner +'">' + toTitleCase(user_list[i].username) + '</option>';
-		}
-	}
-	$('select[name="user"]').html(html);
-}
-*/
 
 //build a notification msg, `error` is boolean
 function build_notification(error, msg){
