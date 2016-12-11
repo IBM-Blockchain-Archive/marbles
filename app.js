@@ -394,15 +394,13 @@ function setupWebSocket(){
 
 	wss.broadcast = function broadcast(data) {									//send to all connections
 		var i = 0;
-		console.log('!!!!!!!!!!!!!!!!!!', data.msg);
 		wss.clients.forEach(function each(client) {
 			try{
-				console.log('client', (++i));
+				console.log('broadcasting to client', (++i), data.msg);
 				client.send(JSON.stringify(data));
 			}
 			catch(e){
 				console.log('error broadcast ws', e);
-				process.exit();	//test
 			}
 		});
 	};

@@ -65,21 +65,28 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 		//get all owners and their company
 		else if(data.type == 'get_owners'){
 			console.log('[ws] get all owners req');
-			//ws_server.check_for_new_users(ws);
-			marbles_lib.get_owner_list(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(err, resp){
-				console.log('\n\n\nthis is what i got - owners:', resp.payload[0].length);
-				console.log(err, JSON.stringify(resp));
 
-				var ret = [];
-				for(var i in resp.payload[0]){						//lets reformat it a bit, only need 1 peer's response
-					var pos = resp.payload[0][i].indexOf('.');
-					var temp = 	{
-									username: resp.payload[0][i].substring(0, pos),
-									company: resp.payload[0][i].substring(pos + 1)
-								};
-					ret.push(temp);
+			//ws_server.check_for_new_users(ws);
+
+			marbles_lib.get_owner_list(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(err, resp){
+				if(err != null){
+					console.log('\n\ncould not get owners:', err);
 				}
-				sendMsg({msg: 'owners', e: err, owners: ret});
+				else{
+					console.log('\n\n\nthis is what i got - owners:', resp.payload[0].length);
+					console.log(err, JSON.stringify(resp));
+
+					var ret = [];
+					for(var i in resp.payload[0]){						//lets reformat it a bit, only need 1 peer's response
+						var pos = resp.payload[0][i].indexOf('.');
+						var temp = 	{
+										username: resp.payload[0][i].substring(0, pos),
+										company: resp.payload[0][i].substring(pos + 1)
+									};
+						ret.push(temp);
+					}
+					sendMsg({msg: 'owners', e: err, owners: ret});
+				}
 			});
 		}
 
@@ -140,8 +147,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 				ws_server.check_for_new_users(null);
 			}
 			catch(e){
-				console.log('!!!!!! Error in sch next check', e);
-				process.exit();	//test
+				console.log('\n\n! Error in sch next check\n\n', e);
 				sch_next_check();
 				check_for_new_marbles(null);
 			}
@@ -228,7 +234,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 					if(knownAsString === latestListAsString){
 						console.log('[checking] same marbles as last time');
 						if(ws_client !== null) {
-							console.log('[checking] sending to a client');
+							console.log('[checking] sending to a client\n\n');
 							for(i in by_user){
 								ws_client.send(JSON.stringify(build_marble_obj(i, by_user[i])));	//send each marble owner's marbles
 							}
@@ -239,14 +245,13 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 					// ----------- Marbles Are Different ----------- //
 					else{													//detected new marbles, send owner msg, client will ask for marbles next
 						console.log('[checking] new marbles, sending users marbles msg');
-						console.log('[checking] broadcasting to all clients');
+						console.log('[checking] broadcasting to all clients\n\n');
 						known_marbles = by_user;
 						for(i in by_user){
 							broadcast(build_marble_obj(i, by_user[i]));								//send each marble owner's marbles
 						}
 						broadcast({msg: 'all_marbles_sent', e: null});
 					}
-					console.log('\n\n');
 					sch_next_check();										//check again
 				});
 			}
