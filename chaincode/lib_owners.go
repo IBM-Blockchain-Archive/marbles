@@ -31,6 +31,27 @@ import (
 )
 
 // ============================================================================================================================
+// Build Full Owner Key
+// ============================================================================================================================
+func build_full_owner(username string, company string) (string) {
+	return username + "." + company;      //concat owners name and the company name
+}
+
+// ============================================================================================================================
+// Get Owner
+// ============================================================================================================================
+func get_owner(stub shim.ChaincodeStubInterface, username string, company string) (Owner, error) {
+	var owner Owner
+	var fullOwner = build_full_owner(username, company);       //concat owners name and the company name
+	ownerAsBytes, err := stub.GetState(fullOwner)
+	if err != nil {
+		return owner, errors.New("Failed to get owner")
+	}
+	json.Unmarshal(ownerAsBytes, &owner)                       //un stringify it aka JSON.parse()
+	return owner, nil
+}
+
+// ============================================================================================================================
 // Set Owner Permission on Marble
 // ============================================================================================================================
 func set_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
@@ -94,7 +115,7 @@ func init_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error)
 	//owner.Company = strings.ToLower(owner.Company)
 	fmt.Println(owner)
 
-	var fullOwner = owner.Username + "." + owner.Company;     //concat owners name and the company name
+	var fullOwner = build_full_owner(owner.Username, owner.Company); //concat owners name and the company name
 
 	//check if user already exists
 	existingOwnerAsBytes, err := stub.GetState(fullOwner)     //this will always succeed, even if it doesn't exist

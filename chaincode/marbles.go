@@ -39,11 +39,13 @@ type SimpleChaincode struct {
 // ============================================================================================================================
 
 // ----- Marbles ----- //
+/*
 var marbleIndexStr = "_marbleindex"             //name for the key/value that will store a list of all known marbles
 type MarblesIndex struct {
 	ObjectType string   `json:"docType"`        //docType is used to distinguish the various types of objects in state database
 	Marbles    []string `json:"marbles"`
 }
+*/
 
 type Marble struct {
 	ObjectType string        `json:"docType"`
@@ -80,6 +82,7 @@ type Owner struct {
 	Username   string `json:"username"`
 	Company    string `json:"company"`
 	Timestamp  int64  `json:"timestamp"`      //utc timestamp of registration
+	Marbles  []string `json:"marbles"`        //list of marbles names
 }
 type OwnersIndex struct {
 	ObjectType string   `json:"docType"`
@@ -125,25 +128,9 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) ([]byte, error)
 		return nil, err
 	}
 
-	var marbles MarblesIndex
-	marbles.ObjectType = "MarbleIndex"
-	jsonAsBytes, _ := json.Marshal(marbles)      //marshal a marbles index struct with emtpy array of strings to clear the index
-	err = stub.PutState(marbleIndexStr, jsonAsBytes)
-	if err != nil {
-		return nil, err
-	}
-
-	var trades AllTrades
-	trades.ObjectType = "Trades"
-	jsonAsBytes, _ = json.Marshal(trades)        //trades is empty, this clear the open trade index
-	err = stub.PutState(openTradesStr, jsonAsBytes)
-	if err != nil {
-		return nil, err
-	}
-
 	var owner OwnersIndex
 	owner.ObjectType = "OwnerIndex"
-	jsonAsBytes, _ = json.Marshal(owner)         //owner is empty, this clears the owner index
+	jsonAsBytes, _ := json.Marshal(owner)         //owner is empty, this clears the owner index
 	err = stub.PutState(ownerIndexStr, jsonAsBytes)
 	if err != nil {
 		return nil, err
@@ -165,7 +152,6 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) ([]byte, erro
 		return t.Init(stub)
 	} else if function == "delete_marble" { //deletes a marble from state
 		res, err := delete_marble(stub, args)
-		cleanTrades(stub) 					//lets make sure all open trades are still valid
 		return res, err
 	} else if function == "write" { 		//writes a value to the chaincode state
 		return write(stub, args)
@@ -173,16 +159,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) ([]byte, erro
 		return init_marble(stub, args)
 	} else if function == "set_owner" { 	//change owner of a marble
 		res, err := set_owner(stub, args)
-		cleanTrades(stub) 					//lets make sure all open trades are still valid
 		return res, err
-	} else if function == "open_trade" { 	//create a new trade order
-		return open_trade(stub, args)
-	} else if function == "perform_trade" { //forfill an open trade order
-		res, err := perform_trade(stub, args)
-		cleanTrades(stub) 					//lets clean just in case
-		return res, err
-	} else if function == "remove_trade" { 	//cancel an open trade order
-		return remove_trade(stub, args)
 	} else if function == "read" {
 		return read(stub, args)
 	}else if function == "init_owner"{

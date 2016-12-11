@@ -32,6 +32,7 @@ var host = 'localhost';
 var port = helper.getMarblesPort();
 var wss = {};
 var known_marble_owners = [];
+var known_marbles = [];
 var checkInterval = null;
 process.env.marble_company = helper.getCompanyName();
 
@@ -333,7 +334,10 @@ function all_done(){
 	fs.writeFileSync(app_state_file, JSON.stringify(state_file, null, 4), 'utf8');
 
 	if(checkInterval === null){
-		checkInterval = setInterval(function(){check_for_new_users();}, 15000);	//check perodically
+		check_for_new_users();
+		checkInterval = setInterval(function(){
+			check_for_new_users();
+		}, 12000);																//check perodically
 	}
 }
 
@@ -497,7 +501,7 @@ function check_for_new_users(){
 		console.log('\n\n[periodic] number of owners:', resp.payload[0].length);
 
 		var latestList = [];
-		for(var i in resp.payload[0]){						//lets reformat it a bit, only need 1 peer's response
+		for(var i in resp.payload[0]){							//lets reformat it a bit, only need 1 peer's response
 			var pos = resp.payload[0][i].indexOf('.');
 			var temp = 	{
 							username: resp.payload[0][i].substring(0, pos),
@@ -506,16 +510,37 @@ function check_for_new_users(){
 			latestList.push(temp);
 		}
 
-		var knownAsString = JSON.stringify(known_marble_owners);
+		var knownAsString = JSON.stringify(known_marble_owners);//stringify for easy comparison (order should stay the same)
 		var latestListAsString = JSON.stringify(latestList);
 
 		if(knownAsString === latestListAsString){
 			console.log('[periodic] same owners as last time');
+			check_for_new_marbles();
 		}
-		else{
+		else{													//detected new members, send it out
 			console.log('[periodic] new owners, sending to users');
 			known_marble_owners = latestList;
 			wss.broadcast({msg: 'owners', e: err, owners: latestList});
+		}
+	});
+}
+
+//see if there are new marbles
+function check_for_new_marbles(){
+	marbles_lib.get_marble_list(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(err, resp){
+		var marbleIndex = resp.payload[0];
+		console.log('\n\n[periodic] number of marbles:', marbleIndex.length);
+
+		var knownAsString = JSON.stringify(known_marbles);		//stringify for easy comparison (order should stay the same)
+		var latestListAsString = JSON.stringify(marbleIndex);
+
+		if(knownAsString === latestListAsString){
+			console.log('[periodic] same marbles as last time');
+		}
+		else{													//detected new marbles, send owner msg, client will ask for marbles next
+			console.log('[periodic] new marbles, sending owner msg to start cycle');
+			known_marbles = marbleIndex;
+			//wss.broadcast({msg: 'owners', e: err, owners: known_marble_owners});
 		}
 	});
 }
