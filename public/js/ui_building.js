@@ -57,9 +57,7 @@ function build_user_panels(data){
 	var full_owner = '';
 
 	//reset
-	$('.innerMarbleWrap').html('<i class="fa fa-plus addMarble"></i>');		//reset the panels
-	$('.noMarblesMsg').show();
-	$('.companyPanel[company="' + escapeHtml(data[0].company) + '"]').find('.ownerWrap').html('');
+	$('.ownerWrap').html('');
 
 	for(var i in data){
 		var html = '';
