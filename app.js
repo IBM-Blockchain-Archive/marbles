@@ -26,7 +26,7 @@ var ws = require('ws');													//websocket module
 // --- Set Our Things --- //
 var hfc = require('./utils/fabric-sdk-node2/index.js');
 var more_entropy = randStr(24);
-var part1 = require('./utils/websocket_server_side.js')(null, null, null);
+var ws_server = require('./utils/websocket_server_side.js')(null, null, null);
 var helper = require(__dirname + '/utils/helper.js')(process.env.creds_filename, console);
 var host = 'localhost';
 var port = helper.getMarblesPort();
@@ -211,7 +211,7 @@ function wait_to_init(){
 function setup_marbles_lib(chaincode_id, orderer_url, peer_url){
 	chain.setOrderer(orderer_url);
 	marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, chaincode_id, null);
-	part1.setup(webUser, marbles_lib, null);
+	ws_server.setup(webUser, marbles_lib, null);
 
 	console.log('Checking if chaincode is already deployed or not');
 	marbles_lib.check_if_already_deployed(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(not_deployed, enrollUser){
@@ -410,7 +410,7 @@ function setupWebSocket(){
 					}
 				}
 				else{
-					part1.process_msg(ws, data);								//pass the websocket msg to part 1 processing
+					ws_server.process_msg(ws, data);								//pass the websocket msg to part 1 processing
 				}
 			}
 			catch(e){
