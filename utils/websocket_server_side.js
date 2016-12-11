@@ -7,7 +7,7 @@ var path = require('path');
 //-------------------------------------------------------------------
 // Marbles Chaincode Library
 //-------------------------------------------------------------------
-module.exports = function (checkInterval, marbles_lib, logger) {
+module.exports = function (checkPerodically, marbles_lib, logger) {
 	var hfc = require(path.join(__dirname, '../utils/fabric-sdk-node2/index.js'));
 	var helper = require(path.join(__dirname, './helper.js'))(process.env.creds_filename, console);
 	var ws_server = {};
@@ -35,9 +35,7 @@ module.exports = function (checkInterval, marbles_lib, logger) {
 			console.log('[ws] create marbles req');
 			options = [data.name, data.color, data.size, data.username, data.company];
 			marbles_lib.create_a_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], options, function(){
-				/*setTimeout(function(){
-					marble_cb();
-				}, 1500);*/
+
 			});
 		}
 
@@ -60,15 +58,14 @@ module.exports = function (checkInterval, marbles_lib, logger) {
 		else if(data.type == 'delete_marble'){
 			console.log('[ws] delete marble req');
 			marbles_lib.delete_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], [data.name], function(err, resp){
-				/*setTimeout(function(){
-					
-				}, 2000);*/
+
 			});
 		}
 
 		//get all owners and their company
 		else if(data.type == 'get_owners'){
 			console.log('[ws] get all owners req');
+			//ws_server.check_for_new_users(ws);
 			marbles_lib.get_owner_list(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(err, resp){
 				console.log('\n\n\nthis is what i got - owners:', resp.payload[0].length);
 				console.log(err, JSON.stringify(resp));
@@ -137,42 +134,54 @@ module.exports = function (checkInterval, marbles_lib, logger) {
 
 	//sch next periodic check
 	function sch_next_check(){
-		checkInterval = setTimeout(function(){
+		clearTimeout(checkPerodically);
+		checkPerodically = setTimeout(function(){
 			try{
 				ws_server.check_for_new_users(null);
 			}
-			catch(e){console.log('error', e);}
+			catch(e){
+				console.log('!!!!!! Error in sch next check', e);
+				process.exit();	//test
+				sch_next_check();
+				check_for_new_marbles(null);
+			}
 		}, 12000);														//check perodically
 	}
 
 	//see if there are new users
 	ws_server.check_for_new_users = function(ws_client){
 		marbles_lib.get_owner_list(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(err, resp){
-			console.log('\n\n[checking] number of owners:', resp.payload[0].length);
-
-			var latestList = [];
-			for(var i in resp.payload[0]){							//lets reformat it a bit, only need 1 peer's response
-				var pos = resp.payload[0][i].indexOf('.');
-				var temp = 	{
-								username: resp.payload[0][i].substring(0, pos),
-								company: resp.payload[0][i].substring(pos + 1)
-							};
-				latestList.push(temp);
-			}
-
-			var knownAsString = JSON.stringify(known_marble_owners);//stringify for easy comparison (order should stay the same)
-			var latestListAsString = JSON.stringify(latestList);
-
-			if(knownAsString === latestListAsString){
-				console.log('[checking] same owners as last time\n\n');
-				if(ws_client !== null) ws_client.send(JSON.stringify({msg: 'owners', e: err, owners: latestList}));
-				check_for_new_marbles(ws_client);
-			}
-			else{													//detected new members, send it out
-				console.log('[checking] new owners, sending to users\n\n');
-				known_marble_owners = latestList;
-				broadcast({msg: 'owners', e: err, owners: latestList});
+			if(err != null){
+				console.log('\n\n[checking] could not get owners:', err);
 				sch_next_check();										//check again
+			}
+			else{
+				console.log('\n\n[checking] number of owners:', resp.payload[0].length);
+
+				var latestList = [];
+				for(var i in resp.payload[0]){							//lets reformat it a bit, only need 1 peer's response
+					var pos = resp.payload[0][i].indexOf('.');
+					var temp = 	{
+									username: resp.payload[0][i].substring(0, pos),
+									company: resp.payload[0][i].substring(pos + 1)
+								};
+					latestList.push(temp);
+				}
+
+				var knownAsString = JSON.stringify(known_marble_owners);//stringify for easy comparison (order should stay the same)
+				var latestListAsString = JSON.stringify(latestList);
+
+				if(knownAsString === latestListAsString){
+					console.log('[checking] same owners as last time\n\n');
+					if(ws_client !== null) ws_client.send(JSON.stringify({msg: 'owners', e: err, owners: latestList}));
+					check_for_new_marbles(null);
+				}
+				else{													//detected new members, send it out
+					console.log('[checking] new owners, sending to users\n\n');
+					known_marble_owners = latestList;
+					broadcast({msg: 'owners', e: err, owners: latestList});
+					sch_next_check();										//check again
+				}
 			}
 		});
 	};
@@ -180,53 +189,67 @@ module.exports = function (checkInterval, marbles_lib, logger) {
 	//see if there are new marbles
 	function check_for_new_marbles(ws_client){
 		marbles_lib.get_marble_list(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(err, resp){
-			var marbleIndex = resp.payload[0];
-			console.log('\n\n[checking] number of marbles:', marbleIndex.length, '\n\n');
-			var by_user = {};
+			if(err != null){
+				console.log('\n\n[checking] could not get marbles:', err);
+				sch_next_check();										//check again
+			}
+			else{
+				var marbleIndex = resp.payload[0];
+				console.log('\n\n[checking] number of marbles:', marbleIndex.length, '\n\n');
+				var by_user = {};
 
-			// ----------- Get Marbles ----------- //
-			async.eachLimit(resp.payload[0], 1, function(marble_id, cb) {
-				marbles_lib.get_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], marble_id, function(err2, resp2){
-					if(resp2.payload && resp2.payload[0] && resp2.payload[0].owner) {
-						var marble = resp2.payload[0];
-						if(!by_user[marble.owner.username]) {
-							by_user[marble.owner.username] = [];
+				// ----------- Get Marbles ----------- //
+				async.eachLimit(resp.payload[0], 1, function(marble_id, cb) {
+					marbles_lib.get_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], marble_id, function(err2, resp2){
+						if(err != null){
+							console.log('\n\n[checking] could not a marble:', err2);
 						}
-						by_user[marble.owner.username].push(marble);	//organize marbles by their owner
-					}
-					else{
-						console.log('[checking] !warning - did not find marble data in resp');
-					}
-					cb();
-				});
-			}, function() {
-				console.log('\n\n[checking] finished getting all marbles');
-				var knownAsString = JSON.stringify(known_marbles);		//stringify for easy comparison (order should stay the same)
-				var latestListAsString = JSON.stringify(by_user);
-				var i;
+						else{
+							if(resp2.payload && resp2.payload[0] && resp2.payload[0].owner) {
+								var marble = resp2.payload[0];
+								if(!by_user[marble.owner.username]) {
+									by_user[marble.owner.username] = [];
+								}
+								by_user[marble.owner.username].push(marble);	//organize marbles by their owner
+							}
+							else{
+								console.log('[checking] !warning - did not find marble data in resp');
+							}
+						}
+						cb();
+					});
+				}, function() {
+					console.log('\n\n[checking] finished getting all marbles');
+					var knownAsString = JSON.stringify(known_marbles);		//stringify for easy comparison (order should stay the same)
+					var latestListAsString = JSON.stringify(by_user);
+					var i;
 
-				// ----------- Marbles Are the Same ----------- //
-				if(knownAsString === latestListAsString){
-					console.log('[checking] same marbles as last time\n\n');
-					if(ws_client !== null) {
+					// ----------- Marbles Are the Same ----------- //
+					if(knownAsString === latestListAsString){
+						console.log('[checking] same marbles as last time');
+						if(ws_client !== null) {
+							console.log('[checking] sending to a client');
+							for(i in by_user){
+								ws_client.send(JSON.stringify(build_marble_obj(i, by_user[i])));	//send each marble owner's marbles
+							}
+							ws_client.send(JSON.stringify({msg: 'all_marbles_sent', e: null}));
+						}
+					}
+
+					// ----------- Marbles Are Different ----------- //
+					else{													//detected new marbles, send owner msg, client will ask for marbles next
+						console.log('[checking] new marbles, sending users marbles msg');
+						console.log('[checking] broadcasting to all clients');
+						known_marbles = by_user;
 						for(i in by_user){
-							ws_client.send(JSON.stringify(build_marble_obj(i, by_user[i])));	//send each marble owner's marbles
+							broadcast(build_marble_obj(i, by_user[i]));								//send each marble owner's marbles
 						}
-						ws_client.send(JSON.stringify({msg: 'all_marbles_sent', e: null}));
+						broadcast({msg: 'all_marbles_sent', e: null});
 					}
-				}
-
-				// ----------- Marbles Are Different ----------- //
-				else{													//detected new marbles, send owner msg, client will ask for marbles next
-					console.log('[checking] new marbles, sending users marbles msg\n\n');
-					known_marbles = by_user;
-					for(i in by_user){
-						broadcast(build_marble_obj(i, by_user[i]));								//send each marble owner's marbles
-					}
-					broadcast({msg: 'all_marbles_sent', e: null});
-					sch_next_check();								//check again
-				}
-			});
+					console.log('\n\n');
+					sch_next_check();										//check again
+				});
+			}
 		});
 	}
 
