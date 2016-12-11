@@ -41,16 +41,20 @@ func build_full_owner(username string, company string) (string) {
 // Get Owner
 // ============================================================================================================================
 func get_owner(stub shim.ChaincodeStubInterface, username string, company string) (Owner, error) {
-	var owner Owner
 	var fullOwner = build_full_owner(username, company);       //concat owners name and the company name
-	ownerAsBytes, err := stub.GetState(fullOwner)              //this will always succeed, even if it doesn't exist
+	return get_owner_full(stub, fullOwner)
+}
+
+func get_owner_full(stub shim.ChaincodeStubInterface, fullOwner string) (Owner, error) {
+	var owner Owner
+	ownerAsBytes, err := stub.GetState(fullOwner)              //this should always succeed, even if it doesn't exist
 	if err != nil {
 		return owner, errors.New("Failed to get owner: " + fullOwner)
 	}
 	json.Unmarshal(ownerAsBytes, &owner)                       //un stringify it aka JSON.parse()
 
-	if owner.Username != username {                            //test if owner is actually here or just nil
-		return owner, errors.New("Owner does not exist: " + fullOwner + ", " + owner.Username + " != " + username)
+	if len(owner.Username) == 0 {                              //test if owner is actually here or just nil
+		return owner, errors.New("Owner does not exist: " + fullOwner + ", " + owner.Username + "." + owner.Company)
 	}
 
 	return owner, nil
@@ -59,14 +63,14 @@ func get_owner(stub shim.ChaincodeStubInterface, username string, company string
 // ============================================================================================================================
 // Get Array of All Owners
 // ============================================================================================================================
-func get_complete_owner_index(stub shim.ChaincodeStubInterface) ([]string, error) {
+func get_complete_owner_index(stub shim.ChaincodeStubInterface) (OwnersIndex, error) {
 	var ownersIndex OwnersIndex
-	ownerIndexAsBytes, err := stub.GetState(ownerIndexStr)
+	ownerIndexAsBytes, err := stub.GetState(ownerIndexStr)    //this should always succeed, even if it doesn't exist
 	if err != nil {
-		return ownersIndex.Owners, errors.New("Failed to get owner index")
+		return ownersIndex, errors.New("Failed to get owner index")
 	}
 	json.Unmarshal(ownerIndexAsBytes, &ownersIndex)           //un stringify it aka JSON.parse()
-	return ownersIndex.Owners, nil
+	return ownersIndex, nil
 }
 
 // ============================================================================================================================
@@ -175,8 +179,8 @@ func init_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error)
 	}
 
 	//append to list
-	ownersIndex = append(ownersIndex, fullOwner)              //add owner to index list
-	fmt.Println("! owner index: ", ownersIndex)
+	ownersIndex.Owners = append(ownersIndex.Owners, fullOwner)              //add owner to index list
+	fmt.Println("! owner index: ", ownersIndex.Owners)
 	jsonAsBytes, _ := json.Marshal(ownersIndex)
 	err = stub.PutState(ownerIndexStr, jsonAsBytes)           //store updated owner index
 

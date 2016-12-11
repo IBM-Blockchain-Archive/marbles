@@ -164,7 +164,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) ([]byte, erro
 	}else if function == "init_owner"{
 		return init_owner(stub, args)
 	}else if function == "compelte_marble_index"{
-		return get_complete__marble_index(stub)
+		return get_complete_marble_index(stub)
 	}
 
 	fmt.Println("Received unknown invoke function name: " + function) //should not get here, its an error

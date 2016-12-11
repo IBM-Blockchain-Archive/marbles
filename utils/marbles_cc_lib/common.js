@@ -18,7 +18,7 @@ module.exports = function (logger) {
 		for(var i in peer_responses) {					//pray to the gods that i===peer_id and they never move
 			var as_string = peer_responses[i].toString('utf8');
 			var as_obj = {marbles: null};
-			console.log('Peer' + i, 'payload says:', as_string);
+			console.log('[marble_lib] Peer' + i, 'payload says:', as_string);
 
 			try{
 				// -- don't parse buffers -- //
@@ -32,7 +32,7 @@ module.exports = function (logger) {
 				// -- compare peer responses -- //
 				if(last != null){							//check if all peers agree
 					if(last !== as_string) {
-						console.log('warning - some peers do not agree on query', last, as_string);
+						console.log('[marble_lib] warning - some peers do not agree on query', last, as_string);
 						ret.peers_agree = false;
 					}
 					last = as_string;

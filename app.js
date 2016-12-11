@@ -301,7 +301,7 @@ function create_assets(build_marbles_users){
 				// --- Create Marble(s) --- //
 				setTimeout(function(){											//delay for peer catch up
 					create_marbles(username, user_cb);
-				}, 2500);
+				}, 1500);
 			});
 		}, function(err) {
 			console.log('- finished creating assets, waiting for peer catch up');

@@ -63,7 +63,7 @@ module.exports = function (chain, chaincode_id, logger) {
 			targets: peerUrls,
 			chaincodeId: chaincode_id,
 			fcn: 'compelte_marble_index',
-			args: ['']
+			args: [' ']
 		};
 
 		webUser.queryByChaincode(request)
@@ -76,7 +76,7 @@ module.exports = function (chain, chaincode_id, logger) {
 				else{
 
 					// -- send formated response -- //
-					var formated = common.format_query_resp(response_payloads, 'marbles');
+					var formated = common.format_query_resp(response_payloads);
 					if(cb) return cb(formated.error, formated.ret);
 				}
 			}
