@@ -223,6 +223,10 @@
 	//transition: all .25s linear;		//terrible drag and drop performance...
 }
 
+.whitebg.ball:hover{
+	border-color: $hi_color2;
+}
+
 #description{
 	margin-left: 20px;
 	position: absolute;

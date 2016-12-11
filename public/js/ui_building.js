@@ -61,6 +61,7 @@ function build_user_panels(data){
 	//reset
 	$('.innerMarbleWrap').html('<i class="fa fa-plus addMarble"></i>');		//reset the panels
 	$('.noMarblesMsg').show();
+	$('.companyPanel[company="' + escapeHtml(data[0].company) + '"]').find('.ownerWrap').html('');
 
 	for(var i in data){
 		var html = '';
@@ -70,9 +71,6 @@ function build_user_panels(data){
 		record_company(data[i].company);
 		known_companies[data[i].company].count++;
 		known_companies[data[i].company].visible++;
-
-		//reset
-		$('.companyPanel[company="' + data[i].company + '"]').find('.ownerWrap').html('');
 
 		full_owner = build_full_owner(data[i].username, data[i].company);
 		console.log('building user', full_owner);

@@ -174,7 +174,7 @@ function set_chaincode_id(cb){
 // Life Starts Here!
 // -------------------------------------------------------------------
 var webUser = null;
-var app_state_file = './app_state.json';
+var app_state_file = './app_state_ ' + file_safe_name(process.env.marble_company) + '.json';
 process.env.app_state = 'starting';
 process.env.app_first_setup = 'yes';
 setupWebSocket();
@@ -233,7 +233,7 @@ function setup_marbles_lib(chaincode_id, orderer_url, peer_url){
 //enroll admin
 function enroll_admin(id, secret, cop, cb){
 	var keyValueStoreObj =	 {
-								path: path.join(__dirname, './keyValStore-' + process.env.marble_company + '-' + uuid) 
+								path: path.join(__dirname, './keyValStore-' + file_safe_name(process.env.marble_company) + '-' + uuid) 
 							};
 	chain.setKeyValueStore(hfc.newKeyValueStore(keyValueStoreObj));
 	chain.setMemberServicesUrl(cop);
@@ -271,7 +271,12 @@ function randStr(length){
 	var possible = 'abcdefghijkmnpqrstuvwxyz0123456789';
 	for(var i=0; i < length; i++ ) text += possible.charAt(Math.floor(Math.random() * possible.length));
 	return text;
-}	
+}
+
+//remove non alphanumerical characters
+function file_safe_name(a_string){
+	return a_string.replace(new RegExp('[^A-Za-z0-9_]', 'g'), '');
+}
 
 //real simple hash
 function simple_hash(a_string){

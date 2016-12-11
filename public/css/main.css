@@ -436,6 +436,9 @@ strong {
   cursor: pointer;
   border-color: #fff; }
 
+.whitebg.ball:hover {
+  border-color: #2EB9D6; }
+
 #description {
   margin-left: 20px;
   position: absolute;
