@@ -43,47 +43,8 @@ module.exports = function (checkInterval, marbles_lib, logger) {
 
 		//get all marbles
 		else if(data.type == 'get_marbles'){
-			console.log('\n\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nclearing interval!');
-			process.env.stop_check = 'yes';
-			broadcast({msg: 'WHAT IS THIS'});
-
 			console.log('[ws] get marbles req');
-			var by_user = {};
-			marbles_lib.get_marble_list(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(err, resp){
-				console.log('\n\n\nthis is wat i got - marbles:', resp.payload[0].length);
-				console.log(err, JSON.stringify(resp));
-
-				async.eachLimit(resp.payload[0], 1, function(marble_id, cb) {
-					console.log('\nlooking at...', marble_id);
-					marbles_lib.get_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], marble_id, function(err2, resp2){
-						if(resp2.payload && resp2.payload[0] && resp2.payload[0].owner) {
-							var marble = resp2.payload[0];
-							if(!by_user[marble.owner.username]) {
-								by_user[marble.owner.username] = [];
-							}
-							by_user[marble.owner.username].push(marble);					//organize marbles by their owner
-						}
-						else{
-							console.log('!warning - did not find marble data in resp');
-						}
-						cb();
-					});
-				}, function() {
-					for(var i in by_user){
-						var obj = 	{
-										msg: 'users_marbles',
-										e: null,
-										username: i,
-										company: by_user[i][0].owner.company,
-										marbles: by_user[i]
-									};
-						console.log('sending all marbles for', i, obj.marbles.length);
-						sendMsg(obj);														//send each marble owner's marbles
-					}
-					console.log('finished sending all users marbles');
-					sendMsg({msg: 'all_marbles_sent', e: null});
-				});
-			});
+			check_for_new_marbles(ws);
 		}
 
 		//transfer a marble
@@ -178,17 +139,16 @@ module.exports = function (checkInterval, marbles_lib, logger) {
 	function sch_next_check(){
 		checkInterval = setTimeout(function(){
 			try{
-				if(process.env.stop_check === 'yes') return;
-				else ws_server.check_for_new_users();
+				ws_server.check_for_new_users(null);
 			}
 			catch(e){console.log('error', e);}
 		}, 12000);														//check perodically
 	}
 
 	//see if there are new users
-	ws_server.check_for_new_users = function(){
+	ws_server.check_for_new_users = function(ws_client){
 		marbles_lib.get_owner_list(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(err, resp){
-			console.log('\n\n[periodic] number of owners:', resp.payload[0].length);
+			console.log('\n\n[checking] number of owners:', resp.payload[0].length);
 
 			var latestList = [];
 			for(var i in resp.payload[0]){							//lets reformat it a bit, only need 1 peer's response
@@ -204,24 +164,27 @@ module.exports = function (checkInterval, marbles_lib, logger) {
 			var latestListAsString = JSON.stringify(latestList);
 
 			if(knownAsString === latestListAsString){
-				console.log('[periodic] same owners as last time\n\n');
-				check_for_new_marbles();
+				console.log('[checking] same owners as last time\n\n');
+				if(ws_client !== null) ws_client.send(JSON.stringify({msg: 'owners', e: err, owners: latestList}));
+				check_for_new_marbles(ws_client);
 			}
 			else{													//detected new members, send it out
-				console.log('[periodic] new owners, sending to users\n\n');
+				console.log('[checking] new owners, sending to users\n\n');
 				known_marble_owners = latestList;
 				broadcast({msg: 'owners', e: err, owners: latestList});
+				sch_next_check();										//check again
 			}
 		});
 	};
 
 	//see if there are new marbles
-	function check_for_new_marbles(){
+	function check_for_new_marbles(ws_client){
 		marbles_lib.get_marble_list(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(err, resp){
 			var marbleIndex = resp.payload[0];
-			console.log('\n\n[periodic] number of marbles:', marbleIndex.length, '\n\n');
-
+			console.log('\n\n[checking] number of marbles:', marbleIndex.length, '\n\n');
 			var by_user = {};
+
+			// ----------- Get Marbles ----------- //
 			async.eachLimit(resp.payload[0], 1, function(marble_id, cb) {
 				marbles_lib.get_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], marble_id, function(err2, resp2){
 					if(resp2.payload && resp2.payload[0] && resp2.payload[0].owner) {
@@ -232,36 +195,49 @@ module.exports = function (checkInterval, marbles_lib, logger) {
 						by_user[marble.owner.username].push(marble);	//organize marbles by their owner
 					}
 					else{
-						console.log('[periodic] !warning - did not find marble data in resp');
+						console.log('[checking] !warning - did not find marble data in resp');
 					}
 					cb();
 				});
 			}, function() {
-				console.log('\n\n[periodic] finished getting all marbles');
+				console.log('\n\n[checking] finished getting all marbles');
 				var knownAsString = JSON.stringify(known_marbles);		//stringify for easy comparison (order should stay the same)
 				var latestListAsString = JSON.stringify(by_user);
+				var i;
 
+				// ----------- Marbles Are the Same ----------- //
 				if(knownAsString === latestListAsString){
-					console.log('[periodic] same marbles as last time\n\n');
+					console.log('[checking] same marbles as last time\n\n');
+					if(ws_client !== null) {
+						for(i in by_user){
+							ws_client.send(JSON.stringify(build_marble_obj(i, by_user[i])));	//send each marble owner's marbles
+						}
+						ws_client.send(JSON.stringify({msg: 'all_marbles_sent', e: null}));
+					}
 				}
+
+				// ----------- Marbles Are Different ----------- //
 				else{													//detected new marbles, send owner msg, client will ask for marbles next
-					console.log('[periodic] new marbles, sending users marbles msg\n\n');
+					console.log('[checking] new marbles, sending users marbles msg\n\n');
 					known_marbles = by_user;
-					for(var i in by_user){
-						var obj = 	{
-										msg: 'users_marbles',
-										e: null,
-										username: i,
-										company: by_user[i][0].owner.company,
-										marbles: by_user[i]
-									};
-						broadcast(obj);								//send each marble owner's marbles
+					for(i in by_user){
+						broadcast(build_marble_obj(i, by_user[i]));								//send each marble owner's marbles
 					}
 					broadcast({msg: 'all_marbles_sent', e: null});
+					sch_next_check();								//check again
 				}
-				sch_next_check();										//check again
 			});
 		});
+	}
+
+	function build_marble_obj(username, marbles){
+		return	{
+				msg: 'users_marbles',
+				e: null,
+				username: username,
+				company: marbles[0].owner.company,
+				marbles: marbles
+			};
 	}
 
 
