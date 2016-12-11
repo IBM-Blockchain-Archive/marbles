@@ -167,7 +167,8 @@ $(document).on('ready', function() {
 
 	//close create marble panel
 	$('#tint').click(function(){
-		$('#createPanel, #startUpPanel, #tint').fadeOut();
+		if($('#startUpPanel').is(':visible')) return;
+		$('#createPanel, #tint').fadeOut();
 	});
 
 	//notification drawer

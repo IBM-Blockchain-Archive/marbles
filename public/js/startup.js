@@ -99,8 +99,8 @@ $(document).on('ready', function() {
 		$('#regUserStep').slideDown();
 	});
 
-	$('#closeStartUp').click(function(){
-		$('#createPanel, #startUpPanel, #tint, .stepHelpWrap').fadeOut();
+	$('.closeStartUp').click(function(){
+		$('#createPanel, #startUpPanel, #tint, #adminStep, #chaincodeStep, #regUserStep').fadeOut();
 	});
 });
 // =================================================================================
@@ -172,7 +172,10 @@ function show_start_up_step(obj){
 	}, 2000);
 
 	function start_marbles(){
-		$('#startUpPanel, #tint').hide();
+		//$('#startUpPanel, #tint').hide();
+		$('.stepHelpWrap').hide();
+		$('#doneStep').slideDown();
+
 		console.log('[startup] sending get_owners msg');
 		ws.send(JSON.stringify({type: 'get_owners', v: 1}));
 		fromLS.startedUpBefore = true;

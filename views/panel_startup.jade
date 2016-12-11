@@ -1,6 +1,6 @@
 #startUpPanel
 
-	span.fa.fa-close#closeStartUp
+	span.fa.fa-close#closeStartUp.closeStartUp
 
 	//----------------- Step 1 Content
 	.stepWrap#step1
@@ -65,7 +65,18 @@
 			span These marble owners are your userbase.
 		.stepCircleStatus
 
-	//----------------- Help Content
+	//----------------- All done
+	.stepHelpWrap#doneStep
+		h2 Setup Complete
+		br
+		br
+		.stepHelpTxt
+			p Your marbles application is ready to use.
+			br
+			br
+			button(type="button").closeStartUp Close
+
+	//----------------- Enrollment Help 
 	.stepHelpWrap#adminStep
 		h2 Enroll Admin
 		br
