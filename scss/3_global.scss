@@ -206,17 +206,21 @@
 	position: relative;
 	height: 100px;
 }
+.smallMarble{
+	height: 40px;
+	width: 40px;
+}
 .ball{
 	display:inline-block;
-	margin: 0 10px;
-	margin-right: 0;
-	border:1px transparent solid;
+	border:2px transparent solid;
 	padding:0;
 	vertical-align: bottom;
+	border-radius: 1000px;
 }
 .ball:hover{
 	cursor: pointer;
-	border-bottom:1px $main_color solid;
+	border-color: $main_color;
+	//transition: all .25s linear;		//terrible drag and drop performance...
 }
 
 #description{
@@ -276,8 +280,6 @@
 
 // --------- Create ---------
 .addMarble{
-	height: 80px;
-	width: 80px;
 	line-height: 75px;
 	margin-left: 10px;
 	font-size: 20px;
@@ -285,14 +287,20 @@
 	border: 1px dashed $acc_color2;
 	border-radius: 100%;
 	text-align: center;
-	line-height: 80px;
 }
 .addMarble:hover{
-	color: $hi_color1;
+	//color: $hi_color1;
 	cursor: pointer;
+	border-color: $main_color;
+	transition: all .25s linear;
 }
 .addMarble, .ball{
-	margin-bottom: 8px;
+	margin: 5px 0 5px 8px;
+}
+.addMarble, .largeMarble{
+	height: 75px;
+	width: 75px;
+	line-height: 75px;
 }
 .createball{
 	font-size:275px;

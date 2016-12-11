@@ -1,4 +1,4 @@
-/* global new_block, randStr, bag, $, document, WebSocket, escapeHtml */
+/* global new_block, randStr, $, document, WebSocket, escapeHtml */
 /* global toTitleCase, show_start_up_step, build_notification, build_user_panels, build_company_panel, populate_users_marbles*/
 /* exported transfer_marble, record_company*/
 var ws = {};

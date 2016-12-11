@@ -9,7 +9,7 @@
 function build_marble(marble){
 	var html = '';
 	var colorClass = '';
-	var size = 'fa-5x';
+	var size = 'largeMarble';
 	
 	marble.name = escapeHtml(marble.name);
 	marble.color = escapeHtml(marble.color);
@@ -18,25 +18,15 @@ function build_marble(marble){
 
 	console.log('building marble: ', marble.color);
 	if(!$('#' + marble.name).length){								//only populate if it doesn't exists
-		if(marble.size == 16) size = 'fa-3x';
-		if(marble.color) colorClass = marble.color.toLowerCase();
+		if(marble.size == 16) size = 'smallMarble';
+		if(marble.color) colorClass = marble.color.toLowerCase() + 'bg';
 		
-		html += '<span id="' + marble.name + '" class="fa fa-circle ' + size + ' ball ' + colorClass + ' title="' + marble.name + '"';
+		html += '<span id="' + marble.name + '" class="ball ' + size + ' ' + colorClass + ' title="' + marble.name + '"';
 		html += ' username="' + marble.owner.username + '" company="' + marble.owner.company + '"></span>';
-		
-		$('.marblesWrap').each(function(){
-			var panel = {
-							username: $(this).attr('username'),
-							company : $(this).attr('company')
-						};
 
-			if(marble.owner.username.toLowerCase() === panel.username.toLowerCase()){	//match the username
-				if(marble.owner.company === panel.company){								//match the company
-					$(this).find('.innerMarbleWrap').prepend(html);
-					$(this).find('.noMarblesMsg').hide();
-				}
-			}
-		});
+		var full_owner = build_full_owner(marble.owner.username, marble.owner.company);
+		$('.marblesWrap[full_owner="' + full_owner +'"]').find('.innerMarbleWrap').prepend(html);
+		$('.marblesWrap[full_owner="' + full_owner +'"]').find('.noMarblesMsg').hide();
 	}
 	return html;
 }
