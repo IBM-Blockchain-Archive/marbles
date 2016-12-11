@@ -309,16 +309,16 @@ strong {
 
 .notificationWrap {
   width: 97%;
-  margin: auto;
-  background: #fff;
-  margin: 1px 0;
+  background: #646B73;
+  margin: 0 auto;
   padding: 5px;
   border-radius: 2px;
   border-left: 5px #6CC284 solid;
-  color: #222832;
+  color: #E5EBEF;
   font-size: 14px;
   display: inline-block;
-  text-align: left; }
+  text-align: left;
+  margin-top: 2px; }
 
 #notificationHandle {
   background: #2EB9D6;

@@ -11,7 +11,7 @@ function connect_to_server(){
 	
 	function connect(){
 		var wsUri = 'ws://' + document.location.hostname + ':' + document.location.port;
-		console.log('Connecting to websocket', wsUri);
+		console.log('[ws] Connecting to websocket', wsUri);
 
 		ws = new WebSocket(wsUri);
 		ws.onopen = function(evt) { onOpen(evt); };
@@ -21,7 +21,7 @@ function connect_to_server(){
 	}
 	
 	function onOpen(evt){
-		console.log('WS CONNECTED');
+		console.log('[ws] CONNECTED');
 		addshow_notification(build_notification(false, 'Connected to Marbles application'), false);
 		connected = true;
 		known_companies = {};					//reset
@@ -30,7 +30,7 @@ function connect_to_server(){
 	}
 
 	function onClose(evt){
-		console.log('WS DISCONNECTED', evt);
+		console.log('[ws] DISCONNECTED', evt);
 		connected = false;
 		addshow_notification(build_notification(true, 'Lost connection to Marbles application'), true);
 		setTimeout(function(){ connect(); }, 5000);					//try again one more time, server restarts are quick
@@ -42,13 +42,13 @@ function connect_to_server(){
 			
 			//marbles
 			if(msgObj.msg === 'users_marbles'){
-				console.log('rec', msgObj.msg, msgObj);
+				console.log('[ws] rec', msgObj.msg, msgObj);
 				populate_users_marbles(msgObj);
 			}
 
 			//chainstats
 			else if(msgObj.msg === 'chainstats'){
-				console.log('rec', msgObj.msg, ': ledger blockheight', msgObj.chainstats.height, 'block', msgObj.blockstats.height);
+				console.log('[ws] rec', msgObj.msg, ': ledger blockheight', msgObj.chainstats.height, 'block', msgObj.blockstats.height);
 				//var e = formatDate(msgObj.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
 				//$('#blockdate').html('<span style="color:#fff">TIME</span>&nbsp;&nbsp;' + e + ' UTC');
 				var temp =  {
@@ -60,41 +60,42 @@ function connect_to_server(){
 
 			//marble owners
 			else if(msgObj.msg === 'owners'){
-				console.log('rec', msgObj.msg, msgObj);
+				console.log('[ws] rec', msgObj.msg, msgObj);
 				build_user_panels(msgObj.owners);
+				console.log('[ws] sending get_marbles msg');
 				ws.send(JSON.stringify({type: 'get_marbles', v:1}));
 			}
 
 			//transaction error
 			else if(msgObj.msg === 'tx_error'){
-				console.log('rec', msgObj.msg, msgObj);
+				console.log('[ws] rec', msgObj.msg, msgObj);
 				addshow_notification(build_notification(true, escapeHtml(msgObj.e)), true);
 			}
 
 			//all marbles sent
 			else if(msgObj.msg === 'all_marbles_sent'){
-				console.log('rec', msgObj.msg, msgObj);
+				console.log('[ws] rec', msgObj.msg, msgObj);
 				start_up = false;
 			}
 
 			//app startup state
 			else if(msgObj.msg === 'app_state'){
-				console.log('rec', msgObj.msg, msgObj);
+				console.log('[ws] rec', msgObj.msg, msgObj);
 				setTimeout(function(){
 					show_start_up_step(msgObj);
 				}, 1000);
 			}
 
 			//unknown
-			else console.log('rec', msgObj.msg, msgObj);
+			else console.log('[ws] rec', msgObj.msg, msgObj);
 		}
 		catch(e){
-			console.log('onMessage ERROR', e);
+			console.log('[ws] onMessage ERROR', e);
 		}
 	}
 
 	function onError(evt){
-		console.log('ws ERROR ', evt);
+		console.log('[ws] ERROR ', evt);
 	}
 }
 
@@ -108,7 +109,7 @@ function showHomePanel(){
 	$('#tint').fadeOut();
 		
 	setTimeout(function(){
-		console.log('getting new marbles!');
+		console.log('sending get_marbles msg');
 		ws.send(JSON.stringify({type: 'get_marbles', v: 1}));					//need to wait a bit
 	}, 1500);
 }
@@ -116,7 +117,6 @@ function showHomePanel(){
 //transfer_marble selected ball to user
 function transfer_marble(marbleName, to_username, to_company){
 	if(marbleName){
-		console.log('transfering marble', marbleName, 'to', to_username, to_company);
 		var obj = 	{
 						type: 'transfer_marble',
 						name: marbleName,
@@ -124,6 +124,7 @@ function transfer_marble(marbleName, to_username, to_company){
 						company: to_company,
 						v: 1
 					};
+		console.log('[ws] sending transfer marble msg', obj);
 		ws.send(JSON.stringify(obj));
 		showHomePanel();
 	}

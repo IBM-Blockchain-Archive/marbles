@@ -28,6 +28,7 @@ $(document).on('ready', function() {
 						peerUrl: $('input[name="peerUrl"]').val(),
 						chaincodeId: $('input[name="chaincodeId"]').val()
 					};
+		console.log('[startup] sending find_chaincode msg');
 		ws.send(JSON.stringify(obj));
 		$('#chaincodeStep').slideUp();
 		$('#step2').removeClass('stepFailed');
@@ -42,6 +43,7 @@ $(document).on('ready', function() {
 						peerUrl: $('input[name="peerUrl"]').val(),
 						chaincodeId: $('input[name="chaincodeId"]').val()
 					};
+		console.log('[startup] sending deploy_chaincode msg');
 		ws.send(JSON.stringify(obj));
 		$('#chaincodeStep').slideUp();
 		$('#step2').removeClass('stepFailed');
@@ -57,6 +59,7 @@ $(document).on('ready', function() {
 						configure: 'register',
 						build_marble_owners: owners,
 					};
+		console.log('[startup] sending register msg');
 		ws.send(JSON.stringify(obj));
 		$('#regUserStep').slideUp();
 		$('#step2').removeClass('stepFailed').removeClass('stepComplete');
@@ -71,6 +74,7 @@ $(document).on('ready', function() {
 						enrollId: $('input[name="enrollId"]').val(),
 						enrollSecret: $('input[name="enrollSecret"]').val(),
 					};
+		console.log('[startup] sending enrollment msg');
 		ws.send(JSON.stringify(obj));
 		$('#adminStep').slideUp();
 		$('#step1').removeClass('stepFailed').removeClass('stepComplete');
@@ -106,8 +110,6 @@ $(document).on('ready', function() {
 //show the current step from the start up panel
 function show_start_up_step(obj){
 	var state = obj.state;
-	console.log('marbles is in state', state, 'first?', obj.first_setup);
-
 	//outcome of the last step
 	//'starting', 'failed_enroll', 'enrolled', 'no_chaincode', 'found_chaincode', 'registered_owners'
 
@@ -125,6 +127,7 @@ function show_start_up_step(obj){
 						type: 'setup',
 						configure: 'enrollment',
 					};
+		console.log('[startup] sending enrollment msg');
 		ws.send(JSON.stringify(json));						//send msg to start
 	}
 	else if(state === 'failed_enroll'){						//could not enroll
@@ -170,6 +173,7 @@ function show_start_up_step(obj){
 
 	function start_marbles(){
 		$('#startUpPanel, #tint').hide();
+		console.log('[startup] sending get_owners msg');
 		ws.send(JSON.stringify({type: 'get_owners', v: 1}));
 		fromLS.startedUpBefore = true;
 		window.localStorage.setItem(lsKey, JSON.stringify(fromLS));		//save

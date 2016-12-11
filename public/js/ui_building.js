@@ -15,8 +15,9 @@ function build_marble(marble){
 	marble.color = escapeHtml(marble.color);
 	marble.owner.username = escapeHtml(marble.owner.username);
 	marble.owner.company = escapeHtml(marble.owner.company);
+	var full_owner = build_full_owner(marble.owner.username, marble.owner.company);
 
-	console.log('building marble: ', marble.color);
+	console.log('building marble: ', marble.color, full_owner);
 	if(!$('#' + marble.name).length){								//only populate if it doesn't exists
 		if(marble.size == 16) size = 'smallMarble';
 		if(marble.color) colorClass = marble.color.toLowerCase() + 'bg';
@@ -24,7 +25,6 @@ function build_marble(marble){
 		html += '<span id="' + marble.name + '" class="ball ' + size + ' ' + colorClass + ' title="' + marble.name + '"';
 		html += ' username="' + marble.owner.username + '" company="' + marble.owner.company + '"></span>';
 
-		var full_owner = build_full_owner(marble.owner.username, marble.owner.company);
 		$('.marblesWrap[full_owner="' + full_owner +'"]').find('.innerMarbleWrap').prepend(html);
 		$('.marblesWrap[full_owner="' + full_owner +'"]').find('.noMarblesMsg').hide();
 	}

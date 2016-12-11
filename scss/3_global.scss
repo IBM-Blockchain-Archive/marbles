@@ -91,16 +91,16 @@
 }
 .notificationWrap{
 	width: 97%;
-	margin: auto;
-	background: $main_color;
-	margin: 1px 0;
+	background: $acc_color2;
+	margin: 0 auto;
 	padding: 5px;
 	border-radius: 2px;
 	border-left: 5px $hi_color3 solid;	//success color
-	color: $acc_color1;
+	color: $acc_color3;
 	font-size: 14px;
 	display: inline-block;
 	text-align: left;
+	margin-top:2px;
 }
 #notificationHandle{
 	background: $hi_color2;
