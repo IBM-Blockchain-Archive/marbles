@@ -233,7 +233,7 @@ function setup_marbles_lib(chaincode_id, orderer_url, peer_url){
 //enroll admin
 function enroll_admin(id, secret, cop, cb){
 	var keyValueStoreObj =	 {
-								path: path.join(__dirname, './keyValStore-' + uuid) 
+								path: path.join(__dirname, './keyValStore-' + process.env.marble_company + '-' + uuid) 
 							};
 	chain.setKeyValueStore(hfc.newKeyValueStore(keyValueStoreObj));
 	chain.setMemberServicesUrl(cop);
