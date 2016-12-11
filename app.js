@@ -508,11 +508,11 @@ function check_for_new_users(){
 		var latestListAsString = JSON.stringify(latestList);
 
 		if(knownAsString === latestListAsString){
-			console.log('[periodic] same owners as last time');
+			console.log('[periodic] same owners as last time\n\n');
 			check_for_new_marbles();
 		}
 		else{													//detected new members, send it out
-			console.log('[periodic] new owners, sending to users');
+			console.log('[periodic] new owners, sending to users\n\n');
 			known_marble_owners = latestList;
 			wss.broadcast({msg: 'owners', e: err, owners: latestList});
 		}
@@ -546,10 +546,10 @@ function check_for_new_marbles(){
 			var latestListAsString = JSON.stringify(by_user);
 
 			if(knownAsString === latestListAsString){
-				console.log('[periodic] same marbles as last time');
+				console.log('[periodic] same marbles as last time\n\n');
 			}
 			else{													//detected new marbles, send owner msg, client will ask for marbles next
-				console.log('[periodic] new marbles, sending users marbles msg');
+				console.log('[periodic] new marbles, sending users marbles msg\n\n');
 				known_marbles = by_user;
 				for(var i in by_user){
 					var obj = 	{

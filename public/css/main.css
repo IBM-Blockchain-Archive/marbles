@@ -977,6 +977,12 @@ td.userRights, th.userRights{
   color: orange;
   cursor: pointer; }
 
+#appStartingText {
+  text-align: center;
+  font-size: 24px;
+  color: #e5ebef;
+  margin-top: 50px; }
+
 #blockWrap {
   position: relative;
   margin: 15px 25px; }
@@ -1119,11 +1125,11 @@ td.userRights, th.userRights{
 
 #userIcon {
   background: #646B73;
-  padding: 10px;
+  padding: 8px;
   border-radius: 20px;
   width: 20px;
   text-align: center;
-  color: #222832;
+  color: #E5EBEF;
   margin-right: 10px;
   font-size: 20px; }
 

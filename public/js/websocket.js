@@ -26,7 +26,6 @@ function connect_to_server(){
 		connected = true;
 		known_companies = {};					//reset
 		start_up = true;						//reset
-		$('#allUserPanelsWrap').html('');		//reset
 	}
 
 	function onClose(evt){

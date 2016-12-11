@@ -62,7 +62,7 @@ $(document).on('ready', function() {
 		console.log('[startup] sending register msg');
 		ws.send(JSON.stringify(obj));
 		$('#regUserStep').slideUp();
-		$('#step2').removeClass('stepFailed').removeClass('stepComplete');
+		$('#step3').removeClass('stepFailed').removeClass('stepComplete');
 	});
 
 	//enroll admin
@@ -110,6 +110,7 @@ $(document).on('ready', function() {
 //show the current step from the start up panel
 function show_start_up_step(obj){
 	var state = obj.state;
+	$('#appStartingText').fadeOut(1000);
 	//outcome of the last step
 	//'starting', 'failed_enroll', 'enrolled', 'no_chaincode', 'found_chaincode', 'registered_owners'
 
@@ -122,6 +123,7 @@ function show_start_up_step(obj){
 		$('#step1').removeClass('stepFailed');
 		$('#step1').removeClass('inactiveStep');
 		$('#step2, #step3').addClass('inactiveStep');
+		$('#step1, #step2, #step3').removeClass('stepComplete');
 
 		var json = 	{
 						type: 'setup',
@@ -135,6 +137,7 @@ function show_start_up_step(obj){
 		$('#step1').addClass('stepFailed');
 		$('#step1').removeClass('inactiveStep');
 		$('#step2, #step3').addClass('inactiveStep');
+		$('#step2, #step3').removeClass('stepComplete');
 
 		$('.stepHelpWrap').hide();
 		$('#adminStep').slideDown();						//show help
@@ -188,6 +191,7 @@ function show_start_up_step(obj){
 		$('#step1, #step2').removeClass('inactiveStep');
 		$('#step3').addClass('inactiveStep');
 		$('#step1').addClass('stepComplete');
+		$('#step2, #step3').removeClass('stepComplete');
 		if(cb){
 			setTimeout(function(){
 				cb();
@@ -200,6 +204,7 @@ function show_start_up_step(obj){
 		$('#step1, #step2').removeClass('stepFailed');
 		$('#step1, #step2, #step3').removeClass('inactiveStep');
 		$('#step1, #step2').addClass('stepComplete');
+		$('#step3').removeClass('stepComplete');
 		if(cb){
 			setTimeout(function(){
 				cb();
