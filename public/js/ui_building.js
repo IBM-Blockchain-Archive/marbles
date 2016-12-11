@@ -34,8 +34,10 @@ function build_marble(marble){
 //redraw the user's marbles
 function populate_users_marbles(msg){
 	var full_owner = build_full_owner(msg.username, msg.company);
+
+	//reset
 	$('.marblesWrap[full_owner="' + full_owner +'"]').find('.innerMarbleWrap').html('<i class="fa fa-plus addMarble"></i>');//reset the panels
-	$('.marblesWrap[full_owner="' + full_owner +'"]').find('.noMarblesMsg').show();	//reset
+	$('.marblesWrap[full_owner="' + full_owner +'"]').find('.noMarblesMsg').show();
 
 	for(var i in msg.marbles){
 		build_marble(msg.marbles[i]);
@@ -54,9 +56,12 @@ function size_user_name(name){
 
 //build all user panels
 function build_user_panels(data){
-	//var html = '';
 	var full_owner = '';
-		
+
+	//reset
+	$('.innerMarbleWrap').html('<i class="fa fa-plus addMarble"></i>');		//reset the panels
+	$('.noMarblesMsg').show();
+
 	for(var i in data){
 		var html = '';
 		var colorClass = '';
@@ -65,6 +70,9 @@ function build_user_panels(data){
 		record_company(data[i].company);
 		known_companies[data[i].company].count++;
 		known_companies[data[i].company].visible++;
+
+		//reset
+		$('.companyPanel[company="' + data[i].company + '"]').find('.ownerWrap').html('');
 
 		full_owner = build_full_owner(data[i].username, data[i].company);
 		console.log('building user', full_owner);

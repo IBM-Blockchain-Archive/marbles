@@ -246,8 +246,6 @@ function connect_to_server(){
 			//marble owners
 			else if(msgObj.msg === 'owners'){
 				console.log('rec', msgObj.msg, msgObj);
-				$('.innerMarbleWrap').html('<i class="fa fa-plus addMarble"></i>');		//reset the panels
-				$('.noMarblesMsg').show();
 				build_user_panels(msgObj.owners);
 				ws.send(JSON.stringify({type: 'get_marbles', v:1}));
 			}
