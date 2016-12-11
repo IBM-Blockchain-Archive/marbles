@@ -75,6 +75,13 @@ function connect_to_server(){
 			else if(msgObj.msg === 'all_marbles_sent'){
 				console.log('[ws] rec', msgObj.msg, msgObj);
 				start_up = false;
+
+				$('.marblesWrap').each(function(){
+					console.log('checking', $(this).attr('full_owner'), $(this).find('.innerMarbleWrap').find('.ball').length);
+					if($(this).find('.innerMarbleWrap').find('.ball').length === 0){
+						$(this).find('.noMarblesMsg').show();
+					}
+				});
 			}
 
 			//app startup state

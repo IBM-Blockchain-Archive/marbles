@@ -561,6 +561,7 @@ function check_for_new_marbles(){
 								};
 					wss.broadcast(obj);								//send each marble owner's marbles
 				}
+				wss.broadcast({msg: 'all_marbles_sent', e: null});
 			}
 		});
 	});
