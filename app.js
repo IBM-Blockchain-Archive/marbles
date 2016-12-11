@@ -539,7 +539,7 @@ function check_for_new_users(){
 function check_for_new_marbles(){
 	marbles_lib.get_marble_list(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(err, resp){
 		var marbleIndex = resp.payload[0];
-		console.log('\n\n[periodic] number of marbles:', marbleIndex.length, marbleIndex);
+		console.log('\n\n[periodic] number of marbles:', marbleIndex.length);
 
 		var knownAsString = JSON.stringify(known_marbles);		//stringify for easy comparison (order should stay the same)
 		var latestListAsString = JSON.stringify(marbleIndex);

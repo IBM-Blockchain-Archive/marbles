@@ -1,5 +1,5 @@
 /* global new_block, randStr, bag, $, document, WebSocket, escapeHtml */
-/* global toTitleCase, show_start_up_step, build_notification, build_marble, build_user_panels, build_company_panel*/
+/* global toTitleCase, show_start_up_step, build_notification, build_user_panels, build_company_panel, populate_users_marbles*/
 /* exported transfer_marble, record_company*/
 var ws = {};
 var bgcolors = ['whitebg', 'blackbg', 'redbg', 'greenbg', 'bluebg', 'purplebg', 'pinkbg', 'orangebg', 'yellowbg'];
@@ -227,10 +227,14 @@ function connect_to_server(){
 	function onMessage(msg){
 		try{
 			var msgObj = JSON.parse(msg.data);
-			if(msgObj.marble){
+			//marbles
+			if(msgObj.msg === 'users_marbles'){
 				console.log('rec', msgObj.msg, msgObj);
-				build_marble(msgObj.marble);
+				//build_marble(msgObj.marble);
+				populate_users_marbles(msgObj);
 			}
+
+			//chainstats
 			else if(msgObj.msg === 'chainstats'){
 				console.log('rec', msgObj.msg, ': ledger blockheight', msgObj.chainstats.height, 'block', msgObj.blockstats.height);
 				//var e = formatDate(msgObj.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
@@ -241,6 +245,8 @@ function connect_to_server(){
 							};
 				new_block(temp);														//send to blockchain.js
 			}
+
+			//marble owners
 			else if(msgObj.msg === 'owners'){
 				console.log('rec', msgObj.msg, msgObj);
 				$('.innerMarbleWrap').html('<i class="fa fa-plus addMarble"></i>');		//reset the panels
@@ -248,20 +254,28 @@ function connect_to_server(){
 				build_user_panels(msgObj.owners);
 				ws.send(JSON.stringify({type: 'get_marbles', v:1}));
 			}
+
+			//transaction error
 			else if(msgObj.msg === 'tx_error'){
 				console.log('rec', msgObj.msg, msgObj);
 				addshow_notification(build_notification(true, escapeHtml(msgObj.e)), true);
 			}
+
+			//all marbles sent
 			else if(msgObj.msg === 'all_marbles_sent'){
 				console.log('rec', msgObj.msg, msgObj);
 				start_up = false;
 			}
+
+			//app startup state
 			else if(msgObj.msg === 'app_state'){
 				console.log('rec', msgObj.msg, msgObj);
 				setTimeout(function(){
 					show_start_up_step(msgObj);
 				}, 1000);
 			}
+
+			//unknown
 			else console.log('rec', msgObj.msg, msgObj);
 		}
 		catch(e){

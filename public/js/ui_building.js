@@ -1,6 +1,6 @@
 /* global bag, $*/
 /* global escapeHtml, toTitleCase, formatDate, known_companies, transfer_marble, record_company*/
-/* exported build_marble, record_company, build_user_panels, build_company_panel, build_notification*/
+/* exported build_marble, record_company, build_user_panels, build_company_panel, build_notification, populate_users_marbles*/
 
 // =================================================================================
 //	UI Building
@@ -15,9 +15,8 @@ function build_marble(marble){
 	marble.color = escapeHtml(marble.color);
 	marble.owner.username = escapeHtml(marble.owner.username);
 	marble.owner.company = escapeHtml(marble.owner.company);
-	//var full_owner = build_full_owner(marble.owner.username, marble.owner.company);
 
-	console.log('got a marble: ', marble.color);
+	console.log('building marble: ', marble.color);
 	if(!$('#' + marble.name).length){								//only populate if it doesn't exists
 		if(marble.size == 16) size = 'fa-3x';
 		if(marble.color) colorClass = marble.color.toLowerCase();
@@ -38,11 +37,19 @@ function build_marble(marble){
 				}
 			}
 		});
-
-		//var count = $('.userRow[full_owner="' + full_owner +'"]').find('.userMarbles').html();
-		//$('.userRow[full_owner="' + full_owner +'"]').find('.userMarbles').html((Number(count) + 1));
 	}
 	return html;
+}
+
+//redraw the user's marbles
+function populate_users_marbles(msg){
+	var full_owner = build_full_owner(msg.username, msg.company);
+	$('.marblesWrap[full_owner="' + full_owner +'"]').find('.innerMarbleWrap').html('<i class="fa fa-plus addMarble"></i>');//reset the panels
+	$('.marblesWrap[full_owner="' + full_owner +'"]').find('.noMarblesMsg').show();	//reset
+
+	for(var i in msg.marbles){
+		build_marble(msg.marbles[i]);
+	}
 }
 
 //crayp resize - dsh to do, dynamic one

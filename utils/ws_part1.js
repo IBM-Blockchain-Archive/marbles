@@ -39,6 +39,7 @@ module.exports = function (webUser, marbles_lib, logger) {
 		//get all marbles
 		else if(data.type == 'get_marbles'){
 			console.log('[ws] get marbles req');
+			var by_user = {};
 			marbles_lib.get_marble_list(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(err, resp){
 				console.log('\n\n\nthis is wat i got - marbles:', resp.payload[0].length);
 				console.log(err, JSON.stringify(resp));
@@ -47,7 +48,11 @@ module.exports = function (webUser, marbles_lib, logger) {
 					console.log('\nlooking at...', marble_id);
 					marbles_lib.get_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], marble_id, function(err2, resp2){
 						if(resp2.payload && resp2.payload[0] && resp2.payload[0].owner) {
-							sendMsg({msg: 'marbles', e: err2, marble: resp2.payload[0]});
+							var marble = resp2.payload[0];
+							if(!by_user[marble.owner.username]) {
+								by_user[marble.owner.username] = [];
+							}
+							by_user[marble.owner.username].push(marble);					//organize marbles by their owner
 						}
 						else{
 							console.log('!warning - did not find marble data in resp');
@@ -55,7 +60,18 @@ module.exports = function (webUser, marbles_lib, logger) {
 						cb();
 					});
 				}, function() {
-					console.log('finished reading all marbles');
+					for(var i in by_user){
+						var obj = 	{
+										msg: 'users_marbles',
+										e: null,
+										username: i,
+										company: by_user[i][0].owner.company,
+										marbles: by_user[i]
+									};
+						console.log('sending all marbles', i, obj);
+						sendMsg(obj);														//send each marble owner's marbles
+					}
+					console.log('finished sending all marbles');
 					sendMsg({msg: 'all_marbles_sent', e: null});
 				});
 			});
