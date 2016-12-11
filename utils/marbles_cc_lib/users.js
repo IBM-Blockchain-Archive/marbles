@@ -9,17 +9,15 @@ module.exports = function (chain, chaincode_id, logger) {
 	//-------------------------------------------------------------------
 	// Create User - options are {username: bob}
 	//-------------------------------------------------------------------
-	users.register_owner = function (webUser, peerUrls, owner_obj, cb) {
+	users.register_owner = function (webUser, peerUrls, args, cb) {
 		console.log('\nCreating a user\n');
-		owner_obj.docType = 'owner';
-		owner_obj.timestamp = Date.now();
 
 		// send proposal to endorser
 		var request = {
 			targets: peerUrls,
 			chaincodeId: chaincode_id,
 			fcn: 'init_owner',
-			args: [JSON.stringify(owner_obj)] 						//args == ['"docType": "owner", "username": "bob", "company": "united marbles"}']
+			args: args 						//args == ["bob", "united marbles"]
 		};
 		webUser.sendTransactionProposal(request)
 		.then(

@@ -296,21 +296,12 @@ function create_assets(build_marbles_users){
 	// --- Create Each user --- //
 	if(build_marbles_users && build_marbles_users.length > 0){
 		async.eachLimit(build_marbles_users, 1, function(username, user_cb) { 	//iter through each one
-			var owner_obj = {username: username, company: process.env.marble_company};
-			marbles_lib.register_owner(webUser, [hfc.getPeer(helper.getPeersUrl(0))], owner_obj, function(){
+			marbles_lib.register_owner(webUser, [hfc.getPeer(helper.getPeersUrl(0))], [username, process.env.marble_company], function(){
 				
 				// --- Create Marble(s) --- //
-				async.eachLimit([1,2], 1, function(block_height, marble_cb) {	//create two marbles for every user
-					var randOptions = build_marble_options(username, process.env.marble_company);
-					console.log('\n\ngoing to create marble:', randOptions);
-					marbles_lib.create_a_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], randOptions, function(){
-						setTimeout(function(){
-							marble_cb();
-						}, 1500);
-					});
-				}, function() {
-					user_cb();													//marble creation finished
-				});
+				setTimeout(function(){											//delay for peer catch up
+					create_marbles(username, user_cb);
+				}, 2500);
 			});
 		}, function(err) {
 			console.log('- finished creating assets, waiting for peer catch up');
@@ -327,6 +318,20 @@ function create_assets(build_marbles_users){
 	}
 }
 
+function create_marbles(username, cb){
+	async.eachLimit([1,2], 1, function(block_height, marble_cb) {	//create two marbles for every user
+		var randOptions = build_marble_options(username, process.env.marble_company);
+		console.log('\n\ngoing to create marble:', randOptions);
+		marbles_lib.create_a_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], randOptions, function(){
+			setTimeout(function(){
+				marble_cb();
+			}, 1500);
+		});
+	}, function() {
+		cb();													//marble creation finished
+	});
+}
+
 function all_done(){
 	broadcast_state('registered_owners');
 	process.env.app_first_setup = 'no';
@@ -339,6 +344,11 @@ function all_done(){
 			check_for_new_users();
 		}, 12000);																//check perodically
 	}
+
+	/*marbles_lib.test(webUser, [hfc.getPeer(helper.getPeersUrl(0))], 'amy.United Marbles', function(e, data){
+		console.log('!!!!!!!!!!!!!!!!!!got');
+		console.log(e, JSON.stringify(data));
+	});*/
 }
 
 //message to client to communicate where we are in the start up
@@ -529,7 +539,7 @@ function check_for_new_users(){
 function check_for_new_marbles(){
 	marbles_lib.get_marble_list(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(err, resp){
 		var marbleIndex = resp.payload[0];
-		console.log('\n\n[periodic] number of marbles:', marbleIndex.length);
+		console.log('\n\n[periodic] number of marbles:', marbleIndex.length, marbleIndex);
 
 		var knownAsString = JSON.stringify(known_marbles);		//stringify for easy comparison (order should stay the same)
 		var latestListAsString = JSON.stringify(marbleIndex);

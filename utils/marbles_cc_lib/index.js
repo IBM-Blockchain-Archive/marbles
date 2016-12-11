@@ -9,6 +9,7 @@ module.exports = function (chain, chaincode_id, logger) {
 	var deploy_cc = require('./deploy_cc.js')(chain, chaincode_id, logger);
 	var marbles = require('./marbles.js')(chain, chaincode_id, logger);
 	var users = require('./users.js')(chain, chaincode_id, logger);
+	var common = require('./common.js')();
 	var marbles_chaincode = {};
 
 	//deploy chaincode
@@ -69,6 +70,39 @@ module.exports = function (chain, chaincode_id, logger) {
 		return users.build_owner_name(username, company);
 	};
 
+
+	//test read
+	marbles_chaincode.test = function(webUser, peer_urls, test, cb){
+		console.log('\ntestig ' + test + ' ...');
+		var request = {
+			targets: peer_urls,
+			chaincodeId: chaincode_id,
+			fcn: 'read',
+			args: [test]
+		};
+
+		webUser.queryByChaincode(request)
+		.then(
+			function(response_payloads) {
+				if(response_payloads.length <= 0){
+					console.log('Query response is empty: ');
+					if(cb) return cb({error: 'query response is empty'}, null);
+				}
+				else{
+
+					// -- send formated response -- //
+					var formated = common.format_query_resp(response_payloads);
+					if(cb) return cb(formated.error, formated.ret);
+				}
+			}
+		).catch(
+			function (err) {
+				console.log('caught error', err);
+				if(cb) return cb(err, null);
+			}
+		);
+	};
+	
 	return marbles_chaincode;
 };
 

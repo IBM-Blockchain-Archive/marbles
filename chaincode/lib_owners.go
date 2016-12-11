@@ -43,11 +43,16 @@ func build_full_owner(username string, company string) (string) {
 func get_owner(stub shim.ChaincodeStubInterface, username string, company string) (Owner, error) {
 	var owner Owner
 	var fullOwner = build_full_owner(username, company);       //concat owners name and the company name
-	ownerAsBytes, err := stub.GetState(fullOwner)
+	ownerAsBytes, err := stub.GetState(fullOwner)              //this will always succeed, even if it doesn't exist
 	if err != nil {
-		return owner, errors.New("Failed to get owner")
+		return owner, errors.New("Failed to get owner: " + fullOwner)
 	}
 	json.Unmarshal(ownerAsBytes, &owner)                       //un stringify it aka JSON.parse()
+
+	if owner.Username != username {                            //test if owner is actually here or just nil
+		return owner, errors.New("Owner does not exist: " + fullOwner + ", " + owner.Username + " != " + username)
+	}
+
 	return owner, nil
 }
 
@@ -80,8 +85,8 @@ func set_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) 
 
 	var marble_id = args[0]
 	var new_user = strings.ToLower(args[1])
-	var new_company = strings.ToLower(args[2])
-	var authed_by_company = strings.ToLower(args[3])
+	var new_company = args[2]
+	var authed_by_company = args[3]
 	fmt.Println(marble_id + "->" + new_user + " - " + new_company + ":" + authed_by_company)
 
 	// get marble's current state 
@@ -93,7 +98,7 @@ func set_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) 
 	json.Unmarshal(marbleAsBytes, &res)          //un stringify it aka JSON.parse()
 
 	//check authorizing company
-	if strings.ToLower(res.Owner.Company) != authed_by_company{
+	if res.Owner.Company != authed_by_company{
 		return nil, errors.New("The company '" + authed_by_company + "' cannot authorize transfers for '" + res.Owner.Company + "'.")
 	}
 
@@ -117,38 +122,45 @@ func init_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error)
 	var err error
 	fmt.Println("starting init_owner")
 
-	// ex: ['"docType": "owner", "username": "bob", "company": "united marbles", "timestamp": 0}'] <- this is an array of strings with size 1
-	if len(args) != 1 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 1")
+	//     0          1
+	// ex: "bob", "united marbles"
+	if len(args) != 2 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 2")
 	}
 
+	//input sanitation
+	if len(args[0]) <= 0 {
+		return nil, errors.New("1st argument must be a non-empty string")
+	}
+	if len(args[1]) <= 0 {
+		return nil, errors.New("2nd argument must be a non-empty string")
+	}
+	if len(args[0]) > 32 {
+		return nil, errors.New("1st argument must be <= 32 characters")
+	}
+	if len(args[1]) > 32 {
+		return nil, errors.New("2nd argument must be <= 32 characters")
+	}
+	
 	var owner Owner
-	json.Unmarshal([]byte(args[0]), &owner)                   //un stringify input, aka JSON.parse()
-	owner.Username = strings.ToLower(owner.Username)
-	//owner.Company = strings.ToLower(owner.Company)
+	json.Unmarshal([]byte(args[0]), &owner)                          //un stringify input, aka JSON.parse()
+	owner.ObjectType = "marble_owner"
+	owner.Username = strings.ToLower(args[0])
+	owner.Company = args[1]
+	owner.Timestamp = makeTimestamp()
 	fmt.Println(owner)
 
 	var fullOwner = build_full_owner(owner.Username, owner.Company); //concat owners name and the company name
 
 	//check if user already exists
-	existingOwnerAsBytes, err := stub.GetState(fullOwner)     //this will always succeed, even if it doesn't exist
-	if err != nil {
-		fmt.Println("Failed to get owner - strange")
-		return nil, errors.New("Failed to get owner - strange")
-	}
-	res := Owner{}
-	json.Unmarshal(existingOwnerAsBytes, &res)
-	fmt.Println(res)
-	var existingFullOwner = res.Username + "." + res.Company;
-
-	if existingFullOwner == fullOwner {
-		fmt.Println("This owner already exists: " + fullOwner)
-		return nil, errors.New("This owner arleady exists")   //all stop, a user by this name exists
+	_, err = get_owner(stub, owner.Username, owner.Company)
+	if err == nil {
+		fmt.Println("This owner already exists: " + owner.Username + " " + owner.Company)
+		return nil, err
 	}
 
 	//store user
-	var ownerAsBytes []byte;
-	json.Unmarshal(ownerAsBytes, &owner)
+	ownerAsBytes, _ := json.Marshal(owner)
 	err = stub.PutState(fullOwner, ownerAsBytes)              //store owner with concated name as key
 	if err != nil {
 		fmt.Println("Could not store user")
@@ -163,7 +175,7 @@ func init_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error)
 	}
 
 	//append to list
-	ownersIndex = append(ownersIndex, fullOwner)//add owner to index list
+	ownersIndex = append(ownersIndex, fullOwner)              //add owner to index list
 	fmt.Println("! owner index: ", ownersIndex)
 	jsonAsBytes, _ := json.Marshal(ownersIndex)
 	err = stub.PutState(ownerIndexStr, jsonAsBytes)           //store updated owner index

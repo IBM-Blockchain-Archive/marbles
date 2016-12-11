@@ -36,9 +36,14 @@ func get_marble(stub shim.ChaincodeStubInterface, name string) (Marble, error) {
 	var marble Marble
 	marbleAsBytes, err := stub.GetState(name)
 	if err != nil {
-		return marble, errors.New("Failed to find marble")
+		return marble, errors.New("Failed to find marble: " + name)
 	}
 	json.Unmarshal(marbleAsBytes, &marble)                   //un stringify it aka JSON.parse()
+
+	if marble.Name != name {                                 //test if marble is actually here or just nil
+		return marble, errors.New("Marble does not exist: " + name)
+	}
+
 	return marble, nil
 }
 
@@ -160,23 +165,23 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) ([]byte, error
 	name := args[0]
 	color := strings.ToLower(args[1])
 	username := strings.ToLower(args[3])
-	company := strings.ToLower(args[4])
+	company := args[4]
 	size, err := strconv.Atoi(args[2])
 	if err != nil {
 		return nil, errors.New("3rd argument must be a numeric string")
 	}
 
 	//check if marble already exists
-	res, err := get_marble(stub, name)
+	marble, err := get_marble(stub, name)
 	if err == nil {
-		fmt.Println("This marble arleady exists: " + name)
-		fmt.Println(res)
-		return nil, errors.New("This marble arleady exists") //all stop a marble by this name exists
+		fmt.Println("This marble already exists: " + name)
+		fmt.Println(marble)
+		return nil, errors.New("This marble already exists: " + name) //all stop a marble by this name exists
 	}
 
 	//build the marble json string manually
-	str := `{"docType":"Marble",  "name": "` + name + `", "color": "` + color + `", "size": ` + strconv.Itoa(size) + `, "owner": {"username": "` + username + `", "company": "` + company + `"}}`
-	err = stub.PutState(name, []byte(str)) //store marble with id as key
+	str := `{"docType":"marble",  "name": "` + name + `", "color": "` + color + `", "size": ` + strconv.Itoa(size) + `, "owner": {"username": "` + username + `", "company": "` + company + `"}}`
+	err = stub.PutState(name, []byte(str))                     //store marble with id as key
 	if err != nil {
 		return nil, err
 	}

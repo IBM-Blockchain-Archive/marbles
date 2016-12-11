@@ -62,8 +62,8 @@ module.exports = function (chain, chaincode_id, logger) {
 		var request = {
 			targets: peerUrls,
 			chaincodeId: chaincode_id,
-			fcn: 'read',
-			args: ['_marbleindex']
+			fcn: 'compelte_marble_index',
+			args: ['']
 		};
 
 		webUser.queryByChaincode(request)
