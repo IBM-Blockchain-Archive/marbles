@@ -26,7 +26,7 @@ var ws = require('ws');													//websocket module
 // --- Set Our Things --- //
 var hfc = require('./utils/fabric-sdk-node2/index.js');
 var more_entropy = randStr(24);
-var part1 = require('./utils/ws_part1')(null, null, null);
+var part1 = require('./utils/websocket_server_side.js')(null, null, null);
 var helper = require(__dirname + '/utils/helper.js')(process.env.creds_filename, console);
 var host = 'localhost';
 var port = helper.getMarblesPort();

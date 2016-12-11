@@ -138,7 +138,7 @@ module.exports = function (webUser, marbles_lib, logger) {
 							stats.height = block_height;
 							sendMsg({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
 						} else {
-							console.log('ws_part1.js - error getting block stats: ' + e);
+							console.log(' - error getting block stats: ' + e);
 						}
 						cb(null);
 					});
