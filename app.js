@@ -140,7 +140,6 @@ process.env['GRPC_SSL_CIPHER_SUITES'] = 'ECDHE-RSA-AES128-GCM-SHA256:' +
     'ECDHE-ECDSA-AES128-SHA256:' +
     'ECDHE-ECDSA-AES256-SHA384:' +
     'ECDHE-ECDSA-AES256-GCM-SHA384';
-//let ccPath = process.env['GOPATH']+'/src/local/marbles-hfc/marbles-v1/chaincode';
 var network_id = helper.getNetworkId();
 var uuid = network_id;
 var webUser = null;
@@ -148,27 +147,7 @@ var marbles_lib = null;
 
 utils.setConfigSetting('crypto-keysize', 256);
 utils.setConfigSetting('crypto-hash-algo', 'SHA2');
-/*
-chain.setKeyValueStore(
-	hfc.newKeyValueStore({
-		path: __dirname + '/keyValStore-' + uuid
-	})
-);*/
-//chain.setMemberServicesUrl(helper.getMemberservicesUrl(0));
-//chain.setOrderer(helper.getOrderersUrl(0));
 
-//make chaincode name unique-ish
-/*
-function set_chaincode_id(cb){
-	fs.stat(ccPath + '/marbles.go', function(err, fstats){
-		var temp = new Date(fstats.mtime);
-		var cc_id = 'marbles.' + temp.getTime();					//get the modified timestamp for the go file
-		console.log('chaincode id', cc_id);
-		helper.write({chaincodeId: cc_id});							//pass it to file
-		cb(null, cc_id);
-	});
-}
-*/
 
 // -------------------------------------------------------------------
 // Life Starts Here!
