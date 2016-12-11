@@ -523,7 +523,7 @@ function check_for_new_users(){
 function check_for_new_marbles(){
 	marbles_lib.get_marble_list(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(err, resp){
 		var marbleIndex = resp.payload[0];
-		console.log('\n\n[periodic] number of marbles:', marbleIndex.length);
+		console.log('\n\n[periodic] number of marbles:', marbleIndex.length, '\n\n');
 
 		var by_user = {};
 		async.eachLimit(resp.payload[0], 1, function(marble_id, cb) {
@@ -541,7 +541,7 @@ function check_for_new_marbles(){
 				cb();
 			});
 		}, function() {
-			console.log('[periodic] finished getting all marbles');
+			console.log('\n\n[periodic] finished getting all marbles');
 			var knownAsString = JSON.stringify(known_marbles);		//stringify for easy comparison (order should stay the same)
 			var latestListAsString = JSON.stringify(by_user);
 

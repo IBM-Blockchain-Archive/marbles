@@ -24,8 +24,6 @@ function connect_to_server(){
 		console.log('[ws] CONNECTED');
 		addshow_notification(build_notification(false, 'Connected to Marbles application'), false);
 		connected = true;
-		known_companies = {};					//reset
-		start_up = true;						//reset
 	}
 
 	function onClose(evt){

@@ -68,10 +68,10 @@ module.exports = function (webUser, marbles_lib, logger) {
 										company: by_user[i][0].owner.company,
 										marbles: by_user[i]
 									};
-						console.log('sending all marbles', i, obj);
+						console.log('sending all marbles for', i, obj.marbles.length);
 						sendMsg(obj);														//send each marble owner's marbles
 					}
-					console.log('finished sending all marbles');
+					console.log('finished sending all users marbles');
 					sendMsg({msg: 'all_marbles_sent', e: null});
 				});
 			});
