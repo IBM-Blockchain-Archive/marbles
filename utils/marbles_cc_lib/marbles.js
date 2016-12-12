@@ -39,6 +39,7 @@ module.exports = function (chain, chaincode_id, logger) {
 			function (response) {
 				if (response && response.Status === 'SUCCESS') {
 					console.log('Successfully ordered endorsement transaction.');
+					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'committing'}));
 					if(cb) cb(null, null);
 				}
 				else {
@@ -145,7 +146,7 @@ module.exports = function (chain, chaincode_id, logger) {
 				var proposal = results[1];
 				if (proposalResponses[0] && proposalResponses[0].response && proposalResponses[0].response.status === 200) {
 					console.log('Successfully obtained transaction endorsement.' + JSON.stringify(proposalResponses));
-					ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering'}));
+					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering'}));
 					return webUser.sendTransaction(proposalResponses, proposal);
 				}
 				else {
@@ -157,6 +158,7 @@ module.exports = function (chain, chaincode_id, logger) {
 			function (response) {
 				if (response && response.Status === 'SUCCESS') {
 					console.log('Successfully ordered endorsement transaction.');
+					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'committing'}));
 					if(cb) return cb(null, null);
 				}
 				else {
@@ -192,7 +194,7 @@ module.exports = function (chain, chaincode_id, logger) {
 				var proposal = results[1];
 				if (proposalResponses[0].response.status === 200) {
 					console.log('Successfully obtained transaction endorsement.' + JSON.stringify(proposalResponses));
-					ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering'}));
+					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering'}));
 					return webUser.sendTransaction(proposalResponses, proposal);
 				}
 				else {
@@ -204,6 +206,7 @@ module.exports = function (chain, chaincode_id, logger) {
 			function (response) {
 				if (response && response.Status === 'SUCCESS') {
 					console.log('Successfully ordered endorsement transaction.');
+					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'committing'}));
 					if(cb) return cb(null, null);
 				}
 				else {

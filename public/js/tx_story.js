@@ -77,7 +77,7 @@ function show_tx_step(obj, cb_orig){
 			$('#txStep1, #txStep2').addClass('stepComplete');
 
 			story3_animation(function(){
-				show_tx_step({state: 'committing'});
+				//show_tx_step({state: 'committing'});
 			});
 		}
 		else if(state === 'committing'){
