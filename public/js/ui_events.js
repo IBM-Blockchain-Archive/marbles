@@ -15,7 +15,7 @@ var fromLS = {};
 $(document).on('ready', function() {
 	fromLS = window.localStorage.getItem(lsKey);
 	if(fromLS) fromLS = JSON.parse(fromLS);
-	else fromLS = {};
+	else fromLS = {story_mode: false};					//dsh todo remove this
 	console.log('from local storage', fromLS);
 
 	connect_to_server();

@@ -9,7 +9,7 @@ var story4html = '';
 // On Load
 // =================================================================================
 $(document).on('ready', function() {
-	if(fromLS.story_mode === true){
+	if(fromLS && fromLS.story_mode === true){
 		set_story_mode('on');
 	}
 	else{
