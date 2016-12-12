@@ -57,7 +57,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 		//delete marble
 		else if(data.type == 'delete_marble'){
 			console.log('[ws] delete marble req');
-			marbles_lib.delete_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], [data.name], function(err, resp){
+			marbles_lib.delete_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], ws, [data.name], function(err, resp){
 
 			});
 		}

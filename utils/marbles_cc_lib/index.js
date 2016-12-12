@@ -45,8 +45,8 @@ module.exports = function (chain, chaincode_id, logger) {
 	};
 
 	//delete marble
-	marbles_chaincode.delete_marble = function (webUser, peer_urls, options, cb) {
-		marbles.delete_marble(webUser, peer_urls, options, cb);
+	marbles_chaincode.delete_marble = function (webUser, peer_urls, ws, options, cb) {
+		marbles.delete_marble(webUser, peer_urls, ws, options, cb);
 	};
 
 

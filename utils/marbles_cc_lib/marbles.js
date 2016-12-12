@@ -174,7 +174,7 @@ module.exports = function (chain, chaincode_id, logger) {
 	//-------------------------------------------------------------------
 	// Delete Marble - options are [marble_id]
 	//-------------------------------------------------------------------
-	marbles.delete_marble = function (webUser, peerUrls, options, cb) {
+	marbles.delete_marble = function (webUser, peerUrls, ws, options, cb) {
 		console.log('\ndeleting a marble...');
 		
 		// send proposal to endorser
@@ -191,6 +191,7 @@ module.exports = function (chain, chaincode_id, logger) {
 				var proposal = results[1];
 				if (proposalResponses[0].response.status === 200) {
 					console.log('Successfully obtained transaction endorsement.' + JSON.stringify(proposalResponses));
+					ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering'}));
 					return webUser.sendTransaction(proposalResponses, proposal);
 				}
 				else {

@@ -1,5 +1,5 @@
 /* global $, window, document */
-/* global randStr, toTitleCase, connect_to_server, showHomePanel, closeNoticePanel, openNoticePanel*/
+/* global randStr, toTitleCase, connect_to_server, showHomePanel, closeNoticePanel, openNoticePanel, show_tx_step*/
 /* exported record_company, autoCloseNoticePanel, start_up*/
 var ws = {};
 var bgcolors = ['whitebg', 'blackbg', 'redbg', 'greenbg', 'bluebg', 'purplebg', 'pinkbg', 'orangebg', 'yellowbg'];
@@ -81,17 +81,20 @@ $(document).on('ready', function() {
 			var id = $(ui.draggable).attr('id');
 			if(id){
 				console.log('removing marble', id);
-				var obj = 	{
+
+				show_tx_step({state: 'building_proposal'}, function(){
+					var obj = 	{
 								type: 'delete_marble',
 								name: id,
 								v: 1
 							};
-				ws.send(JSON.stringify(obj));
-				$(ui.draggable).fadeOut();
-				setTimeout(function(){
-					$(ui.draggable).remove();
-				}, 1500);
-				showHomePanel();
+					ws.send(JSON.stringify(obj));
+					$(ui.draggable).fadeOut();
+					setTimeout(function(){
+						$(ui.draggable).remove();
+					}, 1500);
+					showHomePanel();
+				});
 			}
 		}
 	});
