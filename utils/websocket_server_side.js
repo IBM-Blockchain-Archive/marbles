@@ -34,7 +34,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 		if(data.type == 'create'){
 			console.log('[ws] create marbles req');
 			options = [data.name, data.color, data.size, data.username, data.company];
-			marbles_lib.create_a_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], options, function(){
+			marbles_lib.create_a_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], ws, options, function(){
 
 			});
 		}

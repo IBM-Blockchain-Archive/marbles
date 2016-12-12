@@ -25,8 +25,8 @@ module.exports = function (chain, chaincode_id, logger) {
 
 
 	//create a marble
-	marbles_chaincode.create_a_marble = function (webUser, peer_urls, options, cb) {
-		marbles.create_a_marble(webUser, peer_urls, options, cb);
+	marbles_chaincode.create_a_marble = function (webUser, peer_urls, ws,options, cb) {
+		marbles.create_a_marble(webUser, peer_urls, ws, options, cb);
 	};
 
 	//get list of marbles

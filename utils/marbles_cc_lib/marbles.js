@@ -9,7 +9,7 @@ module.exports = function (chain, chaincode_id, logger) {
 	//-------------------------------------------------------------------
 	// Create Marble
 	//-------------------------------------------------------------------
-	marbles.create_a_marble = function (webUser, peerUrls, options, cb) {
+	marbles.create_a_marble = function (webUser, peerUrls, ws, options, cb) {
 		console.log('\ncreating a marble...');
 		
 		// send proposal to endorser
@@ -27,6 +27,7 @@ module.exports = function (chain, chaincode_id, logger) {
 				var proposal = results[1];
 				if (proposalResponses[0].response.status === 200) {
 					console.log('Successfully obtained transaction endorsement.' + JSON.stringify(proposalResponses));
+					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering'}));
 					return webUser.sendTransaction(proposalResponses, proposal);
 				}
 				else {

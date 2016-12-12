@@ -303,7 +303,7 @@ function create_marbles(username, cb){
 	async.eachLimit([1,2], 1, function(block_height, marble_cb) {	//create two marbles for every user
 		var randOptions = build_marble_options(username, process.env.marble_company);
 		console.log('\n\ngoing to create marble:', randOptions);
-		marbles_lib.create_a_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], randOptions, function(){
+		marbles_lib.create_a_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], null, randOptions, function(){
 			setTimeout(function(){
 				marble_cb();
 			}, 1500);

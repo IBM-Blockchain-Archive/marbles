@@ -37,14 +37,17 @@ $(document).on('ready', function() {
 					};
 		if(obj.username && obj.name && obj.color){
 			console.log('creating marble, sending', obj);
-			ws.send(JSON.stringify(obj));
-
 			$('#createPanel').fadeOut();
 			$('#tint').fadeOut();
-			showHomePanel();
-			$('.colorValue').html('Color');											//reset
-			for(var i in bgcolors) $('.createball').removeClass(bgcolors[i]);		//reset
-			$('.createball').css('border', '2px dashed #fff');						//reset
+
+			show_tx_step({state: 'building_proposal'}, function(){
+				ws.send(JSON.stringify(obj));
+
+				showHomePanel();
+				$('.colorValue').html('Color');											//reset
+				for(var i in bgcolors) $('.createball').removeClass(bgcolors[i]);		//reset
+				$('.createball').css('border', '2px dashed #fff');						//reset
+			});
 		}
 		return false;
 	});
