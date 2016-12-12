@@ -1,5 +1,5 @@
 /* global document */
- /*exported in_array, formatDate, randStr, toTitleCase, nDig, escapeHtml */
+ /*exported in_array, formatDate, randStr, toTitleCase, nDig, escapeHtml, getRandomInt */
 //if element is in array
 function in_array(name, array){
 	for(var i in array){
@@ -19,6 +19,13 @@ function randStr(length){
 //capital first letter of each word
 function toTitleCase(str){
 	return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+}
+
+//random integer
+function getRandomInt(min, max) {
+	min = Math.ceil(min);
+	max = Math.floor(max);
+	return Math.floor(Math.random() * (max - min)) + min;
 }
 
 function formatDate(date, fmt) {

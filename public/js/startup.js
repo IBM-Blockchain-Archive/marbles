@@ -1,4 +1,4 @@
-/* global $, window, document, ws, fromLS, lsKey */
+/* global $, window, document, ws, fromLS, lsKey, getOwnersTimeout:true,getRandomInt */
 /* exported show_start_up_step */
 
 // =================================================================================
@@ -180,7 +180,7 @@ function show_start_up_step(obj){
 		$('#doneStep').slideDown();
 
 		console.log('[startup] sending get_owners msg');
-		ws.send(JSON.stringify({type: 'get_owners', v: 1}));
+		get_owners_or_else();
 		fromLS.startedUpBefore = true;
 		window.localStorage.setItem(lsKey, JSON.stringify(fromLS));		//save
 	}
@@ -222,5 +222,24 @@ function show_start_up_step(obj){
 				cb();
 			}, 1500);
 		}
+	}
+
+	//get owners with timeout to get marbles again!
+	function get_owners_or_else(attempt){
+		clearTimeout(getOwnersTimeout);
+		ws.send(JSON.stringify({type: 'get_owners', v: 1}));
+
+		if(!attempt) attempt = 1;
+		else attempt++;
+
+		getOwnersTimeout = setTimeout(function(){
+			if(attempt <= 3) {
+				console.log('\n\n! [timeout] did not get owners in time, impatiently calling it again', attempt, '\n\n');
+				get_owners_or_else(attempt);
+			}
+			else{
+				console.log('\n\n! [timeout] did not get owners in time, hopeless', attempt, '\n\n');
+			}
+		}, 5000 + getRandomInt(0, 10000));
 	}
 }

@@ -1,6 +1,10 @@
 /* global new_block, $, document, WebSocket, escapeHtml, ws:true, start_up:true, known_companies:true, autoCloseNoticePanel:true */
 /* global show_start_up_step, build_notification, build_user_panels, build_company_panel, populate_users_marbles, show_tx_step*/
+/* global getRandomInt*/
 /* exported transfer_marble, record_company, connect_to_server*/
+
+var getMarblesTimeout = null;
+var getOwnersTimeout = null;
 
 // =================================================================================
 // Socket Stuff
@@ -40,6 +44,7 @@ function connect_to_server(){
 			//marbles
 			if(msgObj.msg === 'users_marbles'){
 				console.log('[ws] rec', msgObj.msg, msgObj);
+				clearTimeout(getMarblesTimeout);
 				populate_users_marbles(msgObj);
 			}
 
@@ -58,9 +63,10 @@ function connect_to_server(){
 			//marble owners
 			else if(msgObj.msg === 'owners'){
 				console.log('[ws] rec', msgObj.msg, msgObj);
+				clearTimeout(getOwnersTimeout);
 				build_user_panels(msgObj.owners);
 				console.log('[ws] sending get_marbles msg');
-				ws.send(JSON.stringify({type: 'get_marbles', v:1}));
+				get_marbles_or_else();
 			}
 
 			//transaction error
@@ -115,10 +121,10 @@ function connect_to_server(){
 // Helper Fun
 // ================================================================================
 //show admin panel page
-function showHomePanel(){
-	setTimeout(function(){
+function refreshHomePanel(){
+	setTimeout(function(){								//need to wait a bit
 		console.log('sending get_marbles msg');
-		ws.send(JSON.stringify({type: 'get_marbles', v: 1}));					//need to wait a bit
+		get_marbles_or_else();
 	}, 1500);
 }
 
@@ -134,7 +140,7 @@ function transfer_marble(marbleName, to_username, to_company){
 					};
 		console.log('[ws] sending transfer marble msg', obj);
 		ws.send(JSON.stringify(obj));
-		showHomePanel();
+		refreshHomePanel();
 	});
 }
 
@@ -190,4 +196,23 @@ function closeNoticePanel(){
 	$('#noticeScrollWrap').slideUp();
 	$('#notificationHandle').children().removeClass('fa-angle-up').addClass('fa-angle-down');
 	clearTimeout(autoCloseNoticePanel);
+}
+
+//get marbles with timeout to get marbles again!
+function get_marbles_or_else(attempt){
+	clearTimeout(getMarblesTimeout);
+	ws.send(JSON.stringify({type: 'get_marbles', v: 1}));
+
+	if(!attempt) attempt = 1;
+	else attempt++;
+
+	getMarblesTimeout = setTimeout(function(){
+		if(attempt <= 3) {
+			console.log('\n\n! [timeout] did not get marbles in time, impatiently calling it again', attempt, '\n\n');
+			get_marbles_or_else(attempt);
+		}
+		else{
+			console.log('\n\n! [timeout] did not get marbles in time, hopeless', attempt, '\n\n');
+		}
+	}, 5000 + getRandomInt(0, 10000));
 }
