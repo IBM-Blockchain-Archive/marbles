@@ -56,6 +56,8 @@ function show_tx_step(obj, cb_orig){
 	$('#txStep1, #txStep2, #txStep3, #txStep4').removeClass('stepFailed');	//reset
 
 	setTimeout(function(){													//wait for initial panel fade in
+		
+		//1
 		if(state === 'building_proposal'){
 			$('#txStep1').removeClass('inactiveStep');
 			$('#txStep2, #txStep3, #txStep4').addClass('inactiveStep');
@@ -66,6 +68,8 @@ function show_tx_step(obj, cb_orig){
 				}, 500);
 			});
 		}
+
+		//2
 		else if(state === 'endorsing'){
 			$('#txStep1, #txStep2').removeClass('inactiveStep');
 			$('#txStep3, #txStep4').addClass('inactiveStep');
@@ -75,6 +79,8 @@ function show_tx_step(obj, cb_orig){
 				if(cb_orig) cb_orig();
 			});																//finally call it here
 		}
+
+		//3
 		else if(state === 'ordering'){
 			$('#txStep1, #txStep2, #txStep3').removeClass('inactiveStep');
 			$('#txStep4').addClass('inactiveStep');
@@ -84,6 +90,8 @@ function show_tx_step(obj, cb_orig){
 				//show_tx_step({state: 'committing'});
 			});
 		}
+
+		//4
 		else if(state === 'committing'){
 			$('#txStep1, #txStep2, #txStep3, #txStep4').removeClass('inactiveStep');
 			$('#txStep1, #txStep2, #txStep3').addClass('stepComplete');
@@ -92,11 +100,15 @@ function show_tx_step(obj, cb_orig){
 				show_tx_step({state: 'finished'});
 			});
 		}
+
+		//exit
 		else if(state === 'finished'){
 			$('#txStep1, #txStep2, #txStep3, #txStep4').removeClass('inactiveStep');
 			$('#txStep1, #txStep2, #txStep3, #txStep4').addClass('stepComplete');
 			$('#doneTxStep').slideDown();
 		}
+
+		//error states
 		else if(state === 'endorsing_failed'){
 			$('#txStep1, #txStep2').removeClass('inactiveStep');
 			$('#txStep3, #txStep4').addClass('inactiveStep');
