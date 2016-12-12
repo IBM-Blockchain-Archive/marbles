@@ -1,53 +1,57 @@
 {
-    "credentials": {
-        "network_id": "asdf",
-        "peers": [
-            {
-                "grpc_host": "192.168.99.100",
-                "grpc_port": 7051,
-                "type": "peer",
-                "network_id": "asdf",
-                "id": "peer1"
-            },
-            {
-                "grpc_host": "192.168.99.100",
-                "grpc_port": 7056,
-                "type": "peer",
-                "network_id": "asdf",
-                "id": "peer1"
-            }
-        ],
-        "memberservices": [
-            {
-                "id": "asdf-ca",
-                "url": "192.168.99.100:8888",
-                "host": "192.168.99.100",
-                "port": 8888,
-                "type": "ca",
-                "network_id": "asdf"
-            }
-        ],
-        "orderers": [
-            {
-                "host": "192.168.99.100",
-                "port": 5151,
-                "type": "orderer",
-                "network_id": "asdf",
-                "id": "orderer-01"
-            }
-        ],
-        "users": [
-            {
-                "enrollId": "admin",
-                "enrollSecret": "adminpw"
-            }
-        ],
-        "cert": "https://blockchain-certs.mybluemix.net/us.blockchain.ibm.com.cert",
-		"marbles":{
-       		"company": "Daves Marbles",
-			"chaincode_id": "marbles",
-       		"usernames": ["amy", "alice", "amber"],
-			"port": 3000
+	"credentials": {
+		"network_id": "NETWORK_ID",
+		"peers": [
+			{
+				"grpc_host": "PEER1_HOST",
+				"grpc_port": PEER1_PORT,
+				"type": "peer",
+				"network_id": "NETWORK_ID",
+				"id": "peer1"
+			},
+			{
+				"grpc_host": "PEER2_HOST",
+				"grpc_port": PEER2_PORT,
+				"type": "peer",
+				"network_id": "NETWORK_ID",
+				"id": "peer1"
+			}
+		],
+		"memberservices": [
+			{
+				"id": "NETWORK_ID-ca",
+				"url": "COP_HOST:COP_PORT",
+				"host": "COP_HOST",
+				"port": COP_PORT,
+				"type": "ca",
+				"network_id": "NETWORK_ID"
+			}
+		],
+		"orderers": [
+			{
+				"host": "ORDERER_HOST",
+				"port": ORDERER_PORT,
+				"type": "orderer",
+				"network_id": "NETWORK_ID",
+				"id": "orderer-01"
+			}
+		],
+		"users": [
+			{
+				"enrollId": "ADMIN",
+				"enrollSecret": "ADMINPW"
+			}
+		],
+		"cert": "https://blockchain-certs.mybluemix.net/us.blockchain.ibm.com.cert",
+		"marbles": {
+			"company": "COMPANY",
+			"chaincode_id": "CHAINCODE_ID",
+			"usernames": [
+				"USER1",
+				"USER2",
+				"USER3"
+			],
+			"port": MARBLES_PORT
 		}
 	}
 }
