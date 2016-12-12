@@ -826,45 +826,25 @@ td.userRights, th.userRights{
   width: 40px;
   position: relative;
   position: absolute;
-  top: 0;
+  top: 15px;
   left: 0;
   background: transparent;
   margin: 0;
   padding: 0;
   color: #3D76BA;
-  line-height: 40px; }
+  line-height: 40px;
+  font-size: 16px; }
 
 #marbleBorderTop, #proposeMarble, #endorseMarbleStable, #endorseMarble, #marbleBorderBottom, #marbleBorderLeft, #marbleBorderRight {
   display: none; }
 
-.ordererMarbles {
-  display: none;
-  background: red; }
-
-/*
-#proposeMarbleStable:before {
-	content: " ";
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	right: 0px;
-	height: 26px;
-	width: 26px;
-	border: 2px solid #343d48;
-	border-radius: 100px;
-}*/
-/*
-.ball{
-	border-radius:1000px;		//dsh this conflicts with the real ones
-}
-*/
 #proposeMarbleStable.hideBorders {
   border-color: transparent; }
 
 #proposeMarbleStable, #proposeMarble, #endorseMarbleStable, #endorseMarble {
   background: #fff; }
 
-.ballWrap {
+.marbleWrap {
   height: 40px;
   width: 40px;
   position: absolute;
@@ -878,14 +858,14 @@ td.userRights, th.userRights{
   border-left-color: transparent;
   border-bottom-color: transparent;
   border-right-color: transparent;
-  top: -50px; }
+  top: -35px; }
 
 #marbleBorderBottom {
   color: transparent;
   border-left-color: transparent;
   border-top-color: transparent;
   border-right-color: transparent;
-  top: 50px; }
+  top: 65px; }
 
 #marbleBorderLeft {
   color: transparent;
@@ -901,22 +881,37 @@ td.userRights, th.userRights{
   border-bottom-color: transparent;
   left: 50px; }
 
-#orderBox {
+#orderBoxStable, #orderBox {
   display: none;
-  height: 90%;
+  height: 140px;
+  line-height: 140px;
   width: 100%;
   background: transparent;
   border: 2px #fff solid;
-  border-radius: 3px;
-  line-height: 80%;
-  position: relative;
-  transition: all .5s linear; }
+  border-radius: 6px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 35px; }
 
 #boxId {
   position: absolute;
   bottom: 18px;
   width: 100%;
   text-align: center; }
+
+.ordererMarbles {
+  display: none;
+  background: #ff8100;
+  top: 44px;
+  left: 15px; }
+
+.ordererMarbles:last-of-type {
+  left: 140px;
+  background: #ec0000; }
+
+#orderBox {
+  background: #018fe0; }
 
 #startUpPanel, #txStoryPanel {
   display: none;

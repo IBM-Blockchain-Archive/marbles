@@ -37,7 +37,7 @@ block custom_header
 				duration: 2000,
 				step: function(distance) {
 					var degree = distance * 360 / move;
-					$('#ballWrap').css('transform','rotate(' + degree + 'deg)');
+					$('#marbleWrap').css('transform','rotate(' + degree + 'deg)');
 				},
 				complete: roll_ball
 			});
@@ -132,7 +132,7 @@ block content
 
 
 		//#test(style="position: relative;")
-			#ballWrap
+			#marbleWrap
 				div.ball#proposeMarbleStable.hideBorders
 				div.ball#marbleBorderTop
 				div.ball#marbleBorderBottom

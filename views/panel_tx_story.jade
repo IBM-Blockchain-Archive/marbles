@@ -8,7 +8,7 @@
 			.txStatus
 		.txLegend Build Proposal
 		.txStoryWrap
-			.ballWrap
+			.marbleWrap
 				div.ball#proposeMarbleStable.hideBorders
 				div.ball#proposeMarble.hideBorders
 				div.ball#marbleBorderTop
@@ -25,7 +25,7 @@
 			.txStatus
 		.txLegend Endorsement
 		.txStoryWrap 
-			.ballWrap
+			.marbleWrap
 				div.ball#endorseMarbleStable
 					span.fa.fa-check
 				div.ball#endorseMarble
@@ -40,10 +40,12 @@
 			.txStatus
 		.txLegend Ordering
 		.txStoryWrap
-			#orderBox 
+			#orderBoxStable 
 				div.ball.ordererMarbles
+					span.fa.fa-check
 				div.ball.ordererMarbles
-				#boxId 007
+					span.fa.fa-check
+			#orderBox 007
 		.txDescription
 			span Then we send our proposal to the order. 
 			span The orderer will organizes the sequence of many transactions from all over the network to build a block. 
