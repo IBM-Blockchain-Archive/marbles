@@ -1,7 +1,7 @@
-/* global $, document */
+/* global $, window, document */
 /* exported show_tx_step */
-//var lsKey = 'marbles';
-//var fromLS = {};
+var lsKey = 'marbles';
+var fromLS = {};
 
 var story1html = '';
 var story2html = '';
@@ -12,10 +12,10 @@ var story4html = '';
 // On Load
 // =================================================================================
 $(document).on('ready', function() {
-	//fromLS = window.localStorage.getItem(lsKey);
-	//if(fromLS) fromLS = JSON.parse(fromLS);
-	//else fromLS = {};
-	
+	fromLS = window.localStorage.getItem(lsKey);
+	if(fromLS) fromLS = JSON.parse(fromLS);
+	else fromLS = {story_mode: true};
+
 	// =================================================================================
 	// jQuery UI Events
 	// =================================================================================
@@ -43,6 +43,12 @@ $(document).on('ready', function() {
 //show the current step from the start up panel
 function show_tx_step(obj, cb_orig){
 	var state = obj.state;
+	if(fromLS.story_mode === false) {
+		console.log('tx story mode is false');
+		if(cb_orig) return cb_orig();
+		else return;
+	}
+
 	$('#txStoryPanel, #tint').fadeIn(300);
 
 	setTimeout(function(){													//wait for initial panel fade in

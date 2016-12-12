@@ -115,9 +115,6 @@ function connect_to_server(){
 // ================================================================================
 //show admin panel page
 function showHomePanel(){
-	//$('#createPanel').fadeOut();
-	//$('#tint').fadeOut();
-		
 	setTimeout(function(){
 		console.log('sending get_marbles msg');
 		ws.send(JSON.stringify({type: 'get_marbles', v: 1}));					//need to wait a bit
