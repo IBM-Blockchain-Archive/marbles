@@ -151,6 +151,7 @@ module.exports = function (chain, chaincode_id, logger) {
 				}
 				else {
 					console.log('Failed to obtain transaction endorsement. Error msg: ', proposalResponses[0]);
+					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'endorsing_failed'}));
 					throw common.format_error_msg(proposalResponses[0]);
 				}
 			}
@@ -163,6 +164,7 @@ module.exports = function (chain, chaincode_id, logger) {
 				}
 				else {
 					console.log('Failed to order the endorsement of the transaction');
+					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering_failed'}));
 					throw response;
 				}
 			}

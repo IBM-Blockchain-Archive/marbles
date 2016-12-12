@@ -23,10 +23,13 @@ $(document).on('ready', function() {
 		$('#txStoryPanel, #tint, #doneTxStep').fadeOut();
 
 		//reset
-		$('#txStep1 .txStoryWrap').html(story1html);
-		$('#txStep2 .txStoryWrap').html(story2html);
-		$('#txStep3 .txStoryWrap').html(story3html);
-		$('#txStep4 .txStoryWrap').html(story4html);
+		setTimeout(function(){
+			$('#txStep1 .txStoryWrap').html(story1html);
+			$('#txStep2 .txStoryWrap').html(story2html);
+			$('#txStep3 .txStoryWrap').html(story3html);
+			$('#txStep4 .txStoryWrap').html(story4html);
+			$('#txStoryErrorWrap').html('');
+		}, 500);
 	});
 
 	//remember initial contents, we will rebuild on reset
@@ -50,6 +53,7 @@ function show_tx_step(obj, cb_orig){
 	}
 
 	$('#txStoryPanel, #tint').fadeIn(300);
+	$('#txStep1, #txStep2, #txStep3, #txStep4').removeClass('stepFailed');	//reset
 
 	setTimeout(function(){													//wait for initial panel fade in
 		if(state === 'building_proposal'){
@@ -92,6 +96,21 @@ function show_tx_step(obj, cb_orig){
 			$('#txStep1, #txStep2, #txStep3, #txStep4').removeClass('inactiveStep');
 			$('#txStep1, #txStep2, #txStep3, #txStep4').addClass('stepComplete');
 			$('#doneTxStep').slideDown();
+		}
+		else if(state === 'endorsing_failed'){
+			$('#txStep1, #txStep2').removeClass('inactiveStep');
+			$('#txStep3, #txStep4').addClass('inactiveStep');
+			$('#txStep1').addClass('stepComplete');
+
+			$('#txStep2').addClass('stepFailed');
+			$('#endorseMarbleStable .fa-check').removeClass('fa-check').addClass('fa-close');
+		}
+		else if(state === 'ordering_failed'){
+			$('#txStep1, #txStep2, #txStep3').removeClass('inactiveStep');
+			$('#txStep4').addClass('inactiveStep');
+			$('#txStep1, #txStep2').addClass('stepComplete');
+
+			$('#txStep3').addClass('stepFailed');
 		}
 	}, 300);
 }

@@ -1057,6 +1057,11 @@ td.userRights, th.userRights{
   margin-top: 0;
   margin-bottom: 20px; }
 
+#txStoryErrorWrap {
+  text-align: center;
+  color: orange;
+  margin-top: 20px; }
+
 .settingsWrap {
   margin-bottom: 50px; }
 
