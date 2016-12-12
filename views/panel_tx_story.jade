@@ -1,6 +1,6 @@
 #txStoryPanel
 
-	span.fa.fa-close#closeTxStory
+	span.fa.fa-close.closeTxStory#closeTxStoryPos
 
 	//----------------- Step 1 Content
 	.txStepWrap#txStep1.inactiveStep
@@ -64,3 +64,10 @@
 
 	div
 		.hint * Note the speed of this process is slowed down for demonstration purposes
+
+	//----------------- All done
+	.stepHelpWrap#doneTxStep
+		h2 Transfer Complete
+		br
+		br
+		button(type="button").closeTxStory Close

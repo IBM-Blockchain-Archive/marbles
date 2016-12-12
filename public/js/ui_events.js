@@ -171,6 +171,7 @@ $(document).on('ready', function() {
 	//close create marble panel
 	$('#tint').click(function(){
 		if($('#startUpPanel').is(':visible')) return;
+		if($('#txStoryPanel').is(':visible')) return;
 		$('#createPanel, #tint').fadeOut();
 	});
 

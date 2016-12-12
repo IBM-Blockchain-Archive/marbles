@@ -3,6 +3,11 @@
 //var lsKey = 'marbles';
 //var fromLS = {};
 
+var story1html = '';
+var story2html = '';
+var story3html = '';
+var story4html = '';
+
 // =================================================================================
 // On Load
 // =================================================================================
@@ -14,21 +19,23 @@ $(document).on('ready', function() {
 	// =================================================================================
 	// jQuery UI Events
 	// =================================================================================
-	$('#closeTxStory').click(function(){
-		$('#txStoryPanel, #tint').fadeOut();
+	$('.closeTxStory').click(function(){
+		$('#txStoryPanel, #tint, #doneTxStep').fadeOut();
+
+		//reset
+		$('#txStep1 .txStoryWrap').html(story1html);
+		$('#txStep2 .txStoryWrap').html(story2html);
+		$('#txStep3 .txStoryWrap').html(story3html);
+		$('#txStep4 .txStoryWrap').html(story4html);
 	});
 
-	/*$( window ).resize(function() {
-		//var dist1 = $('#txStep1 .txStatusWrap .txStatus').offset();
-		var dist2 = $('#txStep2 .txStatusWrap .txStatus').offset();
-		var dist3 = $('#txStep3 .txStatusWrap .txStatus').offset();
-		//var dist4 = $('#txStep4 .txStatusWrap .txStatus').offset();
-
-		//console.log('step 2', dist2, dist3,);
-		$('#endorseMarble').css('left', dist3.left - dist2.left);
-	});*/
-
+	//remember initial contents, we will rebuild on reset
+	story1html = $('#txStep1 .txStoryWrap').html();
+	story2html = $('#txStep2 .txStoryWrap').html();
+	story3html = $('#txStep3 .txStoryWrap').html();
+	story4html = $('#txStep4 .txStoryWrap').html();
 });
+
 // =================================================================================
 // Start Up Fun
 // ================================================================================
@@ -72,9 +79,10 @@ function show_tx_step(obj){
 	else if(state === 'finished'){
 		$('#txStep1, #txStep2, #txStep3, #txStep4').removeClass('inactiveStep');
 		$('#txStep1, #txStep2, #txStep3, #txStep4').addClass('stepComplete');
+
+		$('#doneTxStep').slideDown();
 	}
 }
-
 
 //1. animate borders to join marble in center
 function story1_animation(){

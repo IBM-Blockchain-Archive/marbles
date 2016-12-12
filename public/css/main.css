@@ -1009,12 +1009,12 @@ td.userRights, th.userRights{
   font-size: 13px;
   margin-right: 5px; }
 
-#closeStartUp, #closeTxStory {
+#closeStartUp, #closeTxStoryPos {
   position: absolute;
   right: 15px;
   top: 15px; }
 
-#closeStartUp:hover, #closeTxStory:hover {
+#closeStartUp:hover, #closeTxStoryPos:hover {
   color: orange;
   cursor: pointer; }
 
