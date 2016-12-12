@@ -138,7 +138,7 @@ function transfer_marble(marbleName, to_username, to_company){
 		console.log('[ws] sending transfer marble msg', obj);
 		ws.send(JSON.stringify(obj));
 		showHomePanel();
-	}, 2000);			//dsh to do - remove
+	}, 4000);			//dsh to do - remove
 }
 
 //record the compan, show notice if its new

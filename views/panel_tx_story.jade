@@ -8,7 +8,13 @@
 			.txStatus
 		.txLegend Build Proposal
 		.txStoryWrap
-			.ball
+			.ballWrap
+				div.ball#proposeMarbleStable.hideBorders
+				div.ball#proposeMarble.hideBorders
+				div.ball#marbleBorderTop
+				div.ball#marbleBorderBottom
+				div.ball#marbleBorderLeft
+				div.ball#marbleBorderRight
 		.txDescription
 			span The invocation needs to be signed and packaged as a proposal. 
 			span This is done here, in the Marbles application. 
@@ -18,8 +24,12 @@
 		.txStatusWrap
 			.txStatus
 		.txLegend Endorsement
-		.txStoryWrap
-			.ball
+		.txStoryWrap 
+			.ballWrap
+				div.ball#endorseMarbleStable
+					span.fa.fa-check
+				div.ball#endorseMarble
+					span.fa.fa-check
 		.txDescription
 			span Next we send the proposal to our peer for endorsing. 
 			span The peer will make sure the proposal is well formed. 
@@ -30,7 +40,10 @@
 			.txStatus
 		.txLegend Ordering
 		.txStoryWrap
-			.ball
+			#orderBox 
+				div.ball.ordererMarbles
+				div.ball.ordererMarbles
+				#boxId 007
 		.txDescription
 			span Then we send our proposal to the order. 
 			span The orderer will organizes the sequence of many transactions from all over the network to build a block. 
@@ -40,8 +53,7 @@
 		.txStatusWrap
 			.txStatus
 		.txLegend Commit
-		.txStoryWrap
-			.ball
+		.txStoryWrap &nbsp;
 		.txDescription
 			span Finally the block containing our transaction is committed to our peer's ledger.
 

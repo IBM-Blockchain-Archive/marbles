@@ -820,22 +820,29 @@ td.userRights, th.userRights{
 .welcomeImg {
   height: 75px; }
 
-#testBall, #testBall2, #testBall3, #testBallLeft, #testBallRight {
-  border: 5px solid #181C22;
-  border-top-color: #6CC284;
-  border-bottom-color: #6CC284;
-  height: 30px;
-  width: 30px;
+#proposeMarbleStable, #proposeMarble, #endorseMarbleStable, #endorseMarble, #marbleBorderTop, #marbleBorderBottom, #marbleBorderLeft, #marbleBorderRight, .ordererMarbles {
+  border: 3px solid #3D76BA;
+  height: 40px;
+  width: 40px;
   position: relative;
   position: absolute;
   top: 0;
   left: 0;
   background: transparent;
   margin: 0;
-  padding: 0; }
+  padding: 0;
+  color: #3D76BA;
+  line-height: 40px; }
+
+#marbleBorderTop, #proposeMarble, #endorseMarbleStable, #endorseMarble, #marbleBorderBottom, #marbleBorderLeft, #marbleBorderRight {
+  display: none; }
+
+.ordererMarbles {
+  display: none;
+  background: red; }
 
 /*
-#testBall:before {
+#proposeMarbleStable:before {
 	content: " ";
 	position: absolute;
 	top: 0px;
@@ -851,44 +858,65 @@ td.userRights, th.userRights{
 	border-radius:1000px;		//dsh this conflicts with the real ones
 }
 */
-#testBall.hideBorders {
+#proposeMarbleStable.hideBorders {
   border-color: transparent; }
 
-#testBall {
+#proposeMarbleStable, #proposeMarble, #endorseMarbleStable, #endorseMarble {
   background: #fff; }
 
-#ballWrap {
+.ballWrap {
   height: 40px;
   width: 40px;
-  position: absolute; }
+  position: absolute;
+  display: inline-block;
+  text-align: center;
+  margin-left: -40px;
+  margin-top: 30px; }
 
-#testBall2 {
+#marbleBorderTop {
   color: transparent;
   border-left-color: transparent;
   border-bottom-color: transparent;
   border-right-color: transparent;
   top: -50px; }
 
-#testBall3 {
+#marbleBorderBottom {
   color: transparent;
   border-left-color: transparent;
   border-top-color: transparent;
   border-right-color: transparent;
   top: 50px; }
 
-#testBallLeft {
+#marbleBorderLeft {
   color: transparent;
   border-bottom-color: transparent;
   border-top-color: transparent;
   border-right-color: transparent;
   left: -50px; }
 
-#testBallRight {
+#marbleBorderRight {
   color: transparent;
   border-left-color: transparent;
   border-top-color: transparent;
   border-bottom-color: transparent;
   left: 50px; }
+
+#orderBox {
+  display: none;
+  height: 90%;
+  width: 100%;
+  background: transparent;
+  border: 2px #fff solid;
+  border-radius: 3px;
+  line-height: 80%;
+  position: relative;
+  transition: all .5s linear; }
+
+#boxId {
+  position: absolute;
+  bottom: 18px;
+  width: 100%;
+  text-align: center; }
 
 #startUpPanel, #txStoryPanel {
   display: none;
