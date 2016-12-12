@@ -58,6 +58,10 @@ function build_user_panels(data){
 
 	//reset
 	$('.ownerWrap').html('');
+	for(var x in known_companies){
+		known_companies[x].count = 0;
+		known_companies[x].visible = 0;							//reset visible counts
+	}
 
 	for(var i in data){
 		var html = '';

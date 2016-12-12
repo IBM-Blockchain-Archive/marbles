@@ -103,6 +103,8 @@ $(document).on('ready', function() {
 		for(var i in known_companies){
 			known_companies[i].visible = 0;
 		}
+
+		//reset - clear search
 		if(input === '') {
 			$('.marblesWrap').show();
 			count = $('#totalUsers').html();
@@ -117,19 +119,20 @@ $(document).on('ready', function() {
 			var parts = input.split(',');
 			console.log('searching on', parts);
 
-			$('.marblesWrap').each(function(){
+			//figure out if the user matches the search
+			$('.marblesWrap').each(function(){												//iter on each marble user wrap
 				var full_owner = $(this).attr('full_owner');
 				var company = $(this).attr('company');
 				if(full_owner){
 					full_owner = full_owner.toLowerCase();
 					var show = false;
 
-					for(var x in parts){
+					for(var x in parts){													//iter on each search term
 						if(parts[x].trim() === '') continue;
 						if(full_owner.indexOf(parts[x].trim()) >= 0 || $(this).hasClass('marblesFixed')) {
 							count++;
 							show = true;
-							known_companies[company].visible++;
+							known_companies[company].visible++;								//this user is visible
 							break;
 						}
 					}
@@ -138,6 +141,8 @@ $(document).on('ready', function() {
 					else $(this).hide();
 				}
 			});
+
+			//show/hide the company panels
 			for(i in known_companies){
 				$('.companyPanel[company="' + i + '"]').find('.companyVisible').html(known_companies[i].visible);
 				if(known_companies[i].visible === 0) {

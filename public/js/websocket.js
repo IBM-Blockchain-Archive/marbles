@@ -139,9 +139,8 @@ function transfer_marble(marbleName, to_username, to_company){
 
 //record the compan, show notice if its new
 function record_company(company){
-	if(known_companies[company]) return;
+	if(known_companies[company]) return;										//if i've seen it before, stop
 	
-
 	// -- Show the new company Notification -- //
 	if(start_up === false){
 		console.log('this is a new company!', company);
