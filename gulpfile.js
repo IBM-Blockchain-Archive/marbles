@@ -55,13 +55,13 @@ gulp.task('watch-server', ['server'], function () {
 
 ////// Tasks //////
 gulp.task('default', ['watch-js', 'watch-sass', 'watch-server']);
-gulp.task('marbles', ['default']);
+gulp.task('marbles', ['start_marbles', 'default']);
 gulp.task('united_marbles', ['start_mtc1', 'default']);
 gulp.task('marble_market', ['start_mtc2', 'default']);
 gulp.task('emarbles', ['start_mtc3', 'default']);
 
 //generic marbles
-gulp.task('marbles', function () {
+gulp.task('start_marbles', function () {
 	env['creds_filename'] = 'mycreds.json';
 	console.log('\n[International Marbles Trading Consortium]\n');
 	var color_theme = fs.readFileSync('./scss/color_theme01.scss').toString();
