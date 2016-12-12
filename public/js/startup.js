@@ -1,16 +1,10 @@
-/* global $, window, document, ws */
+/* global $, window, document, ws, fromLS, lsKey */
 /* exported show_start_up_step */
-var lsKey = 'marbles';
-var fromLS = {};
 
 // =================================================================================
 // On Load
 // =================================================================================
 $(document).on('ready', function() {
-	fromLS = window.localStorage.getItem(lsKey);
-	if(fromLS) fromLS = JSON.parse(fromLS);
-	else fromLS = {};
-	
 	// =================================================================================
 	// jQuery UI Events
 	// =================================================================================

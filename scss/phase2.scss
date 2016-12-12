@@ -49,15 +49,6 @@
 .invalid{
 	opacity: 0.3;
 }
-button:disabled{
-	cursor: default;
-}
-button:disabled:hover{
-	background: initial;
-}
-button:disabled, .inactiveButton{
-	opacity: 0.3;
-}
 
 
 .altButton{

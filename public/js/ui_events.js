@@ -1,4 +1,4 @@
-/* global $, document */
+/* global $, window, document */
 /* global randStr, toTitleCase, connect_to_server, showHomePanel, closeNoticePanel, openNoticePanel*/
 /* exported record_company, autoCloseNoticePanel, start_up*/
 var ws = {};
@@ -6,14 +6,21 @@ var bgcolors = ['whitebg', 'blackbg', 'redbg', 'greenbg', 'bluebg', 'purplebg', 
 var autoCloseNoticePanel = null;
 var known_companies = {};
 var start_up = true;
+var lsKey = 'marbles';
+var fromLS = {};
 
 // =================================================================================
 // On Load
 // =================================================================================
 $(document).on('ready', function() {
+	fromLS = window.localStorage.getItem(lsKey);
+	if(fromLS) fromLS = JSON.parse(fromLS);
+	else fromLS = {};
+	console.log('from local storage', fromLS);
+
 	connect_to_server();
 	$('input[name="name"]').val('r' + randStr(6));
-	
+
 	// =================================================================================
 	// jQuery UI Events
 	// =================================================================================
@@ -172,7 +179,7 @@ $(document).on('ready', function() {
 	$('#tint').click(function(){
 		if($('#startUpPanel').is(':visible')) return;
 		if($('#txStoryPanel').is(':visible')) return;
-		$('#createPanel, #tint').fadeOut();
+		$('#createPanel, #tint, #settingsPanel').fadeOut();
 	});
 
 	//notification drawer
@@ -189,4 +196,38 @@ $(document).on('ready', function() {
 	$(document).on('click', '.closeNotification', function(){
 		$(this).parents('.notificationWrap').fadeOut();
 	});
+
+	//settings panel
+	$('#showSettingsPanel').click(function(){
+		$('#settingsPanel, #tint').fadeIn();
+	});
+	$('#closeSettings').click(function(){
+		$('#settingsPanel, #tint').fadeOut();
+	});
+
+	//story mode selection
+	$('#disableStoryMode').click(function(){
+		set_story_mode('off');
+	});
+	$('#enableStoryMode').click(function(){
+		set_story_mode('on');
+	});
 });
+
+//toggle story mode
+function set_story_mode(setting){
+	if(setting === 'on'){
+		fromLS.story_mode = true;
+		$('#enableStoryMode').prop('disabled', true);
+		$('#disableStoryMode').prop('disabled', false);
+		$('#storyStatus').addClass('storyOn').html('on');
+		window.localStorage.setItem(lsKey, JSON.stringify(fromLS));		//save
+	}
+	else{
+		fromLS.story_mode = false;
+		$('#disableStoryMode').prop('disabled', true);
+		$('#enableStoryMode').prop('disabled', false);
+		$('#storyStatus').removeClass('storyOn').html('off');
+		window.localStorage.setItem(lsKey, JSON.stringify(fromLS));		//save
+	}
+}

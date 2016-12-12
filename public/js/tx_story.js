@@ -1,8 +1,5 @@
-/* global $, window, document */
-/* exported show_tx_step */
-var lsKey = 'marbles';
-var fromLS = {};
-
+/* global $, document, fromLS, set_story_mode */
+/* exported show_tx_step*/
 var story1html = '';
 var story2html = '';
 var story3html = '';
@@ -12,9 +9,12 @@ var story4html = '';
 // On Load
 // =================================================================================
 $(document).on('ready', function() {
-	fromLS = window.localStorage.getItem(lsKey);
-	if(fromLS) fromLS = JSON.parse(fromLS);
-	else fromLS = {story_mode: true};
+	if(fromLS.story_mode === true){
+		set_story_mode('on');
+	}
+	else{
+		set_story_mode('off');
+	}
 
 	// =================================================================================
 	// jQuery UI Events

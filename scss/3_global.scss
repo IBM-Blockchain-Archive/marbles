@@ -729,7 +729,7 @@ $marble_left: 0;
 
 
 //-- start up panel -- //
-#startUpPanel, #txStoryPanel{
+#startUpPanel, #txStoryPanel, #settingsPanel{
 	display: none;
 	position: absolute;
 	top: 0;
@@ -807,12 +807,12 @@ $marble_left: 0;
 	font-size: 13px;
 	margin-right: 5px;
 }
-#closeStartUp, #closeTxStoryPos{
+#closeStartUp, #closeTxStoryPos, #closeSettings{
 	position: absolute;
 	right: 15px;
 	top: 15px;
 }
-#closeStartUp:hover, #closeTxStoryPos:hover{
+#closeStartUp:hover, #closeTxStoryPos:hover, #closeSettings:hover{
 	color: $hi_color1;
 	cursor: pointer;
 }
@@ -853,4 +853,21 @@ $marble_left: 0;
 	width: 15px;
 	margin-top: 0;
 	margin-bottom: 20px;
+}
+
+
+
+
+// ------------ Settings Panel ----------//
+.settingsWrap{
+	margin-bottom: 50px;
+}
+.storyOn{
+	color: $hi_color3;
+	font-weight: 700;
+}
+#construction{
+	color: #d740fd;
+	margin-left: 10px;
+	font-size: 16px;
 }

@@ -42,7 +42,7 @@ p{margin:5px; padding:0;}
 hr{height:1px; border:none; background: $acc_color2;}
 hr:first-of-type{height:2px;}
 pre{padding-left:15px;}
-input[type="submit"],input[type="button"], button{
+input[type="submit"],input[type="button"], button, button:disabled:hover{
 	font-size:13px; 
 	cursor:pointer; 
 	padding:5px 10px; 
@@ -61,7 +61,7 @@ input:focus, select:focus, button:focus{
 	transition: all .35s linear;
 }
 input[type="submit"]:hover,input[type="button"]:hover, button:hover, button.activeButton, button.activeButton:focus{
-	border-color: $main_color !important;
+	border-color: $main_color;
 }
 input[type="text"], input[type="password"], select{
 	padding:5px 10px; 
@@ -80,6 +80,13 @@ input[type="text"]:disabled, input[type="password"]:disabled, select:disabled{
 input.longer{
 	min-width:250px;
 }
+button:disabled{
+	cursor: default;
+}
+button:disabled, .inactiveButton{
+	opacity: 0.3;
+}
+
 small{font-size:10pt;}
 img{border:0; max-width:100%;}
 a, a:visited{color:#2e6da4; cursor:pointer;}

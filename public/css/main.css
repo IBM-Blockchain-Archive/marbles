@@ -152,7 +152,7 @@ hr:first-of-type {
 pre {
   padding-left: 15px; }
 
-input[type="submit"], input[type="button"], button {
+input[type="submit"], input[type="button"], button, button:disabled:hover {
   font-size: 13px;
   cursor: pointer;
   padding: 5px 10px;
@@ -170,7 +170,7 @@ input:focus, select:focus, button:focus {
   transition: all .35s linear; }
 
 input[type="submit"]:hover, input[type="button"]:hover, button:hover, button.activeButton, button.activeButton:focus {
-  border-color: #fff !important; }
+  border-color: #fff; }
 
 input[type="text"], input[type="password"], select {
   padding: 5px 10px;
@@ -186,6 +186,12 @@ input[type="text"]:disabled, input[type="password"]:disabled, select:disabled {
 
 input.longer {
   min-width: 250px; }
+
+button:disabled {
+  cursor: default; }
+
+button:disabled, .inactiveButton {
+  opacity: 0.3; }
 
 small {
   font-size: 10pt; }
@@ -931,7 +937,7 @@ td.userRights, th.userRights{
   background: #018fe0;
   border-color: transparent; }
 
-#startUpPanel, #txStoryPanel {
+#startUpPanel, #txStoryPanel, #settingsPanel {
   display: none;
   position: absolute;
   top: 0;
@@ -1009,12 +1015,12 @@ td.userRights, th.userRights{
   font-size: 13px;
   margin-right: 5px; }
 
-#closeStartUp, #closeTxStoryPos {
+#closeStartUp, #closeTxStoryPos, #closeSettings {
   position: absolute;
   right: 15px;
   top: 15px; }
 
-#closeStartUp:hover, #closeTxStoryPos:hover {
+#closeStartUp:hover, #closeTxStoryPos:hover, #closeSettings:hover {
   color: orange;
   cursor: pointer; }
 
@@ -1050,6 +1056,18 @@ td.userRights, th.userRights{
   width: 15px;
   margin-top: 0;
   margin-bottom: 20px; }
+
+.settingsWrap {
+  margin-bottom: 50px; }
+
+.storyOn {
+  color: #6CC284;
+  font-weight: 700; }
+
+#construction {
+  color: #d740fd;
+  margin-left: 10px;
+  font-size: 16px; }
 
 #blockWrap {
   position: relative;
@@ -1223,15 +1241,6 @@ td.userRights, th.userRights{
   font-weight: 100; }
 
 .invalid {
-  opacity: 0.3; }
-
-button:disabled {
-  cursor: default; }
-
-button:disabled:hover {
-  background: initial; }
-
-button:disabled, .inactiveButton {
   opacity: 0.3; }
 
 .altButton {

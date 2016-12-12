@@ -1,0 +1,48 @@
+#settingsPanel
+
+	span.fa.fa-close#closeSettings
+
+	.settingsWrap
+		h3 Story Mode
+		hr
+		p Story mode enables the step by step walk through of the invocation process.
+		p Enable story mode if you are new to Marbles or Hyperledger. 
+
+		br
+		br
+		p 
+			span Story mode is 
+			span#storyStatus.storyOn on
+		p
+			button(type="button")#disableStoryMode Disable
+			span &nbsp;&nbsp;
+			button(type="button" disabled="disabled")#enableStoryMode Enable
+	
+	.settingsWrap
+		h3 
+			span Endorsements
+			span#construction (work in progress...)
+		hr
+		p 
+			span Proposals must be endorsed by a number of peers to be successful. 
+			span The exact number of endorsements will be dictacted by your network's policy. 
+			span If you are new to Marbles or Hyperledger then select the first endorser. 
+		br
+		br
+		p Every checked endorser below will receive marble proposals.
+		
+		.settingPeersWrap
+			p 
+				span Endorser 1
+				input(type="text" placeholder="Peer URL" name="peer1").longer
+				input(type="checkbox" name="peer1")
+
+			p 
+				span Endorser 2
+				input(type="text" placeholder="Peer URL" name="peer2").longer
+				input(type="checkbox" name="peer2")
+
+		p
+			button(type="button") Add Endorser
+
+	
