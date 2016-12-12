@@ -835,6 +835,10 @@ td.userRights, th.userRights{
   line-height: 40px;
   font-size: 16px; }
 
+/*
+.ball.leftPos{
+	left: 15px;
+}*/
 #marbleBorderTop, #proposeMarble, #endorseMarbleStable, #endorseMarble, #marbleBorderBottom, #marbleBorderLeft, #marbleBorderRight {
   display: none; }
 
@@ -850,7 +854,7 @@ td.userRights, th.userRights{
   position: absolute;
   display: inline-block;
   text-align: center;
-  margin-left: -40px;
+  margin-left: -26px;
   margin-top: 30px; }
 
 #marbleBorderTop {
@@ -881,18 +885,26 @@ td.userRights, th.userRights{
   border-bottom-color: transparent;
   left: 50px; }
 
-#orderBoxStable, #orderBox {
+#orderBoxStable, #orderBox, #commitBoxStable {
   display: none;
-  height: 140px;
+  height: 135px;
   line-height: 140px;
-  width: 100%;
+  width: 152px;
   background: transparent;
   border: 2px #fff solid;
   border-radius: 6px;
+  font-size: 35px;
+  text-align: center;
+  margin: auto;
+  position: relative; }
+
+#orderBox {
   position: absolute;
-  top: 0;
-  left: 0;
-  font-size: 35px; }
+  top: -2px;
+  left: -2px; }
+
+#orderBoxStable {
+  line-height: 89px; }
 
 #boxId {
   position: absolute;
@@ -900,18 +912,24 @@ td.userRights, th.userRights{
   width: 100%;
   text-align: center; }
 
+.hideMe {
+  display: none; }
+
 .ordererMarbles {
-  display: none;
-  background: #ff8100;
-  top: 44px;
-  left: 15px; }
+  background: #fff;
+  margin-right: 2%;
+  position: initial;
+  display: inline-block; }
+
+.ordererMarbles:first-of-type {
+  background: #ff8100; }
 
 .ordererMarbles:last-of-type {
-  left: 140px;
   background: #ec0000; }
 
-#orderBox {
-  background: #018fe0; }
+#orderBox, #commitBoxStable {
+  background: #018fe0;
+  border-color: transparent; }
 
 #startUpPanel, #txStoryPanel {
   display: none;
@@ -1008,10 +1026,10 @@ td.userRights, th.userRights{
 
 .txStepWrap {
   display: inline-block;
-  width: 22%;
+  width: 20%;
   text-align: center;
   vertical-align: top;
-  padding: 0 10px; }
+  margin: 0 2.5%; }
 
 .txLegend {
   font-size: 20px;
@@ -1023,9 +1041,9 @@ td.userRights, th.userRights{
   position: relative; }
 
 .txDescription {
-  text-align: left;
-  font-size: 14px;
-  line-height: 18px; }
+  font-size: 13.5px;
+  line-height: 20px;
+  text-align: center; }
 
 .txStatus {
   height: 15px;

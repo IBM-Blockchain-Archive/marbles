@@ -1,4 +1,4 @@
-/* global $, document */
+/* global $, window, document */
 /* exported show_tx_step */
 //var lsKey = 'marbles';
 //var fromLS = {};
@@ -17,6 +17,16 @@ $(document).on('ready', function() {
 	$('#closeTxStory').click(function(){
 		$('#txStoryPanel, #tint').fadeOut();
 	});
+
+	/*$( window ).resize(function() {
+		//var dist1 = $('#txStep1 .txStatusWrap .txStatus').offset();
+		var dist2 = $('#txStep2 .txStatusWrap .txStatus').offset();
+		var dist3 = $('#txStep3 .txStatusWrap .txStatus').offset();
+		//var dist4 = $('#txStep4 .txStatusWrap .txStatus').offset();
+
+		//console.log('step 2', dist2, dist3,);
+		$('#endorseMarble').css('left', dist3.left - dist2.left);
+	});*/
 
 });
 // =================================================================================
@@ -56,8 +66,8 @@ function show_tx_step(obj){
 		$('#txStep1, #txStep2, #txStep3, #txStep4').removeClass('inactiveStep');
 		$('#txStep1, #txStep2, #txStep3').addClass('stepComplete');
 
-		story4_animation(220);
-		setTimeout(function(){show_tx_step({state: 'finished'});}, 5000);
+		story4_animation();
+		setTimeout(function(){show_tx_step({state: 'finished'});}, 4000);
 	}
 	else if(state === 'finished'){
 		$('#txStep1, #txStep2, #txStep3, #txStep4').removeClass('inactiveStep');
@@ -85,12 +95,18 @@ function story2_animation(){
 	$('#proposeMarble').show();
 
 	$('#proposeMarbleStable').removeClass('hideBorders');
-	$('#marbleBorderTop').hide();
+	/*$('#marbleBorderTop').hide();
 	$('#marbleBorderBottom').hide();
 	$('#marbleBorderLeft').hide();
 	$('#marbleBorderRight').hide();
+*/
 
-	roll_ball('#proposeMarble', 235, function(){
+	var dist1 = $('#txStep1 .txStatusWrap .txStatus').offset();
+	var dist2 = $('#txStep2 .txStatusWrap .txStatus').offset();
+	var diff = dist2.left - dist1.left;
+
+
+	roll_ball('#proposeMarble', diff, function(){
 		$('#proposeMarble').hide();
 		$('#endorseMarbleStable').show();
 	});
@@ -99,30 +115,45 @@ function story2_animation(){
 //1. show the marble that will roll
 //2. roll endorsed marble
 //3. show orderer marbles
-//4. build box around marbles
+//4. hide rolled marble
+//5. build box around marbles
 function story3_animation(){
 	$('#endorseMarble').show();
-	roll_ball('#endorseMarble', 240, function(){
+
+	var dist2 = $('#txStep2 .txStatusWrap .txStatus').offset();
+	var dist3 = $('#txStep3 .txStatusWrap .txStatus').offset();
+	var diff = dist3.left - dist2.left;
+
+	roll_ball('#endorseMarble', diff, function(){
 		$('#endorseMarbleStable').show();
 		$('.ordererMarbles').fadeIn();
 		setTimeout(function(){
 			$('#orderBoxStable').fadeIn(1000);
+				setTimeout(function(){
+					$('#endorseMarble').hide();
+				}, 1000);
 		}, 300);
 	});
 }
 
 //1. fade in solid box around marbles
 //2. animate it right
-function story4_animation(dist){
+//3. fade in stable box
+//4. hide box we moved
+function story4_animation(){
+	var dist3 = $('#txStep3 .txStatusWrap .txStatus').offset();
+	var dist4 = $('#txStep4 .txStatusWrap .txStatus').offset();
+	var diff = dist4.left - dist3.left;
+
 	$('#orderBox').fadeIn(1000);
 	setTimeout(function(){
-		//$('#proposeMarbleStable, .ordererMarbles').hide();
 		setTimeout(function(){
-			$('#orderBox').animate({left: '+=' + dist}, {
+			$('#orderBox').animate({left: '+=' + diff}, {
 				duration: 2000,
-				/*complete: function(){
-					$('#orderBoxStable').css('background', '#2EB9D6');
-				}*/
+				complete: function(){
+					$('#commitBoxStable').show();
+					$('#orderBox').hide();
+				}
 			});
 		}, 500);
 	}, 1000);

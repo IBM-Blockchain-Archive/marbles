@@ -9,12 +9,12 @@
 		.txLegend Build Proposal
 		.txStoryWrap
 			.marbleWrap
-				div.ball#proposeMarbleStable.hideBorders
-				div.ball#proposeMarble.hideBorders
-				div.ball#marbleBorderTop
-				div.ball#marbleBorderBottom
-				div.ball#marbleBorderLeft
-				div.ball#marbleBorderRight
+				div.ball#proposeMarbleStable.hideBorders.leftPos
+				div.ball#proposeMarble.hideBorders.leftPos
+				div.ball#marbleBorderTop.leftPos
+				div.ball#marbleBorderBottom.leftPos
+				div.ball#marbleBorderLeft.leftPos
+				div.ball#marbleBorderRight.leftPos
 		.txDescription
 			span The invocation needs to be signed and packaged as a proposal. 
 			span This is done here, in the Marbles application. 
@@ -41,11 +41,13 @@
 		.txLegend Ordering
 		.txStoryWrap
 			#orderBoxStable 
-				div.ball.ordererMarbles
+				span.ball.ordererMarbles.hideMe
 					span.fa.fa-check
-				div.ball.ordererMarbles
+				span.ball.ordererMarbles.hideMe
 					span.fa.fa-check
-			#orderBox 007
+				span.ball.ordererMarbles.hideMe
+					span.fa.fa-check
+				#orderBox 007
 		.txDescription
 			span Then we send our proposal to the order. 
 			span The orderer will organizes the sequence of many transactions from all over the network to build a block. 
@@ -55,7 +57,8 @@
 		.txStatusWrap
 			.txStatus
 		.txLegend Commit
-		.txStoryWrap &nbsp;
+		.txStoryWrap 
+			#commitBoxStable 007
 		.txDescription
 			span Finally the block containing our transaction is committed to our peer's ledger.
 
