@@ -1,30 +1,30 @@
 {
 	"credentials": {
-		"network_id": "asdf",
+		"network_id": "NETWORK_ID",
 		"peers": [
 			{
 				"grpc_host": "PEER1_HOST",
 				"grpc_port": PEER1_PORT,
 				"type": "peer",
-				"network_id": "asdf",
+				"network_id": "NETWORK_ID",
 				"id": "peer1"
 			},
 			{
 				"grpc_host": "PEER2_HOST",
 				"grpc_port": PEER2_PORT,
 				"type": "peer",
-				"network_id": "asdf",
+				"network_id": "NETWORK_ID",
 				"id": "peer1"
 			}
 		],
 		"memberservices": [
 			{
-				"id": "asdf-ca",
+				"id": "NETWORK_ID-ca",
 				"url": "COP_HOST:COP_PORT",
 				"host": "COP_HOST",
 				"port": COP_PORT,
 				"type": "ca",
-				"network_id": "asdf"
+				"network_id": "NETWORK_ID"
 			}
 		],
 		"orderers": [
@@ -32,7 +32,7 @@
 				"host": "ORDERER_HOST",
 				"port": ORDERER_PORT,
 				"type": "orderer",
-				"network_id": "asdf",
+				"network_id": "NETWORK_ID",
 				"id": "orderer-01"
 			}
 		],
@@ -45,7 +45,7 @@
 		"cert": "https://blockchain-certs.mybluemix.net/us.blockchain.ibm.com.cert",
 		"marbles": {
 			"company": "COMPANY",
-			"chaincode_id": "marbles",
+			"chaincode_id": "CHAINCODE_ID",
 			"usernames": [
 				"USER1",
 				"USER2",
