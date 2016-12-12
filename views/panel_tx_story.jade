@@ -1,0 +1,49 @@
+#txStoryPanel
+
+	span.fa.fa-close#closeTxStory
+
+	//----------------- Step 1 Content
+	.txStepWrap#txStep1.inactiveStep
+		.txStatusWrap
+			.txStatus
+		.txLegend Build Proposal
+		.txStoryWrap
+			.ball
+		.txDescription
+			span The invocation needs to be signed and packaged as a proposal. 
+			span This is done here, in the Marbles application. 
+
+	//----------------- Step 2 Content
+	.txStepWrap#txStep2.inactiveStep
+		.txStatusWrap
+			.txStatus
+		.txLegend Endorsement
+		.txStoryWrap
+			.ball
+		.txDescription
+			span Next we send the proposal to our peer for endorsing. 
+			span The peer will make sure the proposal is well formed. 
+
+	//----------------- Step 3 Content
+	.txStepWrap#txStep3.inactiveStep
+		.txStatusWrap
+			.txStatus
+		.txLegend Ordering
+		.txStoryWrap
+			.ball
+		.txDescription
+			span Then we send our proposal to the order. 
+			span The orderer will organizes the sequence of many transactions from all over the network to build a block. 
+
+	//----------------- Step 4 Content
+	.txStepWrap#txStep4.inactiveStep
+		.txStatusWrap
+			.txStatus
+		.txLegend Commit
+		.txStoryWrap
+			.ball
+		.txDescription
+			span Finally the block containing our transaction is committed to our peer's ledger.
+
+	div
+		.hint * Note the speed of this process is slowed down for demonstration purposes

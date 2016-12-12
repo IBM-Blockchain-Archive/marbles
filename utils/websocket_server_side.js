@@ -49,7 +49,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 		else if(data.type == 'transfer_marble'){
 			console.log('[ws] transfering req');
 			options = [data.name, data.username, data.company, process.env.marble_company];
-			marbles_lib.set_marble_owner(webUser, [hfc.getPeer(helper.getPeersUrl(0))], options, function(err, resp){
+			marbles_lib.set_marble_owner(webUser, [hfc.getPeer(helper.getPeersUrl(0))], ws, options, function(err, resp){
 				if(err != null) send_err(err, data);
 			});
 		}

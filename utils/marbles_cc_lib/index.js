@@ -40,8 +40,8 @@ module.exports = function (chain, chaincode_id, logger) {
 	};
 
 	//set marble owner
-	marbles_chaincode.set_marble_owner = function (webUser, peer_urls, options, cb) {
-		marbles.set_marble_owner(webUser, peer_urls, options, cb);
+	marbles_chaincode.set_marble_owner = function (webUser, peer_urls, ws, options, cb) {
+		marbles.set_marble_owner(webUser, peer_urls, ws, options, cb);
 	};
 
 	//delete marble

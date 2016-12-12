@@ -1,5 +1,5 @@
 /* global new_block, $, document, WebSocket, escapeHtml, ws:true, start_up:true, known_companies:true, autoCloseNoticePanel:true */
-/* global show_start_up_step, build_notification, build_user_panels, build_company_panel, populate_users_marbles*/
+/* global show_start_up_step, build_notification, build_user_panels, build_company_panel, populate_users_marbles, show_tx_step*/
 /* exported transfer_marble, record_company, connect_to_server*/
 
 // =================================================================================
@@ -86,8 +86,14 @@ function connect_to_server(){
 			else if(msgObj.msg === 'app_state'){
 				console.log('[ws] rec', msgObj.msg, msgObj);
 				setTimeout(function(){
-					show_start_up_step(msgObj);
+					show_start_up_step(msgObj);		//dsh to do- why?
 				}, 1000);
+			}
+
+			//tx state
+			else if(msgObj.msg === 'tx_step'){
+				console.log('[ws] rec', msgObj.msg, msgObj);
+				show_tx_step(msgObj);
 			}
 
 			//unknown
@@ -109,8 +115,8 @@ function connect_to_server(){
 // ================================================================================
 //show admin panel page
 function showHomePanel(){
-	$('#createPanel').fadeOut();
-	$('#tint').fadeOut();
+	//$('#createPanel').fadeOut();
+	//$('#tint').fadeOut();
 		
 	setTimeout(function(){
 		console.log('sending get_marbles msg');
@@ -120,7 +126,8 @@ function showHomePanel(){
 
 //transfer_marble selected ball to user
 function transfer_marble(marbleName, to_username, to_company){
-	if(marbleName){
+	show_tx_step({state: 'building_proposal'});
+	setTimeout(function(){
 		var obj = 	{
 						type: 'transfer_marble',
 						name: marbleName,
@@ -131,7 +138,7 @@ function transfer_marble(marbleName, to_username, to_company){
 		console.log('[ws] sending transfer marble msg', obj);
 		ws.send(JSON.stringify(obj));
 		showHomePanel();
-	}
+	}, 2000);			//dsh to do - remove
 }
 
 //record the compan, show notice if its new

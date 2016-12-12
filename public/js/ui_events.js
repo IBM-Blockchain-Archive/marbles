@@ -1,6 +1,6 @@
 /* global $, document */
 /* global randStr, toTitleCase, connect_to_server, showHomePanel, closeNoticePanel, openNoticePanel*/
-/* exported transfer_marble, record_company, autoCloseNoticePanel, start_up*/
+/* exported record_company, autoCloseNoticePanel, start_up*/
 var ws = {};
 var bgcolors = ['whitebg', 'blackbg', 'redbg', 'greenbg', 'bluebg', 'purplebg', 'pinkbg', 'orangebg', 'yellowbg'];
 var autoCloseNoticePanel = null;
@@ -31,6 +31,9 @@ $(document).on('ready', function() {
 		if(obj.username && obj.name && obj.color){
 			console.log('creating marble, sending', obj);
 			ws.send(JSON.stringify(obj));
+
+			$('#createPanel').fadeOut();
+			$('#tint').fadeOut();
 			showHomePanel();
 			$('.colorValue').html('Color');											//reset
 			for(var i in bgcolors) $('.createball').removeClass(bgcolors[i]);		//reset

@@ -890,7 +890,7 @@ td.userRights, th.userRights{
   border-bottom-color: transparent;
   left: 50px; }
 
-#startUpPanel {
+#startUpPanel, #txStoryPanel {
   display: none;
   position: absolute;
   top: 0;
@@ -919,7 +919,7 @@ td.userRights, th.userRights{
   margin-top: 10px;
   height: 32px; }
 
-.stepCircleStatus {
+.stepCircleStatus, .txStatus {
   margin-top: 35px;
   height: 20px;
   width: 20px;
@@ -945,10 +945,10 @@ td.userRights, th.userRights{
 .inactiveStep .stepLoading, .stepComplete .stepLoading, .stepFailed .stepLoading {
   opacity: 0; }
 
-.stepComplete .stepCircleStatus {
+.stepComplete .stepCircleStatus, .stepComplete .txStatus {
   background: #6CC284; }
 
-.stepFailed .stepCircleStatus {
+.stepFailed .stepCircleStatus, .stepFailed .txStatus {
   background: #ed8f30; }
 
 .stepHelpWrap {
@@ -968,12 +968,12 @@ td.userRights, th.userRights{
   font-size: 13px;
   margin-right: 5px; }
 
-#closeStartUp {
+#closeStartUp, #closeTxStory {
   position: absolute;
   right: 15px;
   top: 15px; }
 
-#closeStartUp:hover {
+#closeStartUp:hover, #closeTxStory:hover {
   color: orange;
   cursor: pointer; }
 
@@ -982,6 +982,33 @@ td.userRights, th.userRights{
   font-size: 24px;
   color: #e5ebef;
   margin-top: 50px; }
+
+.txStepWrap {
+  display: inline-block;
+  width: 22%;
+  text-align: center;
+  vertical-align: top;
+  padding: 0 10px; }
+
+.txLegend {
+  font-size: 20px;
+  font-weight: 700; }
+
+.txStoryWrap {
+  height: 150px;
+  margin: 10px 0;
+  position: relative; }
+
+.txDescription {
+  text-align: left;
+  font-size: 14px;
+  line-height: 18px; }
+
+.txStatus {
+  height: 15px;
+  width: 15px;
+  margin-top: 0;
+  margin-bottom: 20px; }
 
 #blockWrap {
   position: relative;
