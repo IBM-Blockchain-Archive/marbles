@@ -277,12 +277,17 @@ function create_assets(build_marbles_users){
 	// --- Create Each user --- //
 	if(build_marbles_users && build_marbles_users.length > 0){
 		async.eachLimit(build_marbles_users, 1, function(username, user_cb) { 	//iter through each one
-			marbles_lib.register_owner(webUser, [hfc.getPeer(helper.getPeersUrl(0))], [username, process.env.marble_company], function(){
-				
+			marbles_lib.register_owner(webUser, [hfc.getPeer(helper.getPeersUrl(0))], [username, process.env.marble_company], function(e){
+				if(e != null){
+					user_cb(null);												//don't pass error, lets try the other users
+				}
+
 				// --- Create Marble(s) --- //
-				setTimeout(function(){											//delay for peer catch up
-					create_marbles(username, user_cb);
-				}, 1500);
+				else{
+					setTimeout(function(){										//delay for peer catch up
+						create_marbles(username, user_cb);
+					}, 1500);
+				}
 			});
 		}, function(err) {
 			console.log('- finished creating assets, waiting for peer catch up');
