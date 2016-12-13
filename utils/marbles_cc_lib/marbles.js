@@ -50,6 +50,12 @@ module.exports = function (chain, chaincode_id, logger) {
 		).catch(
 			function (err) {
 				console.log('caught error', err);
+				if(err && err.indexOf && err.indexOf('EOF') >= 0){
+					console.log('\n\n!!!! caught an eof 1!!!\n');
+				}
+				if(err && err.indexOf && err.indexOf('eof') >= 0){
+					console.log('\n\n!!!! caught an eof 2!!!\n');
+				}
 				if(cb) return cb(null, null);										//dsh to do - put the error back
 			}
 		);
