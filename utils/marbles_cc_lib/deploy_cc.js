@@ -63,64 +63,37 @@ module.exports = function (chain, chaincode_id, logger) {
 		.then(
 			function(results) {
 				var proposalResponses = results[0];
-				//console.log('proposalResponses:'+JSON.stringify(proposalResponses));
 				var proposal = results[1];
 				if (proposalResponses && proposalResponses[0].response && proposalResponses[0].response.status === 200) {
 					console.log('Successfully sent Proposal and received ProposalResponse: ');
 					console.log('\tStatus -', proposalResponses[0].response.status, 'message -', proposalResponses[0].response.message,
 						'metadata -', proposalResponses[0].response.payload, 'endorsement signature:', proposalResponses[0].endorsement.signature);
 					return webUser.sendTransaction(proposalResponses, proposal);
-				} else {
+				}
+				else {
 					console.log('Failed to send Proposal or receive valid response. Response null or status is not 200. exiting...');
 				}
-			},
-			function(err) {
-				console.log('Failed to send deployment proposal due to error: ' + err.stack ? err.stack : err);
 			}
 		).then(
 				function(response) {
 					if (response.Status === 'SUCCESS') {
 						console.log('Successfully ordered deployment endorsement.');
-						return sleep(20000);
-					} else {
+						
+						setTimeout(function(){
+							console.log('\n\n---------------------------------------------------------------------------');
+							console.log('Chaincode deployed successfully\n\n');
+							if(cb) return cb(null);
+							else return;
+						}, 20000);
+					}
+					else{
 						console.log('Failed to order the deployment endorsement. Error code: ' + response.status);
 					}
-
-				},
-				function(err) {
-					console.log('Failed to send deployment e due to error: ' + err.stack ? err.stack : err);
 				}
-		).then(
-			function() {
-				// send query
-				var request = {
-					targets: peerUrls,
-					chaincodeId : chaincode_id,
-					fcn: 'read',
-					args: ['_marbleindex']
-				};
-				return webUser.queryByChaincode(request);
-			},
-			function(err) {
-				console.log('Failed to wait-- error: ' + err.stack ? err.stack : err);
-			}
-		).then(
-			function(response_payloads) {
-				for(let i = 0; i < response_payloads.length; i++) {
-					console.log(response_payloads[i].toString('utf8'),'300','checking query results are correct that user b has 300 now after the move');
-				}
-
-				console.log('---------------------------------------------------------------------------');
-				console.log('\nChaincode deployed successfully');
-				if(cb) return cb(null);
-				else return;
-			},
-			function(err) {
-				console.log('Failed to send query due to error: ' + err.stack ? err.stack : err);
-			}
 		).catch(
-			function(err) {
-				console.log('Failed, in catch block' + err.stack ? err.stack : err);
+			function(err){
+				console.log('Failed to deploy, in catch block');
+				if(cb) return cb(err);
 			}
 		);
 	};

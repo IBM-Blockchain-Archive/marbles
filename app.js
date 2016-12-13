@@ -193,7 +193,7 @@ function setup_marbles_lib(chaincode_id, orderer_url, peer_url){
 	marbles_lib.check_if_already_deployed(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(not_deployed, enrollUser){
 		if(not_deployed){										//if this is truthy we have not yet deployed.... error
 			console.log('\n\nChaincode was not detected, all stop');
-			console.log('Open your browser to http://' + host + ':' + port + ' to initiate startup\n\n');
+			console.log('Open your browser to http://' + host + ':' + port + ' to redo startup\n\n');
 			process.env.app_first_setup = 'yes';				//overwrite state, bad startup
 			broadcast_state('no_chaincode');
 		}
