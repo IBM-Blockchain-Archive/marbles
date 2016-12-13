@@ -771,9 +771,6 @@ $marble_left: 0;
 	text-align: left;
 	height: 150px;
 }
-.stepLoading{
-	margin: 10px 0;
-}
 .stepEdit{
 	font-size: 12px;
 	padding-bottom: 20px;
@@ -781,8 +778,12 @@ $marble_left: 0;
 .inactiveStep{
 	opacity: 0.3;
 }
-.inactiveStep .stepLoading, .stepComplete .stepLoading, .stepFailed .stepLoading{
-	opacity: 0;
+.stepLoadingWrap{
+	height: 40px;
+	margin-top: 10px;
+}
+.inactiveStep .stepLoadingWrap .stepLoading, .stepComplete .stepLoadingWrap .stepLoading, .stepFailed .stepLoadingWrap .stepLoading{
+	display: none;
 }
 .stepComplete .stepCircleStatus, .stepComplete .txStatus{
 	background: #6CC284;
@@ -856,8 +857,10 @@ $marble_left: 0;
 }
 #txStoryErrorWrap{
 	text-align: center;
-	color: $hi_color1;
 	margin-top: 20px;
+}
+#txStoryErrorTxt{
+	color: $hi_color1;
 }
 
 

@@ -120,7 +120,7 @@ module.exports = function (config_filename, logger) {
 	helper.write = function(obj){
 		var creds_file = JSON.parse(fs.readFileSync(creds_path, 'utf8'));
 		var parsed = '';
-		console.log('hey there', obj);
+		//console.log('hey there', obj);
 
 		if(obj.ordererUrl){
 			parsed = url.parse(obj.ordererUrl, true);

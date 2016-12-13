@@ -979,9 +979,6 @@ td.userRights, th.userRights{
   text-align: left;
   height: 150px; }
 
-.stepLoading {
-  margin: 10px 0; }
-
 .stepEdit {
   font-size: 12px;
   padding-bottom: 20px; }
@@ -989,8 +986,12 @@ td.userRights, th.userRights{
 .inactiveStep {
   opacity: 0.3; }
 
-.inactiveStep .stepLoading, .stepComplete .stepLoading, .stepFailed .stepLoading {
-  opacity: 0; }
+.stepLoadingWrap {
+  height: 40px;
+  margin-top: 10px; }
+
+.inactiveStep .stepLoadingWrap .stepLoading, .stepComplete .stepLoadingWrap .stepLoading, .stepFailed .stepLoadingWrap .stepLoading {
+  display: none; }
 
 .stepComplete .stepCircleStatus, .stepComplete .txStatus {
   background: #6CC284; }
@@ -1059,8 +1060,10 @@ td.userRights, th.userRights{
 
 #txStoryErrorWrap {
   text-align: center;
-  color: orange;
   margin-top: 20px; }
+
+#txStoryErrorTxt {
+  color: orange; }
 
 .settingsWrap {
   margin-bottom: 50px; }
@@ -1147,7 +1150,6 @@ td.userRights, th.userRights{
 */
 .loadingdiv {
   height: 30px;
-  margin: 10px 5px;
   display: block; }
 
 .loadingdiv span {

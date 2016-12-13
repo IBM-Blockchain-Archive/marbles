@@ -73,7 +73,8 @@ function connect_to_server(){
 			else if(msgObj.msg === 'tx_error'){
 				console.log('[ws] rec', msgObj.msg, msgObj);
 				addshow_notification(build_notification(true, escapeHtml(msgObj.e)), true);
-				$('#txStoryErrorWrap').html(msgObj.e);
+				$('#txStoryErrorTxt').html(msgObj.e);
+				$('#txStoryErrorWrap').slideDown();
 			}
 
 			//all marbles sent

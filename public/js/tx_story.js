@@ -28,7 +28,8 @@ $(document).on('ready', function() {
 			$('#txStep2 .txStoryWrap').html(story2html);
 			$('#txStep3 .txStoryWrap').html(story3html);
 			$('#txStep4 .txStoryWrap').html(story4html);
-			$('#txStoryErrorWrap').html('');
+			$('#txStoryErrorTxt').html('');
+			$('#txStoryErrorWrap').hide();
 		}, 500);
 	});
 
