@@ -280,9 +280,13 @@ function create_assets(build_marbles_users){
 	// --- Create Each user --- //
 	if(build_marbles_users && build_marbles_users.length > 0){
 		async.eachLimit(build_marbles_users, 1, function(username, user_cb) { 	//iter through each one
+			console.log('debug 3 - on user', username, Date.now());
 			marbles_lib.register_owner(webUser, [hfc.getPeer(helper.getPeersUrl(0))], [username, process.env.marble_company], function(e){
 				if(e != null){
-					user_cb(null);												//don't pass error, lets try the other users
+					setTimeout(function(){										//delay for peer catch up
+						console.log('debug 1 - fail returning', Date.now());
+						return user_cb(null);									//don't pass error, lets try the other users
+					}, block_delay);
 				}
 
 				// --- Create Marble(s) --- //
@@ -318,7 +322,8 @@ function create_marbles(username, cb){
 			}, block_delay);
 		});
 	}, function() {
-		cb();														//marble creation finished
+		console.log('debug 2 - ok returning', Date.now());
+		return cb();												//marble creation finished
 	});
 }
 
