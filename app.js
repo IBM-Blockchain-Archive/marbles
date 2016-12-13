@@ -279,7 +279,7 @@ function create_assets(build_marbles_users){
 
 	// --- Create Each user --- //
 	if(build_marbles_users && build_marbles_users.length > 0){
-		async.eachLimit(build_marbles_users, 4, function(username, user_cb) { 	//iter through each one
+		async.eachLimit(build_marbles_users, 2, function(username, user_cb) { 	//iter through each one
 			console.log('debug 3 - on user', username, Date.now());
 			marbles_lib.register_owner(webUser, [hfc.getPeer(helper.getPeersUrl(0))], [username, process.env.marble_company], function(e){
 				if(e != null){
