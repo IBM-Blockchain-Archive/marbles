@@ -17,7 +17,7 @@ function build_marble(marble){
 	marble.owner.company = escapeHtml(marble.owner.company);
 	var full_owner = build_full_owner(marble.owner.username, marble.owner.company);
 
-	console.log('building marble: ', marble.color, full_owner, marble.name.substring(0,4) + '...');
+	console.log('[ui] building marble: ', marble.color, full_owner, marble.name.substring(0,4) + '...');
 	if(marble.size == 16) size = 'smallMarble';
 	if(marble.color) colorClass = marble.color.toLowerCase() + 'bg';
 	
@@ -34,7 +34,8 @@ function populate_users_marbles(msg){
 	var full_owner = build_full_owner(msg.username, msg.company);
 
 	//reset
-	$('.marblesWrap[full_owner="' + full_owner +'"]').find('.innerMarbleWrap').html('<i class="fa fa-plus addMarble"></i>');//reset the panels
+	console.log('[ui] clearing marbles for user ' + full_owner);
+	$('.marblesWrap[full_owner="' + full_owner +'"]').find('.innerMarbleWrap').html('<i class="fa fa-plus addMarble"></i>');
 	$('.marblesWrap[full_owner="' + full_owner +'"]').find('.noMarblesMsg').show();
 
 	for(var i in msg.marbles){
@@ -57,6 +58,7 @@ function build_user_panels(data){
 	var full_owner = '';
 
 	//reset
+	console.log('[ui] clearing all user panels');
 	$('.ownerWrap').html('');
 	for(var x in known_companies){
 		known_companies[x].count = 0;
@@ -73,7 +75,7 @@ function build_user_panels(data){
 		known_companies[data[i].company].visible++;
 
 		full_owner = build_full_owner(data[i].username, data[i].company);
-		console.log('building user', full_owner);
+		console.log('[ui] building owner panel ' + full_owner);
 
 		html += '<div id="user' + i + 'wrap" username="' + data[i].username + '" company="' + data[i].company + '" full_owner="' + full_owner +'" class="marblesWrap ' + colorClass +'">';
 		html +=		'<div class="legend" style="' + size_user_name(data[i].username) + '">';
@@ -112,6 +114,7 @@ function build_user_panels(data){
 
 //build company wrap
 function build_company_panel(company){
+	console.log('[ui] building company panel ' + company);
 	var html = '';
 	html += '<div class="companyPanel" company="' + company + '">';
 	html +=		'<div class="companyNameWrap">';
@@ -138,7 +141,6 @@ function build_full_owner(username, company){
 //build a notification msg, `error` is boolean
 function build_notification(error, msg){
 	var html = '';
-
 	var css = '';
 	var iconClass = 'fa-check';
 	if(error) {

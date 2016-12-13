@@ -123,7 +123,7 @@ function connect_to_server(){
 //show admin panel page
 function refreshHomePanel(){
 	setTimeout(function(){								//need to wait a bit
-		console.log('sending get_marbles msg');
+		console.log('[ws] sending get_marbles msg');
 		get_marbles_or_else();
 	}, 1500);
 }
@@ -150,14 +150,14 @@ function record_company(company){
 	
 	// -- Show the new company Notification -- //
 	if(start_up === false){
-		console.log('this is a new company!', company);
+		console.log('[ui] this is a new company! ' + company);
 		addshow_notification(build_notification(false, 'Detected a new company "' + company + '"!'), true);
 	}
 
 	build_company_panel(company);
 	if(start_up === true) addshow_notification(build_notification(false, 'Detected company "' + company + '".'), false);
 
-	console.log('recorded company', company);
+	console.log('[ui] recorded company ' + company);
 	known_companies[company] = {
 									name: company, 
 									count: 0, 
