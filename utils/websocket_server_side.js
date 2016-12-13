@@ -164,14 +164,32 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 				console.log('\n\n[checking] number of owners:', resp.payload[0].length);
 
 				var latestList = [];
+				var myUsers = [];
 				for(var i in resp.payload[0]){							//lets reformat it a bit, only need 1 peer's response
 					var pos = resp.payload[0][i].indexOf('.');
 					var temp = 	{
 									username: resp.payload[0][i].substring(0, pos),
 									company: resp.payload[0][i].substring(pos + 1)
 								};
-					latestList.push(temp);
+					if(temp.company === process.env.marble_company){
+						myUsers.push(temp);								//these are my companies users
+					}
+					else{
+						latestList.push(temp);							//everyone else
+					}
 				}
+
+				latestList.sort(function (a, b) {						//alpha sort me everyone else
+					var entryA = a.company + a.username;
+					var entryB = b.company + b.username;
+					if(entryA < entryB) return -1;
+					if(entryA > entryB) return 1;
+					return 0;
+				});
+
+				latestList = myUsers.concat(latestList);				//my users are first, bring in the others
+
+				//for(var x in latestList) console.log(latestList[x].company, latestList[x].username);
 
 				var knownAsString = JSON.stringify(known_marble_owners);//stringify for easy comparison (order should stay the same)
 				var latestListAsString = JSON.stringify(latestList);
