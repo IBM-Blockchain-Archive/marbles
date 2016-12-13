@@ -139,6 +139,7 @@ module.exports = function (chain, chaincode_id, logger) {
 			fcn: 'set_owner',
 			args: options 									//args == ["name", "bob", "united_marbles", "united_marbles"]
 		};
+		console.log('!', options);
 		webUser.sendTransactionProposal(request)
 		.then(
 			function (results) {

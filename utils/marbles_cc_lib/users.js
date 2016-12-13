@@ -19,6 +19,7 @@ module.exports = function (chain, chaincode_id, logger) {
 			fcn: 'init_owner',
 			args: args 						//args == ["bob", "united marbles"]
 		};
+		console.log('!', args);
 		webUser.sendTransactionProposal(request)
 		.then(
 			function (results) {
@@ -37,7 +38,8 @@ module.exports = function (chain, chaincode_id, logger) {
 			function (response) {
 				if (response && response.Status === 'SUCCESS') {
 					console.log('Successfully ordered endorsement transaction.');
-					if(cb) cb(null, null);
+					if(cb) return cb(null, null);
+					else return;
 				}
 				else {
 					console.log('Failed to order the endorsement of the transaction. Error code: ', response);
@@ -48,6 +50,7 @@ module.exports = function (chain, chaincode_id, logger) {
 			function (err) {
 				console.log('caught error', err);
 				if(cb) return cb(err, null);
+				else return;
 			}
 		);
 	};
@@ -56,7 +59,7 @@ module.exports = function (chain, chaincode_id, logger) {
 	// Get Owner Index List
 	//----------------------------------------------------
 	users.get_owner_list = function (webUser, peerUrls, cb) {
-		console.log('\nfetching owner index list...');
+		console.log('\nFetching owner index list...');
 		var request = {
 			targets: peerUrls,
 			chaincodeId: chaincode_id,
@@ -99,7 +102,7 @@ module.exports = function (chain, chaincode_id, logger) {
 	// Get a Owner
 	//----------------------------------------------------
 	users.get_owner = function (webUser, peerUrls, opts, cb) {
-		console.log('\nfetching owner ' + users.build_owner_name(opts.username, opts.company) + ' list...');
+		console.log('\nFetching owner ' + users.build_owner_name(opts.username, opts.company) + ' list...');
 		var request = {
 			targets: peerUrls,
 			chaincodeId: chaincode_id,

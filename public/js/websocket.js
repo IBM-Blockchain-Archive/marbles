@@ -1,6 +1,6 @@
 /* global new_block, $, document, WebSocket, escapeHtml, ws:true, start_up:true, known_companies:true, autoCloseNoticePanel:true */
 /* global show_start_up_step, build_notification, build_user_panels, build_company_panel, populate_users_marbles, show_tx_step*/
-/* global getRandomInt*/
+/* global getRandomInt, block_delay*/
 /* exported transfer_marble, record_company, connect_to_server*/
 
 var getMarblesTimeout = null;
@@ -126,7 +126,7 @@ function refreshHomePanel(){
 	setTimeout(function(){								//need to wait a bit
 		console.log('[ws] sending get_marbles msg');
 		get_marbles_or_else();
-	}, 1500);
+	}, block_delay);
 }
 
 //transfer_marble selected ball to user

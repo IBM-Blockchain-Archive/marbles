@@ -22,6 +22,7 @@ var fs = require('fs');
 var cors = require('cors');
 var async = require('async');
 var ws = require('ws');													//websocket module
+var block_delay = 3000;
 
 // --- Set Our Things --- //
 var hfc = require('./utils/fabric-sdk-node2/index.js');
@@ -225,7 +226,7 @@ function enroll_admin(id, secret, cop, cb){
 			broadcast_state('enrolled');
 			setTimeout(function(){
 				if(cb) cb();
-			}, 1500);
+			}, block_delay);
 		}
 	).catch(
 		function(err) {												//error with enrollment
@@ -286,9 +287,10 @@ function create_assets(build_marbles_users){
 
 				// --- Create Marble(s) --- //
 				else{
+					console.log('user created succesfully', username);
 					setTimeout(function(){										//delay for peer catch up
 						create_marbles(username, user_cb);
-					}, 1500);
+					}, block_delay);
 				}
 			});
 		}, function(err) {
@@ -296,7 +298,7 @@ function create_assets(build_marbles_users){
 			if(err == null) {
 				setTimeout(function(){											//marble owner creation finished
 					all_done();													//delay for peer catch up
-				}, 1500);
+				}, block_delay);
 			}
 		});
 	}
@@ -313,7 +315,7 @@ function create_marbles(username, cb){
 		marbles_lib.create_a_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], null, randOptions, function(){
 			setTimeout(function(){
 				marble_cb();
-			}, 1500);
+			}, block_delay);
 		});
 	}, function() {
 		cb();														//marble creation finished

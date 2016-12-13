@@ -1,4 +1,4 @@
-/* global $, window, document, ws, fromLS, lsKey, getOwnersTimeout:true,getRandomInt */
+/* global $, window, document, ws, fromLS, lsKey, getOwnersTimeout:true,getRandomInt, block_delay */
 /* exported show_start_up_step */
 
 // =================================================================================
@@ -195,7 +195,7 @@ function show_start_up_step(obj){
 		if(cb){
 			setTimeout(function(){
 				cb();
-			}, 1500);
+			}, block_delay);
 		}
 	}
 
@@ -220,7 +220,7 @@ function show_start_up_step(obj){
 		if(cb){
 			setTimeout(function(){
 				cb();
-			}, 1500);
+			}, block_delay);
 		}
 	}
 

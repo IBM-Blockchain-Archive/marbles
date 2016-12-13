@@ -8,6 +8,7 @@ var known_companies = {};
 var start_up = true;
 var lsKey = 'marbles';
 var fromLS = {};
+var block_delay = 3000;
 
 // =================================================================================
 // On Load
@@ -95,7 +96,7 @@ $(document).on('ready', function() {
 					$(ui.draggable).fadeOut();
 					setTimeout(function(){
 						$(ui.draggable).remove();
-					}, 1500);
+					}, block_delay);
 					refreshHomePanel();
 				});
 			}
