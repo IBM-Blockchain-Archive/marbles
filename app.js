@@ -22,7 +22,7 @@ var fs = require('fs');
 var cors = require('cors');
 var async = require('async');
 var ws = require('ws');													//websocket module
-var block_delay = 4000;
+var block_delay = 1500;
 
 // --- Set Our Things --- //
 var hfc = require('./utils/fabric-sdk-node2/index.js');
