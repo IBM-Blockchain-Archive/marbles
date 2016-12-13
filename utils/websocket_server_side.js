@@ -1,12 +1,9 @@
 // ==================================
-// Part 1 - incoming messages, look for type
+// Websocket Server Side Code 
 // ==================================
 var async = require('async');
 var path = require('path');
 
-//-------------------------------------------------------------------
-// Marbles Chaincode Library
-//-------------------------------------------------------------------
 module.exports = function (checkPerodically, marbles_lib, logger) {
 	var hfc = require(path.join(__dirname, '../utils/fabric-sdk-node2/index.js'));
 	var helper = require(path.join(__dirname, './helper.js'))(process.env.creds_filename, console);
@@ -16,6 +13,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 	var known_marble_owners = [];
 	var known_marbles = [];
 
+	//setup this module
 	ws_server.setup = function(l_webUser, l_marbles_lib, l_broadcast, logger){
 		webUser = l_webUser;
 		marbles_lib = l_marbles_lib;
@@ -23,10 +21,11 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 		logger = l_marbles_lib;
 	};
 
+	//process web socket messages
 	ws_server.process_msg = function(ws, data){
 		var options = {};
 		if(marbles_lib === null) {
-			console.log('error! marbles lib is null...');
+			console.log('error! marbles lib is null...');				//can't run in this state
 			return;
 		}
 			
@@ -186,7 +185,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 					console.log('[checking] new owners, sending to users\n\n');
 					known_marble_owners = latestList;
 					broadcast({msg: 'owners', e: err, owners: latestList});
-					sch_next_check();										//check again
+					sch_next_check();									//check again
 				}
 			}
 		});
@@ -258,6 +257,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 		});
 	}
 
+	//build a marble obj
 	function build_marble_obj(username, marbles){
 		return	{
 				msg: 'users_marbles',
@@ -267,7 +267,6 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 				marbles: marbles
 			};
 	}
-
 
 	return ws_server;
 };
