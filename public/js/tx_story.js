@@ -28,8 +28,6 @@ $(document).on('ready', function() {
 			$('#txStep2 .txStoryWrap').html(story2html);
 			$('#txStep3 .txStoryWrap').html(story3html);
 			$('#txStep4 .txStoryWrap').html(story4html);
-			$('#txStoryErrorTxt').html('');
-			$('#txStoryErrorWrap').hide();
 		}, 500);
 	});
 
@@ -55,6 +53,8 @@ function show_tx_step(obj, cb_orig){
 
 	$('#txStoryPanel, #tint').fadeIn(300);
 	$('#txStep1, #txStep2, #txStep3, #txStep4').removeClass('stepFailed');	//reset
+	$('#txStoryErrorTxt').html('');
+	$('#txStoryErrorWrap').hide();
 
 	setTimeout(function(){													//wait for initial panel fade in
 		
