@@ -268,7 +268,7 @@ function simple_hash(a_string){
 function build_marble_options(username, company){
 	var colors = ['white', 'black', 'red', 'green', 'blue', 'purple', 'pink', 'orange', 'yellow'];
 	var sizes = ['35', '16'];
-	var color_index = simple_hash(more_entropy + username) % colors.length;		//build a psudeo random index to pick a color
+	var color_index = simple_hash(more_entropy + company) % colors.length;		//build a psudeo random index to pick a color
 	var size_index = getRandomInt(0, sizes.length);								//build a random size for this marble
 	return [randStr(24), colors[color_index], sizes[size_index], username, company];
 }
