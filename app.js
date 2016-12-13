@@ -334,7 +334,7 @@ function all_done(){
 	fs.writeFileSync(app_state_file, JSON.stringify(state_file, null, 4), 'utf8');
 
 	ws_server.check_for_new_users(null);
-	/*marbles_lib.test(webUser, [hfc.getPeer(helper.getPeersUrl(0))], 'amy.United Marbles', function(e, data){
+	/*marbles_lib.debug(webUser, [hfc.getPeer(helper.getPeersUrl(0))], 'amy.United Marbles', function(e, data){
 		console.log('!!!!!!!!!!!!!!!!!!got');
 		console.log(e, JSON.stringify(data));
 	});*/

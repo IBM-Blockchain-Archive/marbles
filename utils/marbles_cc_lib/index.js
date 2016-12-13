@@ -12,6 +12,8 @@ module.exports = function (chain, chaincode_id, logger) {
 	var common = require('./common.js')();
 	var marbles_chaincode = {};
 
+	// Chaincode -------------------------------------------------------------------------------
+
 	//deploy chaincode
 	marbles_chaincode.deploy_chaincode = function (webUser, peer_urls, cb) {
 		deploy_cc.deploy_chaincode(webUser, peer_urls, cb);
@@ -22,7 +24,7 @@ module.exports = function (chain, chaincode_id, logger) {
 		deploy_cc.check_if_already_deployed(webUser, peer_urls, cb);
 	};
 
-
+	// Marbles -------------------------------------------------------------------------------
 
 	//create a marble
 	marbles_chaincode.create_a_marble = function (webUser, peer_urls, ws,options, cb) {
@@ -49,7 +51,7 @@ module.exports = function (chain, chaincode_id, logger) {
 		marbles.delete_marble(webUser, peer_urls, ws, options, cb);
 	};
 
-
+	// Owners -------------------------------------------------------------------------------
 
 	//register a owner/user
 	marbles_chaincode.register_owner = function (webUser, peer_urls, owner_obj, cb) {
@@ -70,10 +72,11 @@ module.exports = function (chain, chaincode_id, logger) {
 		return users.build_owner_name(username, company);
 	};
 
+	// Debug -------------------------------------------------------------------------------
 
-	//test read
-	marbles_chaincode.test = function(webUser, peer_urls, test, cb){
-		console.log('\ntestig ' + test + ' ...');
+	//debug read
+	marbles_chaincode.debug = function(webUser, peer_urls, test, cb){
+		console.log('\n debug read of ' + test + ' ...');
 		var request = {
 			targets: peer_urls,
 			chaincodeId: chaincode_id,
