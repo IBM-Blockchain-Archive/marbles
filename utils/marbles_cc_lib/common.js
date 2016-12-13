@@ -1,7 +1,3 @@
-//var async = require('async');
-//var path = require('path');
-//var url = require('url');
-
 module.exports = function (logger) {
 	var common = {};
 
@@ -15,7 +11,7 @@ module.exports = function (logger) {
 		var error = null;
 
 		// -- iter on each peer's response -- //
-		for(var i in peer_responses) {					//pray to the gods that i===peer_id and they never move
+		for(var i in peer_responses) {
 			var as_string = peer_responses[i].toString('utf8');
 			var as_obj = {marbles: null};
 			console.log('[marble_lib] Peer' + i, 'payload says:', as_string);
