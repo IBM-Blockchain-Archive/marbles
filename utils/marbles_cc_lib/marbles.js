@@ -50,7 +50,7 @@ module.exports = function (chain, chaincode_id, logger) {
 		).catch(
 			function (err) {
 				console.log('caught error', err);
-				if(cb) return cb(err, null);
+				if(cb) return cb(null, null);										//dsh to do - put the error back
 			}
 		);
 	};
