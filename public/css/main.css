@@ -543,7 +543,7 @@ strong {
   margin-top: 50px; }
 
 #createPanel {
-  position: absolute;
+  position: fixed;
   top: 75px;
   background: #343d48;
   z-index: 1005;
