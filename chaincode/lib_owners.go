@@ -160,7 +160,7 @@ func init_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error)
 	_, err = get_owner(stub, owner.Username, owner.Company)
 	if err == nil {
 		fmt.Println("This owner already exists: " + owner.Username + " " + owner.Company)
-		return nil, err
+		return nil, errors.New("This owner already exists: " + owner.Username + " " + owner.Company)
 	}
 
 	//store user
