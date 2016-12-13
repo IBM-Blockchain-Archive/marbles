@@ -157,7 +157,7 @@ setupWebSocket();
 
 try{
 	var state = require(app_state_file);
-	if(state.hash === helper.getHash()){
+	if(state && state.hash === helper.getHash()){
 		console.log('\n\nDetected that we have launched successfully before');
 		console.log('Welcome back - Initiating start up\n\n');
 		process.env.app_first_setup = 'no';
@@ -192,7 +192,9 @@ function setup_marbles_lib(chaincode_id, orderer_url, peer_url){
 	console.log('Checking if chaincode is already deployed or not');
 	marbles_lib.check_if_already_deployed(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(not_deployed, enrollUser){
 		if(not_deployed){										//if this is truthy we have not yet deployed.... error
-			console.log('\n\nChaincode was not detected, all stop\n\n');
+			console.log('\n\nChaincode was not detected, all stop');
+			console.log('Open your browser to http://' + host + ':' + port + ' to initiate startup\n\n');
+			process.env.app_first_setup = 'yes';				//overwrite state, bad startup
 			broadcast_state('no_chaincode');
 		}
 		else{													//else we already deployed
