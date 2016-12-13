@@ -87,19 +87,19 @@ function show_tx_step(obj, cb_orig){
 			$('#txStep4').addClass('inactiveStep');
 			$('#txStep1, #txStep2').addClass('stepComplete');
 
-			story3_animation(function(){
-				//show_tx_step({state: 'committing'});
-			});
+			story3_animation();
 		}
 
 		//4
 		else if(state === 'committing'){
-			$('#txStep1, #txStep2, #txStep3, #txStep4').removeClass('inactiveStep');
-			$('#txStep1, #txStep2, #txStep3').addClass('stepComplete');
+			setTimeout(function(){
+				$('#txStep1, #txStep2, #txStep3, #txStep4').removeClass('inactiveStep');
+				$('#txStep1, #txStep2, #txStep3').addClass('stepComplete');
 
-			story4_animation(function(){
-				show_tx_step({state: 'finished'});
-			});
+				story4_animation(function(){
+					show_tx_step({state: 'finished'});
+				});
+			}, 4000);
 		}
 
 		//exit

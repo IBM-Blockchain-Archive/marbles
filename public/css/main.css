@@ -1059,6 +1059,7 @@ td.userRights, th.userRights{
   margin-bottom: 20px; }
 
 #txStoryErrorWrap {
+  display: none;
   text-align: center;
   margin-top: 20px; }
 
