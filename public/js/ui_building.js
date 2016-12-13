@@ -98,6 +98,7 @@ function build_user_panels(data){
 			var dragged_user = $(ui.draggable).attr('username').toLowerCase();
 			var dropped_user = $(event.target).parents('.marblesWrap').attr('username').toLowerCase();
 			var dropped_company = $(event.target).parents('.marblesWrap').attr('company');
+
 			console.log('dropped a marble', dragged_user, dropped_user, dropped_company);
 			if(dragged_user != dropped_user){										//only transfer marbles that changed owners
 				$(ui.draggable).addClass('invalid');
@@ -114,6 +115,7 @@ function build_user_panels(data){
 
 //build company wrap
 function build_company_panel(company){
+	company = escapeHtml(company);
 	console.log('[ui] building company panel ' + company);
 	var html = '';
 	html += '<div class="companyPanel" company="' + company + '">';
@@ -121,7 +123,7 @@ function build_company_panel(company){
 	html +=			'<span class="companyName">' + toTitleCase(company) + '&nbsp;-&nbsp;</span>';
 	html +=			'<span class="companyVisible">0</span>/';
 	html +=			'<span class="companyCount">0</span>';
-	if(company === bag.marble_company) {
+	if(company === escapeHtml(bag.marble_company)) {
 		html +=			'<span class="fa fa-exchange floatRight"></span>';
 	}
 	else{
@@ -135,7 +137,7 @@ function build_company_panel(company){
 
 //build the correct "full owner" string - concate username and company
 function build_full_owner(username, company){
-	return username.toLowerCase() + '.' + company;
+	return escapeHtml(username.toLowerCase() + '.' + company);
 }
 
 //build a notification msg, `error` is boolean
@@ -151,7 +153,7 @@ function build_notification(error, msg){
 	html +=	'<div class="notificationWrap ' + css + '">';
 	html +=		'<span class="fa ' + iconClass + ' notificationIcon"></span>';
 	html +=		'<span class="noticeTime">' + formatDate(Date.now(), '%M/%d %I:%m:%s') + '&nbsp;&nbsp;</span>';
-	html +=		'<span>' + msg + '</span>';
+	html +=		'<span>' + escapeHtml(msg) + '</span>';
 	html +=		'<span class="fa fa-close closeNotification"></span>';
 	html +=	'</div>';
 	return html;
