@@ -50,8 +50,8 @@ func get_marble(stub shim.ChaincodeStubInterface, name string) (Marble, error) {
 // ============================================================================================================================
 // Get Array of All Marble Names
 // ============================================================================================================================
-func get_complete_marble_index(stub shim.ChaincodeStubInterface) ([]byte, error) {
-	var completedMarbleIndex [] string
+func get_complete_marble_index(stub shim.ChaincodeStubInterface) ([]string, error) {
+	var completedMarbleIndex []string
 	var ownersIndex OwnersIndex
 
 	//read owner index
@@ -75,8 +75,9 @@ func get_complete_marble_index(stub shim.ChaincodeStubInterface) ([]byte, error)
 	}
 
 	//change to array of bytes
-	arrayAsBytes, _ := json.Marshal(completedMarbleIndex)
-	return arrayAsBytes, nil
+	//arrayAsBytes, _ := json.Marshal(completedMarbleIndex)
+	//return arrayAsBytes, nil
+	return completedMarbleIndex, nil
 }
 
 // ============================================================================================================================

@@ -164,7 +164,11 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) ([]byte, erro
 	}else if function == "init_owner"{
 		return init_owner(stub, args)
 	}else if function == "compelte_marble_index"{
-		return get_complete_marble_index(stub)
+		tmp, err := get_complete_marble_index(stub)
+		arrayAsBytes, _ := json.Marshal(tmp)
+		return arrayAsBytes, err
+	}else if function == "read_everything"{
+		return read_everything(stub)
 	}
 
 	fmt.Println("Received unknown invoke function name - " + function) //should not get here, its an error
@@ -238,4 +242,47 @@ func write(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 // ============================================================================================================================
 func makeTimestamp() int64 {
 	return time.Now().UnixNano() / (int64(time.Millisecond) / int64(time.Nanosecond))
+}
+
+
+// ============================================================================================================================
+// Get everything we need (owners + marbles + companies)
+// ============================================================================================================================
+func read_everything(stub shim.ChaincodeStubInterface) ([]byte, error) {
+	type Everything struct {
+		OwnersIndex  []string    `json:"owners_index"`
+		Marbles      []Marble    `json:"marbles"`
+	}
+	var everything Everything
+
+	//get owner index
+	owners_index, err := get_complete_owner_index(stub)
+	if err != nil{
+		return nil, err
+	}
+	everything.OwnersIndex = owners_index.Owners
+
+	//get marble index
+	completedMarbleIndex, err := get_complete_marble_index(stub)
+	if err != nil{
+		return nil, err
+	}
+
+	//get all marbles
+	for i:= range completedMarbleIndex{                            //iter through all the marbles
+		var marble Marble
+		marble, err = get_marble(stub, completedMarbleIndex[i])
+		if err != nil {
+			fmt.Println("Could not find marble from index - " + completedMarbleIndex[i])
+			continue
+		}
+		
+		//append to array
+		everything.Marbles = append(everything.Marbles, marble)   //add this marble to the list
+		fmt.Println("marble index so far - ", everything.Marbles)
+	}
+
+	//change to array of bytes
+	arrayAsBytes, _ := json.Marshal(everything)
+	return arrayAsBytes, err
 }

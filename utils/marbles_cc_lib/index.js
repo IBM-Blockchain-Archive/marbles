@@ -106,6 +106,38 @@ module.exports = function (chain, chaincode_id, logger) {
 		);
 	};
 	
+	//read everything
+	marbles_chaincode.read_everything = function(webUser, peer_urls, cb){
+		console.log('\nreading everything!...');
+		var request = {
+			targets: peer_urls,
+			chaincodeId: chaincode_id,
+			fcn: 'read_everything',
+			args: ['']
+		};
+
+		webUser.queryByChaincode(request)
+		.then(
+			function(response_payloads) {
+				if(response_payloads.length <= 0){
+					console.log('Query response is empty: ');
+					if(cb) return cb({error: 'query response is empty'}, null);
+				}
+				else{
+
+					// -- send formated response -- //
+					var formated = common.format_query_resp(response_payloads);
+					if(cb) return cb(formated.error, formated.ret);
+				}
+			}
+		).catch(
+			function (err) {
+				console.log('caught error', err);
+				if(cb) return cb(err, null);
+			}
+		);
+	};
+
 	return marbles_chaincode;
 };
 
