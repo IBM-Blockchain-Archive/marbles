@@ -22,11 +22,11 @@ var fs = require('fs');
 var cors = require('cors');
 var async = require('async');
 var ws = require('ws');													//websocket module
-var block_delay = 1500;
+var block_delay = 2000;
 
 // --- Set Our Things --- //
 var hfc = require('./utils/fabric-sdk-node2/index.js');
-var more_entropy = randStr(24);
+var more_entropy = randStr(32);
 var ws_server = require('./utils/websocket_server_side.js')(null, null, null);
 var helper = require(__dirname + '/utils/helper.js')(process.env.creds_filename, console);
 var host = 'localhost';
@@ -266,7 +266,7 @@ function simple_hash(a_string){
 
 //create random marble arguments (it is not important for it to be random, just more fun)
 function build_marble_options(username, company){
-	var colors = ['white', 'black', 'red', 'green', 'blue', 'purple', 'pink', 'orange', 'yellow'];
+	var colors = ['white', 'green', 'blue', 'purple', 'red', 'pink', 'orange', 'black', 'yellow'];
 	var sizes = ['35', '16'];
 	var color_index = simple_hash(more_entropy + company) % colors.length;		//build a psudeo random index to pick a color
 	var size_index = getRandomInt(0, sizes.length);								//build a random size for this marble
@@ -277,26 +277,19 @@ function build_marble_options(username, company){
 function create_assets(build_marbles_users){
 	console.log('Creating marble owners and marbles');
 
-	// --- Create Each user --- //
 	if(build_marbles_users && build_marbles_users.length > 0){
-		async.eachLimit(build_marbles_users, 2, function(username, user_cb) { 	//iter through each one
+		async.eachLimit(build_marbles_users, 1, function(username, user_cb) { 	//iter through each one ONLY ONE! [important]
 			console.log('debug 3 - on user', username, Date.now());
-			marbles_lib.register_owner(webUser, [hfc.getPeer(helper.getPeersUrl(0))], [username, process.env.marble_company], function(e){
-				if(e != null){
-					setTimeout(function(){										//delay for peer catch up
-						console.log('debug 1 - fail returning', Date.now());
-						return user_cb(null);									//don't pass error, lets try the other users
-					}, block_delay);
-				}
 
-				// --- Create Marble(s) --- //
-				else{
-					console.log('user created succesfully', username);
-					setTimeout(function(){										//delay for peer catch up
-						create_marbles(username, user_cb);
-					}, block_delay);
-				}
+			// --- Create Each User --- //
+			pessimistic_create_owner(0, username, function(){
+
+				// --- Create 2x Marbles --- //
+				setTimeout(function(){											//delay for peer catch up
+					create_marbles(username, user_cb);
+				}, block_delay);
 			});
+
 		}, function(err) {
 			console.log('- finished creating assets, waiting for peer catch up');
 			if(err == null) {
@@ -312,6 +305,38 @@ function create_assets(build_marbles_users){
 	}
 }
 
+//create the owner in a loop until it exists - repeat until we see the correct error! (yes)
+function pessimistic_create_owner(attempt, username, cb){
+	marbles_lib.register_owner(webUser, [hfc.getPeer(helper.getPeersUrl(0))], [username, process.env.marble_company], function(e){
+		console.log('\n\n\n!', attempt, e);
+
+		// --- Does the user exist yet? --- //
+		if(typeof e === 'string' && e.indexOf('owner already exists')){
+			console.log('\n\nfinally the user exists, this is a good thing, moving on\n\n');
+			cb(null);
+		}
+		else{
+
+			// -- Try again -- //
+			if(attempt < 4){
+				setTimeout(function(){										//delay for peer catch up
+					console.log('owner existance is not yet confirmed, trying again', attempt, username, Date.now());
+					return pessimistic_create_owner(++attempt, username, cb);
+				}, block_delay + 1000*attempt);
+			}
+
+			// -- Give Up -- //
+			else{
+				console.log('giving up on creating the user', attempt, username, Date.now());
+				if(cb) return cb(e);
+				else return;
+			}
+		}
+		
+	});
+}
+
+//create some marbles
 function create_marbles(username, cb){
 	async.eachLimit([1,2], 1, function(block_height, marble_cb) {	//create two marbles for every user
 		var randOptions = build_marble_options(username, process.env.marble_company);
@@ -327,13 +352,14 @@ function create_marbles(username, cb){
 	});
 }
 
+//we are done, inform the clients
 function all_done(){
 	broadcast_state('registered_owners');
 	process.env.app_first_setup = 'no';
 	var state_file = {hash: helper.getHash()};						//write state file so we know we started before
 	fs.writeFileSync(app_state_file, JSON.stringify(state_file, null, 4), 'utf8');
+	ws_server.check_for_new_users(null);							//call the periodic task to get the state of everything
 
-	ws_server.check_for_new_users(null);
 	/*marbles_lib.debug(webUser, [hfc.getPeer(helper.getPeersUrl(0))], 'amy.United Marbles', function(e, data){
 		console.log('!!!!!!!!!!!!!!!!!!got');
 		console.log(e, JSON.stringify(data));
