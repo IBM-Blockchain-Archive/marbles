@@ -9,7 +9,7 @@
 		.txLegend Build Proposal
 		.txStoryWrap
 			.marbleWrap
-				div.ball#proposeMarbleStable.hideBorders.leftPos
+				div.ball#proposeMarbleStable.hideBorders.leftPos(title="Your marble tx")
 				div.ball#proposeMarble.hideBorders.leftPos
 				div.ball#marbleBorderTop.leftPos
 				div.ball#marbleBorderBottom.leftPos
@@ -26,7 +26,7 @@
 		.txLegend Endorsement
 		.txStoryWrap 
 			.marbleWrap
-				div.ball#endorseMarbleStable
+				div.ball#endorseMarbleStable(title="Your marble tx")
 					span.fa.fa-check
 				div.ball#endorseMarble
 					span.fa.fa-check
@@ -41,11 +41,11 @@
 		.txLegend Ordering
 		.txStoryWrap
 			#orderBoxStable 
-				span.ball.ordererMarbles.hideMe
+				span.ball.ordererMarbles.hideMe(title="Another marble tx")
 					span.fa.fa-check
-				span.ball.ordererMarbles.hideMe
+				span.ball.ordererMarbles.hideMe(title="Your marble tx")
 					span.fa.fa-check
-				span.ball.ordererMarbles.hideMe
+				span.ball.ordererMarbles.hideMe(title="Another marble tx")
 					span.fa.fa-check
 				#orderBox 007
 		.txDescription
@@ -58,7 +58,7 @@
 			.txStatus
 		.txLegend Validate & Commit
 		.txStoryWrap 
-			#commitBoxStable 
+			#commitBoxStable(title="Block Height 007")
 				span.fa.fa-check
 				span 007
 		.txDescription
