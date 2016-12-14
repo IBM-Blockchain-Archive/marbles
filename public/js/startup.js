@@ -217,11 +217,7 @@ function show_start_up_step(obj){
 		$('#step1, #step2, #step3').removeClass('stepFailed');
 		$('#step1, #step2, #step3').removeClass('inactiveStep');
 		$('#step1, #step2, #step3').addClass('stepComplete');
-		if(cb){
-			setTimeout(function(){
-				cb();
-			}, block_delay);
-		}
+		if(cb) cb();
 	}
 
 	//get owners with timeout to get marbles again!
