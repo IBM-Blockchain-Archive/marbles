@@ -36,12 +36,12 @@ func get_marble(stub shim.ChaincodeStubInterface, name string) (Marble, error) {
 	var marble Marble
 	marbleAsBytes, err := stub.GetState(name)
 	if err != nil {
-		return marble, errors.New("Failed to find marble: " + name)
+		return marble, errors.New("Failed to find marble - " + name)
 	}
 	json.Unmarshal(marbleAsBytes, &marble)                   //un stringify it aka JSON.parse()
 
 	if marble.Name != name {                                 //test if marble is actually here or just nil
-		return marble, errors.New("Marble does not exist: " + name)
+		return marble, errors.New("Marble does not exist - " + name)
 	}
 
 	return marble, nil
@@ -65,13 +65,13 @@ func get_complete_marble_index(stub shim.ChaincodeStubInterface) ([]byte, error)
 		var owner Owner
 		owner, err = get_owner_full(stub, ownersIndex.Owners[i])
 		if err != nil {
-			fmt.Println("Could not find owner from index: " + ownersIndex.Owners[i])
+			fmt.Println("Could not find owner from index - " + ownersIndex.Owners[i])
 			return nil, err
 		}
 		
 		//append to array
 		completedMarbleIndex = append(completedMarbleIndex, owner.Marbles...) //add this owner's marble list to complete list
-		fmt.Println("marble index so far: ", completedMarbleIndex)
+		fmt.Println("marble index so far - ", completedMarbleIndex)
 	}
 
 	//change to array of bytes
@@ -107,7 +107,7 @@ func delete_marble(stub shim.ChaincodeStubInterface, args []string) ([]byte, err
 	//get the marble index from owner
 	owner, err := get_owner(stub, marble.Owner.Username, marble.Owner.Company)
 	if err != nil {
-		fmt.Println("Failed to find owner: " + marble.Owner.Username + " " + marble.Owner.Company)
+		fmt.Println("Failed to find owner - " + marble.Owner.Username + " " + marble.Owner.Company)
 		return nil, err
 	}
 
@@ -173,9 +173,9 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) ([]byte, error
 	//check if marble already exists
 	marble, err := get_marble(stub, name)
 	if err == nil {
-		fmt.Println("This marble already exists: " + name)
+		fmt.Println("This marble already exists - " + name)
 		fmt.Println(marble)
-		return nil, errors.New("This marble already exists: " + name) //all stop a marble by this name exists
+		return nil, errors.New("This marble already exists - " + name) //all stop a marble by this name exists
 	}
 
 	//build the marble json string manually
@@ -188,14 +188,14 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) ([]byte, error
 	//get the marble index from owner
 	owner, err := get_owner(stub, username, company)
 	if err != nil {
-		fmt.Println("Failed to find owner: " + username + " " + company)
+		fmt.Println("Failed to find owner - " + username + " " + company)
 		return nil, err
 	}
 
 	//append
 	var fullOwner = build_full_owner(username, company);
 	owner.Marbles = append(owner.Marbles, name)                //add marble name to index list
-	fmt.Println("! marble index: ", owner.Marbles)
+	fmt.Println("! marble index - ", owner.Marbles)
 	jsonAsBytes, _ := json.Marshal(owner)
 	err = stub.PutState(fullOwner, jsonAsBytes)                //store name of marble
 

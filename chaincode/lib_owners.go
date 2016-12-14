@@ -49,12 +49,12 @@ func get_owner_full(stub shim.ChaincodeStubInterface, fullOwner string) (Owner, 
 	var owner Owner
 	ownerAsBytes, err := stub.GetState(fullOwner)              //this should always succeed, even if it doesn't exist
 	if err != nil {
-		return owner, errors.New("Failed to get owner: " + fullOwner)
+		return owner, errors.New("Failed to get owner - " + fullOwner)
 	}
 	json.Unmarshal(ownerAsBytes, &owner)                       //un stringify it aka JSON.parse()
 
 	if len(owner.Username) == 0 {                              //test if owner is actually here or just nil
-		return owner, errors.New("Owner does not exist: " + fullOwner + ", " + owner.Username + "." + owner.Company)
+		return owner, errors.New("Owner does not exist - " + fullOwner + ", " + owner.Username + "." + owner.Company)
 	}
 
 	return owner, nil
@@ -91,7 +91,7 @@ func set_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) 
 	var new_user = strings.ToLower(args[1])
 	var new_company = args[2]
 	var authed_by_company = args[3]
-	fmt.Println(marble_id + "->" + new_user + " - " + new_company + ":" + authed_by_company)
+	fmt.Println(marble_id + "->" + new_user + " - " + new_company + "|" + authed_by_company)
 
 	// get marble's current state 
 	marbleAsBytes, err := stub.GetState(marble_id)
@@ -159,9 +159,11 @@ func init_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error)
 	//check if user already exists
 	_, err = get_owner(stub, owner.Username, owner.Company)
 	if err == nil {
-		fmt.Println("This owner already exists: " + owner.Username + " " + owner.Company)
-		return nil, errors.New("This owner already exists: " + owner.Username + " " + owner.Company)
+		fmt.Println("This owner already exists - " + owner.Username + " " + owner.Company)
+		return nil, errors.New("This owner already exists - " + owner.Username + " " + owner.Company)
 	}
+
+	return nil, errors.New("This owner already exists - " + owner.Username + " " + owner.Company)			//dsh to do - remove this
 
 	//store user
 	ownerAsBytes, _ := json.Marshal(owner)
@@ -180,7 +182,7 @@ func init_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error)
 
 	//append to list
 	ownersIndex.Owners = append(ownersIndex.Owners, fullOwner)              //add owner to index list
-	fmt.Println("! owner index: ", ownersIndex.Owners)
+	fmt.Println("! owner index - ", ownersIndex.Owners)
 	jsonAsBytes, _ := json.Marshal(ownersIndex)
 	err = stub.PutState(ownerIndexStr, jsonAsBytes)           //store updated owner index
 

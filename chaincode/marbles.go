@@ -99,7 +99,7 @@ type OwnerRelation struct {
 func main() {
 	err := shim.Start(new(SimpleChaincode))
 	if err != nil {
-		fmt.Printf("Error starting Simple chaincode: %s", err)
+		fmt.Printf("Error starting Simple chaincode - %s", err)
 	}
 }
 
@@ -145,7 +145,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) ([]byte, error)
 // ============================================================================================================================
 func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) ([]byte, error) {
 	function, args := stub.GetFunctionAndParameters()
-	fmt.Println("starting invoke, for: " + function)
+	fmt.Println("starting invoke, for - " + function)
 
 	// Handle different functions
 	if function == "init" { 				//initialize the chaincode state, used as reset
@@ -167,8 +167,8 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) ([]byte, erro
 		return get_complete_marble_index(stub)
 	}
 
-	fmt.Println("Received unknown invoke function name: " + function) //should not get here, its an error
-	return nil, errors.New("Received unknown invoke function name: '" + function + "'")
+	fmt.Println("Received unknown invoke function name - " + function) //should not get here, its an error
+	return nil, errors.New("Received unknown invoke function name - '" + function + "'")
 }
 
 // ============================================================================================================================
@@ -182,7 +182,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) ([]byte, error
 	if function == "read" {                                //read a variable
 		return read(stub, args)
 	}
-	fmt.Println("query did not find func: " + function)    //error
+	fmt.Println("query did not find func - " + function)    //error
 
 	return nil, errors.New("Received unknown function query")
 }
