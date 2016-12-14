@@ -891,6 +891,9 @@ td.userRights, th.userRights{
   border-bottom-color: transparent;
   left: 50px; }
 
+#endorseMarbleStable span {
+  display: none; }
+
 #orderBoxStable, #orderBox, #commitBoxStable {
   display: none;
   height: 135px;

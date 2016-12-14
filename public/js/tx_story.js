@@ -62,6 +62,7 @@ function show_tx_step(obj, cb_orig){
 		if(state === 'building_proposal'){
 			$('#txStep1').removeClass('inactiveStep');
 			$('#txStep2, #txStep3, #txStep4').addClass('inactiveStep');
+			$('#txStep1, #txStep2, #txStep3, #txStep4').removeClass('stepComplete');//reset
 
 			story1_animation(function(){
 				setTimeout(function(){
@@ -117,6 +118,7 @@ function show_tx_step(obj, cb_orig){
 
 			$('#txStep2').addClass('stepFailed');
 			$('#endorseMarbleStable .fa-check').removeClass('fa-check').addClass('fa-close');
+			$('#endorseMarbleStable span').fadeIn();
 		}
 		else if(state === 'ordering_failed'){
 			$('#txStep1, #txStep2, #txStep3').removeClass('inactiveStep');
@@ -144,7 +146,7 @@ function story1_animation(cb){
 //1. show marble that will roll
 //2. roll it
 //3. hide rolled marble
-//4. show endorse marble with icon
+//4. show endorse marble with (icon hidden)
 function story2_animation(cb){
 	$('#proposeMarble').show();
 	$('#proposeMarbleStable').removeClass('hideBorders');
@@ -167,6 +169,7 @@ function story2_animation(cb){
 //4. hide rolled marble
 //5. build box around marbles
 function story3_animation(cb){
+	$('#endorseMarbleStable span').fadeIn();
 	$('#endorseMarble').show();
 
 	var dist2 = $('#txStep2 .txStatusWrap .txStatus').offset();

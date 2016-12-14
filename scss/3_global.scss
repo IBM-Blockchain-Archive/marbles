@@ -680,6 +680,10 @@ $marble_left: 0;
 	left:$marble_left + 50px;
 }
 
+
+#endorseMarbleStable span{
+	display:none;
+}
 #orderBoxStable, #orderBox, #commitBoxStable{
 	display: none;
 	height: 135px;

@@ -56,11 +56,13 @@
 	.txStepWrap#txStep4.inactiveStep
 		.txStatusWrap
 			.txStatus
-		.txLegend Commit
+		.txLegend Verify & Commit
 		.txStoryWrap 
-			#commitBoxStable 007
+			#commitBoxStable 
+				span.fa.fa-check
+				span 007
 		.txDescription
-			span Finally the block containing our transaction is committed to our peer's ledger.
+			span Finally the block containing our transaction is verified and then committed to our peer's ledger.
 
 	div
 		.hint * Note the speed of this process is slowed down for demonstration purposes
@@ -71,7 +73,7 @@
 
 	//----------------- All done
 	.stepHelpWrap#doneTxStep
-		h2 Transfer Complete
+		h2 Invoke Complete
 		br
 		br
 		button(type="button").closeTxStory Close
