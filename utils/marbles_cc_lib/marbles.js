@@ -54,6 +54,12 @@ module.exports = function (chain, chaincode_id, logger) {
 				if(typeof err === 'string' && err.indexOf('marble already exists')){
 					e = err;
 				}
+				if(typeof err === 'string'){								//only pass these errors until we fix it
+					if(err.indexOf('marble already exists')) e = err;
+					if(err.indexOf('Incorrect number of arguments')) e = err;
+					if(err.indexOf('argument must be')) e = err;
+					if(err.indexOf('Owner does not exist')) e = err;
+				}
 				if(cb) return cb(e, null);
 			}
 		);
@@ -175,8 +181,15 @@ module.exports = function (chain, chaincode_id, logger) {
 			}
 		).catch(
 			function (err) {
-				console.log('caught error', err);
-				if(cb) return cb(err, null);
+				console.log('error in catch block', typeof err, err);
+				var e = null;
+				if(typeof err === 'string'){								//only pass these errors until we fix it
+					if(err.indexOf('cannot authorize')) e = err;
+					if(err.indexOf('Failed to get marble')) e = err;
+					if(err.indexOf('Incorrect number of arguments')) e = err;
+				}
+				if(cb) return cb(e, null);
+				else return;
 			}
 		);
 	};
