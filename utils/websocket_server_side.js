@@ -221,8 +221,8 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 					console.log('[checking] there are new things, sending to all clients');
 					known_everything = data;
 					broadcast({msg: 'everything', e: err, everything: data});
-					sch_next_check();									//check again
 				}
+				sch_next_check();										//check again
 			}
 		});
 	};
