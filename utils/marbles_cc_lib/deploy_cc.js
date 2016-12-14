@@ -10,7 +10,7 @@ module.exports = function (chain, chaincode_id, logger) {
 			targets: peerUrls,
 			chaincodeId : chaincode_id,
 			fcn: 'read',
-			args: ['_marbleindex']
+			args: ['_ownerindex']
 		};
 		webUser.queryByChaincode(request)
 		.then(

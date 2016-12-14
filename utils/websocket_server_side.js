@@ -193,15 +193,15 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 							company: data[i].substring(pos + 1)
 						};
 			if(temp.company === process.env.marble_company){
-				myUsers.push(temp);								//these are my companies users
+				myUsers.push(temp);					//these are my companies users
 			}
 			else{
-				ownerList.push(temp);							//everyone else
+				ownerList.push(temp);				//everyone else
 			}
 		}
 
 		ownerList = sort_usernames(ownerList);
-		ownerList = myUsers.concat(ownerList);				//my users are first, bring in the others
+		ownerList = myUsers.concat(ownerList);		//my users are first, bring in the others
 		return ownerList;
 	}
 
