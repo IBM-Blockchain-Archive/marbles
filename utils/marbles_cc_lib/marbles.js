@@ -49,14 +49,12 @@ module.exports = function (chain, chaincode_id, logger) {
 			}
 		).catch(
 			function (err) {
-				console.log('caught error', err);
-				if(err && err.indexOf && err.indexOf('EOF') >= 0){
-					console.log('\n\n!!!! caught an eof 1!!!\n');
+				console.log('error in catch block', typeof err, err);
+				var e = null;
+				if(typeof err === 'string' && err.indexOf('marble already exists')){
+					e = err;
 				}
-				if(err && err.indexOf && err.indexOf('eof') >= 0){
-					console.log('\n\n!!!! caught an eof 2!!!\n');
-				}
-				if(cb) return cb(null, null);										//dsh to do - put the error back
+				if(cb) return cb(e, null);
 			}
 		);
 	};

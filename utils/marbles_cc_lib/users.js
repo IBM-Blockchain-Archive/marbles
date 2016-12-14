@@ -25,12 +25,13 @@ module.exports = function (chain, chaincode_id, logger) {
 			function (results) {
 				var proposalResponses = results[0];
 				var proposal = results[1];
-				if (proposalResponses[0].response.status === 200) {
+
+				if (proposalResponses && proposalResponses[0] && proposalResponses[0].response && proposalResponses[0].response.status === 200) {
 					console.log('Successfully obtained transaction endorsement.' + JSON.stringify(proposalResponses));
 					return webUser.sendTransaction(proposalResponses, proposal);
 				}
 				else {
-					console.log('Failed to obtain transaction endorsement');
+					console.log('Failed to obtain transaction endorsement', proposalResponses);
 					throw common.format_error_msg(proposalResponses[0]);
 				}
 			}
@@ -48,13 +49,12 @@ module.exports = function (chain, chaincode_id, logger) {
 			}
 		).catch(
 			function (err) {
-				if(err && err.indexOf && err.indexOf('EOF') >= 0){
-					console.log('\n\n!!!! caught an eof 1!!!\n');
+				console.log('error in catch block', typeof err, err);
+				var e = null;
+				if(typeof err === 'string' && err.indexOf('owner already exists')){
+					e = err;
 				}
-				if(err && err.indexOf && err.indexOf('eof') >= 0){
-					console.log('\n\n!!!! caught an eof 2!!!\n');
-				}
-				if(cb) return cb(null, null);										//dsh to do - put the error back
+				if(cb) return cb(e, null);
 				else return;
 			}
 		);

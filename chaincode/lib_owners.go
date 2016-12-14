@@ -163,8 +163,6 @@ func init_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error)
 		return nil, errors.New("This owner already exists - " + owner.Username + " " + owner.Company)
 	}
 
-	return nil, errors.New("This owner already exists - " + owner.Username + " " + owner.Company)			//dsh to do - remove this
-
 	//store user
 	ownerAsBytes, _ := json.Marshal(owner)
 	err = stub.PutState(fullOwner, ownerAsBytes)              //store owner with concated name as key
