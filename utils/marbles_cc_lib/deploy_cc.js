@@ -79,7 +79,7 @@ module.exports = function (chain, chaincode_id, logger) {
 						console.log('Chaincode deployed successfully\n\n');
 						if(cb) return cb(null);
 						else return;
-					}, 20000);
+					}, 25000);
 				}
 				else{
 					console.log('Failed to order the deployment endorsement.');
