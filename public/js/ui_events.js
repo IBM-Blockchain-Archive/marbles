@@ -20,7 +20,6 @@ $(document).on('ready', function() {
 	console.log('from local storage', fromLS);
 
 	connect_to_server();
-	$('input[name="name"]').val('r' + randStr(6));
 
 	// =================================================================================
 	// jQuery UI Events
@@ -29,7 +28,7 @@ $(document).on('ready', function() {
 		console.log('creating marble');
 		var obj = 	{
 						type: 'create',
-						name: $('input[name="name"]').val().replace(' ', ''),
+						name: 'r' + randStr(23),
 						color: $('.colorSelected').attr('color'),
 						size: $('select[name="size"]').val(),
 						username: $('select[name="user"]').val(),
