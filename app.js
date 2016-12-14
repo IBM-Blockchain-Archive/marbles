@@ -358,10 +358,15 @@ function all_done(){
 	process.env.app_first_setup = 'no';
 	var state_file = {hash: helper.getHash()};						//write state file so we know we started before
 	fs.writeFileSync(app_state_file, JSON.stringify(state_file, null, 4), 'utf8');
-	ws_server.check_for_new_users(null);							//call the periodic task to get the state of everything
+	//ws_server.check_for_new_users(null);							//call the periodic task to get the state of everything
+	ws_server.check_for_updates(null);
 
 	/*marbles_lib.debug(webUser, [hfc.getPeer(helper.getPeersUrl(0))], 'amy.United Marbles', function(e, data){
 		console.log('!!!!!!!!!!!!!!!!!!got');
+		console.log(e, JSON.stringify(data));
+	});*/
+	/*marbles_lib.read_everything(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(e, data){
+		console.log('\n\n\n!!!!!!!!!!!!!!!!!!got');
 		console.log(e, JSON.stringify(data));
 	});*/
 }

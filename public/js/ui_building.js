@@ -56,7 +56,7 @@ function size_user_name(name){
 //build all user panels
 function build_user_panels(data){
 	var full_owner = '';
-
+	
 	//reset
 	console.log('[ui] clearing all user panels');
 	$('.ownerWrap').html('');
