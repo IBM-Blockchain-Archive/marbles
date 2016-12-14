@@ -153,12 +153,12 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 		clearTimeout(checkPerodically);
 		checkPerodically = setTimeout(function(){
 			try{
-				//ws_server.check_for_new_users(null);
+				ws_server.check_for_updates(null);
 			}
 			catch(e){
 				console.log('\n\n! Error in sch next check\n\n', e);
 				sch_next_check();
-				//check_for_new_marbles(null);
+				ws_server.check_for_updates(null);
 			}
 		}, 12000);														//check perodically
 	}
