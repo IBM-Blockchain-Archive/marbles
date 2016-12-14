@@ -1,7 +1,8 @@
 # Marbles Demo
 
 ## Work In Progress! 
-**This branch does not have complete documentation!** 12/14/2016
+- **This branch does not have complete documentation!** 12/14/2016
+- This branch is **only** for Hyperledger v0.7+
 
 ## Application Background
 
