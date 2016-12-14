@@ -60,6 +60,9 @@ module.exports = function (chain, chaincode_id, logger) {
 					if(err.indexOf('argument must be')) e = err;
 					if(err.indexOf('Owner does not exist')) e = err;
 				}
+				if(e == null){
+					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'committing'}));
+				}
 				if(cb) return cb(e, null);
 			}
 		);
@@ -188,6 +191,9 @@ module.exports = function (chain, chaincode_id, logger) {
 					if(err.indexOf('Failed to get marble')) e = err;
 					if(err.indexOf('Incorrect number of arguments')) e = err;
 				}
+				if(e == null){
+					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'committing'}));
+				}
 				if(cb) return cb(e, null);
 				else return;
 			}
@@ -236,8 +242,18 @@ module.exports = function (chain, chaincode_id, logger) {
 			}
 		).catch(
 			function (err) {
-				console.log('caught error', err);
-				if(cb) return cb(err, null);
+				console.log('error in catch block', typeof err, err);
+				var e = null;
+				if(typeof err === 'string'){								//only pass these errors until we fix it
+					if(err.indexOf('Marble does not exist')) e = err;
+					if(err.indexOf('Incorrect number of arguments')) e = err;
+					if(err.indexOf('Owner does not exist')) e = err;
+				}
+				if(e == null){
+					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'committing'}));
+				}
+				if(cb) return cb(e, null);
+				else return;
 			}
 		);
 	};
