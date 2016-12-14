@@ -146,10 +146,10 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) ([]byte, error
 	var err error
 	fmt.Println("starting init_marble")
 
-	//   0       1       2     3      4
-	// "asdf", "blue", "35", "bob", "united marbles"
-	if len(args) != 5 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 5")
+	//   0       1       2     3      4                  5
+	// "asdf", "blue", "35", "bob", "united marbles", "united marbles"
+	if len(args) != 6 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 6")
 	}
 
 	//input sanitation
@@ -172,9 +172,15 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) ([]byte, error
 	color := strings.ToLower(args[1])
 	username := strings.ToLower(args[3])
 	company := args[4]
+	authed_by_company := args[5]
 	size, err := strconv.Atoi(args[2])
 	if err != nil {
 		return nil, errors.New("3rd argument must be a numeric string")
+	}
+
+	//check authorizing company
+	if company != authed_by_company{
+		return nil, errors.New("The company '" + authed_by_company + "' cannot authorize deletion for '" + company + "'.")
 	}
 
 	//check if marble already exists

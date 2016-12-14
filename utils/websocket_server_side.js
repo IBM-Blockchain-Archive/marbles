@@ -33,7 +33,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 		// create a new marble
 		if(data.type == 'create'){
 			console.log('[ws] create marbles req');
-			options = [data.name, data.color, data.size, data.username, data.company];
+			options = [data.name, data.color, data.size, data.username, data.company, process.env.marble_company];
 			marbles_lib.create_a_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], ws, options, function(err, resp){
 				if(err != null) send_err(err, data);
 			});
@@ -203,8 +203,10 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 			}
 			else{
 				var data = resp.payload[0];
-				console.log('\n\n[checking] number of owners:', data.owners_index.length);
-				console.log('[checking] number of marbles:', data.marbles.length, '\n\n');
+				if(data && data.owners && data.marbles && data.owners_index){
+					console.log('\n\n[checking] number of owners:', data.owners_index.length);
+					console.log('[checking] number of marbles:', data.marbles.length, '\n\n');
+				}
 
 				data.owners_index = organize_usernames(data.owners_index);
 				data.marbles = organize_marbles(data.marbles);

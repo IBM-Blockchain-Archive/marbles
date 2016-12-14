@@ -32,6 +32,7 @@ module.exports = function (chain, chaincode_id, logger) {
 				}
 				else {
 					console.log('Failed to obtain transaction endorsement');
+					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'endorsing_failed'}));
 					throw common.format_error_msg(proposalResponses[0]);
 				}
 			}
@@ -44,6 +45,7 @@ module.exports = function (chain, chaincode_id, logger) {
 				}
 				else {
 					console.log('Failed to order the endorsement of the transaction.');
+					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering_failed'}));
 					throw response;
 				}
 			}
@@ -55,6 +57,7 @@ module.exports = function (chain, chaincode_id, logger) {
 					e = err;
 				}
 				if(typeof err === 'string'){								//only pass these errors until we fix it
+					if(err.indexOf('cannot authorize')) e = err;
 					if(err.indexOf('marble already exists')) e = err;
 					if(err.indexOf('Incorrect number of arguments')) e = err;
 					if(err.indexOf('argument must be')) e = err;
