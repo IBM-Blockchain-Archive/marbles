@@ -18,7 +18,7 @@ $(document).on('ready', function() {
 		var obj = 	{
 						type: 'setup',
 						configure: 'find_chaincode',
-						ordererUrl: $('input[name="ordererUrl]').val(),
+						ordererUrl: $('input[name="ordererUrl"]').val(),
 						peerUrl: $('input[name="peerUrl"]').val(),
 						chaincodeId: $('input[name="chaincodeId"]').val()
 					};
@@ -33,7 +33,7 @@ $(document).on('ready', function() {
 		var obj = 	{
 						type: 'setup',
 						configure: 'deploy_chaincode',
-						ordererUrl: $('input[name="ordererUrl]').val(),
+						ordererUrl: $('input[name="ordererUrl"]').val(),
 						peerUrl: $('input[name="peerUrl"]').val(),
 						chaincodeId: $('input[name="chaincodeId"]').val()
 					};

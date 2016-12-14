@@ -120,7 +120,7 @@ function build_company_panel(company){
 	var html = '';
 	html += '<div class="companyPanel" company="' + company + '">';
 	html +=		'<div class="companyNameWrap">';
-	html +=			'<span class="companyName">' + toTitleCase(company) + '&nbsp;-&nbsp;</span>';
+	html +=			'<span class="companyName">' + company + '&nbsp;-&nbsp;</span>';
 	html +=			'<span class="companyVisible">0</span>/';
 	html +=			'<span class="companyCount">0</span>';
 	if(company === escapeHtml(bag.marble_company)) {
