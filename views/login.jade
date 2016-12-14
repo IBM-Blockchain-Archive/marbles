@@ -6,61 +6,6 @@ block custom_header
 	script(type='text/javascript').
 		$(document).ready(function(){
 
-			/*
-			//roll_ball();
-			function roll_ball() {
-				$('#proposeMarbleStable').removeClass('hideBorders');
-				$('#marbleBorderTop').hide();
-				$('#marbleBorderBottom').hide();
-				$('#marbleBorderLeft').hide();
-				$('#marbleBorderRight').hide();
-				var move = 200;
-				$('#proposeMarbleStable').animate({left: '+='+move}, {
-					duration: 2000,
-					step: function(distance) {
-						var degree = distance * 360 / move;
-						$('#proposeMarbleStable').css('transform','rotate(' + degree + 'deg)');
-					},
-					complete: shrink_ball
-				});
-			}
-
-			var dist = 50;
-			$('#marbleBorderTop').animate({top: '+=' + dist}, {duration: 2000});
-			$('#marbleBorderBottom').animate({top: '-=' + dist}, {duration: 2000});
-			$('#marbleBorderLeft').animate({left: '+=' + dist}, {duration: 2000});
-			$('#marbleBorderRight').animate({left: '-=' + dist}, {duration: 2000});
-			
-
-			var move = 200;
-			$('#dummy').animate({left: '+=' + move}, {
-				duration: 2000,
-				step: function(distance) {
-					var degree = distance * 360 / move;
-					$('#marbleWrap').css('transform','rotate(' + degree + 'deg)');
-				},
-				complete: roll_ball
-			});
-
-			function shrink_ball(){
-				$('#proposeMarbleStable').animate({width: 0, height:0}, {
-					duration: 300,
-					complete: function(){
-						$('#proposeMarbleStable').hide();
-						setTimeout(function(){grow_ball();},1000);
-					}
-				});
-			}
-
-			function grow_ball(){
-				$('#proposeMarbleStable').show();
-				$('#proposeMarbleStable').animate({width: 40, height:40}, {
-					duration: 600,
-					complete: function(){
-						//$('#proposeMarbleStable').hide();
-					}
-				});
-			}*/
 		});
 		
 		

@@ -597,16 +597,6 @@ strong {
   border-bottom-left-radius: 10px;
   text-align: center; }
 
-#errorNoticeText {
-  margin-bottom: 10px;
-  font-size: 13px;
-  width: 88%;
-  text-align: center; }
-
-#closeNotification {
-  background: initial;
-  color: #fff; }
-
 #noticeIcon, #errorNoticeIcon {
   position: absolute;
   left: -19px;
@@ -662,11 +652,6 @@ td.userRights, th.userRights{
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
   text-align: center; }
-
-#errorNoticeText {
-  margin-top: 10px;
-  text-align: left;
-  margin-left: 10px; }
 
 #errorNoticeIcon {
   top: 42%; }

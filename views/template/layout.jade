@@ -23,39 +23,13 @@ html
 		script(src='/js/util/jquery-1.11.1.min.js')
 		script(src='/js/util/jquery-ui-1.11.4/jquery-ui.min.js')
 		script(src='/js/util/jquery.ui.touch-punch.min.js')
-		script(src='/js/funk.js')
-		//script(src='/js/blockchain.js')
-		script(src='/js/ui_building.js')
+		script(src='/js/funk.js?v=#{bag.jshash}')
+		//script(src='/js/blockchain.js?v=#{bag.jshash}')
+		script(src='/js/ui_building.js?v=#{bag.jshash}')
 		script(type='text/javascript').
 			var bag = !{JSON.stringify(bag)};						//throw jade json over to JS
 			console.log('bag', bag);
 			$(document).ready(function(){
-				if(bag.e && bag.e.msg) {
-					$("#errorName").html("Start Up Error");
-					$("#errorNoticeText").html(JSON.stringify(bag.e.msg, null, 4));
-					//$("#errorNotificationPanel").show();							//show the error/warning
-				}
-				
-				//Tab Navigation, show the corresponding panel
-				/*$(".nav").click(function(){
-					var show = $(this).html().trim().toLowerCase();
-					showPanel(show);
-				});
-				function showPanel(show){
-					if(show == '') show = 'home';							//default
-					window.history.pushState({},'', show);					//put it in url so we can f5
-
-					$(".panel").hide();
-					if($("#" + show + "Panel").length == 0){
-						$("#error404").fadeIn();
-					}
-					else{
-						$("#" + show + "Panel").fadeIn(300);
-						$(".selectedNav").removeClass("selectedNav");
-						$(this).addClass("selectedNav");
-					}
-				}*/
-				
 				//Blockchain panel toggle
 				$("#viewBCWrap").click(function(){
 					if($("#footerWrap").is(":visible")){
@@ -65,26 +39,6 @@ html
 						$("#footerWrap").slideDown();
 					}
 				});
-				
-				//Notification panel
-				$("#closeNotification").click(function(){
-					//$("#notificationPanel").animate({right:'-=450'}, 500, function(){
-					//	$(this).hide();
-					//});
-					$("#notificationPanel").animate({width:'toggle'});
-				});
-				
-				$(".backToHome").click(function(){
-					$(".panel").hide();
-					$("#homePanel").show();
-					$("#notificationPanel").animate({width:'toggle'});
-				});
-				
-				//Page refresh show correct panel
-				/*var pos = window.location.pathname.indexOf('/');			//skipping first char find first slash
-				if(pos >= 0){
-					showPanel(window.location.pathname.substring(pos + 1).toLowerCase());
-				}*/
 				
 				$(".colorInput").click(function(){	//do not remove! no idea why but this helps safari open the color picker
 					console.log('...');
@@ -106,21 +60,6 @@ html
 				
 				block content
 				
-				//#notificationPanel
-					span.fa.fa-check#noticeIcon
-					span Detected a new company "
-					span#noticeText 
-					span "!
-					br
-					br
-					button(type="button")#closeNotification Dismiss
-				
-				//#errorNotificationPanel
-					span.fa.fa-minus-circle#errorNoticeIcon
-					h2#errorName Failed Endorsement
-					#errorNoticeText &nbsp;
-					button(type="button")#closeErrorPanel Dismiss
-			
 			br
 			br
 			br
