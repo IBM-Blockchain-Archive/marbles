@@ -795,12 +795,12 @@ $marble_left: 0;
 	font-size: 13px;
 	margin-right: 5px;
 }
-#closeStartUp, #closeTxStoryPos, #closeSettings{
+#closeStartUp, #closeTxStoryPos, #closeSettings, #closeCreate{
 	position: absolute;
 	right: 15px;
 	top: 15px;
 }
-#closeStartUp:hover, #closeTxStoryPos:hover, #closeSettings:hover{
+#closeStartUp:hover, #closeTxStoryPos:hover, #closeSettings:hover, #closeCreate:hover{
 	color: $hi_color1;
 	cursor: pointer;
 }

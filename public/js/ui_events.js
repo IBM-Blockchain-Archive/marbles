@@ -223,6 +223,11 @@ $(document).on('ready', function() {
 	$('#enableStoryMode').click(function(){
 		set_story_mode('on');
 	});
+
+	//close create panel
+	$('#closeCreate').click(function(){
+		$('#createPanel, #tint').fadeOut();
+	});
 });
 
 //toggle story mode
