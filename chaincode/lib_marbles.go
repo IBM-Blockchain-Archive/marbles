@@ -86,17 +86,23 @@ func get_complete_marble_index(stub shim.ChaincodeStubInterface) ([]string, erro
 func delete_marble(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("starting delete_marble")
 
-	if len(args) != 1 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 1")
+	if len(args) != 2 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 2")
 	}
 
 	name := args[0]
+	authed_by_company := args[1]
 
 	//get the marble
 	marble, err := get_marble(stub, name)
 	if err != nil{
 		fmt.Println("Failed to find marble by name " + name)
 		return nil, err
+	}
+
+	//check authorizing company
+	if marble.Owner.Company != authed_by_company{
+		return nil, errors.New("The company '" + authed_by_company + "' cannot authorize deletion for '" + marble.Owner.Company + "'.")
 	}
 
 	//remove the marble

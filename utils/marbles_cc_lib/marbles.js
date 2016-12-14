@@ -25,7 +25,7 @@ module.exports = function (chain, chaincode_id, logger) {
 			function (results) {
 				var proposalResponses = results[0];
 				var proposal = results[1];
-				if (proposalResponses[0].response.status === 200) {
+				if (proposalResponses && proposalResponses[0] && proposalResponses[0].response && proposalResponses[0].response.status === 200) {
 					console.log('Successfully obtained transaction endorsement.' + JSON.stringify(proposalResponses));
 					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering'}));
 					return webUser.sendTransaction(proposalResponses, proposal);
@@ -158,13 +158,13 @@ module.exports = function (chain, chaincode_id, logger) {
 			function (results) {
 				var proposalResponses = results[0];
 				var proposal = results[1];
-				if (proposalResponses[0] && proposalResponses[0].response && proposalResponses[0].response.status === 200) {
+				if (proposalResponses && proposalResponses[0] && proposalResponses[0].response && proposalResponses[0].response.status === 200) {
 					console.log('Successfully obtained transaction endorsement.' + JSON.stringify(proposalResponses));
 					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering'}));
 					return webUser.sendTransaction(proposalResponses, proposal);
 				}
 				else {
-					console.log('Failed to obtain transaction endorsement. Error msg: ', proposalResponses[0]);
+					console.log('Failed to obtain transaction endorsement', proposalResponses);
 					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'endorsing_failed'}));
 					throw common.format_error_msg(proposalResponses[0]);
 				}
@@ -218,13 +218,14 @@ module.exports = function (chain, chaincode_id, logger) {
 			function (results) {
 				var proposalResponses = results[0];
 				var proposal = results[1];
-				if (proposalResponses[0].response.status === 200) {
+				if (proposalResponses && proposalResponses[0] && proposalResponses[0].response && proposalResponses[0].response.status === 200) {
 					console.log('Successfully obtained transaction endorsement.' + JSON.stringify(proposalResponses));
 					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering'}));
 					return webUser.sendTransaction(proposalResponses, proposal);
 				}
 				else {
-					console.log('Failed to obtain transaction endorsement. Error code: ' + proposalResponses[0].response.status);
+					console.log('Failed to obtain transaction endorsement', proposalResponses);
+					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'endorsing_failed'}));
 					throw common.format_error_msg(proposalResponses[0]);
 				}
 			}
@@ -237,6 +238,7 @@ module.exports = function (chain, chaincode_id, logger) {
 				}
 				else {
 					console.log('Failed to order the endorsement of the transaction.');
+					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering_failed'}));
 					throw response;
 				}
 			}
@@ -245,6 +247,7 @@ module.exports = function (chain, chaincode_id, logger) {
 				console.log('error in catch block', typeof err, err);
 				var e = null;
 				if(typeof err === 'string'){								//only pass these errors until we fix it
+					if(err.indexOf('cannot authorize')) e = err;
 					if(err.indexOf('Marble does not exist')) e = err;
 					if(err.indexOf('Incorrect number of arguments')) e = err;
 					if(err.indexOf('Owner does not exist')) e = err;

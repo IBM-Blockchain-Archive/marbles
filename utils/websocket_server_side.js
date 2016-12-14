@@ -34,8 +34,8 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 		if(data.type == 'create'){
 			console.log('[ws] create marbles req');
 			options = [data.name, data.color, data.size, data.username, data.company];
-			marbles_lib.create_a_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], ws, options, function(){
-
+			marbles_lib.create_a_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], ws, options, function(err, resp){
+				if(err != null) send_err(err, data);
 			});
 		}
 
@@ -58,8 +58,9 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 		//delete marble
 		else if(data.type == 'delete_marble'){
 			console.log('[ws] delete marble req');
-			marbles_lib.delete_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], ws, [data.name], function(err, resp){
-
+			options = [data.name, process.env.marble_company];
+			marbles_lib.delete_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], ws, options, function(err, resp){
+				if(err != null) send_err(err, data);
 			});
 		}
 
