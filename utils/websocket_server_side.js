@@ -203,7 +203,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 			}
 			else{
 				var data = resp.payload[0];
-				if(data && data.owners && data.marbles && data.owners_index){
+				if(data && data.owners_index && data.marbles){
 					console.log('\n\n[checking] number of owners:', data.owners_index.length);
 					console.log('[checking] number of marbles:', data.marbles.length, '\n\n');
 				}
