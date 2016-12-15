@@ -45,6 +45,7 @@ function connect_to_server(){
 			if(msgObj.msg === 'everything'){
 				console.log('[ws] rec', msgObj.msg, msgObj);
 				clearTimeout(getOwnersTimeout);
+				$('#appStartingText').hide();
 				clear_trash();
 				build_user_panels(msgObj.everything.owners_index);
 				for(var i in msgObj.everything.marbles){
@@ -113,7 +114,7 @@ function connect_to_server(){
 			else if(msgObj.msg === 'app_state'){
 				console.log('[ws] rec', msgObj.msg, msgObj);
 				setTimeout(function(){
-					show_start_up_step(msgObj);		//dsh to do- why?
+					show_start_up_step(msgObj);
 				}, 1000);
 			}
 

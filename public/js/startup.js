@@ -104,7 +104,6 @@ $(document).on('ready', function() {
 //show the current step from the start up panel
 function show_start_up_step(obj){
 	var state = obj.state;
-	$('#appStartingText').fadeOut(1000);
 	//outcome of the last step
 	//'starting', 'failed_enroll', 'enrolled', 'no_chaincode', 'found_chaincode', 'registered_owners'
 
