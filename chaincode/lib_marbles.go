@@ -180,7 +180,7 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) ([]byte, error
 
 	//check authorizing company
 	if company != authed_by_company{
-		return nil, errors.New("The company '" + authed_by_company + "' cannot authorize deletion for '" + company + "'.")
+		return nil, errors.New("The company '" + authed_by_company + "' cannot authorize creation for '" + company + "'.")
 	}
 
 	//check if marble already exists
