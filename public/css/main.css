@@ -935,8 +935,8 @@ td.userRights, th.userRights{
 
 #startUpPanel, #txStoryPanel, #settingsPanel {
   display: none;
-  position: absolute;
-  top: 0;
+  position: fixed;
+  top: 100px;
   background: #343d48;
   border: 1px #646b73 solid;
   z-index: 1005;
