@@ -549,7 +549,9 @@ strong {
   background: #343d48;
   z-index: 1005;
   padding: 50px;
-  left: 23%; }
+  left: 50%;
+  margin-left: -265px;
+  width: 430px; }
 
 #tint {
   display: none;
@@ -1024,7 +1026,7 @@ td.userRights, th.userRights{
   text-align: center;
   font-size: 24px;
   color: #e5ebef;
-  margin-top: 50px; }
+  margin: 30px 0; }
 
 .txStepWrap {
   display: inline-block;

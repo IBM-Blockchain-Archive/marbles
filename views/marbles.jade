@@ -25,25 +25,24 @@ block content
 			#emptyNotifications.hint No Notifications
 		#notificationHandle 
 			span.fa.fa-angle-down
-			
-			//.notificationWrap
-				span.fa.fa-check.notificationIcon
-				span test test good
-				span.fa.fa-close.closeNotification
-			//.notificationWrap.warningNotice
-				span.fa.fa-minus-circle.notificationIcon
-				span test test bad
-				span.fa.fa-close.closeNotification
+
 
 	#contentPanel
-		
 		
 		// --------------- Home Panel
 		include ./panel_home.jade
 		
-		
 		// --------------- Create Panel
 		include ./panel_create.jade
+
+		// --------------- Start Up Walk Through Panel
+		include ./panel_startup.jade
+
+		// --------------- Walk Transaction Panel
+		include ./panel_tx_story.jade
+
+		// --------------- Settings Panel
+		include ./panel_settings.jade
 		
 block footer
 	include ./template/blockchain.jade
