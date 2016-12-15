@@ -117,9 +117,13 @@ function build_user_panels(data){
 function build_company_panel(company){
 	company = escapeHtml(company);
 	console.log('[ui] building company panel ' + company);
+
+	var mycss = '';
+	if(company === escapeHtml(bag.marble_company)) mycss = 'myCompany';
+	
 	var html = '';
 	html += '<div class="companyPanel" company="' + company + '">';
-	html +=		'<div class="companyNameWrap">';
+	html +=		'<div class="companyNameWrap ' + mycss + '">';
 	html +=			'<span class="companyName">' + company + '&nbsp;-&nbsp;</span>';
 	html +=			'<span class="companyVisible">0</span>/';
 	html +=			'<span class="companyCount">0</span>';

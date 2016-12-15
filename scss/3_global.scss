@@ -153,7 +153,7 @@
 // --------- Home ---------
 .marblesWrap{
 	display: inline-block;
-	width: 30%;
+	min-width: 235px;
 	text-align: left;
 	color: $main_color;
 	margin-bottom: 15px;
@@ -167,6 +167,7 @@
 }
 .innerMarbleWrap{
 	min-height:100px;
+	padding-right: 10px;
 }
 .legend{
 	display:absolute;
@@ -435,6 +436,12 @@ td.userRights, th.userRights{
 	background: $acc_color1;
 }
 
+.myCompany{
+	background: #545658;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+}
+
 
 
 // --------- error msg ---------
@@ -589,7 +596,7 @@ $marble_top: 15px;
 $marble_left: 0;
 #proposeMarbleStable, #proposeMarble, #endorseMarbleStable, #endorseMarble, #marbleBorderTop, #marbleBorderBottom, #marbleBorderLeft, #marbleBorderRight, .ordererMarbles{
 	border: 3px solid #3D76BA;
-	//border-top-color: $hi_color3;
+	//border-top-color: #205ca2;
 	//border-bottom-color: $hi_color3;
 	height: 40px;
 	width: 40px;
@@ -685,7 +692,7 @@ $marble_left: 0;
 	left: -2px;
 }
 #orderBoxStable{
-	line-height: 89px;
+	line-height: 74px;
 }
 #boxId{
 	position: absolute;
@@ -699,7 +706,7 @@ $marble_left: 0;
 .ordererMarbles {
 	background: #fff;
 	margin-right:2%;
-	position: initial;
+	position: relative;
 	display: inline-block;
 }
 .ordererMarbles:first-of-type {
@@ -864,4 +871,35 @@ $marble_left: 0;
 	color: #d740fd;
 	margin-left: 10px;
 	font-size: 16px;
+}
+
+
+// ----------- IE 10 +
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+	#notificationHandle{
+		width: 100%;
+		margin: 0;
+	}
+	#noticeScrollWrap{
+		height: 64px
+	}
+	#notificationsWrap{
+		padding: 0;
+	}
+
+	#txStep1 .txStoryWrap, #txStep2 .txStoryWrap{
+		width: 40px;
+		margin: auto;
+	}
+	.marbleWrap{
+		margin-left: 0;
+	}
+
+	#orderBoxStable, #orderBox, #commitBoxStable{
+		height: 122px;
+		line-height: 122px;
+	}
+	#orderBoxStable{
+		line-height: 66px;
+	}
 }
