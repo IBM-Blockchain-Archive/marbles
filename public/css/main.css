@@ -904,10 +904,11 @@ td.userRights, th.userRights{
   position: absolute;
   top: -2px;
   left: -2px;
-  font-size: 20px; }
+  font-size: 22px; }
 
 #orderBoxStable {
-  line-height: 74px; }
+  line-height: 74px;
+  border: 2px #fff transparent; }
 
 #boxId {
   position: absolute;

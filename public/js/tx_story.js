@@ -180,11 +180,14 @@ function story3_animation(cb){
 		$('#endorseMarbleStable').show();
 		$('.ordererMarbles').fadeIn();
 		setTimeout(function(){
-			$('#orderBoxStable').fadeIn(1000);
+			$('#orderBoxStable').fadeIn(500);
+			setTimeout(function(){
+			$('#orderBoxStable').css('border', '2px #fff solid');
 				setTimeout(function(){
 					$('#endorseMarble').hide();
 					if(cb) cb();
-				}, 1000);
+				}, 500);
+			}, 1000);
 		}, 300);
 	});
 }
