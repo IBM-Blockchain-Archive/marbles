@@ -32,7 +32,8 @@
 					span.fa.fa-check
 		.txDescription
 			span Next, we send the proposal to our peer for endorsing. 
-			span The peer will simulate, verify, and sign the proposal.
+			span The peer will simulate, verify, and sign the proposal. 
+			span It is then sent back to this app.
 
 	//----------------- Step 3 Content
 	.txStepWrap#txStep3.inactiveStep
@@ -49,8 +50,8 @@
 					span.fa.fa-check
 				#orderBox 007
 		.txDescription
-			span Then we send our proposal to the order. 
-			span The orderer will organizes the sequence of many transactions from all over the network to build a block. 
+			span Then Marbles will send our endorsed proposal to the orderer. 
+			span The orderer will organizes the sequence of many transactions, including ours, from all over the network to build a block. 
 
 	//----------------- Step 4 Content
 	.txStepWrap#txStep4.inactiveStep
@@ -62,7 +63,8 @@
 				span.fa.fa-check
 				span 007
 		.txDescription
-			span Finally the block containing our transaction is verified and then committed to our peer's ledger.
+			span The block containing our transaction is sent from the orderer to our peer. 
+			span Finally it is validated by the peer and then committed to the ledger. 
 
 	div
 		.hint * Note the speed of this process is slowed down for demonstration purposes
