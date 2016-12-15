@@ -52,7 +52,7 @@ function connect_to_server(){
 
 				start_up = false;
 				$('.marblesWrap').each(function(){
-					console.log('checking', $(this).attr('full_owner'), $(this).find('.innerMarbleWrap').find('.ball').length);
+					//console.log('checking', $(this).attr('full_owner'), $(this).find('.innerMarbleWrap').find('.ball').length);
 					if($(this).find('.innerMarbleWrap').find('.ball').length === 0){
 						$(this).find('.noMarblesMsg').show();
 					}
