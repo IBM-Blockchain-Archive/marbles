@@ -1,6 +1,6 @@
 /* global $, window, document */
 /* global randStr, toTitleCase, connect_to_server, refreshHomePanel, closeNoticePanel, openNoticePanel, show_tx_step*/
-/* exported record_company, autoCloseNoticePanel, start_up*/
+/* exported record_company, autoCloseNoticePanel, start_up, block_delay*/
 var ws = {};
 var bgcolors = ['whitebg', 'blackbg', 'redbg', 'greenbg', 'bluebg', 'purplebg', 'pinkbg', 'orangebg', 'yellowbg'];
 var autoCloseNoticePanel = null;
@@ -78,30 +78,6 @@ $(document).on('ready', function() {
 		$('.createball').css('border', '0').addClass(color + 'bg');				//set new color
 	});
 	
-	//drag and drop marble
-	$('#trashbin').droppable({drop:
-		function( event, ui ) {
-			var id = $(ui.draggable).attr('id');
-			if(id){
-				console.log('removing marble', id);
-
-				show_tx_step({state: 'building_proposal'}, function(){
-					var obj = 	{
-								type: 'delete_marble',
-								name: id,
-								v: 1
-							};
-					ws.send(JSON.stringify(obj));
-					$(ui.draggable).fadeOut();
-					setTimeout(function(){
-						$(ui.draggable).remove();
-					}, block_delay);
-					refreshHomePanel();
-				});
-			}
-		}
-	});
-
 	//username/company search
 	$('#searchUsers').keyup(function(){
 		var count = 0;

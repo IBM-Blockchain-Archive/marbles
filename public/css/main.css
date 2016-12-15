@@ -455,13 +455,18 @@ strong {
 
 #trashbin {
   text-align: center;
-  padding: 15px 50px;
+  padding: 5px 50px;
   border: 1px #646B73 dashed;
   border-radius: 3px;
   vertical-align: top;
   position: absolute;
   right: 0px;
-  bottom: 15px; }
+  bottom: 15px;
+  min-height: 90px;
+  line-height: 90px; }
+
+#trashbin .ball {
+  vertical-align: middle; }
 
 .bottomAlign {
   position: absolute;
@@ -470,7 +475,6 @@ strong {
 #trashText {
   vertical-align: top;
   display: inline-block;
-  margin-top: 17px;
   margin-left: 10px;
   color: #fff;
   font-weight: 100;

@@ -1,5 +1,5 @@
-/* global bag, $*/
-/* global escapeHtml, toTitleCase, formatDate, known_companies, transfer_marble, record_company*/
+/* global bag, $, ws*/
+/* global escapeHtml, toTitleCase, formatDate, known_companies, transfer_marble, record_company, show_tx_step, refreshHomePanel*/
 /* exported build_marble, record_company, build_user_panels, build_company_panel, build_notification, populate_users_marbles*/
 
 // =================================================================================
@@ -95,15 +95,35 @@ function build_user_panels(data){
 	$('.innerMarbleWrap').sortable({connectWith: '.innerMarbleWrap', items: 'span'}).disableSelection();
 	$('.innerMarbleWrap').droppable({drop:
 		function( event, ui ) {
-			var dragged_user = $(ui.draggable).attr('username').toLowerCase();
-			var dropped_user = $(event.target).parents('.marblesWrap').attr('username').toLowerCase();
-			var dropped_company = $(event.target).parents('.marblesWrap').attr('company');
+			var marble_id = $(ui.draggable).attr('id');
 
-			console.log('dropped a marble', dragged_user, dropped_user, dropped_company);
-			if(dragged_user != dropped_user){										//only transfer marbles that changed owners
-				$(ui.draggable).addClass('invalid');
-				transfer_marble($(ui.draggable).attr('id'), dropped_user, dropped_company);
-				return true;
+			//  ------------ Delete Marble ------------ //
+			if($(event.target).attr('id') === 'trashbin'){
+				console.log('removing marble', marble_id);
+				show_tx_step({state: 'building_proposal'}, function(){
+					var obj = 	{
+								type: 'delete_marble',
+								name: marble_id,
+								v: 1
+							};
+					ws.send(JSON.stringify(obj));
+					$(ui.draggable).addClass('invalid');
+					refreshHomePanel();
+				});
+			}
+
+			//  ------------ Transfer Marble ------------ //
+			else{
+				var dragged_user = $(ui.draggable).attr('username').toLowerCase();
+				var dropped_user = $(event.target).parents('.marblesWrap').attr('username').toLowerCase();
+				var dropped_company = $(event.target).parents('.marblesWrap').attr('company');
+
+				console.log('dropped a marble', dragged_user, dropped_user, dropped_company);
+				if(dragged_user != dropped_user){										//only transfer marbles that changed owners
+					$(ui.draggable).addClass('invalid');
+					transfer_marble(marble_id, dropped_user, dropped_company);
+					return true;
+				}
 			}
 		}
 	});

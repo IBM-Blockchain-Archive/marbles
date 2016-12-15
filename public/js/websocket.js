@@ -45,6 +45,7 @@ function connect_to_server(){
 			if(msgObj.msg === 'everything'){
 				console.log('[ws] rec', msgObj.msg, msgObj);
 				clearTimeout(getOwnersTimeout);
+				clear_trash();
 				build_user_panels(msgObj.everything.owners_index);
 				for(var i in msgObj.everything.marbles){
 					populate_users_marbles(msgObj.everything.marbles[i]);
@@ -257,3 +258,11 @@ function get_marbles_or_else(attempt){
 	}, 5000 + getRandomInt(0, 10000));
 }
 */
+
+//emtpy trash marble wrap
+function clear_trash(){
+	$('#trashbin .ball').fadeOut();
+	setTimeout(function(){
+		$('#trashbin .ball').remove();
+	}, 500);
+}

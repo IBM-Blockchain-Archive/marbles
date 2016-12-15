@@ -237,13 +237,19 @@
 }
 #trashbin{
 	text-align: center;
-	padding: 15px 50px;
+	padding: 5px 50px;
 	border: 1px $acc_color2 dashed;
 	border-radius:3px;
 	vertical-align: top;
 	position: absolute;
 	right: 0px;
 	bottom: 15px;
+	min-height: 90px;
+	line-height: 90px;
+}
+
+#trashbin .ball{
+	vertical-align: middle;
 }
 .bottomAlign{
 	position: absolute;
@@ -253,7 +259,6 @@
 #trashText{
 	vertical-align: top;
 	display: inline-block;
-	margin-top: 17px;
 	margin-left: 10px;
 	color: $main_color;
 	font-weight: 100;
