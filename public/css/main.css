@@ -903,7 +903,8 @@ td.userRights, th.userRights{
 #orderBox {
   position: absolute;
   top: -2px;
-  left: -2px; }
+  left: -2px;
+  font-size: 20px; }
 
 #orderBoxStable {
   line-height: 74px; }
