@@ -313,38 +313,39 @@
 	line-height: 75px;
 }
 .createball{
+	display: inline-block;
 	font-size:275px;
-	float:left;
 	color: transparent;
 	border: 2px dashed $main_color;
 	border-radius: 200px;
 	width: 250px;
 	height: 250px;
+	vertical-align: middle;
 }
 #createform{
-	float: right;
+	display: inline-block;
 	margin-top: 40px;
 	margin-left: 15px;
+	vertical-align: middle;
 }
 .createLegend{
 	width:45px;
 	display: inline-block;
 }
 #innerWrap{
-	margin:auto;
-	text-align: right;
-	margin-top:50px;
+	margin: auto;
+	text-align: center;
+	margin-top: 20px;
 }
-
 #createPanel{
 	position: fixed;
 	top: 75px;
 	background: #343d48;
 	z-index: 1005;
-	padding: 50px;
+	padding: 40px 60px;
 	left: 50%;
 	margin-left: -265px;
-	width: 430px;
+	width: 410px;
 }
 #tint{
 	display:none;

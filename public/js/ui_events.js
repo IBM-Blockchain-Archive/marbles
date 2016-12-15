@@ -204,6 +204,13 @@ $(document).on('ready', function() {
 	$('#closeCreate').click(function(){
 		$('#createPanel, #tint').fadeOut();
 	});
+
+	//change size of marble
+	$('select[name="size"]').click(function(){
+		var size = $(this).val();
+		if(size === '16') $('.createball').animate({'height': 150, 'width': 150}, {duration: 200});
+		else $('.createball').animate({'height': 250, 'width': 250}, {duration: 200});
+	});
 });
 
 //toggle story mode
