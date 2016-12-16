@@ -734,14 +734,18 @@ $marble_left: 0;
 #startUpPanel, #txStoryPanel, #settingsPanel{
 	display: none;
 	position: fixed;
-	top: 100px;
+	top: 60px;
 	background: #343d48;
 	border: 1px #646b73 solid;
 	z-index: 1005;
-	padding: 40px;
+	padding: 30px;
 	width: 90%;
 	left: 1%;
 	min-width: 720px;
+}
+#startUpPanel, #settingsPanel{
+	position: absolute;
+	top: 0;
 }
 .stepWrap{
 	display: inline-block;
@@ -798,8 +802,8 @@ $marble_left: 0;
 	display: none;
 	text-align: center;
 	border-top: 2px #ccc solid;
-	margin-top: 30px;
-	padding-top: 30px;
+	margin-top: 15px;
+	padding-top: 15px;
 }
 .stepHelpTxt {
 	font-size: 13px;
