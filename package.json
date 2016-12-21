@@ -15,7 +15,6 @@
 		"express": "4.14.*",
 		"express-session": "1.14.*",
 		"jade": "1.11.*",
-		"morgan": "1.7.*",
 		"serve-static": "1.11.*",
 		"ws": "1.1.*",
 		"hfc": "file:utils/hfc",
