@@ -1,0 +1,3 @@
+[submodule "utils/hfc"]
+	path = utils/hfc
+	url = https://github.com/hyperledger/fabric-sdk-node.git
