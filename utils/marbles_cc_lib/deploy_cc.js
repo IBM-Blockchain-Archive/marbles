@@ -1,3 +1,5 @@
+var path = require('path');
+
 module.exports = function (chain, chaincode_id, logger) {
 	var deploy_cc = {};
 	
@@ -44,7 +46,7 @@ module.exports = function (chain, chaincode_id, logger) {
 		// send proposal to endorser
 		var request = {
 			targets: peerUrls,
-			chaincodePath: './chaincode',
+			chaincodePath: screwy_path('./chaincode'),								//this is relative to your goPath to the marbles chaincode folder
 			chaincodeId: chaincode_id,
 			fcn: 'init',
 			args: ['99'],
@@ -92,6 +94,34 @@ module.exports = function (chain, chaincode_id, logger) {
 			}
 		);
 	};
+
+	//get the path from GOPATH to marble's chaincode directory (b/c hfc expects the path to be this way)
+	//hfc builds the path with: projDir = goPath + '/src/' + chaincodePath; - therefore chaincodePath must reference from GOPATH/src/
+	function screwy_path(chaincode_directory){
+		var pos = __dirname.indexOf(path.join(process.env.GOPATH + '/src/'));
+		if(pos === -1){
+			throw 'Marbles is not inside your system GOPATH, please fix';
+		}
+		else{
+			var removedGo = __dirname.substring(process.env.GOPATH.length + 5);		//remove GOPATH/src part from __dirname
+			console.log('[debug] removedGo from marbles path', removedGo);
+
+			var temp = __dirname.replace('/', '\\');
+			var parsed = temp.split('\\');
+			var root_of_marbles = parsed[parsed.length-3];							//find name of marbles root dir
+			console.log('[debug] root_of_marbles path', root_of_marbles);
+
+			var pos3 = removedGo.indexOf(root_of_marbles);
+			var hfc_path = removedGo.substring(0, pos3 + root_of_marbles.length);	//get path from GOPATH to marbles root dir
+			
+			var ret = path.join(hfc_path, chaincode_directory);						//path to chaincode dir
+			console.log('[debug] hfc compatible path to chaincode dir', ret);
+
+			return ret;
+			//var debug = process.env.GOPATH + '/src/' + ret; 						//<- this is what hfc will build..
+			//console.log('debug', debug);
+		}
+	}
 
 	return deploy_cc;
 };

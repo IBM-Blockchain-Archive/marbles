@@ -25,7 +25,7 @@ var ws = require('ws');													//websocket module
 var block_delay = 2000;
 
 // --- Set Our Things --- //
-var hfc = require('./utils/fabric-sdk-node2/index.js');
+var hfc = require('./utils/hfc/index.js');
 var more_entropy = randStr(32);
 var ws_server = require('./utils/websocket_server_side.js')(null, null, null);
 var helper = require(__dirname + '/utils/helper.js')(process.env.creds_filename, console);
@@ -126,7 +126,7 @@ else console.log('Running using Developer settings');
 // ==================================
 // Set up the blockchain sdk
 // ==================================
-var utils = require('./utils/fabric-sdk-node2/lib/utils.js');
+var utils = require('./utils/hfc/lib/utils.js');
 var chain = hfc.newChain('mychain');
 
 // Creating an environment variable for ciphersuites
