@@ -65,30 +65,22 @@ gulp.task('emarbles', ['start_mtc3', 'default']);
 gulp.task('start_marbles', function () {
 	env['creds_filename'] = 'mycreds.json';
 	console.log('\n[International Marbles Trading Consortium]\n');
-	var color_theme = fs.readFileSync('./scss/color_theme01.scss').toString();
-	fs.writeFileSync('./scss/color_theme.scss', color_theme);
 });
 
 // MTC Member 1
 gulp.task('start_mtc1', function () {
 	console.log('\n[International Marbles Trading Consortium] - Member "United Marbles"\n');
 	env['creds_filename'] = 'creds_united_marbles.json';
-	var color_theme = fs.readFileSync('./scss/color_theme01.scss').toString();
-	fs.writeFileSync('./scss/color_theme.scss', color_theme);
 });
 
 // MTC Member 2
 gulp.task('start_mtc2', function () {
 	console.log('\n[International Marbles Trading Consortium] - Member "Marble Market"\n');
 	env['creds_filename'] = 'creds_marble_market.json';
-	var color_theme = fs.readFileSync('./scss/color_theme01.scss').toString();
-	fs.writeFileSync('./scss/color_theme.scss', color_theme);
 });
 
 // MTC Member 3
 gulp.task('start_mtc3', function () {
 	console.log('\n[International Marbles Trading Consortium] - Member "eMarbles"\n');
 	env['creds_filename'] = 'creds_emarbles.json';
-	var color_theme = fs.readFileSync('./scss/color_theme01.scss').toString();
-	fs.writeFileSync('./scss/color_theme.scss', color_theme);
 });
