@@ -25,7 +25,7 @@ var ws = require('ws');													//websocket module
 var block_delay = 2000;
 
 // --- Set Our Things --- //
-var hfc = require('./utils/hfc/index.js');
+var hfc = require('hfc');
 var more_entropy = randStr(32);
 var ws_server = require('./utils/websocket_server_side.js')(null, null, null);
 var helper = require(__dirname + '/utils/helper.js')(process.env.creds_filename, console);

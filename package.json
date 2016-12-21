@@ -21,7 +21,9 @@
 		"serve-static": "1.9.2",
 		"ws": "1.0.1",
 		"fs": "latest",
-		"http": "latest"
+		"http": "latest",
+		"hfc": "file:utils/hfc",
+		"winston": "^2.2.0"
 	},
 	"engines": {
 		"node": "0.12.0"

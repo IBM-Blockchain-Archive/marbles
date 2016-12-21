@@ -14,7 +14,7 @@ module.exports = function (logger) {
 		for(var i in peer_responses) {
 			var as_string = peer_responses[i].toString('utf8');
 			var as_obj = {marbles: null};
-			console.log('[marble_lib] Peer' + i, 'payload says:', as_string);
+			console.log('\n[marble_lib] Peer' + i, 'payload says:', as_string);
 
 			try{
 				// -- don't parse buffers -- //
@@ -28,7 +28,7 @@ module.exports = function (logger) {
 				// -- compare peer responses -- //
 				if(last != null){							//check if all peers agree
 					if(last !== as_string) {
-						console.log('[marble_lib] warning - some peers do not agree on query', last, as_string);
+						console.log('\n[marble_lib] warning - some peers do not agree on query', last, as_string);
 						ret.peers_agree = false;
 					}
 					last = as_string;
@@ -51,13 +51,13 @@ module.exports = function (logger) {
 		try{
 			temp = error_message.toString();
 			var pos = temp.lastIndexOf(':');
-			console.log('*', pos);
+			//console.log('*', pos);
 			if(pos >= 0){
 				temp = temp.substring(pos + 2);
 			}
 		}
 		catch(e){
-			console.log('could not format error');
+			console.log('\n[marble_lib] could not format error');
 		}
 		return temp;
 	};

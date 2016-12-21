@@ -5,7 +5,7 @@
 var path = require('path');
 
 module.exports = function (checkPerodically, marbles_lib, logger) {
-	var hfc = require(path.join(__dirname, '../utils/hfc/index.js'));
+	var hfc = require('hfc');
 	var helper = require(path.join(__dirname, './helper.js'))(process.env.creds_filename, console);
 	var ws_server = {};
 	var webUser = null;
