@@ -1,10 +1,13 @@
 # Marbles Demo
 
-## Work In Progress! 
+## Warning 
+- This is an experimental version of marbles using the Hyperledger Fabric v0.7. It is not compatible with other Hyperledger Fabric versions.
+- It uses HFC to communicate to the blockchain's peers
 - **This branch does not have complete documentation!** 12/14/2016
-- This branch is **only** for Hyperledger v0.7+
 
 ***
+
+![](/doc_images/marbles.png)
 
 ##### Versions and Supported Platforms
 On November 9th, 2016, we released the IBM Blockchain Service v1.0.0 based on HyperLedger fabric v0.6.3 
@@ -29,25 +32,22 @@ It is strongly recommended that if you have an existing network based on v0.5.3,
 
 ## Application Background
 
-Hold on to your hats everyone, this application is going to demonstrate transferring marbles between two users leveraging IBM Blockchain.
+Hold on to your hats everyone, this application is going to demonstrate transferring marbles between many marble owners leveraging Hyperledger.
 We are going to do this in Node.js and a bit of GoLang. 
 The backend of this application will be the GoLang code running in our blockchain network. 
+From here on out the GoLang code will be referred to as 'chaincode' or 'cc'. 
 The chaincode itself will create a marble by storing it to the chaincode state. 
 The chaincode itself is able to store data as a string in a key/value pair setup. 
-Thus we will stringify JSON objects to store more complex structures. 
+Thus, we will stringify JSON objects to store more complex structures. 
 
 Attributes of a marble:
 
 	1. name (unique string, will be used as key)
 	1. color (string, css color names)
 	1. size (int, size in mm)
-	1. user (string)
+	1. owner (string)
 	
-We are going to create a Web UI that can set these values and pass them to the chaincode. 
-Interacting with the chaincode is done with a HTTP REST call to a peer on the network. 
-The ibc-js SDK will abstract the details of the REST calls away.
-This allow us to use dot notation to call our GoLang functions (such as `chaincode.init_marble(args)`). 
-
+We are going to create a Web based UI that can set these values and store them in our blockchain. 
 Start the tutorials below to have your own marbles blockchain demo!
 
 ## Tutorial / Documentation
