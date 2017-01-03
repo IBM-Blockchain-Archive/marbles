@@ -4,14 +4,7 @@
 		"peers": [
 			{
 				"grpc_host": "PEER1_HOST",
-				"grpc_port": PEER1_PORT,
-				"type": "peer",
-				"network_id": "NETWORK_ID",
-				"id": "peer1"
-			},
-			{
-				"grpc_host": "PEER2_HOST",
-				"grpc_port": PEER2_PORT,
+				"grpc_port": "PEER1_PORT",
 				"type": "peer",
 				"network_id": "NETWORK_ID",
 				"id": "peer1"
@@ -20,9 +13,8 @@
 		"memberservices": [
 			{
 				"id": "NETWORK_ID-ca",
-				"url": "COP_HOST:COP_PORT",
 				"host": "COP_HOST",
-				"port": COP_PORT,
+				"port": "COP_PORT",
 				"type": "ca",
 				"network_id": "NETWORK_ID"
 			}
@@ -30,7 +22,7 @@
 		"orderers": [
 			{
 				"host": "ORDERER_HOST",
-				"port": ORDERER_PORT,
+				"port": "ORDERER_PORT",
 				"type": "orderer",
 				"network_id": "NETWORK_ID",
 				"id": "orderer-01"
@@ -51,7 +43,7 @@
 				"USER2",
 				"USER3"
 			],
-			"port": MARBLES_PORT
+			"port": "MARBLES_PORT"
 		}
 	}
 }

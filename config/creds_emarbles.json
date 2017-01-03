@@ -20,7 +20,6 @@
         "memberservices": [
             {
                 "id": "asdf-ca",
-                "url": "192.168.99.100:8888",
                 "host": "192.168.99.100",
                 "port": 8888,
                 "type": "ca",

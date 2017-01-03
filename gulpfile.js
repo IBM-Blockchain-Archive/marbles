@@ -56,11 +56,11 @@ gulp.task('watch-server', ['server'], function () {
 
 
 // ---------------- Gulp Tasks ---------------- //
-gulp.task('default', ['watch-js', 'watch-sass', 'watch-server']);
-gulp.task('marbles', ['start_marbles', 'default']);
-gulp.task('united_marbles', ['start_mtc1', 'default']);
-gulp.task('marble_market', ['start_mtc2', 'default']);
-gulp.task('emarbles', ['start_mtc3', 'default']);
+gulp.task('default', ['watch-js', 'watch-sass', 'watch-server']);		//run with command `gulp`
+gulp.task('marbles', ['start_marbles', 'default']);						//run with command `gulp marbles` [THIS ONE!]
+gulp.task('united_marbles', ['start_mtc1', 'default']);					//run with command `gulp united_marbles`
+gulp.task('marble_market', ['start_mtc2', 'default']);					//run with command `gulp marble_market`
+gulp.task('emarbles', ['start_mtc3', 'default']);						//run with command `gulp emarbles`
 
 //generic marbles
 gulp.task('start_marbles', function () {
