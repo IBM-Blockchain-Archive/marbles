@@ -25,10 +25,10 @@ if(process.env.VCAP_APPLICATION){
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////    1. Bluemix Production    ////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-if(process.env.VCAP_APP_HOST && process.env.PRODUCTION){
+if(process.env.PORT && process.env.PRODUCTION){
 	exports.SERVER = 	{	
-							HOST: process.env.VCAP_APP_HOST,
-							PORT: process.env.VCAP_APP_PORT,
+							HOST: '0.0.0.0',
+							PORT: process.env.PORT,
 							DESCRIPTION: 'Bluemix - Production',
 							EXTURI: ext_uri,		//no longer used 4/29/2016
 						};
@@ -37,10 +37,10 @@ if(process.env.VCAP_APP_HOST && process.env.PRODUCTION){
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////    2. Bluemix Development    ///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-else if(process.env.VCAP_APP_HOST){
+else if(process.env.PORT){
 		exports.SERVER = 	{	
-								HOST: process.env.VCAP_APP_HOST,
-								PORT: process.env.VCAP_APP_PORT,
+								HOST: '0.0.0.0',
+								PORT: process.env.PORT,
 								DESCRIPTION: 'Bluemix - Development',
 								EXTURI: ext_uri,		//no longer used 4/29/2016
 							 };
