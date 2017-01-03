@@ -127,12 +127,19 @@ git clone http://gopkg.in/ibm-blockchain/marbles.v3
 #<a name="use"></a>Use Marbles App
 1. Open up your browser and browse to [http://localhost:3000](http://localhost:3000) or your Bluemix www route.
 1. Finally we can test the application. Click the "+" icon on one of your users in the "United Marbles" section
-	![](/doc_images/use_marbles1.png)
+
+![](/doc_images/use_marbles1.png)
+
 1. Fill out all the fields, then click the "CREATE" button
 1. After 1-2 seconds your new marble should have appeared.
-	- If not click refresh the page
-1. Next let’s trade a marble.  Click and drag one marble from one person's list to another. Only trade it to owners within "United Marbles" if you have multiple marble companies . It should temporary disappear and then redraw the marbles within its new owner. 
 	- If not refresh the page
+1. Next let’s trade a marble.  Drag and drop a marble from one owner to another. Only trade it to owners within "United Marbles" if you have multiple marble companies. It should temporary disappear and then redraw the marble within its new owner. 
+	- If not refresh the page
+1. Now lets delete a marble by drag and dropping it into the trash can. It should disappear after 1-2 seconds.
+
+![](/doc_images/use_marbles2.png)
+
+1. Refresh the page to double check that your actions "stuck".
 1. Congratulations you have a working marbles application :)!
 
 

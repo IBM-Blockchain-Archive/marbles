@@ -14,7 +14,7 @@ This is done by editing the `/config/mycreds.json` file.
 There are multiple credential files to show different setups. 
 Marbles will open the file found in the environmental variable `creds_filename`. 
 Gulp will set this for us based on what gulp task we tell it to do. 
-**Double check that [gulpfile.js](../gulpfile.js#L66) is using the mycreds.json filename.** 
+**Double check that [gulpfile.js](../gulpfile.js#L67) is using the mycreds.json filename.** 
 
 ```js
 	gulp.task('start_marbles', function () {
@@ -23,7 +23,7 @@ Gulp will set this for us based on what gulp task we tell it to do.
 	});
 ```
 
-All we must do is edit `mycreds.json` with information about your network.
+Next we must edit `mycreds.json` with information about your network.
 Below is a sample showing the information that must be in the JSON file. 
 
 __sample mycreds.json__
@@ -43,11 +43,11 @@ __sample mycreds.json__
         ],
         "memberservices": [
             {
-                "host": "192.168.99.100",       //must match the ip or hostname of your peer
-                "port": 8888,                   //must match the gRPC port on your peer
-                "type": "ca",                   //leave this as ca
-                "network_id": "asdf"            //not important atm
-				"id": "asdf-ca",                //not important atm
+                "host": "192.168.99.100",    //must match the ip or hostname of your peer
+                "port": 8888,                //must match the gRPC port on your peer
+                "type": "ca",                //leave this as ca
+                "network_id": "asdf"         //not important atm
+				"id": "asdf-ca",             //not important atm
             }
         ],
         "orderers": [
