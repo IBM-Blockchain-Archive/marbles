@@ -7,8 +7,6 @@
 
 ***
 
-![](/doc_images/marbles.png)
-
 ##### Versions and Supported Platforms
 On November 9th, 2016, we released the IBM Blockchain Service v1.0.0 based on HyperLedger fabric v0.6.3 
 All new networks created in Bluemix will use this version. 
@@ -29,6 +27,10 @@ It is strongly recommended that if you have an existing network based on v0.5.3,
 	- Does not work with the IBM Blockchain Bluemix Service
 
 ***
+
+__Marbles__
+
+![](/doc_images/marbles.png)
 
 ## Application Background
 
@@ -52,7 +54,6 @@ Start the tutorials below to have your own marbles blockchain demo!
 
 ## Tutorial / Documentation
 - Looking for chaincode documentation? Check out the [learn chaincode](https://github.com/IBM-Blockchain/learn-chaincode) repo - **start here!**
-- Tutorial for Marbles (coming soon)
 - Tutorial for Marbles [Part 1](/docs/tutorial_part1.md)
 <strike>
 - Tutorial for Marbles [Part 2](/docs/tutorial_part2.md)

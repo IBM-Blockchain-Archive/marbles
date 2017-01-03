@@ -145,52 +145,120 @@ git clone http://gopkg.in/ibm-blockchain/marbles.v3
 1. Congratulations you have a working marbles application :)!
 
 
-#SDK / IBM Blockchain Deeper Dive
-Before we examine how marbles works let’s examine what the SDK did to get our cc onto the network.
-The options argument for `ibc.load(options)` contains many important things. 
+#HFC SDK Deeper Dive
+Before we examine how marbles works let’s examine how we configured the SDK and what it did for us.
+Most of the config options can be found in `/config/mycreds.json`. 
+This file list the hostname/ip and port of various components of our blockchain network.  
 An abbreviated version is below:
 
 ```js
-	//note the marbles code will populates network.peers & network.users from VCAP Services (an env variable when running the app in Bluemix)
-	var options = 	{
-		network:{
-			peers:   [{
-				"api_host": "xxx.xxx.xxx.xxx",
-				"api_port": "xxxxx",
-				"api_url": "http://xxx.xxx.xxx.xxx:xxxxx"
-				"id": "xxxxxx-xxxx-xxx-xxx-xxxxxxxxxxxx_vpx",
-			}],
-			users:  [{
-				"enrollId": "xxx",
-				"enrollSecret": "xxxxxxxx"
-			}]
-		},
-		chaincode:{
-			zip_url: 'https://github.com/ibm-blockchain/marbles/archive/v2.0.zip', //http/https of a link to download zip
-			unzip_dir: 'marbles-2.0/chaincode',                                    //name/path to folder that contains the chaincode you want to deploy (path relative to unzipped root)
-			git_url: 'http://gopkg.in/ibm-blockchain/marbles.v2/chaincode',        //GO get https URL. should point to the desired chaincode repo AND directory
-		}
-	};
-	ibc.load(options, cb);
+{
+    "credentials": {
+        "network_id": "asdf",
+        "peers": [
+            {
+                "grpc_host": "192.168.99.100",
+                "grpc_port": 7051,
+                "type": "peer",
+                "network_id": "asdf",
+                "id": "peer1"
+            }
+        ],
+        "memberservices": [
+            {
+                "id": "asdf-ca",
+                "host": "192.168.99.100",
+                "port": 8888,
+                "type": "ca",
+                "network_id": "asdf"
+            }
+        ],
+        "orderers": [
+            {
+                "host": "192.168.99.100",
+                "port": 5151,
+                "type": "orderer",
+                "network_id": "asdf",
+                "id": "orderer-01"
+            }
+        ],
+        "users": [
+            {
+                "enrollId": "admin",
+                "enrollSecret": "adminpw"
+            }
+        ],
+        "cert": "https://blockchain-certs.mybluemix.net/us.blockchain.ibm.com.cert",
+        "marbles": {
+            "company": "United Marbles",
+            "chaincode_id": "marbles",
+            "usernames": [
+                "amy",
+                "alice",
+                "amber"
+            ],
+            "port": 3000
+        }
+    }
+}
+```
+### Definitions:
+**Peer** - A peer is a member of the blockchain and is running Hyperledger Fabric. From marble's context the peers are peers I own/run.
+**COP** - The COP is responsible for gatekeeping our blockchain network. It will provide transaction certificates for clients such as our marbles application. 
+**Orderer** - An orderer or ordering service is a member of the blockchain network who's main reponsoiblity is to package transactioins into blocks.
+**Users** - A user is an entity that is authorized to interact with the blockchain. In the Marbles context this is our admin.
+**Usernames** or **Owners** - These are the name of assets that can have ownership of marbles.
+
+**Blocks** - Blocks contain transactions and a hash to verify integrity.
+**Transactions** or **Proposals** - These represent interactions to the blockchain ledger. A read or write request of the ledger is sent as a proposal.
+**Ledger** - It is the peer's storage for the blockchain. It contains the actual block data.
+
+### Configure HFC:
+
+```js
+	var utils = require('./utils/hfc/lib/utils.js');    //create instance
+	var chain = hfc.newChain('mychain');
+
+	chain.setOrderer(orderer_url);                      //configure
+	var keyValueStoreObj =	 {
+								path: path.join(__dirname, './keyValStore-' + file_safe_name(process.env.marble_company) + '-' + uuid) 
+							};
+	chain.setKeyValueStore(hfc.newKeyValueStore(keyValueStoreObj));
+	chain.setMemberServicesUrl(cop_url);
 ```
 
-This network has membership security; we can tell because there are enroll IDs/secrets in the `network.users` array. 
-This means the peers will be expecting a validated `enrollId` on most API requests. 
-Therefore, the first step is we need to use the /registrar API endpoint to register an `enrollId`. 
-This creates a binding of sorts between the ID and the peer such that this `enrollId` cannot be used on any other peer. 
-It's relatively safe to think of this step as registering an API key with a particular peer. 
-The SDK does almost all the work here for us. 
-It will first parse `network.peers[]` and `network.users[]` and run 1 POST /registrar HTTP request per peer. 
-It will send the first `enrollId` to the first peer, and the second ID to the second peer and so on until every peer has 1 ID. 
-The details of all rest calls are taken care of by the SDK but if you are curious we have [Swagger Documentation](https://obc-service-broker-prod.mybluemix.net/swagger) on the IBM Blockchain peer APIs. 
-At the end of this step we are ready to deploy our chaincode. 
+1. The first thing marbles had to do was create an instance of HFC.
+1. Next important part is to set the orderer's address.
+1. Then set the key value store location.
+	- the key value store location will be file location for our admin's certificates
+1. Then set the COP's address.
 
-Before we deploy though, the SDK will download and parse the chaincode. 
-This is when it builds up the dot notation we can use to ultimately call cc functions from JS. 
-Once it’s done downloading/parsing it runs the deploy HTTP request. 
-We should receive a hash in the response that is unique to this chaincode. 
-This hash will be used along with the registered `enrollId` in all future invocations / queries against this cc. 
+```js
+	chain.enroll(id, secret).then(
+		function(enrolledUser) {
+			console.log('Successfully enrolled ' + id);
+			webUser = enrolledUser;									//push var to higher scope
+			broadcast_state('enrolled');
+			setTimeout(function(){
+				if(cb) cb();
+			}, block_delay);
+		}
+	).catch(
+		function(err) {												//error with enrollment
+			console.log('Failed to enroll ' + id, err.stack ? err.stack : err);
+			broadcast_state('failed_enroll');
+			if(cb) cb(err);
+		}
+	);
+```
 
+1. Finally we enroll our admin. This is when we authenticte to the COP with our enroll ID and enroll Secret. The COP will issue transactions certificates which HFC will store in the key value store location.
+1. After succssful enrollment we are ready to interact with the blockchain.
+
+
+#work in progress
+
+<strike>
 
 #Marbles Deeper Dive
 Hopefully you have successfully traded a marble or two between users. 
@@ -420,3 +488,5 @@ Part 2 adds some new chaincode functions making it a little niftier.
 
 #Trouble Shooting
 Stuck? Try my handy [trouble shooting guide](./i_lost_my_marbles.md).
+
+</strike>
