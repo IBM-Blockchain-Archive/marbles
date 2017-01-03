@@ -6,6 +6,8 @@
 - This is a `very simple` asset transfer demonstration. Two users can create and exchange marbles with each other.
 - There will be multiple parts. Part 1 and 2 are complete [2/15/2016]
 
+![](/doc_images/marbles.png)
+
 ***
 
 ##Part 1 Goals
