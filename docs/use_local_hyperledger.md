@@ -70,10 +70,10 @@ __sample mycreds.json__
             "company": "Marble Market",      //name of marble company
             "chaincode_id": "marbles",       //name of deployed chaincode
             "usernames": [                   //marble owner usernames
-                "chris",
+                "amy",
                 "bill"
             ],
-            "port": 3001                     //port for marbles to use
+            "port": 3000                     //port for marbles to use
         }
     }
 }

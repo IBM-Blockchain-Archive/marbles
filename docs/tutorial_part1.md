@@ -135,11 +135,13 @@ git clone http://gopkg.in/ibm-blockchain/marbles.v3
 	- If not refresh the page
 1. Next let’s trade a marble.  Drag and drop a marble from one owner to another. Only trade it to owners within "United Marbles" if you have multiple marble companies. It should temporary disappear and then redraw the marble within its new owner. 
 	- If not refresh the page
-1. Now lets delete a marble by drag and dropping it into the trash can. It should disappear after 1-2 seconds.
+1. Now lets delete a marble by dragging and dropping it into the trash can. It should disappear after 1-2 seconds.
 
 ![](/doc_images/use_marbles2.png)
 
 1. Refresh the page to double check that your actions "stuck".
+1. The search box will filter on marble owners or marble company names.  This is helpful when there are many companies/owners.
+	- The pin icon will prevent that user from being filtered out by the search box.
 1. Congratulations you have a working marbles application :)!
 
 
