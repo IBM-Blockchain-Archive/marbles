@@ -202,15 +202,23 @@ An abbreviated version is below:
     }
 }
 ```
+
 ### Definitions:
+
 **Peer** - A peer is a member of the blockchain and is running Hyperledger Fabric. From marble's context the peers are peers I own/run.
+
 **COP** - The COP is responsible for gatekeeping our blockchain network. It will provide transaction certificates for clients such as our marbles application. 
+
 **Orderer** - An orderer or ordering service is a member of the blockchain network who's main reponsoiblity is to package transactioins into blocks.
+
 **Users** - A user is an entity that is authorized to interact with the blockchain. In the Marbles context this is our admin.
+
 **Usernames** or **Owners** - These are the name of assets that can have ownership of marbles.
 
 **Blocks** - Blocks contain transactions and a hash to verify integrity.
+
 **Transactions** or **Proposals** - These represent interactions to the blockchain ledger. A read or write request of the ledger is sent as a proposal.
+
 **Ledger** - It is the peer's storage for the blockchain. It contains the actual block data.
 
 ### Configure HFC:
@@ -230,7 +238,7 @@ An abbreviated version is below:
 1. The first thing marbles had to do was create an instance of HFC.
 1. Next important part is to set the orderer's address.
 1. Then set the key value store location.
-	- the key value store location will be file location for our admin's certificates
+	- the key value store location will be the file location for our admin's certificates
 1. Then set the COP's address.
 
 ```js
@@ -256,7 +264,7 @@ An abbreviated version is below:
 1. After succssful enrollment we are ready to interact with the blockchain.
 
 
-#work in progress
+## (work in progress)
 
 <strike>
 
@@ -391,93 +399,6 @@ In the above code, we have attached it to #user2wrap and #user1wrap div elements
 When the event fires we first check to see if this marble actually moved owners, or if it was just picked up and dropped back down. 
 If its owner has changed we go off to the `transfer()` function.
 This function creates a JSON message with all the needed data and uses our websocket to send it with `ws.send()`.
-
-__Monitor-Blockheight__
-
-Our Node.js SDK has a handy function called. `monitor_blockheight(cb)`. 
-To use it we just pass it what function we want to be called whenever the SDK notices a new block has been written to the network. 
-The plan is to use this event as a trigger to redraw the marble states. 
-
-The Plan:
-
-1. User trades a marble
-1. At some point that event will be written to a block
-1. The SDK detects a new block has been written
-1. Let’s assume this new block contains our user's trade action, therefore let’s read all marble states
-1. Broadcast the marble states to any connected websockets
-1. Clients (aka browsers) receive the new marble states and redraw them
-
-__./app.js__ (abbreviated)
-
-```js
-	// ========================================================
-	// Monitor the height of the blockchain
-	// ========================================================
-	ibc.monitor_blockheight(function(chain_stats){
-		if(chain_stats && chain_stats.height){
-			console.log('hey new block, lets refresh and broadcast to all');
-			ibc.block_stats(chain_stats.height - 1, cb_blockstats);
-			wss.broadcast({msg: 'reset'});
-			chaincode.query.read(['_marbleindex'], cb_got_index);
-			chaincode.query.read(['_opentrades'], cb_got_trades);
-		}
-		
-		//got the block's stats, lets send the statistics
-		function cb_blockstats(e, stats){
-			if(e != null) console.log('error:', e);
-			else {
-				if(chain_stats.height) stats.height = chain_stats.height - 1;
-				wss.broadcast({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
-			}
-		}
-		
-		//got the marble index, lets get each marble
-		function cb_got_index(e, index){
-			if(e != null) console.log('error:', e);
-			else{
-				try{
-					var json = JSON.parse(index);
-					for(var i in json){
-						console.log('!', i, json[i]);
-						chaincode.query.read([json[i]], cb_got_marble);
-					}
-				}
-				catch(e){
-					console.log('marbles index msg error:', e);
-				}
-			}
-		}
-		
-		//call back for getting a marble, lets send a message
-		function cb_got_marble(e, marble){
-			if(e != null) console.log('error:', e);
-			else {
-				try{
-					wss.broadcast({msg: 'marbles', marble: JSON.parse(marble)});
-				}
-				catch(e){
-					console.log('marble msg error', e);
-				}
-			}
-		}
-		...
-	}
-```
-
-So this code is using the SDK's function `monitor_blockheight()`. 
-It’s a straight forward function in that its only argument is a callback function you want called when the SDK notices a new block. 
-Our code then goes off and starts 4 things.
-
-1. It fires off a request to the peer to read the block's stats
-1. It sends a reset UI message to all clients through the websocket
-1. It fires off a request to the cc to read marble index and then reads each marble
-1. It fires off a request to the cc to read the open trades (used in Part 2)
-
-The results will then be sent to the clients via the websocket (in individual messages). 
-One more small note is about this line `stats.height = chain_stats.height - 1;`. 
-We subtract 1 because the API `/chain` tells me the number of blocks.
-But the API `/chain/blocks/<block #>` takes the id of a block which is indexed to 0.
-So, if we want details on blockheight #5, we build a request for `/chain/blocks/4`.
 
 
 That’s it! Hope you had fun trading some marbles in part 1. 
