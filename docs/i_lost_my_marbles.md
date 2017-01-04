@@ -164,7 +164,7 @@ Results:
 	- Potentially your marbles app is having client side JS errors and is never sending its rest requests, lets go to step 5. 
 - *I see a init_marble message and see nearby error messages*
 	- First off try to make sense of the specific error that was also printed.
-	- Sounds like the marble app is not formatting the rest requests correctly. Specifically the body. The error you see should indicate what is wrong. It may be as simple as a cc input argument is numeric when it should be a string. Or you do not have enough input arguments for the cc function you called. To make these changes look in `/utils/ws_part1.js` or `/utils/ws_part2.js`. Search for the function name that is problematic (like init_marble).
+	- Sounds like the marble app is not formatting the rest requests correctly. Specifically the body. The error you see should indicate what is wrong. It may be as simple as a cc input argument is numeric when it should be a string. Or you do not have enough input arguments for the cc function you called. To make these changes look in `/utils/ws_part1.js`. Search for the function name that is problematic (like init_marble).
 - *Everything looks okay*
 	- Hmm ok, so let’s go to step 5.
 	

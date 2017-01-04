@@ -423,7 +423,7 @@ function setupWebSocket(){
 					}
 				}
 				else{
-					ws_server.process_msg(ws, data);								//pass the websocket msg to part 1 processing
+					ws_server.process_msg(ws, data);								//pass the websocket msg for processing
 				}
 			}
 			catch(e){
