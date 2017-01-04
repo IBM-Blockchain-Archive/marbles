@@ -1,14 +1,13 @@
-# Marbles Part 1 - Demo
+# Marbles - Demo
 
 ## About Marbles
 - The underlying network for this application is the [Hyperledger Fabric](https://github.com/hyperledger/fabric/tree/master/docs), a Linux Foundation project.  You may want to review these instructions to understand a bit about the Hyperledger Fabric.
 - **This demo is to aid a developer learn the basics of chaincode and app development with a Hyperledger network.**
 - This is a `very simple` asset transfer demonstration. Two users can create and exchange marbles with each other.
-- There will be multiple parts. Part 1 and 2 are complete [2/15/2016]
 
 ***
 
-##Part 1 Goals
+##Marbles Goals
 - User can create a marble and store it in the chaincode state
 - User can read and display all marbles in the chaincode state
 - User can transfer a marble to another user
@@ -248,126 +247,180 @@ __set_user()__
 	}
 
 	// ============================================================================================================================
-	// Set User Permission on Marble
+	// Set Owner Permission on Marble
 	// ============================================================================================================================
-	func (t *SimpleChaincode) set_user(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+	func set_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 		var err error
-		
-		//   0       1
-		// "name", "bob"
-		if len(args) < 2 {
-			return nil, errors.New("Incorrect number of arguments. Expecting 2")
+		fmt.Println("starting set_owner")
+
+		//   0   ,     1  ,        2                 3
+		// marble, to user,       to company,  company that auth the transfer
+		// "name",   "bob", "united_marbles", "united_mables" 
+		if len(args) < 4 {
+			return nil, errors.New("Incorrect number of arguments. Expecting 4")
 		}
-		
-		fmt.Println("- start set user")
-		fmt.Println(args[0] + " - " + args[1])
-		marbleAsBytes, err := stub.GetState(args[0])
+
+		var marble_id = args[0]
+		var new_user = strings.ToLower(args[1])
+		var new_company = args[2]
+		var authed_by_company = args[3]
+		fmt.Println(marble_id + "->" + new_user + " - " + new_company + "|" + authed_by_company)
+
+		// get marble's current state 
+		marbleAsBytes, err := stub.GetState(marble_id)
 		if err != nil {
-			return nil, errors.New("Failed to get thing")
+			return nil, errors.New("Failed to get marble")
 		}
 		res := Marble{}
-		json.Unmarshal(marbleAsBytes, &res)       //un stringify it aka JSON.parse()
-		res.User = args[1]                        //change the user
-		
+		json.Unmarshal(marbleAsBytes, &res)          //un stringify it aka JSON.parse()
+
+		//check authorizing company
+		if res.Owner.Company != authed_by_company{
+			return nil, errors.New("The company '" + authed_by_company + "' cannot authorize transfers for '" + res.Owner.Company + "'.")
+		}
+
+		//transfer the marble
+		res.Owner.Username = new_user                 //change the owner
+		res.Owner.Company = new_company               //change the owner
 		jsonAsBytes, _ := json.Marshal(res)
-		err = stub.PutState(args[0], jsonAsBytes) //rewrite the marble with id as key
+		err = stub.PutState(args[0], jsonAsBytes)     //rewrite the marble with id as key
 		if err != nil {
 			return nil, err
 		}
-		
-		fmt.Println("- end set user")
+
+		fmt.Println("- end set owner")
 		return nil, nil
 	}
 ```
 
-This `set_user()` function takes in an array of strings argument. 
-Within the array the first index should have the name of the marble key/value pair. 
-We retrieve the marble's struct with `stub.GetState(args[0])` and then unmarshal it into a Marble structure. 
-From there we can index into the structure with `res.User` and overwrite the marble's owner with the new username.
-Next we Marshal the structure back up so that we can use `stub.PutState()` to overwrite the marble with its new details. 
-
-This is a `very` simplistic way to change ownership of an asset. 
-The concept of an "owner" is simply the value of a string inside the marble's structure. 
-We will explore more sophisticated methods in Marbles Part 3.
-
+This `set_users()` function will change the owner of a particular marble. 
+It takes in an array of strings input argument and returns `nil, nil` if successful. 
+Within the array the first index should have the name of the marble which is also the key in the key/value pair. 
+We first need to retrieve the current marble struct. 
+This is done with `stub.GetState(marble_id)` and then unmarshal it into a marble structure with `json.Unmarshal(marbleAsBytes, &res)`.
+From there we can index into the structure with `res.Owner.Username` and overwrite the marble's owner with the new username and company.
+Next we Marshal the structure back up so that we can use `stub.PutState()` to overwrite the marble with its new attributes. 
 
 Let’s take 1 step up and look at how this chaincode was called from our node.js app. 
 
-__/utils/ws_part1.js__
+__/utils/websocket_server_side.js__
 
 ```js
-	module.exports.process_msg = function(ws, data){
-		if(data.v === 1){
-			if(data.type == 'create'){
-				console.log('its a create!');
-				if(data.name && data.color && data.size && data.user){
-					chaincode.invoke.init_marble([data.name, data.color, data.size, data.user], cb_invoked);
-				}
-			}
-			else if(data.type == 'get'){
-				console.log('get marbles msg');
-				chaincode.query.read(['_marbleindex'], cb_got_index);
-			}
-			else if(data.type == 'transfer'){
-				console.log('transfering msg');
-				if(data.name && data.user){
-					chaincode.invoke.set_user([data.name, data.user]);
-				}
-			}
+	ws_server.process_msg = function(ws, data){
+		var options = {};
+		if(marbles_lib === null) {
+			console.log('error! marbles lib is null...');				//can't run in this state
+			return;
+		}
+			
+		// create a new marble
+		if(data.type == 'create'){
+			console.log('[ws] create marbles req');
+			options = [data.name, data.color, data.size, data.username, data.company, process.env.marble_company];
+			marbles_lib.create_a_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], ws, options, function(err, resp){
+				if(err != null) send_err(err, data);
+			});
+		}
+
+		//transfer a marble
+		else if(data.type == 'transfer_marble'){
+			console.log('[ws] transfering req');
+			options = [data.name, data.username, data.company, process.env.marble_company];
+			marbles_lib.set_marble_owner(webUser, [hfc.getPeer(helper.getPeersUrl(0))], ws, options, function(err, resp){
+				if(err != null) send_err(err, data);
+			});
+		}
 		...
 ```
 
-The `chaincode.invoke.set_user([data.name, data.user]);` line is where we submit our request to run the chaincode function. 
-It is passing to our GoLang `set_user` function an array of strings argument containing the name of the marble and the name of its new owner. 
-By "passing" I mean it is really sending a HTTP POST `/chaincode` invoke request to one of the peers in our network. 
-This peer will in turn call the chaincode and actually pass the argument to the cc function. 
-The details of which peer and the exact rest call are taken care of in our ibc-js SDK. 
-For your own curiosity, the details of the Invoke API call can be found [here](https://github.com/hyperledger/fabric/blob/master/docs/API/CoreAPI.md#chaincode)
-This code itself was called in response to a websocket message that originated on our user's browser.
+This function snippet `process_msg()` is sent all websocket messages (code is in app.js). 
+`process_msg()` will detect what type of message was sent. 
+In our case it should detect a `transfer_marble` type. 
+This is the function that will tell the SDK to build the proposal and kick off this whole thing.
 
-Pretty simple, now let’s look 1 more step up to how we sent this websocket message.
-
-__/public/js/part1.js__
+__/utils/marbles_cc_lib/marbles.js__
 
 ```js
-	$("#user2wrap").droppable({drop:
+	//-------------------------------------------------------------------
+	// Set Marble Owner 
+	//-------------------------------------------------------------------
+	marbles.set_marble_owner = function (webUser, peerUrls, ws, options, cb) {
+		console.log('\nsetting marble owner...');
+
+		// send proposal to endorser
+		var request = {
+			targets: peerUrls,
+			chaincodeId: chaincode_id,
+			fcn: 'set_owner',
+			args: options               //args == ["name", "bob", "united_marbles", "united_marbles"]
+		};
+		webUser.sendTransactionProposal(request)
+		...
+```
+
+The important parts of `set_marble_owner()` are above. 
+It is setting the proposals invocation function name to "set_user" with the line `fcn: 'set_user'`. 
+It is also setting other imporant fields such as the address/port to our peer, the chaincode id, and the arguments that our chaincode function is expecting. 
+
+Now let’s look 1 more step up to how we sent this websocket message.
+
+__/public/js/ui_building.js__
+
+```js
+	$('.innerMarbleWrap').droppable({drop:
 		function( event, ui ) {
-			var user = $(ui.draggable).attr('user');
-			if(user.toLowerCase() != bag.setup.USER2){
-				$(ui.draggable).addClass("invalid");		//make the marble transparent to reflect a pending action
-				transfer($(ui.draggable).attr('id'), bag.setup.USER2);
+			var marble_id = $(ui.draggable).attr('id');
+
+			//  ------------ Delete Marble ------------ //
+			if($(event.target).attr('id') === 'trashbin'){
+				//removed
+			}
+
+			//  ------------ Transfer Marble ------------ //
+			else{
+				var dragged_user = $(ui.draggable).attr('username').toLowerCase();
+				var dropped_user = $(event.target).parents('.marblesWrap').attr('username').toLowerCase();
+				var dropped_company = $(event.target).parents('.marblesWrap').attr('company');
+
+				console.log('dropped a marble', dragged_user, dropped_user, dropped_company);
+				if(dragged_user != dropped_user){              //only transfer marbles that changed owners
+					$(ui.draggable).addClass('invalid');
+					transfer_marble(marble_id, dropped_user, dropped_company);
+					return true;
+				}
 			}
 		}
 	});
 
 	...
 
-	function transfer(marbleName, user){
-		if(marbleName){
-			console.log('transfering', marbleName);
-			var obj = 	{
-							type: "transfer",
+	function transfer_marble(marbleName, to_username, to_company){
+		show_tx_step({state: 'building_proposal'}, function(){
+			var obj = 	{                                    //build the websocket message
+							type: 'transfer_marble',
 							name: marbleName,
-							user: user,
+							username: to_username,
+							company: to_company,
 							v: 1
 						};
+			console.log('[ws] sending transfer marble msg', obj);
 			ws.send(JSON.stringify(obj));
-			showHomePanel();
-		}
+			refreshHomePanel();
+		});
 	}
 ```
 
-We used jQuery and jQuery-UI to implement the drag and drop functionality. 
-With these tools, we get a droppable event trigger. 
-In the above code, we have attached it to #user2wrap and #user1wrap div elements. 
+In the first seciton referencing `$('.innerMarbleWrap')` you can see wWe used jQuery and jQuery-UI to implement the drag and drop functionality. 
+With this code we get a droppable event trigger. 
+Much of the code is spent parsing for the details of the marble that was dropped and the user it was dropped into. 
+
 When the event fires we first check to see if this marble actually moved owners, or if it was just picked up and dropped back down. 
-If its owner has changed we go off to the `transfer()` function.
+If its owner has changed we go off to the `transfer_marble()` function.
 This function creates a JSON message with all the needed data and uses our websocket to send it with `ws.send()`.
+Now you know the whole flow. 
+The user moved the marble, jQuery detected it, we send a websocket message, we recieve the websocket message, we build a proposal, we endorse a proposal, we send the propsoal to be ordered and finally we commnmit the block.
 
-
-That’s it! Hope you had fun trading some marbles in part 1. 
-Next up is [Marbles Part 2](./tutorial_part2.md). 
-Part 2 adds some new chaincode functions making it a little niftier.
+That’s it! Hope you had fun trading marbles. 
 
 ***
 
