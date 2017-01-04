@@ -172,9 +172,9 @@ Let’s look at the operations involved when creating a new marble.
 
 1. The first thing that happens in marbles is registering our admin `user` with our network's `COP`. If successful, the `COP` will send Marbles transaction certificates that the SDK will store for us in our local file system. 
 1. When the admin creates a new marble from the user interface the SDK will create an invocation transaction.
-1. This create marble transaction gets built as a `proposal` to invoke the chaincode function `init_marble()`. The `proposal` was created in part by signing transaction certificates that were generated from our networks COP.
+1. The create marble transaction gets built as a `proposal` to invoke the chaincode function `init_marble()`. The `proposal` was created in part by signing transaction certificates that were generated from our networks COP.
 1. Marbles (via the SDK) will send this `proposal` to a `peer` for endorsement. 
-1. The `peer` will simulation the transaction by running the go function `init_marble()` and record any changes it attempted to write to the `ledger`. 
+1. The `peer` will simulate the transaction by running the Go function `init_marble()` and record any changes it attempted to write to the `ledger`. 
 1. If the function returns successfully the `peer` will endorse the `proposal` and send it back to Marbles. Errors will also be sent back, but they will not be endorsed.
 1. Marbles (via the SDK), will then send the endorsed `proposal` to the `orderer`. 
 1. The `orderer` will organize a sequence of `proposals` from the whole network. It will check the sequence of transactions is valid by looking for transactions that conflict with each other. Any transactions that cannot be added to the block because of conflicts will be marked as errors. The `orderer` will broadcast the new block to all peers.
@@ -227,7 +227,7 @@ Next, we need to send these fields to the SDK.
 	);
 ```
 
-1. Finally we enroll our admin. This is when we authenticate to the COP with our enroll ID and enroll Secret. The COP will issue transactions certificates which HFC will store in the key value store location.
+1. Finally we enroll our admin. This is when we authenticate to the COP with our enroll ID and enroll secret. The COP will issue transactions certificates which HFC will store in the key value store location.
 1. After successful enrollment HFC is fully configured and ready to interact with the blockchain.
 
 
@@ -235,9 +235,9 @@ Next, we need to send these fields to the SDK.
 Hopefully you have successfully traded a marble or two between users. 
 Let’s look at how transfering a marble is done by starting at the chaincode.
 
-__set_user()__
+__/chaincode/lib_owners.go__
 
-```js
+```go
 	type Marble struct {
 		ObjectType string        `json:"docType"`
 		Name       string        `json:"name"`     //the fieldtags are needed to keep case from bouncing around
@@ -306,6 +306,7 @@ Let’s take 1 step up and look at how this chaincode was called from our node.j
 __/utils/websocket_server_side.js__
 
 ```js
+	//process web socket messages
 	ws_server.process_msg = function(ws, data){
 		var options = {};
 		if(marbles_lib === null) {
@@ -428,8 +429,3 @@ Now you know the whole flow.
 The admin moved the marble, JS detected the drag/drop, client sends a websocket message, marbles receives the websocket message, sdk builds/sends a proposal, peer endorses the proposal, sdk sends the proposal for ordering, the orderer orders and sends a block to peer, our peer commits the block, marbles node code gets new marble status periodically, sends marble websocket message to client, and finally the client redraws the marble in its new home.
 
 That’s it! Hope you had fun transfering marbles. 
-
-***
-
-#Trouble Shooting
-Stuck? Try my handy [trouble shooting guide](./i_lost_my_marbles.md).
