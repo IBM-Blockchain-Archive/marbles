@@ -139,89 +139,57 @@ git clone http://gopkg.in/ibm-blockchain/marbles.v3
 
 ![](/doc_images/use_marbles2.png)
 
-1. Refresh the page to double check that your actions "stuck".
-1. The search box will filter on marble owners or marble company names.  This is helpful when there are many companies/owners.
-	- The pin icon will prevent that user from being filtered out by the search box.
-1. Congratulations you have a working marbles application :)!
+1. Refresh the page to double check that your actions "stuck". 
+1. The search box will filter on marble owners or marble company names.  This is helpful when there are many companies/owners. 
+	- The pin icon will prevent that user from being filtered out by the search box. 
+1. Congratulations you have a working marbles application :)! 
 
 
-#HFC SDK Deeper Dive
-Before we examine how marbles works let’s examine how we configured the SDK and what it did for us.
-Most of the config options can be found in `/config/mycreds.json`. 
-This file list the hostname/ip and port of various components of our blockchain network.  
-An abbreviated version is below:
+# Blockchain Background
+Before we talk about how Marbles works lets discuss the flow and topology of Hyperledger Fabric. 
+Lets get some definitions out of the way first.
 
-```js
-{
-    "credentials": {
-        "network_id": "asdf",
-        "peers": [
-            {
-                "grpc_host": "192.168.99.100",
-                "grpc_port": 7051,
-                "type": "peer",
-                "network_id": "asdf",
-                "id": "peer1"
-            }
-        ],
-        "memberservices": [
-            {
-                "id": "asdf-ca",
-                "host": "192.168.99.100",
-                "port": 8888,
-                "type": "ca",
-                "network_id": "asdf"
-            }
-        ],
-        "orderers": [
-            {
-                "host": "192.168.99.100",
-                "port": 5151,
-                "type": "orderer",
-                "network_id": "asdf",
-                "id": "orderer-01"
-            }
-        ],
-        "users": [
-            {
-                "enrollId": "admin",
-                "enrollSecret": "adminpw"
-            }
-        ],
-        "cert": "https://blockchain-certs.mybluemix.net/us.blockchain.ibm.com.cert",
-        "marbles": {
-            "company": "United Marbles",
-            "chaincode_id": "marbles",
-            "usernames": [
-                "amy",
-                "alice",
-                "amber"
-            ],
-            "port": 3000
-        }
-    }
-}
-```
+###Definitions:
 
-### Definitions:
+**Peer** - A peer is a member of the blockchain and is running Hyperledger Fabric. From marble's context the peers are owned and operated by my marble company.
 
-**Peer** - A peer is a member of the blockchain and is running Hyperledger Fabric. From marble's context the peers are peers I own/run.
+**COP** - The COP is responsible for gatekeeping our blockchain network. It will provide transaction certificates for clients such as our marbles node.js application. 
 
-**COP** - The COP is responsible for gatekeeping our blockchain network. It will provide transaction certificates for clients such as our marbles application. 
+**Orderer** - An orderer or ordering service is a member of the blockchain network who's main reponsoiblity is to package transactions into blocks.
 
-**Orderer** - An orderer or ordering service is a member of the blockchain network who's main reponsoiblity is to package transactioins into blocks.
-
-**Users** - A user is an entity that is authorized to interact with the blockchain. In the Marbles context this is our admin.
-
-**Usernames** or **Owners** - These are the name of assets that can have ownership of marbles.
+**Users** - A user is an entity that is authorized to interact with the blockchain. In the Marbles context this is our admin. The user can query and write to the ledger.
 
 **Blocks** - Blocks contain transactions and a hash to verify integrity.
 
-**Transactions** or **Proposals** - These represent interactions to the blockchain ledger. A read or write request of the ledger is sent as a proposal.
+**Transactions** or **Proposals** - These represent interactions to the blockchain ledger. A read or write request of the ledger is sent as a transaction/proposal.
 
-**Ledger** - It is the peer's storage for the blockchain. It contains the actual block data.
+**Ledger** - This is the storage for the blockchain on a peer. It contains the actual block data which consist of transaction parameters and key value pairs. It is written by chaincode.
 
-### Configure HFC:
+**Assets** - An asset is an entity that exists in the ledger. Its a key value pair. In the context of marbles this is a marble, or a marble owner. 
+
+**Chaincode** - Chaincode is our word for smart contracts. It defines the assets and all rules about assets.
+
+Lets look at the operations involved when creating a new marble.
+
+1. The first thing that happens in marbles is registering our admin `user` with our network's `COP`. If successful the `COP` will send Marbles transaction certificates that the SDK will store for us in our local file system. 
+1. When the admin creates a new marble from the user interface the SDK will create an invocation transaction.
+1. This create marble transaction gets built as a `proposal` to invoke the chaincode function `init_marble()`. The `proposal` was created in part by signing transaction certificates that were generted from our networks COP.
+1. Marbles (via the SDK) will send this `proposal` to a `peer` for endorsement. 
+1. The `peer` will simulation the transaction by running the go function `init_marble()` and record any changes it attempted to write to the `ledger`. 
+1. If the function returns successfully the `peer` will endorse the `proposal` and send it back to Marbles. Errors will also be sent back, but they will not be endorsed.
+1. Marbles (via the SDK), will then send the endorsed `proposal` to the `orderer`. 
+1. The `orderer` will organize a sequence of `proposals` from the whole network. It will check the sequence of transactions is valid by looking for transactions that conflict with eachother. Any transactions that cannot be added to the block because of conflicts will be marked as errors. The `orderer` will broadcast the new block to all peers.
+1. Our `peer` will receive the new block and validate it by looking at various signatures and hashes. It is then finally committed to the `peer's` `ledger`.
+1. At this point the new marble exists in our ledger and should soon exist in all peer's ledgers.
+
+
+#HFC SDK Deeper Dive
+Now lets how we configured the SDK and what it did for us. 
+Most of the config options can be found in `/config/mycreds.json`. 
+This file list the hostname/ip and port of various components of our blockchain network. 
+
+### Configure HFC (SDK):
+Next we need to send these fields to the SDK.
 
 ```js
 	var utils = require('./utils/hfc/lib/utils.js');    //create instance
@@ -235,10 +203,10 @@ An abbreviated version is below:
 	chain.setMemberServicesUrl(cop_url);
 ```
 
-1. The first thing marbles had to do was create an instance of HFC.
+1. The first thing the code does is create an instance of HFC, our SDK.
 1. Next important part is to set the orderer's address.
-1. Then set the key value store location.
-	- the key value store location will be the file location for our admin's certificates
+1. Then set the key value store folder location.
+	- the key value store location will be the folder containg our admin's certificates
 1. Then set the COP's address.
 
 ```js
@@ -261,12 +229,8 @@ An abbreviated version is below:
 ```
 
 1. Finally we enroll our admin. This is when we authenticte to the COP with our enroll ID and enroll Secret. The COP will issue transactions certificates which HFC will store in the key value store location.
-1. After succssful enrollment we are ready to interact with the blockchain.
+1. After succssful enrollment HFC is fully configured and ready to interact with the blockchain.
 
-
-## (work in progress)
-
-<strike>
 
 #Marbles Deeper Dive
 Hopefully you have successfully traded a marble or two between users. 
@@ -409,5 +373,3 @@ Part 2 adds some new chaincode functions making it a little niftier.
 
 #Trouble Shooting
 Stuck? Try my handy [trouble shooting guide](./i_lost_my_marbles.md).
-
-</strike>
