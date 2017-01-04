@@ -233,7 +233,7 @@ Next, we need to send these fields to the SDK.
 
 #Marbles Deeper Dive
 Hopefully you have successfully traded a marble or two between users. 
-Let’s look at how this was done by starting at the chaincode.
+Let’s look at how transfering a marble is done by starting at the chaincode.
 
 __set_user()__
 
@@ -297,8 +297,8 @@ This `set_users()` function will change the owner of a particular marble.
 It takes in an array of strings input argument and returns `nil, nil` if successful. 
 Within the array the first index should have the name of the marble which is also the key in the key/value pair. 
 We first need to retrieve the current marble struct. 
-This is done with `stub.GetState(marble_id)` and then unmarshal it into a marble structure with `json.Unmarshal(marbleAsBytes, &res)`.
-From there we can index into the structure with `res.Owner.Username` and overwrite the marble's owner with the new username and company.
+This is done with `stub.GetState(marble_id)` and then unmarshal it into a marble structure with `json.Unmarshal(marbleAsBytes, &res)`. 
+From there we can index into the structure with `res.Owner.Username` and overwrite the marble's owner with the new username and company. 
 Next we Marshal the structure back up so that we can use `stub.PutState()` to overwrite the marble with its new attributes. 
 
 Let’s take 1 step up and look at how this chaincode was called from our node.js app. 
@@ -333,10 +333,11 @@ __/utils/websocket_server_side.js__
 		...
 ```
 
-This function snippet `process_msg()` is sent all websocket messages (code is in app.js). 
-`process_msg()` will detect what type of message was sent. 
+This snippet of `process_msg()` is passed all websocket messages (code found in app.js). 
+`process_msg()` will detect what type of ws (websocket) message was sent. 
 In our case it should detect a `transfer_marble` type. 
-This is the function that will tell the SDK to build the proposal and kick off this whole thing.
+This is the function that will tell the SDK to build the proposal and kick off this whole transfer. 
+Next lets look at `marbles_lib.set_marble_owner()`. 
 
 __/utils/marbles_cc_lib/marbles.js__
 
@@ -359,7 +360,7 @@ __/utils/marbles_cc_lib/marbles.js__
 ```
 
 The important parts of `set_marble_owner()` are above. 
-It is setting the proposals invocation function name to "set_user" with the line `fcn: 'set_user'`. 
+It is setting the proposal's invocation function name to "set_user" with the line `fcn: 'set_user'`. 
 It is also setting other important fields such as the address/port to our peer, the chaincode id, and the arguments that our chaincode function is expecting. 
 
 Now let’s look 1 more step up to how we sent this websocket message.
@@ -415,12 +416,18 @@ With this code we get a droppable event trigger.
 Much of the code is spent parsing for the details of the marble that was dropped and the user it was dropped into. 
 
 When the event fires we first check to see if this marble actually moved owners, or if it was just picked up and dropped back down. 
-If its owner has changed we go off to the `transfer_marble()` function.
-This function creates a JSON message with all the needed data and uses our websocket to send it with `ws.send()`.
-Now you know the whole flow. 
-The admin moved the marble, JS detected the drag/drop, client sends a websocket message, we receive the websocket message, sdk builds a proposal, peer endorses the proposal, sdk sends the proposal to the orderer, our peer commits the block, marbles node code gets new marble status, sends websocket message to client, and finally the client redraws the marble in its new home.
+If its owner has changed we go off to the `transfer_marble()` function. 
+This function creates a JSON message with all the needed data and uses our websocket to send it with `ws.send()`. 
 
-That’s it! Hope you had fun trading marbles. 
+The last piece of the puzzle is how Marbles got the new status of our marble. 
+Well marbles periodically checks on all the marbles and compares it to the last known state. 
+If there is a difference it will broadcast the new marble state to all connected JS clients. 
+The clients will receive this websocket message and redraw the marbles. 
+
+Now you know the whole flow. 
+The admin moved the marble, JS detected the drag/drop, client sends a websocket message, marbles receives the websocket message, sdk builds/sends a proposal, peer endorses the proposal, sdk sends the proposal for ordering, the orderer orders and sends a block to peer, our peer commits the block, marbles node code gets new marble status periodically, sends marble websocket message to client, and finally the client redraws the marble in its new home.
+
+That’s it! Hope you had fun transfering marbles. 
 
 ***
 
