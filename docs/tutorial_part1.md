@@ -3,17 +3,15 @@
 ## About Marbles
 - The underlying network for this application is the [Hyperledger Fabric](https://github.com/hyperledger/fabric/tree/master/docs), a Linux Foundation project.  You may want to review these instructions to understand a bit about the Hyperledger Fabric.
 - **This demo is to aid a developer learn the basics of chaincode and app development with a Hyperledger network.**
-- This is a `very simple` asset transfer demonstration. Two users can create and exchange marbles with each other.
+- This is a `very simple` asset transfer demonstration. Multiple users can create and transfer marbles with each other.
 
 ***
 
 ##Marbles Goals
-- User can create a marble and store it in the chaincode state
-- User can read and display all marbles in the chaincode state
-- User can transfer a marble to another user
-- User can delete a marble
-- Server pushes block/marble updates to client when a new block event has occurred
-- Deployable on Bluemix
+- Admin can create a marble and store it in the chaincode state
+- Admin can read and display all marbles in the chaincode state
+- Admin can transfer a marble to another marble owner
+- Admin can delete a marble
 
 ***
 

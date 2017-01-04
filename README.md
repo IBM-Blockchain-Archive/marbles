@@ -3,7 +3,6 @@
 ## Warning 
 - This is an experimental version of marbles using the Hyperledger Fabric v0.7. It is not compatible with other Hyperledger Fabric versions.
 - It uses HFC to communicate to the blockchain's peers
-- **This branch does not have complete documentation!** 12/14/2016
 
 ***
 
