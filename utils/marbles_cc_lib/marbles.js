@@ -1,6 +1,7 @@
-//var async = require('async');
+//-------------------------------------------------------------------
+// Marbles Chaincode - Marble Functions
+//-------------------------------------------------------------------
 var path = require('path');
-//var url = require('url');
 
 module.exports = function (chain, chaincode_id, logger) {
 	var common = require(path.join(__dirname, './common.js'))();

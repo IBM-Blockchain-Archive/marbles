@@ -1,10 +1,7 @@
-//var async = require('async');
-//var path = require('path');
-//var url = require('url');
-
 //-------------------------------------------------------------------
 // Marbles Chaincode Library
 //-------------------------------------------------------------------
+
 module.exports = function (chain, chaincode_id, logger) {
 	var deploy_cc = require('./deploy_cc.js')(chain, chaincode_id, logger);
 	var marbles = require('./marbles.js')(chain, chaincode_id, logger);

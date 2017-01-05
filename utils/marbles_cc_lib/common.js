@@ -1,7 +1,13 @@
+//-------------------------------------------------------------------
+// Marbles Chaincode - Common/Helper
+//-------------------------------------------------------------------
+
 module.exports = function (logger) {
 	var common = {};
 
-	//format query response
+	//-----------------------------------------------------------------
+	// Format Query Responses
+	//------------------------------------------------------------------
 	common.format_query_resp = function (peer_responses, grab_inner_field){
 		var ret = 	{
 						peers_agree: true,
@@ -45,7 +51,9 @@ module.exports = function (logger) {
 	};
 
 
-	//format chaincode string error message
+	//-----------------------------------------------------------------
+	// Format Chaincode String Error Message
+	//------------------------------------------------------------------
 	common.format_error_msg = function (error_message){
 		var temp = 'could not format error';
 		try{
@@ -64,4 +72,3 @@ module.exports = function (logger) {
 
 	return common;
 };
-

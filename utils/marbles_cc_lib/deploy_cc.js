@@ -1,3 +1,6 @@
+//-------------------------------------------------------------------
+// Marbles Chaincode - Deploy Chaincode
+//-------------------------------------------------------------------
 var path = require('path');
 
 module.exports = function (chain, chaincode_id, logger) {
@@ -5,7 +8,7 @@ module.exports = function (chain, chaincode_id, logger) {
 	
 	//-------------------------------------------------------------------
 	// Check if Chaincode Is Already Deployed
-	//----------------------------------------------------
+	//-------------------------------------------------------------------
 	deploy_cc.check_if_already_deployed = function (webUser, peerUrls, cb) {
 		// send query
 		var request = {
@@ -17,23 +20,23 @@ module.exports = function (chain, chaincode_id, logger) {
 		webUser.queryByChaincode(request)
 		.then(
 			function(response_payloads) {
-				if(response_payloads.length <= 0){
+				if(response_payloads.length <= 0){									//error
 					console.log('Query response is empty: ');
 					if(cb) return cb({error: 'query response is empty'});
 				}
-				else{
-					for(var i in response_payloads) {
+				else{																//success
+					for(var i in response_payloads) {								//print each peer's payload
 						console.log('Peer' + i, 'payload says:', response_payloads[i].toString('utf8'));
 					}
 					console.log('---------------------------------------------------------------------------');
 					if(cb) return cb(null);
 				}
 			},
-			function(err) {
+			function(err) {															//error
 				console.log('Failed to send query due to error: ' + err.stack ? err.stack : err);
 			}
 		).catch(
-			function(err) {
+			function(err) {															//error
 				console.log('Failed, in catch block?' + err.stack ? err.stack : err);
 			}
 		);
