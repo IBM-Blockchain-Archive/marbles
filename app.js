@@ -34,9 +34,9 @@ var wss = {};
 process.env.marble_company = helper.getCompanyName();
 
 // ------------- Bluemix Detection ------------- //
-if(process.env.VCAP_APP_HOST && process.env.PRODUCTION){
-	host = process.env.VCAP_APP_HOST;
-	port = process.env.VCAP_APP_PORT;
+if(process.env.VCAP_APPLICATION  ){
+	host = '0.0.0.0';							//overwrite defaults
+	port = process.env.PORT;
 }
 
 // --- Pathing and Module Setup --- //
