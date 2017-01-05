@@ -34,7 +34,7 @@ var wss = {};
 process.env.marble_company = helper.getCompanyName();
 
 // ------------- Bluemix Detection ------------- //
-if(process.env.VCAP_APPLICATION  ){
+if(process.env.VCAP_APPLICATION){
 	host = '0.0.0.0';							//overwrite defaults
 	port = process.env.PORT;
 }
@@ -317,7 +317,7 @@ function pessimistic_create_owner(attempt, username, cb){
 
 			// -- Try again -- //
 			if(attempt < 4){
-				setTimeout(function(){										//delay for peer catch up
+				setTimeout(function(){								//delay for peer catch up
 					console.log('owner existance is not yet confirmed, trying again', attempt, username, Date.now());
 					return pessimistic_create_owner(++attempt, username, cb);
 				}, block_delay + 1000*attempt);
@@ -356,17 +356,7 @@ function all_done(){
 	process.env.app_first_setup = 'no';
 	var state_file = {hash: helper.getHash()};						//write state file so we know we started before
 	fs.writeFileSync(app_state_file, JSON.stringify(state_file, null, 4), 'utf8');
-	//ws_server.check_for_new_users(null);							//call the periodic task to get the state of everything
-	ws_server.check_for_updates(null);
-
-	/*marbles_lib.debug(webUser, [hfc.getPeer(helper.getPeersUrl(0))], 'amy.United Marbles', function(e, data){
-		console.log('!!!!!!!!!!!!!!!!!!got');
-		console.log(e, JSON.stringify(data));
-	});*/
-	/*marbles_lib.read_everything(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(e, data){
-		console.log('\n\n\n!!!!!!!!!!!!!!!!!!got');
-		console.log(e, JSON.stringify(data));
-	});*/
+	ws_server.check_for_updates(null);								//call the periodic task to get the state of everything
 }
 
 //message to client to communicate where we are in the start up
@@ -398,38 +388,47 @@ function setupWebSocket(){
 				var data = JSON.parse(message);
 				if(data.type == 'setup'){
 					console.log('! [ws] setup message', data);
+
+					//enroll admin
 					if(data.configure === 'enrollment'){
-						helper.write(data);
+						helper.write(data);										//write new config data to file
 						enroll_admin(helper.getUsers(0).enrollId, helper.getUsers(0).enrollSecret, helper.getMemberservicesUrl(0), function(e){
 							if(e == null){
 								setup_marbles_lib(helper.getChaincodeId(), helper.getOrderersUrl(0), [hfc.getPeer(helper.getPeersUrl(0))]);
 							}
 						});
 					}
+
+					//find deployed chaincode
 					else if(data.configure === 'find_chaincode'){
-						helper.write(data);
+						helper.write(data);										//write new config data to file
 						setup_marbles_lib(helper.getChaincodeId(), helper.getOrderersUrl(0), [hfc.getPeer(helper.getPeersUrl(0))]);
 					}
+
+					//deploy chaincode
 					else if(data.configure === 'deploy_chaincode'){
-						helper.write(data);
+						helper.write(data);										//write new config data to file
 						chain.setOrderer(helper.getOrderersUrl(0));
 						var temp_marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, helper.getChaincodeId(), null);
 						temp_marbles_lib.deploy_chaincode(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(){
 							setup_marbles_lib(helper.getChaincodeId(), helper.getOrderersUrl(0), [hfc.getPeer(helper.getPeersUrl(0))]);
 						});
 					}
+
+					//register marble owners
 					else if(data.configure === 'register'){
 						create_assets(data.build_marble_owners);
 					}
 				}
 				else{
-					ws_server.process_msg(ws, data);								//pass the websocket msg for processing
+					ws_server.process_msg(ws, data);							//pass the websocket msg for processing
 				}
 			}
 			catch(e){
 				console.log('ws message error', e.stack);
 			}
 		});
+
 		ws.on('error', function(e){console.log('ws error', e);});
 		ws.on('close', function(){console.log('ws closed');});
 		ws.send(JSON.stringify(build_state_msg()));								//tell client our app state
@@ -451,6 +450,9 @@ function setupWebSocket(){
 	// ========================================================
 	// Monitor the height of the blockchain
 	// ========================================================
+	// this code is no longer used, fabric v1 does not yet have APIs to get block data 1/5/2017
+	// we will refactor this code when the apis exists
+
 	/*hfc_util.monitor_blockheight(hfc.getPeer(peer_url), function(chain_stats) {		//there is a new block, lets refresh everything that has a state
 		if(chain_stats && chain_stats.height){
 			console.log('\nHey new block, lets refresh and broadcast to all', chain_stats.height-1);
