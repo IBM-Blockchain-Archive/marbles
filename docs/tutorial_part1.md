@@ -62,12 +62,16 @@ This walk through will jump from one to another as we setup and explain each par
 It's important to identify which part is which. 
 There are certain keywords and context clues to help you identify one from another.
 
-1. The Chaincode Part - This is GoLang code that runs on/with a peer on your blockchain network. Also, called `cc`. All marbles/blockchain interactions ultimately happen here.
-1. The Client Side JS Part - This is JavaScript code running in the user's browser. User interface interaction happens here.
-1. The Server Side JS Part - This is JavaScript code running our application's backend. ie `Node.js` code which is the heart of Marbles! Sometimes referred to as our `node` or `server` code. Functions as the glue between the marble admin and our blockchain.
+1. The Chaincode Part - This is GoLang code that runs on/with a peer on your blockchain network. Also, called `cc`. All marbles/blockchain interactions ultimately happen here. These files live in `/chaincode`.
+1. The Client Side JS Part - This is JavaScript code running in the user's browser. User interface interaction happens here. These files live in `/public/js.`
+1. The Server Side JS Part - This is JavaScript code running our application's backend. ie `Node.js` code which is the heart of Marbles! Sometimes referred to as our `node` or `server` code. Functions as the glue between the marble admin and our blockchain. These files live in `/utils` and `/routes`. 
 
-**It is recommended that you first run through the [Learn Chaincode](https://github.com/IBM-Blockchain/learn-chaincode) demo
-to understand what chaincode is and how it's written, and set up your environment to run Marbles.**
+Remember these 3 parts are isolated from eachother. 
+They do not share variables nor functions. 
+They will communicate via a networking protocol such as gRPC or WebSockets. 
+
+**It is highly recommended that you first run through the [Learn Chaincode](https://github.com/IBM-Blockchain/learn-chaincode) demo. 
+It will set up your environment and then teach you what chaincode is and how it's written.**
 
 
 # Marbles Setup Options:
