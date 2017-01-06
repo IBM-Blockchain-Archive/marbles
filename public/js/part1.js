@@ -142,20 +142,12 @@ $(document).on('ready', function() {
 // =================================================================================
 function connect_to_server(){
 	var connected = false;
-	console.log("hit connect on refresh");
+
     // Redirect https requests to http so the server can handle them
     if(this.location.href.indexOf("https://") > -1) {
-        // alert("location before " + this.location.href);
-        // var urlParts = this.location.href.split(":");
-        // var url = "http:";
-        // for (var i = 1; i < urlParts.length; i++) {
-			// url += urlParts[i];
-        // }
-        // this.location.href = url;
-        //
-        // alert("location after " + this.location.href);
         this.location.href = this.location.href.replace("https://", "http://");
     }
+
 	connect();
 
 	function connect(){
