@@ -332,8 +332,21 @@ function find_valid_marble(user, color, size){				//return true if user owns mar
 // =================================================================================
 function connect_to_server(){
 	var connected = false;
+    // Redirect https requests to http so the server can handle them
+    if(this.location.href.indexOf("https://") > -1) {
+        // alert("Part 2: made it inside of the conditional that should change https to http");
+        // alert("Part 2: this.location.href before " + this.location.href);
+        // alert("Part 2: window.location before " + window.location);
+        this.location.href = this.location.href.replace("https://", "http://");
+        // alert("Part 2: this.location after " + this.location.href);
+        // alert("Part 2: window.location.href after " + window.location);
+    }
 	connect();
-		
+
+	function replaceHttps(/*Object*/ obj, callback) {
+		obj.url = obj.url.replace("https://", "http://");
+		callback();
+	}
 	function connect(){
 		var wsUri = 'ws://' + document.location.hostname + ':' + document.location.port;
 		console.log('Connectiong to websocket', wsUri);

@@ -142,8 +142,22 @@ $(document).on('ready', function() {
 // =================================================================================
 function connect_to_server(){
 	var connected = false;
+	console.log("hit connect on refresh");
+    // Redirect https requests to http so the server can handle them
+    if(this.location.href.indexOf("https://") > -1) {
+        // alert("location before " + this.location.href);
+        // var urlParts = this.location.href.split(":");
+        // var url = "http:";
+        // for (var i = 1; i < urlParts.length; i++) {
+			// url += urlParts[i];
+        // }
+        // this.location.href = url;
+        //
+        // alert("location after " + this.location.href);
+        this.location.href = this.location.href.replace("https://", "http://");
+    }
 	connect();
-	
+
 	function connect(){
 		var wsUri = 'ws://' + document.location.hostname + ':' + document.location.port;
 		console.log('Connectiong to websocket', wsUri);
@@ -179,13 +193,15 @@ function connect_to_server(){
 			}
 			else if(msgObj.msg === 'chainstats'){
 				console.log('rec', msgObj.msg, ': ledger blockheight', msgObj.chainstats.height, 'block', msgObj.blockstats.height);
-				var e = formatDate(msgObj.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
-				$('#blockdate').html('<span style="color:#fff">TIME</span>&nbsp;&nbsp;' + e + ' UTC');
-				var temp =  {
-								id: msgObj.blockstats.height, 
-								blockstats: msgObj.blockstats
-							};
-				new_block(temp);								//send to blockchain.js
+				if(msgObj.blockstats && msgObj.blockstats.transactions) {
+                    var e = formatDate(msgObj.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
+                    $('#blockdate').html('<span style="color:#fff">TIME</span>&nbsp;&nbsp;' + e + ' UTC');
+                    var temp =  {
+                        id: msgObj.blockstats.height,
+                        blockstats: msgObj.blockstats
+                    };
+                    new_block(temp);								//send to blockchain.js
+				}
 			}
 			else console.log('rec', msgObj.msg, msgObj);
 		}
