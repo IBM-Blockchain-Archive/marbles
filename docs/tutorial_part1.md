@@ -16,10 +16,9 @@
 ***
 
 # Prereq:
-1. I highly recommend you complete [learn chaincode](https://github.com/IBM-Blockchain/learn-chaincode) first
-1. [Node.js](https://nodejs.org/en/download/) 6.2.0+
-1. Node.js experience. Marbles is a very simple blockchain app but it’s still a fairly involved node app. **You should be comfortable with node.js** and the express module.
-1. GoLang Environment (only needed to build your own chaincode, not needed if you just run the marbles app as is)
+1. Complete [learn chaincode](https://github.com/IBM-Blockchain/learn-chaincode). This is not only for information but is also to setup your environment with GoLang.
+1. You must have [Node.js](https://nodejs.org/en/download/) 6.2.0+
+1. You must have Node.js experience. Marbles is a very simple blockchain app but it’s a complex node app. **You should be comfortable with node.js**.
 
 ### Application Background
 Hold on to your hats everyone, this application is going to demonstrate transferring marbles between many marble owners leveraging Hyperledger.
