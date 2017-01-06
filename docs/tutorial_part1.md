@@ -189,27 +189,48 @@ Let’s look at the operations involved when creating a new marble.
 
 
 #HFC SDK Deeper Dive
-Now lets how we configured the SDK and what it did for us. 
+Now lets see how we configured the SDK and what it did for us. 
 Most of the config options can be found in `/config/mycreds.json`. 
-This file list the hostname/ip and port of various components of our blockchain network. 
+This file list the hostname (or ip) and port of various components of our blockchain network. 
 
 ### Configure HFC (SDK):
 Next, we need to send these fields to the SDK.
 
 ```js
-	var utils = require('./utils/hfc/lib/utils.js');    //create instance
+	//[1]
+	var hfc = require('hfc');                          //create instance
+	var utils = require('./utils/hfc/lib/utils.js');
+
+	//[2] Creating an environment variable for ciphersuites
+	process.env['GRPC_SSL_CIPHER_SUITES'] = 'ECDHE-RSA-AES128-GCM-SHA256:' +
+		'ECDHE-RSA-AES128-SHA256:' +
+		'ECDHE-RSA-AES256-SHA384:' +
+		'ECDHE-RSA-AES256-GCM-SHA384:' +
+		'ECDHE-ECDSA-AES128-GCM-SHA256:' +
+		'ECDHE-ECDSA-AES128-SHA256:' +
+		'ECDHE-ECDSA-AES256-SHA384:' +
+		'ECDHE-ECDSA-AES256-GCM-SHA384';
+
+	utils.setConfigSetting('crypto-keysize', 256);
+	utils.setConfigSetting('crypto-hash-algo', 'SHA2');
 	var chain = hfc.newChain('mychain');
 
-	chain.setOrderer(orderer_url);                      //configure
+	//[3]
+	chain.setOrderer(orderer_url);                      //configure orderer's address
+	
+	//[4]
 	var keyValueStoreObj =	 {
 								path: path.join(__dirname, './keyValStore-' + file_safe_name(process.env.marble_company) + '-' + uuid) 
 							};
 	chain.setKeyValueStore(hfc.newKeyValueStore(keyValueStoreObj));
+	
+	//[5]
 	chain.setMemberServicesUrl(cop_url);
 ```
 
 1. The first thing the code does is create an instance of HFC, our SDK.
-1. Next important part is to set the orderer's address.
+1. Next we set cipher suites and some crypto settings that should work for us.
+1. The next important part is to set the orderer's address.
 1. Then set the key value store folder location.
 	- the key value store location will be the folder containing our admin's certificates
 1. Then set the COP's address.
