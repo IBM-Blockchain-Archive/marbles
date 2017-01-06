@@ -102,6 +102,11 @@ git clone http://gopkg.in/ibm-blockchain/marbles.v3
 ```
 
 - This will clone the v3.0 branch to your local system. 
+- Next run this command to populate the HFC submodule:
+
+```
+git submodule update --init --recursive
+```
 
 ### Get a Network
 <a name="getnetwork"></a> Now we need a blockchain network.

@@ -1,7 +1,7 @@
 #Use Local Hyperledger Network:
 
 ### Creating a Local Hyperledger Network
-There is a convenient docker-compose image that will get you a network very quickly.
+There is a convenient docker-compose script that will get you a network very quickly.
 
 1. Follow the docker compose [Setup Instructions](https://github.com/IBM-Blockchain/connectathon).
 
