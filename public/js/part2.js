@@ -332,8 +332,14 @@ function find_valid_marble(user, color, size){				//return true if user owns mar
 // =================================================================================
 function connect_to_server(){
 	var connected = false;
+
+    // Redirect https requests to http so the server can handle them
+    if(this.location.href.indexOf("https://") > -1) {
+        this.location.href = this.location.href.replace("https://", "http://");
+    }
+    
 	connect();
-		
+
 	function connect(){
 		var wsUri = 'ws://' + document.location.hostname + ':' + document.location.port;
 		console.log('Connectiong to websocket', wsUri);
