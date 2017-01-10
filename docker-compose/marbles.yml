@@ -7,11 +7,11 @@ services:
     image: marbles
     depends_on:
       - peer-01
-      - orderer
-      - cop
+      - orderer-01
+      - cop-01
     links:
-      - cop
-      - orderer
+      - cop-01
+      - orderer-01
       - peer-02
     ports:
       - 3000:3000
@@ -26,11 +26,11 @@ services:
     image: marbles
     depends_on:
       - peer-01
-      - orderer
-      - cop
+      - orderer-01
+      - cop-01
     links:
-      - cop
-      - orderer
+      - cop-01
+      - orderer-01
       - peer-03
     ports:
       - 3001:3000
