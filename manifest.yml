@@ -1,11 +1,11 @@
 ---
 applications:
 - disk_quota: 1024M
-  name: marbles-blockchain-chhan
+  name: marbles-blockchain-hch
   command: "node app.js"
   path: "."
   instances: 1
   timeout: 180
   memory: 512M
   services:
-   - marbles-blockchain
+   - marbles-blockchain-2
