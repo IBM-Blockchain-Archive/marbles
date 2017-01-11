@@ -111,8 +111,7 @@ module.exports = function (chain, chaincode_id, logger) {
 			var removedGo = __dirname.substring(process.env.GOPATH.length + 5);		//remove GOPATH/src part from __dirname
 			console.log('[debug] removedGo from marbles path', removedGo);
 
-			var temp = __dirname.replace('/', '\\');
-			var parsed = temp.split('\\');
+			var parsed = __dirname.split(path.delimiter);
 			var root_of_marbles = parsed[parsed.length-3];							//find name of marbles root dir
 			console.log('[debug] root_of_marbles path', root_of_marbles);
 
