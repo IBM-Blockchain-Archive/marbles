@@ -70,7 +70,7 @@ They do not share variables nor functions.
 They will communicate via a networking protocol such as gRPC or WebSockets. 
 
 # Marbles Setup Options:
-Before you continue make sure your environment is setup by going through the **[Learn Chaincode](https://github.com/IBM-Blockchain/learn-chaincode) demo**.
+Before you continue **make sure** your environment is setup by going through the [Learn Chaincode](https://github.com/IBM-Blockchain/learn-chaincode) demo.
 It will set up your environment and teach you what chaincode is and how it's written.
 
 <strike>
