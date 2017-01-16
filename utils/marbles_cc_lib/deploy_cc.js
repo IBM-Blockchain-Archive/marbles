@@ -3,17 +3,17 @@
 //-------------------------------------------------------------------
 var path = require('path');
 
-module.exports = function (chain, chaincode_id, logger) {
+module.exports = function (chain, logger) {
 	var deploy_cc = {};
 	
 	//-------------------------------------------------------------------
 	// Check if Chaincode Is Already Deployed
 	//-------------------------------------------------------------------
-	deploy_cc.check_if_already_deployed = function (webUser, peerUrls, cb) {
+	deploy_cc.check_if_already_deployed = function (webUser, options, cb) {
 		// send query
 		var request = {
-			targets: peerUrls,
-			chaincodeId : chaincode_id,
+			targets: options.peer_urls,
+			chaincodeId : options.chaincode_id,
 			fcn: 'read',
 			args: ['_ownerindex']
 		};
@@ -45,12 +45,12 @@ module.exports = function (chain, chaincode_id, logger) {
 	//-------------------------------------------------------------------
 	// Deploy Chaincode
 	//-------------------------------------------------------------------
-	deploy_cc.deploy_chaincode = function (webUser, peerUrls, cb) {
+	deploy_cc.deploy_chaincode = function (webUser, options, cb) {
 		// send proposal to endorser
 		var request = {
-			targets: peerUrls,
+			targets: options.peer_urls,
 			chaincodePath: screwy_path('./chaincode'),								//path from marbles root to marbles chaincode folder
-			chaincodeId: chaincode_id,
+			chaincodeId: options.chaincode_id,
 			fcn: 'init',
 			args: ['99'],
 			'dockerfile-contents' :

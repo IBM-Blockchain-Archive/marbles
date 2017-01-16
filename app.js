@@ -162,7 +162,7 @@ try{
 		process.env.app_first_setup = 'no';
 		enroll_admin(helper.getUsers(0).enrollId, helper.getUsers(0).enrollSecret, helper.getMemberservicesUrl(0), function(e){
 			if(e == null){
-				setup_marbles_lib(helper.getChaincodeId(), helper.getOrderersUrl(0));
+				setup_marbles_lib();
 			}
 		});
 	}
@@ -183,13 +183,17 @@ function wait_to_init(){
 
 
 //setup marbles library and check if cc is deployed
-function setup_marbles_lib(chaincode_id, orderer_url, peer_url){
-	chain.setOrderer(orderer_url);
-	marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, chaincode_id, null);
+function setup_marbles_lib(){
+	chain.setOrderer(helper.getOrderersUrl(0));
+	marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, console);
 	ws_server.setup(webUser, marbles_lib, wss.broadcast, null);
 
 	console.log('Checking if chaincode is already deployed or not');
-	marbles_lib.check_if_already_deployed(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(not_deployed, enrollUser){
+	var options = 	{
+						chaincode_id: helper.getChaincodeId(),
+						peer_urls: [hfc.getPeer(helper.getPeersUrl(0))],
+					};
+	marbles_lib.check_if_already_deployed(webUser, options, function(not_deployed, enrollUser){
 		if(not_deployed){										//if this is truthy we have not yet deployed.... error
 			console.log('\n\nChaincode was not detected, all stop');
 			console.log('Open your browser to http://' + host + ':' + port + ' to redo startup\n\n');
@@ -268,7 +272,14 @@ function build_marble_options(username, company){
 	var sizes = ['35', '16'];
 	var color_index = simple_hash(more_entropy + company) % colors.length;		//build a psudeo random index to pick a color
 	var size_index = getRandomInt(0, sizes.length);								//build a random size for this marble
-	return [randStr(24), colors[color_index], sizes[size_index], username, company, process.env.marble_company];
+	return 	{
+				marble_id: randStr(24),
+				color: colors[color_index],
+				size: sizes[size_index],
+				marble_owner: username,
+				owners_company: company,
+				auth_company: process.env.marble_company
+			};
 }
 
 //this only runs after we deploy
@@ -305,7 +316,16 @@ function create_assets(build_marbles_users){
 
 //create the owner in a loop until it exists - repeat until we see the correct error! (yes)
 function pessimistic_create_owner(attempt, username, cb){
-	marbles_lib.register_owner(webUser, [hfc.getPeer(helper.getPeersUrl(0))], [username, process.env.marble_company], function(e){
+	var options = 	{
+						chaincode_id: helper.getChaincodeId(),
+						peer_urls: [hfc.getPeer(helper.getPeersUrl(0))],
+						args: 	{
+									marble_owner: username,
+									owners_company: process.env.marble_company
+								}
+					};
+
+	marbles_lib.register_owner(webUser, options, function(e){
 		console.log('\n\n\n!', attempt, e);
 
 		// --- Does the user exist yet? --- //
@@ -339,7 +359,12 @@ function create_marbles(username, cb){
 	async.eachLimit([1,2], 1, function(block_height, marble_cb) {	//create two marbles for every user
 		var randOptions = build_marble_options(username, process.env.marble_company);
 		console.log('\n\ngoing to create marble:', randOptions);
-		marbles_lib.create_a_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], null, randOptions, function(){
+		var options = 	{
+							chaincode_id: helper.getChaincodeId(),
+							peer_urls: [hfc.getPeer(helper.getPeersUrl(0))],
+							args: randOptions
+						};
+		marbles_lib.create_a_marble(webUser, options, function(){
 			setTimeout(function(){
 				marble_cb();
 			}, block_delay);
@@ -394,7 +419,7 @@ function setupWebSocket(){
 						helper.write(data);										//write new config data to file
 						enroll_admin(helper.getUsers(0).enrollId, helper.getUsers(0).enrollSecret, helper.getMemberservicesUrl(0), function(e){
 							if(e == null){
-								setup_marbles_lib(helper.getChaincodeId(), helper.getOrderersUrl(0), [hfc.getPeer(helper.getPeersUrl(0))]);
+								setup_marbles_lib();
 							}
 						});
 					}
@@ -402,7 +427,7 @@ function setupWebSocket(){
 					//find deployed chaincode
 					else if(data.configure === 'find_chaincode'){
 						helper.write(data);										//write new config data to file
-						setup_marbles_lib(helper.getChaincodeId(), helper.getOrderersUrl(0), [hfc.getPeer(helper.getPeersUrl(0))]);
+						setup_marbles_lib();
 					}
 
 					//deploy chaincode
@@ -410,8 +435,12 @@ function setupWebSocket(){
 						helper.write(data);										//write new config data to file
 						chain.setOrderer(helper.getOrderersUrl(0));
 						var temp_marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, helper.getChaincodeId(), null);
-						temp_marbles_lib.deploy_chaincode(webUser, [hfc.getPeer(helper.getPeersUrl(0))], function(){
-							setup_marbles_lib(helper.getChaincodeId(), helper.getOrderersUrl(0), [hfc.getPeer(helper.getPeersUrl(0))]);
+						var options = 	{
+											chaincode_id: helper.getChaincodeId(),
+											peer_urls: [hfc.getPeer(helper.getPeersUrl(0))],
+										};
+						temp_marbles_lib.deploy_chaincode(webUser, options, function(){
+							setup_marbles_lib();
 						});
 					}
 

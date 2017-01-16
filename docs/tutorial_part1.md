@@ -341,10 +341,23 @@ __/utils/websocket_server_side.js__
 		}
 			
 		// create a new marble
+		// create a new marble
 		if(data.type == 'create'){
 			console.log('[ws] create marbles req');
-			options = [data.name, data.color, data.size, data.username, data.company, process.env.marble_company];
-			marbles_lib.create_a_marble(webUser, [hfc.getPeer(helper.getPeersUrl(0))], ws, options, function(err, resp){
+			var options = 	{
+								chaincode_id: helper.getChaincodeId(),
+								peer_urls: [hfc.getPeer(helper.getPeersUrl(0))],
+								args: 	{
+											marble_id: data.name,
+											color: data.color,
+											size: data.size,
+											marble_owner: data.username,
+											owners_company: data.company,
+											auth_company: process.env.marble_company
+										},
+										ws: ws,
+							};
+			marbles_lib.create_a_marble(webUser, options, function(err, resp){
 				if(err != null) send_err(err, data);
 			});
 		}
@@ -352,8 +365,14 @@ __/utils/websocket_server_side.js__
 		//transfer a marble
 		else if(data.type == 'transfer_marble'){
 			console.log('[ws] transfering req');
-			options = [data.name, data.username, data.company, process.env.marble_company];
-			marbles_lib.set_marble_owner(webUser, [hfc.getPeer(helper.getPeersUrl(0))], ws, options, function(err, resp){
+			options.args = 	{
+								marble_id: data.name,
+								marble_owner: data.username,
+								owners_company: data.company,
+								auth_company: process.env.marble_company
+							};
+
+			marbles_lib.set_marble_owner(webUser, options, function(err, resp){
 				if(err != null) send_err(err, data);
 			});
 		}
@@ -377,10 +396,15 @@ __/utils/marbles_cc_lib/marbles.js__
 
 		// send proposal to endorser
 		var request = {
-			targets: peerUrls,
-			chaincodeId: chaincode_id,
+			targets: options.peer_urls,
+			chaincodeId: options.chaincode_id,
 			fcn: 'set_owner',
-			args: options               //args == ["name", "bob", "united_marbles", "united_marbles"]
+			args: [
+					options.args.marble_id, 
+					options.args.marble_owner, 
+					options.args.owners_company, 
+					options.args.auth_company
+					]  //args == ["name", "bob", "united_marbles", "united_marbles"]
 		};
 		webUser.sendTransactionProposal(request)
 		...

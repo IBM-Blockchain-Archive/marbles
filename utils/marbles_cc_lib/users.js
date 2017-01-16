@@ -3,24 +3,24 @@
 //-------------------------------------------------------------------
 var path = require('path');
 
-module.exports = function (chain, chaincode_id, logger) {
+module.exports = function (chain, logger) {
 	var common = require(path.join(__dirname, './common.js'))();
 	var users = {};
 
 	//-------------------------------------------------------------------
 	// Create User - options are {username: bob}
 	//-------------------------------------------------------------------
-	users.register_owner = function (webUser, peerUrls, args, cb) {
+	users.register_owner = function (webUser, options, cb) {
 		console.log('\nCreating a user\n');
 
 		// send proposal to endorser
 		var request = {
-			targets: peerUrls,
-			chaincodeId: chaincode_id,
+			targets: options.peer_urls,
+			chaincodeId: options.chaincode_id,
 			fcn: 'init_owner',
-			args: args 						//args == ["bob", "united marbles"]
+			args: [options.args.marble_owner, options.args.owners_company] 				//args == ["bob", "united marbles"]
 		};
-		console.log('!', args);
+		console.log('!', options.args);
 		webUser.sendTransactionProposal(request)
 		.then(
 			function (results) {
@@ -64,11 +64,11 @@ module.exports = function (chain, chaincode_id, logger) {
 	//-------------------------------------------------------------------
 	// Get Owner Index List
 	//----------------------------------------------------
-	users.get_owner_list = function (webUser, peerUrls, cb) {
+	users.get_owner_list = function (webUser, options, cb) {
 		console.log('\nFetching owner index list...');
 		var request = {
-			targets: peerUrls,
-			chaincodeId: chaincode_id,
+			targets: options.peer_urls,
+			chaincodeId: options.chaincode_id,
 			fcn: 'read',
 			args: ['_ownerindex']
 		};
@@ -107,13 +107,14 @@ module.exports = function (chain, chaincode_id, logger) {
 	//-------------------------------------------------------------------
 	// Get a Owner
 	//----------------------------------------------------
-	users.get_owner = function (webUser, peerUrls, opts, cb) {
-		console.log('\nFetching owner ' + users.build_owner_name(opts.username, opts.company) + ' list...');
+	users.get_owner = function (webUser, options, cb) {
+		var full_username = users.build_owner_name(options.args.marble_owner, options.args.owners_company);
+		console.log('\nFetching owner ' + full_username + ' list...');
 		var request = {
-			targets: peerUrls,
-			chaincodeId: chaincode_id,
+			targets: options.peer_urls,
+			chaincodeId: options.chaincode_id,
 			fcn: 'read',
-			args: [users.build_owner_name(opts.username, opts.company)]
+			args: [full_username]
 		};
 
 		webUser.queryByChaincode(request)

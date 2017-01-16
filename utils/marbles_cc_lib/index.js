@@ -2,67 +2,67 @@
 // Marbles Chaincode Library
 //-------------------------------------------------------------------
 
-module.exports = function (chain, chaincode_id, logger) {
-	var deploy_cc = require('./deploy_cc.js')(chain, chaincode_id, logger);
-	var marbles = require('./marbles.js')(chain, chaincode_id, logger);
-	var users = require('./users.js')(chain, chaincode_id, logger);
+module.exports = function (chain, logger) {
+	var deploy_cc = require('./deploy_cc.js')(chain, logger);
+	var marbles = require('./marbles.js')(chain, logger);
+	var users = require('./users.js')(chain, logger);
 	var common = require('./common.js')();
 	var marbles_chaincode = {};
 
 	// Chaincode -------------------------------------------------------------------------------
 
 	//deploy chaincode
-	marbles_chaincode.deploy_chaincode = function (webUser, peer_urls, cb) {
-		deploy_cc.deploy_chaincode(webUser, peer_urls, cb);
+	marbles_chaincode.deploy_chaincode = function (webUser, options, cb) {
+		deploy_cc.deploy_chaincode(webUser, options, cb);
 	};
 
 	//check chaincode
-	marbles_chaincode.check_if_already_deployed = function (webUser, peer_urls, cb) {
-		deploy_cc.check_if_already_deployed(webUser, peer_urls, cb);
+	marbles_chaincode.check_if_already_deployed = function (webUser, options, cb) {
+		deploy_cc.check_if_already_deployed(webUser, options, cb);
 	};
 
 	// Marbles -------------------------------------------------------------------------------
 
 	//create a marble
-	marbles_chaincode.create_a_marble = function (webUser, peer_urls, ws,options, cb) {
-		marbles.create_a_marble(webUser, peer_urls, ws, options, cb);
+	marbles_chaincode.create_a_marble = function (webUser, options, cb) {
+		marbles.create_a_marble(webUser, options, cb);
 	};
 
 	//get list of marbles
-	marbles_chaincode.get_marble_list = function (webUser, peer_urls, cb) {
-		marbles.get_marble_list(webUser, peer_urls, cb);
+	marbles_chaincode.get_marble_list = function (webUser, options, cb) {
+		marbles.get_marble_list(webUser, options, cb);
 	};
 
 	//get marble
-	marbles_chaincode.get_marble = function (webUser, peer_urls, marble_name, cb) {
-		marbles.get_marble(webUser, peer_urls, marble_name, cb);
+	marbles_chaincode.get_marble = function (webUser, options, cb) {
+		marbles.get_marble(webUser, options, cb);
 	};
 
 	//set marble owner
-	marbles_chaincode.set_marble_owner = function (webUser, peer_urls, ws, options, cb) {
-		marbles.set_marble_owner(webUser, peer_urls, ws, options, cb);
+	marbles_chaincode.set_marble_owner = function (webUser, options, cb) {
+		marbles.set_marble_owner(webUser, options, cb);
 	};
 
 	//delete marble
-	marbles_chaincode.delete_marble = function (webUser, peer_urls, ws, options, cb) {
-		marbles.delete_marble(webUser, peer_urls, ws, options, cb);
+	marbles_chaincode.delete_marble = function (webUser, options, cb) {
+		marbles.delete_marble(webUser, options, cb);
 	};
 
 	// Owners -------------------------------------------------------------------------------
 
 	//register a owner/user
-	marbles_chaincode.register_owner = function (webUser, peer_urls, owner_obj, cb) {
-		users.register_owner(webUser, peer_urls, owner_obj, cb);
+	marbles_chaincode.register_owner = function (webUser, options, cb) {
+		users.register_owner(webUser, options, cb);
 	};
 
 	//get a owner/user
-	marbles_chaincode.get_owner = function (webUser, peer_urls, options, cb) {
-		users.get_owner(webUser, peer_urls, options, cb);
+	marbles_chaincode.get_owner = function (webUser, options, cb) {
+		users.get_owner(webUser, options, cb);
 	};
 
 	//get the owner list
-	marbles_chaincode.get_owner_list = function (webUser, peer_urls, cb) {
-		users.get_owner_list(webUser, peer_urls, cb);
+	marbles_chaincode.get_owner_list = function (webUser, options, cb) {
+		users.get_owner_list(webUser, options, cb);
 	};
 
 	marbles_chaincode.build_owner_name = function (username, company) {
@@ -72,13 +72,13 @@ module.exports = function (chain, chaincode_id, logger) {
 	// Debug -------------------------------------------------------------------------------
 
 	//debug read
-	marbles_chaincode.debug = function(webUser, peer_urls, test, cb){
-		console.log('\n debug read of ' + test + ' ...');
+	marbles_chaincode.debug = function(webUser, options, cb){
+		console.log('\n debug read of ' + JSON.stringify(options.args) + ' ...');
 		var request = {
-			targets: peer_urls,
-			chaincodeId: chaincode_id,
+			targets: options.peer_urls,
+			chaincodeId: options.chaincode_id,
 			fcn: 'read',
-			args: [test]
+			args: options.args
 		};
 
 		webUser.queryByChaincode(request)
@@ -104,11 +104,11 @@ module.exports = function (chain, chaincode_id, logger) {
 	};
 	
 	//read everything
-	marbles_chaincode.read_everything = function(webUser, peer_urls, cb){
+	marbles_chaincode.read_everything = function(webUser, options, cb){
 		console.log('\nreading everything!...');
 		var request = {
-			targets: peer_urls,
-			chaincodeId: chaincode_id,
+			targets: options.peer_urls,
+			chaincodeId: options.chaincode_id,
 			fcn: 'read_everything',
 			args: ['']
 		};

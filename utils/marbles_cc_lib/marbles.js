@@ -3,22 +3,29 @@
 //-------------------------------------------------------------------
 var path = require('path');
 
-module.exports = function (chain, chaincode_id, logger) {
+module.exports = function (chain, logger) {
 	var common = require(path.join(__dirname, './common.js'))();
 	var marbles = {};
 
 	//-------------------------------------------------------------------
 	// Create Marble
 	//-------------------------------------------------------------------
-	marbles.create_a_marble = function (webUser, peerUrls, ws, options, cb) {
+	marbles.create_a_marble = function (webUser, options, cb) {
 		console.log('\ncreating a marble...');
 		
 		// send proposal to endorser
 		var request = {
-			targets: peerUrls,
-			chaincodeId: chaincode_id,
+			targets: options.peer_urls,
+			chaincodeId: options.chaincode_id,
 			fcn: 'init_marble',
-			args: options 									//args == [marble_id, color, size, username, company]
+			args: [
+					options.args.marble_id, 
+					options.args.color, 
+					options.args.size, 
+					options.args.marble_owner, 
+					options.args.owners_company,
+					options.args.auth_company
+					] //args == [marble_id, color, size, username, company, auth_company]
 		};
 		console.log('!', options);
 		webUser.sendTransactionProposal(request)
@@ -28,12 +35,12 @@ module.exports = function (chain, chaincode_id, logger) {
 				var proposal = results[1];
 				if (proposalResponses && proposalResponses[0] && proposalResponses[0].response && proposalResponses[0].response.status === 200) {
 					console.log('Successfully obtained transaction endorsement.' + JSON.stringify(proposalResponses));
-					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering'}));
+					if(options.ws) options.ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering'}));
 					return webUser.sendTransaction(proposalResponses, proposal);
 				}
 				else {
 					console.log('Failed to obtain transaction endorsement');
-					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'endorsing_failed'}));
+					if(options.ws) options.ws.send(JSON.stringify({msg: 'tx_step', state: 'endorsing_failed'}));
 					throw common.format_error_msg(proposalResponses[0]);
 				}
 			}
@@ -41,12 +48,12 @@ module.exports = function (chain, chaincode_id, logger) {
 			function (response) {
 				if (response && response.Status === 'SUCCESS') {
 					console.log('Successfully ordered endorsement transaction.');
-					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'committing'}));
+					if(options.ws) options.ws.send(JSON.stringify({msg: 'tx_step', state: 'committing'}));
 					if(cb) cb(null, null);
 				}
 				else {
 					console.log('Failed to order the endorsement of the transaction.');
-					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering_failed'}));
+					if(options.ws) options.ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering_failed'}));
 					throw response;
 				}
 			}
@@ -65,7 +72,7 @@ module.exports = function (chain, chaincode_id, logger) {
 					if(err.indexOf('Owner does not exist')) e = err;
 				}
 				if(e == null){
-					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'committing'}));
+					if(options.ws) options.ws.send(JSON.stringify({msg: 'tx_step', state: 'committing'}));
 				}
 				if(cb) return cb(e, null);
 			}
@@ -76,11 +83,11 @@ module.exports = function (chain, chaincode_id, logger) {
 	//-------------------------------------------------------------------
 	// Get Marble Index List
 	//----------------------------------------------------
-	marbles.get_marble_list = function (webUser, peerUrls, cb) {
+	marbles.get_marble_list = function (webUser, options, cb) {
 		console.log('\nfetching marble index list...');
 		var request = {
-			targets: peerUrls,
-			chaincodeId: chaincode_id,
+			targets: options.peer_urls,
+			chaincodeId: options.chaincode_id,
 			fcn: 'compelte_marble_index',
 			args: [' ']
 		};
@@ -112,13 +119,13 @@ module.exports = function (chain, chaincode_id, logger) {
 	//-------------------------------------------------------------------
 	// Get a Marble
 	//----------------------------------------------------
-	marbles.get_marble = function (webUser, peerUrls, marble_name, cb) {
-		console.log('\nfetching marble ' + marble_name +' list...');
+	marbles.get_marble = function (webUser, options, cb) {
+		console.log('\nfetching marble ' + options.marble_id +' list...');
 		var request = {
-			targets: peerUrls,
-			chaincodeId: chaincode_id,
+			targets: options.peer_urls,
+			chaincodeId: options.chaincode_id,
 			fcn: 'read',
-			args: [marble_name]
+			args: [options.args.marble_id]
 		};
 
 		webUser.queryByChaincode(request)
@@ -146,15 +153,20 @@ module.exports = function (chain, chaincode_id, logger) {
 	//-------------------------------------------------------------------
 	// Set Marble Owner 
 	//-------------------------------------------------------------------
-	marbles.set_marble_owner = function (webUser, peerUrls, ws, options, cb) {
+	marbles.set_marble_owner = function (webUser, options, cb) {
 		console.log('\nsetting marble owner...');
 
 		// send proposal to endorser
 		var request = {
-			targets: peerUrls,
-			chaincodeId: chaincode_id,
+			targets: options.peer_urls,
+			chaincodeId: options.chaincode_id,
 			fcn: 'set_owner',
-			args: options 									//args == ["name", "bob", "united_marbles", "united_marbles"]
+			args: [
+					options.args.marble_id, 
+					options.args.marble_owner, 
+					options.args.owners_company, 
+					options.args.auth_company
+					] //args == ["name", "bob", "united_marbles", "united_marbles"]
 		};
 		console.log('!', options);
 		webUser.sendTransactionProposal(request)
@@ -164,12 +176,12 @@ module.exports = function (chain, chaincode_id, logger) {
 				var proposal = results[1];
 				if (proposalResponses && proposalResponses[0] && proposalResponses[0].response && proposalResponses[0].response.status === 200) {
 					console.log('Successfully obtained transaction endorsement.' + JSON.stringify(proposalResponses));
-					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering'}));
+					if(options.ws) options.ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering'}));
 					return webUser.sendTransaction(proposalResponses, proposal);
 				}
 				else {
 					console.log('Failed to obtain transaction endorsement', proposalResponses);
-					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'endorsing_failed'}));
+					if(options.ws) options.ws.send(JSON.stringify({msg: 'tx_step', state: 'endorsing_failed'}));
 					throw common.format_error_msg(proposalResponses[0]);
 				}
 			}
@@ -177,12 +189,12 @@ module.exports = function (chain, chaincode_id, logger) {
 			function (response) {
 				if (response && response.Status === 'SUCCESS') {
 					console.log('Successfully ordered endorsement transaction.');
-					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'committing'}));
+					if(options.ws) options.ws.send(JSON.stringify({msg: 'tx_step', state: 'committing'}));
 					if(cb) return cb(null, null);
 				}
 				else {
 					console.log('Failed to order the endorsement of the transaction');
-					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering_failed'}));
+					if(options.ws) options.ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering_failed'}));
 					throw response;
 				}
 			}
@@ -196,7 +208,7 @@ module.exports = function (chain, chaincode_id, logger) {
 					if(err.indexOf('Incorrect number of arguments')) e = err;
 				}
 				if(e == null){
-					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'committing'}));
+					if(options.ws) options.ws.send(JSON.stringify({msg: 'tx_step', state: 'committing'}));
 				}
 				if(cb) return cb(e, null);
 				else return;
@@ -207,15 +219,15 @@ module.exports = function (chain, chaincode_id, logger) {
 	//-------------------------------------------------------------------
 	// Delete Marble - options are [marble_id]
 	//-------------------------------------------------------------------
-	marbles.delete_marble = function (webUser, peerUrls, ws, options, cb) {
+	marbles.delete_marble = function (webUser, options, cb) {
 		console.log('\ndeleting a marble...');
 		
 		// send proposal to endorser
 		var request = {
-			targets: peerUrls,
-			chaincodeId: chaincode_id,
+			targets: options.peer_urls,
+			chaincodeId: options.chaincode_id,
 			fcn: 'delete_marble',
-			args: options 									//args == [marble_id]
+			args: [options.args.marble_id, options.args.auth_company] 	//args == [marble_id, auth_company]
 		};
 		webUser.sendTransactionProposal(request)
 		.then(
@@ -224,12 +236,12 @@ module.exports = function (chain, chaincode_id, logger) {
 				var proposal = results[1];
 				if (proposalResponses && proposalResponses[0] && proposalResponses[0].response && proposalResponses[0].response.status === 200) {
 					console.log('Successfully obtained transaction endorsement.' + JSON.stringify(proposalResponses));
-					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering'}));
+					if(options.ws) options.ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering'}));
 					return webUser.sendTransaction(proposalResponses, proposal);
 				}
 				else {
 					console.log('Failed to obtain transaction endorsement', proposalResponses);
-					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'endorsing_failed'}));
+					if(options.ws) options.ws.send(JSON.stringify({msg: 'tx_step', state: 'endorsing_failed'}));
 					throw common.format_error_msg(proposalResponses[0]);
 				}
 			}
@@ -237,12 +249,12 @@ module.exports = function (chain, chaincode_id, logger) {
 			function (response) {
 				if (response && response.Status === 'SUCCESS') {
 					console.log('Successfully ordered endorsement transaction.');
-					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'committing'}));
+					if(options.ws) options.ws.send(JSON.stringify({msg: 'tx_step', state: 'committing'}));
 					if(cb) return cb(null, null);
 				}
 				else {
 					console.log('Failed to order the endorsement of the transaction.');
-					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering_failed'}));
+					if(options.ws) options.ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering_failed'}));
 					throw response;
 				}
 			}
@@ -257,7 +269,7 @@ module.exports = function (chain, chaincode_id, logger) {
 					if(err.indexOf('Owner does not exist')) e = err;
 				}
 				if(e == null){
-					if(ws) ws.send(JSON.stringify({msg: 'tx_step', state: 'committing'}));
+					if(options.ws) options.ws.send(JSON.stringify({msg: 'tx_step', state: 'committing'}));
 				}
 				if(cb) return cb(e, null);
 				else return;
