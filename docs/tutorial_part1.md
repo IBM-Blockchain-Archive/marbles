@@ -47,12 +47,12 @@ Check the picture below for details.
 
 ![](/doc_images/comm_flow.png)
 
-1. The user will interact with our Node.js application in their browser. 
-1. This client side JS code will open a websocket to the backend Node.js application. The client JS will send messages to the backend when the user interacts with the site.
-1. A query or invocation is formally known as a proposal.  This proposal is built via the HFC SDK and then sent to a blockchain peer to carry out the user's actions. 
-1. The peer will communicate to its chaincode container. It will simulate the invocation and if there are no issues it will endorse the transaction.
-1. The peer will send the endorsed proposal to the ordering service.  The orderer will package many proposals into a block.  Then it will broadcast the new block to the peers in the network. 
-1. Finally the peer will validate the block and write it to its ledger.
+1. The admin will interact with Marbles, our Node.js application, in their browser. 
+1. This client side JS code will open a websocket to the backend Node.js application. The client JS will send messages to the backend when the admin interacts with the site.
+1. Reading or writing the ledger is known as a proposal. This proposal is built by Marbles (via the HFC SDK) and then sent to a blockchain peer. 
+1. The peer will communicate to its Marbles chaincode container. The chaincode will run and simulate the transaction. If there are no issues it will endorse the transaction and send it back to Marbles. 
+1. Marbles (via HFC) will then send the endorsed proposal to the ordering service.  The orderer will package many proposals into a block.  Then it will broadcast the new block to the peers in the network. 
+1. Finally the peer will validate the block and write it to its ledger. The transaction has now taken effect and any subsequent reads will reflect this change.
 
 ### Context Clues
 There are 3 distinct parts/worlds that you need to keep straight. 
