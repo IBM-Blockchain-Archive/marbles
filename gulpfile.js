@@ -32,9 +32,11 @@ gulp.task('build-js-hash', function () {
 
 
 // ---------------- Run Application Task ---------------- //
-gulp.task('server', function() {
+gulp.task('server', function(a, b) {
+	console.log('\n\nGulp Task - server');
 	if(node) node.kill();
 	node = spawn('node', ['app.js'], {env: env, stdio: 'inherit'});	//command, file, options
+	return;
 });
 
 
@@ -47,7 +49,7 @@ gulp.task('watch-js', ['build-js-hash'], function () {
 	gulp.watch(path.join(__dirname,'/public/js/*.js'), ['build-js-hash']);
 });
 
-gulp.task('watch-server', ['server'], function () {
+gulp.task('watch-server', function () {
 	gulp.watch(path.join(__dirname, '/routes/**/*.js'), ['server']);
 	gulp.watch([path.join(__dirname, '/utils/*.js')], ['server']);
 	gulp.watch([path.join(__dirname, '/utils/marbles_cc_lib/*.js')], ['server']);
@@ -56,11 +58,11 @@ gulp.task('watch-server', ['server'], function () {
 
 
 // ---------------- Gulp Tasks ---------------- //
-gulp.task('default', ['watch-js', 'watch-sass', 'watch-server']);		//run with command `gulp`
-gulp.task('marbles', ['start_marbles', 'default']);						//run with command `gulp marbles` [THIS ONE!]
-gulp.task('united_marbles', ['start_mtc1', 'default']);					//run with command `gulp united_marbles`
-gulp.task('marble_market', ['start_mtc2', 'default']);					//run with command `gulp marble_market`
-gulp.task('emarbles', ['start_mtc3', 'default']);						//run with command `gulp emarbles`
+gulp.task('default', ['watch-sass', 'watch-js', 'watch-server', 'server']);	//run with command `gulp`
+gulp.task('marbles', ['start_marbles', 'default']);							//run with command `gulp marbles` [THIS ONE!]
+gulp.task('united_marbles', ['start_mtc1', 'default']);						//run with command `gulp united_marbles`
+gulp.task('marble_market', ['start_mtc2', 'default']);						//run with command `gulp marble_market`
+gulp.task('emarbles', ['start_mtc3', 'default']);							//run with command `gulp emarbles`
 
 //generic marbles
 gulp.task('start_marbles', function () {

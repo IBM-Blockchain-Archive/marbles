@@ -177,7 +177,7 @@ function wait_to_init(){
 	process.env.app_state = 'start_waiting';
 	process.env.app_first_setup = 'yes';
 	console.log('\n\nDetected that we have NOT launched successfully yet');
-	console.log('Open your browser to http://' + host + ':' + port + ' to initiate startup\n\n');
+	console.log('Open your browser to http://' + host + ':' + port + ' and login as "admin" to initiate startup\n\n');
 }
 // -------------------------------------------------------------------
 
@@ -195,8 +195,9 @@ function setup_marbles_lib(){
 					};
 	marbles_lib.check_if_already_deployed(webUser, options, function(not_deployed, enrollUser){
 		if(not_deployed){										//if this is truthy we have not yet deployed.... error
-			console.log('\n\nChaincode was not detected, all stop');
-			console.log('Open your browser to http://' + host + ':' + port + ' to redo startup\n\n');
+			console.log('\n\nChaincode ID was not detected: "' + helper.getChaincodeId()+ '", all stop');
+			console.log('\n\nYou can deploy this chaincode or change the ID from the UI');
+			console.log('Open your browser to http://' + host + ':' + port + ' and login to redo/init startup');
 			process.env.app_first_setup = 'yes';				//overwrite state, bad startup
 			broadcast_state('no_chaincode');
 		}
