@@ -69,11 +69,10 @@ Remember these 3 parts are isolated from eachother.
 They do not share variables nor functions. 
 They will communicate via a networking protocol such as gRPC or WebSockets. 
 
-**It is highly recommended that you first run through the [Learn Chaincode](https://github.com/IBM-Blockchain/learn-chaincode) demo. 
-It will set up your environment and then teach you what chaincode is and how it's written.**
-
-
 # Marbles Setup Options:
+Before you continue make sure your environment is setup by going through the **[Learn Chaincode](https://github.com/IBM-Blockchain/learn-chaincode) demo**.
+It will set up your environment and teach you what chaincode is and how it's written.
+
 <strike>
 Decide if you want to use the deploy to Bluemix button. 
 Using the button will bypass all the setup below, but you will not have much control over the application. 
