@@ -3,14 +3,14 @@
         "network_id": "asdf",
         "peers": [
             {
-                "grpc_host": "192.168.99.100",
+                "grpc_host": "localhost",
                 "grpc_port": 7051,
                 "type": "peer",
                 "network_id": "asdf",
                 "id": "peer1"
             },
             {
-                "grpc_host": "192.168.99.100",
+                "grpc_host": "localhost",
                 "grpc_port": 7056,
                 "type": "peer",
                 "network_id": "asdf",
@@ -20,7 +20,7 @@
         "memberservices": [
             {
                 "id": "asdf-ca",
-                "host": "192.168.99.100",
+                "host": "localhost",
                 "port": 8888,
                 "type": "ca",
                 "network_id": "asdf"
@@ -28,7 +28,7 @@
         ],
         "orderers": [
             {
-                "host": "192.168.99.100",
+                "host": "localhost",
                 "port": 5151,
                 "type": "orderer",
                 "network_id": "asdf",
