@@ -2,7 +2,7 @@ var path = require('path');
 
 module.exports = function (chain, chaincode_id, logger) {
 	var deploy_cc = {};
-	
+
 	//-------------------------------------------------------------------
 	// Check if Chaincode Is Already Deployed
 	//----------------------------------------------------
@@ -95,36 +95,46 @@ module.exports = function (chain, chaincode_id, logger) {
 		);
 	};
 
-	//get the path from GOPATH to marble's chaincode folder (b/c hfc expects the path to be this way)
-	//hfc builds the path with: projDir = goPath + '/src/' + chaincodePath; - therefore chaincodePath must reference from GOPATH/src/
-	function screwy_path(chaincode_folder){
-		var pos = __dirname.indexOf(path.join(process.env.GOPATH + '/src/'));
-		if(pos === -1){
-			var msg = '[Deploy Error] Marbles is not inside your system GOPATH, please fix';
-			console.log('\n\n' + msg + '\n\n');
-			throw msg;
-		}
-		else{
-			var removedGo = __dirname.substring(process.env.GOPATH.length + 5);		//remove GOPATH/src part from __dirname
-			console.log('[debug] removedGo from marbles path', removedGo);
+	//-----------------------------------------------------------------------------------------------------------------
+	// Get the current directory's path and check to make sure the GOPATH exists in that path. If so the GOPATH is
+	// removed to create the hfc_path. The chaincode folder, which was passed in, is then appended to the hfc_path
+	// and returned as the path to the chaincode folder.
+	//-----------------------------------------------------------------------------------------------------------------
+	function screwy_path(chaincode_folder) {
+			let currentDirectory = path.dirname(require.main.filename);				    //Path to current working directory
+			console.log("[debug] currentDirectory: " + currentDirectory);
 
-			var temp = __dirname.replace('/', '\\');
-			var parsed = temp.split('\\');
-			var root_of_marbles = parsed[parsed.length-3];							//find name of marbles root dir
-			console.log('[debug] root_of_marbles path', root_of_marbles);
+			if (currentDirectory.indexOf(process.env.GOPATH) === -1) {					//Ensure marbles is in the GOPATH
+					let msg = '[Deploy Error] Marbles is not inside your '					//and throw an error if it is not.
+							+ 'system GOPATH. Please fix';
+					console.log('\n\n' + msg + '\n\n');
+					throw msg;
+			}
+			else {
+					let length = process.env.GOPATH.length;									//Length of the GOPATH string
 
-			var pos3 = removedGo.indexOf(root_of_marbles);
-			var hfc_path = removedGo.substring(0, pos3 + root_of_marbles.length);	//get path from GOPATH to marbles root dir
-			
-			var ret = path.join(hfc_path, chaincode_folder);						//path to chaincode dir
-			console.log('[debug] hfc compatible path to chaincode dir', ret);
+					if (length === 0) {														//Make sure there is a GOPATH.
+							let msg = '[Deploy Error] The GOPATH environment variable '			//If not then throw an error.
+									+ 'has not been set up. Please fix.';
+							console.log('\n\n + msg + \n\n');
+							throw msg;
+					}
+					else if (currentDirectory.indexOf(process.env.GOPATH + '/src/') === -1) {
+							let msg = '[Deploy Error] The /src/ folder is not located between '//Make sure /src/ is after GOPATH.
+									+ 'the GOPATH and the marbles code. Please fix.';              //If not then throw an error.
+							console.log('\n\n + msg + \n\n');
+							throw msg;
+					}
+					else {
+							let hfc_path = process.env.PWD.substring(length + 5);				//Remove the GOPATH from the
+							console.log('[debug] hfc_path ' + hfc_path);						//current working directory
 
-			return ret;
-			//var debug = process.env.GOPATH + '/src/' + ret; 						//<- this is what hfc will build..
-			//console.log('debug', debug);
-		}
+							let ret = path.join(hfc_path, chaincode_folder);					//Append chaincode directory to
+							console.log('[debug] hfc compatible path to chaincode dir', ret);	//the current working directory.
+							return ret;
+					}
+			}
 	}
 
 	return deploy_cc;
 };
-
