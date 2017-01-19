@@ -101,7 +101,6 @@ module.exports = function (chain, logger) {
 	//get the path from GOPATH to marble's chaincode folder (b/c hfc expects the path to be this way)
 	//hfc builds the path with: projDir = goPath + '/src/' + chaincodePath; - therefore chaincodePath must reference from GOPATH/src/
 	function screwy_path(chaincode_folder){
-		var gpath = process.env.GOPATH;
 		if(!process.env.GOPATH) {
 			console.log('\n\n\n WARNING: GOPATH is not set! \n please set GOPATH to deploy chaincode\n\n\n');
 			
