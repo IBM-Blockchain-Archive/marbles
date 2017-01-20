@@ -108,7 +108,18 @@ module.exports = function (chain, chaincode_id) {
 	//-----------------------------------------------------------------------------------------------------------------
 	function screwy_path(chaincode_folder) {
 		let currentDirectory = path.dirname(require.main.filename);				    //Path to current working directory
+        let length = process.env.GOPATH.length;
+        let src = 'src/';
 		console.log('[debug] currentDirectory: ' + currentDirectory);
+
+        									//Length of the GOPATH string
+
+        if (length === 0) {															//Make sure there is a GOPATH.
+            let msg = '[Deploy Error] The GOPATH environment variable '				//If not then throw an error.
+                + 'has not been set up. Please fix.';
+            console.log('\n\n + msg + \n\n');
+            throw msg;
+        }
 
 		if (currentDirectory.indexOf(process.env.GOPATH) === -1) {					//Ensure marbles is in the GOPATH
 			let msg = '[Deploy Error] Marbles is not inside your '					//and throw an error if it is not.
@@ -117,15 +128,7 @@ module.exports = function (chain, chaincode_id) {
 			throw msg;
 		}
 		else {
-			let length = process.env.GOPATH.length;									//Length of the GOPATH string
-
-			if (length === 0) {														//Make sure there is a GOPATH.
-				let msg = '[Deploy Error] The GOPATH environment variable '			//If not then throw an error.
-					+ 'has not been set up. Please fix.';
-				console.log('\n\n + msg + \n\n');
-				throw msg;
-			}
-			else if (currentDirectory.indexOf(process.env.GOPATH + '/src/') === -1) {
+			if (currentDirectory.indexOf(path.join(process.env.GOPATH, src)) === -1) {
 				let msg = '[Deploy Error] The /src/ folder is not located between ' //Make sure /src/ is after GOPATH.
 					+ 'the GOPATH and the marbles code. Please fix.';               //If not then throw an error.
 				console.log('\n\n + msg + \n\n');
