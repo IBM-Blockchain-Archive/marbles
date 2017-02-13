@@ -17,8 +17,9 @@
 		"jade": "1.11.*",
 		"serve-static": "1.11.*",
 		"ws": "1.1.*",
-		"hfc": "file:utils/hfc",
-		"winston": "2.2.*"
+		"winston": "2.2.*",
+		"fabric-client": "^0.1.0",
+		"fabric-ca-client": "^0.1.0"
 	},
 	"engines": {
 		"node": "^6.2.0"
