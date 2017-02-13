@@ -56,19 +56,19 @@ module.exports = function (config_filename, logger) {
 				return helper.creds.credentials.cas[index];
 			}
 			else {
-				throw new Error('Member Services index out of bounds. Total member services = '	+ helper.creds.credentials.cas.length);
+				throw new Error('CA index out of bounds. Total CA = '	+ helper.creds.credentials.cas.length);
 			}
 		}
 	};
 
 	helper.getCasUrl = function (index) {
 		if (index === undefined || index == null) {
-			throw new Error('Member Services index not passed');
+			throw new Error('CA index not passed');
 		} else {
 			if (index < helper.creds.credentials.cas.length) {
 				return 'http://' + helper.creds.credentials.cas[index].host + ':' + helper.creds.credentials.cas[index].port;
 			} else {
-				throw new Error('Member Services index out of bounds. Total member services = ' + helper.creds.credentials.cas.length);
+				throw new Error('CA index out of bounds. Total CA = ' + helper.creds.credentials.cas.length);
 			}
 		}
 	};
@@ -82,7 +82,7 @@ module.exports = function (config_filename, logger) {
 				return helper.creds.credentials.orderers[index];
 			}
 			else {
-				throw new Error('Orderers index out of bounds. Total member services = '	+ helper.creds.credentials.orderers.length);
+				throw new Error('Orderers index out of bounds. Total CA = '	+ helper.creds.credentials.orderers.length);
 			}
 		}
 	};
@@ -94,7 +94,7 @@ module.exports = function (config_filename, logger) {
 			if (index < helper.creds.credentials.orderers.length) {
 				return 'grpc://' + helper.creds.credentials.orderers[index].host + ':' + helper.creds.credentials.orderers[index].port;
 			} else {
-				throw new Error('Orderers index out of bounds. Total member services = ' + helper.creds.credentials.orderers.length);
+				throw new Error('Orderers index out of bounds. Total CA = ' + helper.creds.credentials.orderers.length);
 			}
 		}
 	};
@@ -108,7 +108,7 @@ module.exports = function (config_filename, logger) {
 				return helper.creds.credentials.users[index];
 			}
 			else {
-				throw new Error('Users index out of bounds. Total member services = '	+ helper.creds.credentials.users.length);
+				throw new Error('Users index out of bounds. Total CA = '	+ helper.creds.credentials.users.length);
 			}
 		}
 	};

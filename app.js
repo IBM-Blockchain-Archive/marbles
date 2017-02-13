@@ -175,7 +175,8 @@ function wait_to_init(){
 
 //setup marbles library and check if cc is deployed
 function setup_marbles_lib(){
-	chain.setOrderer(helper.getOrderersUrl(0));
+	//chain.setOrderer(helper.getOrderersUrl(0));
+	chain.addOrderer(new Orderer(helper.getOrderersUrl(0)));
 	marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, console);
 	ws_server.setup(webUser, marbles_lib, wss.broadcast, null);
 
@@ -205,6 +206,7 @@ function setup_marbles_lib(){
 
 //enroll admin
 function enroll_admin(id, secret, ca_url, cb){
+	console.log('here', id, secret, ca_url);
 	try {
 		var client = new HFC();
 		chain = client.newChain('mychain' + file_safe_name(process.env.marble_company) + '-' + uuid);
@@ -212,7 +214,6 @@ function enroll_admin(id, secret, ca_url, cb){
 	catch (e) {
 		//it might error about 1 chain per network, but that's not a problem just continue
 	}
-	chain.addOrderer(new Orderer(ca_url));
 
 	// Make Cert kvs
 	HFC.newDefaultKeyValueStore({
@@ -228,7 +229,7 @@ function enroll_admin(id, secret, ca_url, cb){
 		webUser = submitter;									//push var to higher scope
 		broadcast_state('enrolled');
 		setTimeout(function(){
-			if(cb) cb();
+			//if(cb) cb();
 		}, block_delay);
 		
 	}).catch(
@@ -237,7 +238,7 @@ function enroll_admin(id, secret, ca_url, cb){
 		function(err) {
 			console.log('Failed to enroll ' + id, err.stack ? err.stack : err);
 			broadcast_state('failed_enroll');
-			if(cb) cb(err);
+			//if(cb) cb(err);
 		}
 	);
 }

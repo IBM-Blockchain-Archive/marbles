@@ -214,7 +214,7 @@ Next, we need to send these fields to the SDK.
 	var chain = hfc.newChain('mychain');
 
 	//[3]
-	chain.setOrderer(orderer_url);                      //configure orderer's address
+	chain.addOrderer(new Orderer(helper.getOrderersUrl(0))); //configure orderer's address
 	
 	//[4]
 	var keyValueStoreObj =	 {
