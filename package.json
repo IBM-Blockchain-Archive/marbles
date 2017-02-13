@@ -21,7 +21,7 @@
 		"winston": "2.2.*"
 	},
 	"engines": {
-		"node": "6.2.0"
+		"node": "^6.2.0"
 	},
 	"repository": {
 		"type": "git",
