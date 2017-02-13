@@ -173,17 +173,19 @@ function wait_to_init(){
 
 //setup marbles library and check if cc is deployed
 function setup_marbles_lib(){
-	//chain.setOrderer(helper.getOrderersUrl(0));
 	chain.addOrderer(new Orderer(helper.getOrderersUrl(0)));
-	marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, console);
+	var opts = {
+		channel_id: helper.getChannelId(), 
+		chaincode_id: helper.getChaincodeId()
+	};
+	marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, opts, console);
 	ws_server.setup(chain, marbles_lib, wss.broadcast, null);
 
 	console.log('Checking if chaincode is already deployed or not');
 	var options = 	{
-						chaincode_id: helper.getChaincodeId(),
 						peer_urls: [helper.getPeersUrl(0)],
 					};
-	marbles_lib.check_if_already_deployed(chain, options, function(not_deployed, enrollUser){
+	marbles_lib.check_if_already_deployed(options, function(not_deployed, enrollUser){
 		if(not_deployed){										//if this is truthy we have not yet deployed.... error
 			console.log('\n\nChaincode ID was not detected: "' + helper.getChaincodeId()+ '", all stop');
 			console.log('\n\nYou can deploy this chaincode or change the ID from the UI');
@@ -227,7 +229,7 @@ function enroll_admin(id, secret, ca_url, cb){
 		//chain = submitter;									//push var to higher scope
 		broadcast_state('enrolled');
 		setTimeout(function(){
-			//if(cb) cb();
+			if(cb) cb();
 		}, block_delay);
 		
 	}).catch(
@@ -236,7 +238,7 @@ function enroll_admin(id, secret, ca_url, cb){
 		function(err) {
 			console.log('Failed to enroll ' + id, err.stack ? err.stack : err);
 			broadcast_state('failed_enroll');
-			//if(cb) cb(err);
+			if(cb) cb(err);
 		}
 	);
 }
@@ -359,7 +361,6 @@ function create_assets(build_marbles_users){
 //create the owner in a loop until it exists - repeat until we see the correct error! (yes)
 function pessimistic_create_owner(attempt, username, cb){
 	var options = 	{
-						chaincode_id: helper.getChaincodeId(),
 						peer_urls: [helper.getPeersUrl(0)],
 						args: 	{
 									marble_owner: username,
@@ -367,7 +368,7 @@ function pessimistic_create_owner(attempt, username, cb){
 								}
 					};
 
-	marbles_lib.register_owner(chain, options, function(e){
+	marbles_lib.register_owner(options, function(e){
 		console.log('\n\n\n!', attempt, e);
 
 		// --- Does the user exist yet? --- //
@@ -406,7 +407,7 @@ function create_marbles(username, cb){
 							peer_urls: [helper.getPeersUrl(0)],
 							args: randOptions
 						};
-		marbles_lib.create_a_marble(chain, options, function(){
+		marbles_lib.create_a_marble(options, function(){
 			setTimeout(function(){
 				marble_cb();
 			}, block_delay);

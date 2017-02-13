@@ -162,6 +162,10 @@ module.exports = function (config_filename, logger) {
 		return getMarblesField('port');
 	};
 
+	helper.getChannelId = function(){
+		return helper.creds.credentials.channel_id;
+	};
+
 	//safely retrieve marbles fields
 	function getMarblesField(marbles_field){
 		try{

@@ -1,45 +1,49 @@
 {
-    "credentials": {
-        "network_id": "asdf",
-        "peers": [
-            {
-                "grpc_host": "192.168.99.100",
-                "grpc_port": 8053,
-                "type": "peer",
-                "network_id": "asdf",
-                "id": "peer2"
-            }
-        ],
-        "cas": [
-            {
-                "id": "asdf-ca",
-                "host": "192.168.99.100",
-                "port": 8054,
-                "type": "ca",
-                "network_id": "asdf"
-            }
-        ],
-        "orderers": [
-            {
-                "host": "192.168.99.100",
-                "port": 8050,
-                "type": "orderer",
-                "network_id": "asdf",
-                "id": "orderer-01"
-            }
-        ],
-        "users": [
-            {
-                "enrollId": "admin",
-                "enrollSecret": "adminpw"
-            }
-        ],
-        "cert": "https://blockchain-certs.mybluemix.net/us.blockchain.ibm.com.cert",
-		"marbles":{
-       		"company": "eMarbles",
+	"credentials": {
+		"network_id": "asdf",
+		"channel_id": "myc1",
+		"peers": [
+			{
+				"grpc_host": "192.168.99.100",
+				"grpc_port": 8053,
+				"type": "peer",
+				"network_id": "asdf",
+				"id": "peer2"
+			}
+		],
+		"cas": [
+			{
+				"id": "asdf-ca",
+				"host": "192.168.99.100",
+				"port": 8054,
+				"type": "ca",
+				"network_id": "asdf"
+			}
+		],
+		"orderers": [
+			{
+				"host": "192.168.99.100",
+				"port": 8050,
+				"type": "orderer",
+				"network_id": "asdf",
+				"id": "orderer-01"
+			}
+		],
+		"users": [
+			{
+				"enrollId": "admin",
+				"enrollSecret": "adminpw"
+			}
+		],
+		"cert": "https://blockchain-certs.mybluemix.net/us.blockchain.ibm.com.cert",
+		"marbles": {
+			"company": "eMarbles",
 			"chaincode_id": "marbles",
-       		"usernames": ["cliff", "cody"],
+			"usernames": [
+				"cliff",
+				"cody"
+			],
 			"port": 3002
 		}
-    }
+	}
 }

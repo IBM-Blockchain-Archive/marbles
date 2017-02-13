@@ -1,51 +1,52 @@
 {
-    "credentials": {
-        "network_id": "asdf",
-        "peers": [
-            {
-                "grpc_host": "192.168.99.100",
-                "grpc_port": 8051,
-                "event_host": "192.168.99.100",
-                "event_port:": 8053,
-                "type": "peer",
-                "network_id": "asdf",
-                "id": "peer0"
-            }
-        ],
-        "cas": [
-            {
-                "id": "asdf-ca",
-                "host": "192.168.99.100",
-                "port": 8054,
-                "type": "ca",
-                "network_id": "asdf"
-            }
-        ],
-        "orderers": [
-            {
-                "host": "192.168.99.100",
-                "port": 8050,
-                "type": "orderer",
-                "network_id": "asdf",
-                "id": "orderer-01"
-            }
-        ],
-        "users": [
-            {
-                "enrollId": "admin",
-                "enrollSecret": "adminpw"
-            }
-        ],
-        "cert": "https://blockchain-certs.mybluemix.net/us.blockchain.ibm.com.cert",
-        "marbles": {
-            "company": "United Marbles",
-            "chaincode_id": "marbles",
-            "usernames": [
-                "amy",
-                "alice",
-                "amber"
-            ],
-            "port": 3000
-        }
-    }
+	"credentials": {
+		"network_id": "asdf",
+		"channel_id": "myc1",
+		"peers": [
+			{
+				"grpc_host": "192.168.99.100",
+				"grpc_port": 8051,
+				"event_host": "192.168.99.100",
+				"event_port:": 8053,
+				"type": "peer",
+				"network_id": "asdf",
+				"id": "peer0"
+			}
+		],
+		"cas": [
+			{
+				"id": "asdf-ca",
+				"host": "192.168.99.100",
+				"port": 8054,
+				"type": "ca",
+				"network_id": "asdf"
+			}
+		],
+		"orderers": [
+			{
+				"host": "192.168.99.100",
+				"port": 8050,
+				"type": "orderer",
+				"network_id": "asdf",
+				"id": "orderer-01"
+			}
+		],
+		"users": [
+			{
+				"enrollId": "admin",
+				"enrollSecret": "adminpw"
+			}
+		],
+		"cert": "https://blockchain-certs.mybluemix.net/us.blockchain.ibm.com.cert",
+		"marbles": {
+			"company": "United Marbles",
+			"chaincode_id": "marbles",
+			"usernames": [
+				"amy",
+				"alice",
+				"amber"
+			],
+			"port": 3000
+		}
+	}
 }

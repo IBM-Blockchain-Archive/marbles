@@ -1,6 +1,7 @@
 {
 	"credentials": {
 		"network_id": "asdf",
+		"channel_id": "myc1",
 		"peers": [
 			{
 				"grpc_host": "192.168.99.100",

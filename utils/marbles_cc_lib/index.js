@@ -2,138 +2,208 @@
 // Marbles Chaincode Library
 //-------------------------------------------------------------------
 
-module.exports = function (chain, logger) {
-	var deploy_cc = require('./deploy_cc.js')(chain, logger);
-	var marbles = require('./marbles.js')(chain, logger);
-	var users = require('./users.js')(chain, logger);
-	var common = require('./common.js')();
+module.exports = function (chain, g_options, logger) {
 	var marbles_chaincode = {};
+	var fcw = require('../fcw_wrangler/index.js')(logger);
+
 
 	// Chaincode -------------------------------------------------------------------------------
 
 	//deploy chaincode
-	marbles_chaincode.deploy_chaincode = function (webUser, options, cb) {
-		deploy_cc.deploy_chaincode(webUser, options, cb);
+	marbles_chaincode.deploy_chaincode = function (options, cb) {
+		console.log('\ndeploying marbles chaincode...');
+
+		var opts = {
+			peer_urls: options.peerl_urls,
+			path_2_chaincode: './marbles',
+			channel_id: g_options.channel_id,
+			chaincode_id: g_options.chaincode_id,
+			endorsed_hook: options.endorsed_hook,
+			ordered_hook: options.ordered_hook,
+			cc_args: ['99'],
+			deploy_wait: 30000
+		};
+		fcw.deploy_chaincode(opts, cb);
 	};
 
 	//check chaincode
-	marbles_chaincode.check_if_already_deployed = function (webUser, options, cb) {
-		deploy_cc.check_if_already_deployed(webUser, options, cb);
+	marbles_chaincode.check_if_already_deployed = function (options, cb) {
+		console.log('\nchecking for chaincode...');
+
+		var opts = {
+			targets: options.peer_urls,
+			chainId: g_options.channel_id,
+			chaincodeId: g_options.chaincode_id,
+			fcn: 'read',
+			args: '_ownerindex'
+		};
+		fcw.query_chaincode(chain, opts, cb);
 	};
+
 
 	// Marbles -------------------------------------------------------------------------------
 
 	//create a marble
-	marbles_chaincode.create_a_marble = function (webUser, options, cb) {
-		marbles.create_a_marble(webUser, options, cb);
+	marbles_chaincode.create_a_marble = function (options, cb) {
+		console.log('\ncreating a marble...');
+
+		var opts = {
+			chainId: g_options.channel_id,
+			chaincodeId: g_options.chaincode_id,
+			endorsed_hook: options.endorsed_hook,
+			ordered_hook: options.ordered_hook,
+			fcn: 'init_marble',
+			args: [
+				options.args.marble_id,
+				options.args.color,
+				options.args.size,
+				options.args.marble_owner,
+				options.args.owners_company,
+				options.args.auth_company
+			]
+		};
+		fcw.invoke_chaincode(chain, opts, cb);
 	};
 
 	//get list of marbles
-	marbles_chaincode.get_marble_list = function (webUser, options, cb) {
-		marbles.get_marble_list(webUser, options, cb);
+	marbles_chaincode.get_marble_list = function (options, cb) {
+		console.log('\nfetching marble index list...');
+
+		var opts = {
+			targets: options.peer_urls,
+			chainId: g_options.channel_id,
+			chaincodeId: g_options.chaincode_id,
+			fcn: 'compelte_marble_index',
+			args: [' ']
+		};
+		fcw.query_chaincode(chain, opts, cb);
 	};
 
 	//get marble
-	marbles_chaincode.get_marble = function (webUser, options, cb) {
-		marbles.get_marble(webUser, options, cb);
+	marbles_chaincode.get_marble = function (options, cb) {
+		console.log('\nfetching marble ' + options.marble_id + ' list...');
+
+		var opts = {
+			targets: options.peer_urls,
+			chainId: g_options.channel_id,
+			chaincodeId: g_options.chaincode_id,
+			fcn: 'read',
+			args: [options.args.marble_id]
+		};
+		fcw.query_chaincode(chain, opts, cb);
 	};
 
 	//set marble owner
-	marbles_chaincode.set_marble_owner = function (webUser, options, cb) {
-		marbles.set_marble_owner(webUser, options, cb);
+	marbles_chaincode.set_marble_owner = function (options, cb) {
+		console.log('\nsetting marble owner...');
+
+		var opts = {
+			chainId: g_options.channel_id,
+			chaincodeId: g_options.chaincode_id,
+			endorsed_hook: options.endorsed_hook,
+			ordered_hook: options.ordered_hook,
+			fcn: 'set_owner',
+			args: [
+				options.args.marble_id,
+				options.args.marble_owner,
+				options.args.owners_company,
+				options.args.auth_company
+			]
+		};
+		fcw.invoke_chaincode(chain, opts, cb);
 	};
 
 	//delete marble
-	marbles_chaincode.delete_marble = function (webUser, options, cb) {
-		marbles.delete_marble(webUser, options, cb);
+	marbles_chaincode.delete_marble = function (options, cb) {
+		console.log('\ndeleting a marble...');
+
+		var opts = {
+			chainId: g_options.channel_id,
+			chaincodeId: g_options.chaincode_id,
+			endorsed_hook: options.endorsed_hook,
+			ordered_hook: options.ordered_hook,
+			fcn: 'delete_marble',
+			args: [options.args.marble_id, options.args.auth_company]
+		};
+		fcw.invoke_chaincode(chain, opts, cb);
 	};
+
 
 	// Owners -------------------------------------------------------------------------------
 
 	//register a owner/user
-	marbles_chaincode.register_owner = function (webUser, options, cb) {
-		users.register_owner(webUser, options, cb);
+	marbles_chaincode.register_owner = function (options, cb) {
+		console.log('\nCreating a marble owner\n');
+
+		var opts = {
+			chainId: g_options.channel_id,
+			chaincodeId: g_options.chaincode_id,
+			endorsed_hook: options.endorsed_hook,
+			ordered_hook: options.ordered_hook,
+			fcn: 'init_owner',
+			args: [options.args.marble_owner, options.args.owners_company]
+		};
+		fcw.invoke_chaincode(chain, opts, cb);
 	};
 
 	//get a owner/user
-	marbles_chaincode.get_owner = function (webUser, options, cb) {
-		users.get_owner(webUser, options, cb);
+	marbles_chaincode.get_owner = function (options, cb) {
+		var full_username = build_owner_name(options.args.marble_owner, options.args.owners_company);
+		console.log('\nFetching owner ' + full_username + ' list...');
+
+		var opts = {
+			targets: options.peer_urls,
+			chainId: g_options.channel_id,
+			chaincodeId: g_options.chaincode_id,
+			fcn: 'read',
+			args: [full_username]
+		};
+		fcw.query_chaincode(chain, opts, cb);
 	};
 
 	//get the owner list
-	marbles_chaincode.get_owner_list = function (webUser, options, cb) {
-		users.get_owner_list(webUser, options, cb);
-	};
+	marbles_chaincode.get_owner_list = function (options, cb) {
+		console.log('\nFetching owner index list...');
 
-	marbles_chaincode.build_owner_name = function (username, company) {
-		return users.build_owner_name(username, company);
-	};
-
-	// Debug -------------------------------------------------------------------------------
-
-	//debug read
-	marbles_chaincode.debug = function(webUser, options, cb){
-		console.log('\n debug read of ' + JSON.stringify(options.args) + ' ...');
-		var request = {
+		var opts = {
 			targets: options.peer_urls,
-			chaincodeId: options.chaincode_id,
+			chainId: g_options.channel_id,
+			chaincodeId: g_options.chaincode_id,
 			fcn: 'read',
-			args: options.args
+			args: ['_ownerindex']
 		};
-
-		webUser.queryByChaincode(request)
-		.then(
-			function(response_payloads) {
-				if(response_payloads.length <= 0){
-					console.log('Query response is empty: ');
-					if(cb) return cb({error: 'query response is empty'}, null);
-				}
-				else{
-
-					// -- send formated response -- //
-					var formated = common.format_query_resp(response_payloads);
-					if(cb) return cb(formated.error, formated.ret);
-				}
-			}
-		).catch(
-			function (err) {
-				console.log('caught error', err);
-				if(cb) return cb(err, null);
-			}
-		);
+		fcw.query_chaincode(chain, opts, cb);
 	};
-	
-	//read everything
-	marbles_chaincode.read_everything = function(webUser, options, cb){
-		console.log('\nreading everything!...');
-		var request = {
+
+	//build full name
+	marbles_chaincode.build_owner_name = function (username, company) {
+		return build_owner_name(username, company);
+	};
+
+
+	// All ---------------------------------------------------------------------------------
+
+	//build full name
+	marbles_chaincode.read_everything = function (options, cb) {
+		console.log('\nFetching EVERYTHING...');
+
+		var opts = {
 			targets: options.peer_urls,
-			chaincodeId: options.chaincode_id,
+			chainId: g_options.channel_id,
+			chaincodeId: g_options.chaincode_id,
 			fcn: 'read_everything',
 			args: ['']
 		};
-
-		webUser.queryByChaincode(request)
-		.then(
-			function(response_payloads) {
-				if(response_payloads.length <= 0){
-					console.log('Query response is empty: ');
-					if(cb) return cb({error: 'query response is empty'}, null);
-				}
-				else{
-
-					// -- send formated response -- //
-					var formated = common.format_query_resp(response_payloads);
-					if(cb) return cb(formated.error, formated.ret);
-				}
-			}
-		).catch(
-			function (err) {
-				console.log('caught error', err);
-				if(cb) return cb(err, null);
-			}
-		);
+		fcw.query_chaincode(chain, opts, cb);
 	};
+
+
+	// Other -------------------------------------------------------------------------------
+
+	// Format Owner's Actual Key Name
+	function build_owner_name(username, company) {
+		return username.toLowerCase() + '.' + company;
+	}
 
 	return marbles_chaincode;
 };
