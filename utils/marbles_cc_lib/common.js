@@ -70,5 +70,36 @@ module.exports = function (logger) {
 		return temp;
 	};
 
+
+	//-----------------------------------------------------------------
+	// Check Proposal Response
+	//-----------------------------------------------------------------
+	common.check_proposal_res = function(results, endorsed_hook){
+		var proposalResponses = results[0];
+		var proposal = results[1];
+		var header = results[2];
+
+		//check response
+		if (!proposalResponses || !proposalResponses[0] || !proposalResponses[0].response || proposalResponses[0].response.status !== 200) {
+			console.log('[fcw] Failed to obtain endorsement for transaction.', proposalResponses);
+			throw proposalResponses;
+		}
+		else {
+			console.log('\n');
+			console.log('[fcw] Successfully obtained transaction endorsement.\n');
+
+			//call optional endorsement hook
+			if (endorsed_hook) endorsed_hook(null, proposalResponses[0].response);
+
+			//move on to ordering
+			var request = {
+				proposalResponses: proposalResponses,
+				proposal: proposal,
+				header: header
+			};
+			return request;
+		}
+	};
+
 	return common;
 };

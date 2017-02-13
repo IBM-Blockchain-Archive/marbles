@@ -128,10 +128,9 @@ else console.log('Running using Developer settings');
 // ==================================
 // Set up the blockchain sdk
 // ==================================
-var chain = {};
+var chain = null;
 var network_id = helper.getNetworkId();
 var uuid = network_id;
-var webUser = null;
 var marbles_lib = null;
 
 
@@ -139,7 +138,6 @@ var marbles_lib = null;
 // -------------------------------------------------------------------
 // Life Starts Here!
 // -------------------------------------------------------------------
-var webUser = null;
 var app_state_file = './app_state_ ' + file_safe_name(process.env.marble_company) + '.json';
 process.env.app_state = 'starting';
 process.env.app_first_setup = 'yes';
@@ -178,14 +176,14 @@ function setup_marbles_lib(){
 	//chain.setOrderer(helper.getOrderersUrl(0));
 	chain.addOrderer(new Orderer(helper.getOrderersUrl(0)));
 	marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, console);
-	ws_server.setup(webUser, marbles_lib, wss.broadcast, null);
+	ws_server.setup(chain, marbles_lib, wss.broadcast, null);
 
 	console.log('Checking if chaincode is already deployed or not');
 	var options = 	{
 						chaincode_id: helper.getChaincodeId(),
 						peer_urls: [helper.getPeersUrl(0)],
 					};
-	marbles_lib.check_if_already_deployed(webUser, options, function(not_deployed, enrollUser){
+	marbles_lib.check_if_already_deployed(chain, options, function(not_deployed, enrollUser){
 		if(not_deployed){										//if this is truthy we have not yet deployed.... error
 			console.log('\n\nChaincode ID was not detected: "' + helper.getChaincodeId()+ '", all stop');
 			console.log('\n\nYou can deploy this chaincode or change the ID from the UI');
@@ -226,7 +224,7 @@ function enroll_admin(id, secret, ca_url, cb){
 
 		// --- Success --- //
 		console.log('Successfully enrolled ' + id);
-		webUser = submitter;									//push var to higher scope
+		//chain = submitter;									//push var to higher scope
 		broadcast_state('enrolled');
 		setTimeout(function(){
 			//if(cb) cb();
@@ -369,7 +367,7 @@ function pessimistic_create_owner(attempt, username, cb){
 								}
 					};
 
-	marbles_lib.register_owner(webUser, options, function(e){
+	marbles_lib.register_owner(chain, options, function(e){
 		console.log('\n\n\n!', attempt, e);
 
 		// --- Does the user exist yet? --- //
@@ -408,7 +406,7 @@ function create_marbles(username, cb){
 							peer_urls: [helper.getPeersUrl(0)],
 							args: randOptions
 						};
-		marbles_lib.create_a_marble(webUser, options, function(){
+		marbles_lib.create_a_marble(chain, options, function(){
 			setTimeout(function(){
 				marble_cb();
 			}, block_delay);
@@ -480,10 +478,11 @@ function setupWebSocket(){
 						chain.setOrderer(helper.getOrderersUrl(0));
 						var temp_marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, helper.getChaincodeId(), null);
 						var options = 	{
+											channel_id: helper.getChannelId(),
 											chaincode_id: helper.getChaincodeId(),
 											peer_urls: [helper.getPeersUrl(0)],
 										};
-						temp_marbles_lib.deploy_chaincode(webUser, options, function(){
+						temp_marbles_lib.deploy_chaincode(chain, options, function(){
 							setup_marbles_lib();
 						});
 					}
