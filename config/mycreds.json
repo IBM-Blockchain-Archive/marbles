@@ -10,7 +10,7 @@
 				"id": "peer1"
 			}
 		],
-		"memberservices": [
+		"cas": [
 			{
 				"id": "NETWORK_ID-ca",
 				"host": "COP_HOST",

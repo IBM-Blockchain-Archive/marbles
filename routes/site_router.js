@@ -28,7 +28,7 @@ function get_credential_data(){
 					admin_id: helper.getUsers(0).enrollId,
 					admin_secret: helper.getUsers(0).enrollSecret,
 					orderer: helper.getOrderersUrl(0),
-					cop: helper.getMemberservicesUrl(0),
+					cop: helper.getCasUrl(0),
 					peer: helper.getPeersUrl(0),
 					chaincode_id: helper.getChaincodeId(),
 					marble_owners: helper.getMarbleUsernames()

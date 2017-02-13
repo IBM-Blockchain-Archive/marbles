@@ -1,55 +1,50 @@
 {
-    "credentials": {
-        "network_id": "asdf",
-        "peers": [
-            {
-                "grpc_host": "192.168.99.100",
-                "grpc_port": 7051,
-                "type": "peer",
-                "network_id": "asdf",
-                "id": "peer1"
-            },
-            {
-                "grpc_host": "192.168.99.100",
-                "grpc_port": 7056,
-                "type": "peer",
-                "network_id": "asdf",
-                "id": "peer1"
-            }
-        ],
-        "memberservices": [
-            {
-                "id": "asdf-ca",
-                "host": "192.168.99.100",
-                "port": 8888,
-                "type": "ca",
-                "network_id": "asdf"
-            }
-        ],
-        "orderers": [
-            {
-                "host": "192.168.99.100",
-                "port": 5151,
-                "type": "orderer",
-                "network_id": "asdf",
-                "id": "orderer-01"
-            }
-        ],
-        "users": [
-            {
-                "enrollId": "bob",
-                "enrollSecret": "bobpw"
-            }
-        ],
-        "cert": "https://blockchain-certs.mybluemix.net/us.blockchain.ibm.com.cert",
-        "marbles": {
-            "company": "Marble Market",
-            "chaincode_id": "marbles",
-            "usernames": [
-                "bob",
-                "bill"
-            ],
-            "port": 3001
-        }
-    }
+	"credentials": {
+		"network_id": "asdf",
+		"peers": [
+			{
+				"grpc_host": "192.168.99.100",
+				"grpc_port": 8052,
+				"event_host": "192.168.99.100",
+				"event_port:": 8054,
+				"type": "peer",
+				"network_id": "asdf",
+				"id": "peer1"
+			}
+		],
+		"cas": [
+			{
+				"id": "asdf-ca",
+				"host": "192.168.99.100",
+				"port": 8054,
+				"type": "ca",
+				"network_id": "asdf"
+			}
+		],
+		"orderers": [
+			{
+				"host": "192.168.99.100",
+				"port": 8050,
+				"type": "orderer",
+				"network_id": "asdf",
+				"id": "orderer-01"
+			}
+		],
+		"users": [
+			{
+				"enrollId": "bob",
+				"enrollSecret": "bobpw"
+			}
+		],
+		"cert": "https://blockchain-certs.mybluemix.net/us.blockchain.ibm.com.cert",
+		"marbles": {
+			"company": "Marble Market",
+			"chaincode_id": "marbles",
+			"usernames": [
+				"bob",
+				"bill"
+			],
+			"port": 3001
+		}
+	}
 }

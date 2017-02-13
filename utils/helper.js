@@ -47,28 +47,28 @@ module.exports = function (config_filename, logger) {
 		}
 	};
 
-	helper.getMemberservices = function (index) {
+	helper.getCas = function (index) {
 		if (index === undefined || index == null) {
-			return helper.creds.credentials.memberservices;
+			return helper.creds.credentials.cas;
 		}
 		else {
-			if (index < helper.creds.credentials.memberservices.length) {
-				return helper.creds.credentials.memberservices[index];
+			if (index < helper.creds.credentials.cas.length) {
+				return helper.creds.credentials.cas[index];
 			}
 			else {
-				throw new Error('Member Services index out of bounds. Total member services = '	+ helper.creds.credentials.memberservices.length);
+				throw new Error('Member Services index out of bounds. Total member services = '	+ helper.creds.credentials.cas.length);
 			}
 		}
 	};
 
-	helper.getMemberservicesUrl = function (index) {
+	helper.getCasUrl = function (index) {
 		if (index === undefined || index == null) {
 			throw new Error('Member Services index not passed');
 		} else {
-			if (index < helper.creds.credentials.memberservices.length) {
-				return 'http://' + helper.creds.credentials.memberservices[index].host + ':' + helper.creds.credentials.memberservices[index].port;
+			if (index < helper.creds.credentials.cas.length) {
+				return 'http://' + helper.creds.credentials.cas[index].host + ':' + helper.creds.credentials.cas[index].port;
 			} else {
-				throw new Error('Member Services index out of bounds. Total member services = ' + helper.creds.credentials.memberservices.length);
+				throw new Error('Member Services index out of bounds. Total member services = ' + helper.creds.credentials.cas.length);
 			}
 		}
 	};
@@ -134,8 +134,8 @@ module.exports = function (config_filename, logger) {
 		}
 		if(obj.copUrl){
 			parsed = url.parse(obj.copUrl, true);
-			creds_file.credentials.memberservices[0].host = parsed.hostname;
-			creds_file.credentials.memberservices[0].port = Number(parsed.port);
+			creds_file.credentials.cas[0].host = parsed.hostname;
+			creds_file.credentials.cas[0].port = Number(parsed.port);
 		}
 		if(obj.chaincodeId){
 			creds_file.credentials.marbles.chaincode_id = obj.chaincodeId;

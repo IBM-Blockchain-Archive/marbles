@@ -41,7 +41,7 @@ __sample mycreds.json__
                 "id": "peer1"                  //not important atm
             }
         ],
-        "memberservices": [
+        "cas": [
             {
                 "host": "192.168.99.100",    //must match the ip or hostname of your peer
                 "port": 8888,                //must match the gRPC port on your peer
@@ -83,7 +83,7 @@ Remove any comments in your json file
 
 **Do you see the "credentials" field in your json file?** 
 It should be the outter most field like in the sample above. 
-If its not there you need to add it such that `peers`, `memberservices` and etc are inside `credentials`.
+If its not there you need to add it such that `peers`, `cas` and etc are inside `credentials`.
 
 Marbles only talks to 1 peer. 
 Therefore, you should have 1 entry in the `peers` array and 1 entry in the `users` array. 

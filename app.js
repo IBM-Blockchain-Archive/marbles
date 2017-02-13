@@ -160,7 +160,7 @@ try{
 		console.log('\n\nDetected that we have launched successfully before');
 		console.log('Welcome back - Initiating start up\n\n');
 		process.env.app_first_setup = 'no';
-		enroll_admin(helper.getUsers(0).enrollId, helper.getUsers(0).enrollSecret, helper.getMemberservicesUrl(0), function(e){
+		enroll_admin(helper.getUsers(0).enrollId, helper.getUsers(0).enrollSecret, helper.getCasUrl(0), function(e){
 			if(e == null){
 				setup_marbles_lib();
 			}
@@ -418,7 +418,7 @@ function setupWebSocket(){
 					//enroll admin
 					if(data.configure === 'enrollment'){
 						helper.write(data);										//write new config data to file
-						enroll_admin(helper.getUsers(0).enrollId, helper.getUsers(0).enrollSecret, helper.getMemberservicesUrl(0), function(e){
+						enroll_admin(helper.getUsers(0).enrollId, helper.getUsers(0).enrollSecret, helper.getCasUrl(0), function(e){
 							if(e == null){
 								setup_marbles_lib();
 							}
