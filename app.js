@@ -186,7 +186,7 @@ function setup_marbles_lib(){
 		chaincode_id: helper.getChaincodeId(),
 		event_url: helper.getEventUrl()
 	};
-	marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, opts, console);
+	marbles_lib = require('./utils/marbles_cc_lib.js')(chain, opts, console);
 	ws_server.setup(chain, marbles_lib, wss.broadcast, null);
 
 	console.log('Checking if chaincode is already deployed or not');
@@ -495,7 +495,7 @@ function setupWebSocket(){
 							chaincode_id: helper.getChaincodeId(),
 							event_url: helper.getEventUrl()
 						};
-						var temp_marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, opts, null);
+						var temp_marbles_lib = require('./utils/marbles_cc_lib.js')(chain, opts, null);
 						temp_marbles_lib.deploy_chaincode(chain, null, function(){
 							setup_marbles_lib();
 						});

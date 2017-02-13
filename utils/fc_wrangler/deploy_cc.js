@@ -7,7 +7,7 @@ var fs = require('fs');
 module.exports = function (logger) {
 	var common = require(path.join(__dirname, './common.js'))(logger);
 	var Peer = require('fabric-client/lib/Peer.js');
-	var EventHub = require('fabric-client/lib/EventHub.js');
+	//var EventHub = require('fabric-client/lib/EventHub.js');
 	var utils = require('fabric-client/lib/utils.js');
 	var deploy_cc = {};
 
@@ -29,7 +29,7 @@ module.exports = function (logger) {
 	*/
 	deploy_cc.deploy_chaincode = function (chain, options, cb) {
 		logger.debug('\nDeploying Chaincode\n');
-		var eventhub;
+		//var eventhub;
 
 		if (!fs.existsSync('/tmp')) {								//help out fabric-client sdk (it will need this folder on local fs)
 			fs.mkdirSync('/tmp');
@@ -65,9 +65,9 @@ module.exports = function (logger) {
 		//console.log('\n\n sending:', request, options);
 
 		// Setup EventHub
-		eventhub = new EventHub();
+		/*eventhub = new EventHub();
 		eventhub.setPeerAddr(options.event_url);
-		eventhub.connect();
+		eventhub.connect();*/
 
 		chain.sendDeploymentProposal(request
 			//nothing
@@ -83,12 +83,12 @@ module.exports = function (logger) {
 
 				// All good
 				if (response.status === 'SUCCESS') {
-					logger.debug('[fcw] Successfully ordered deployment endorsement.');
+					logger.debug('[fcw] Successfully ordered deployment endorsement. Now we wait.');
 
 					// Call optional order hook
 					if (options.ordered_hook) options.ordered_hook(null, request.txId.toString());
 
-					var watchdog = setTimeout(() => {
+					/*var watchdog = setTimeout(() => {
 						var msg = '[fcw] Failed to receive block event within the timeout period';
 						logger.error(msg);
 						throw msg;
@@ -103,7 +103,12 @@ module.exports = function (logger) {
 
 						if (cb) return cb(null);
 						else return;
-					});
+					});*/
+
+					setTimeout(function(){
+						if (cb) return cb(null);
+						else return;
+					}, 20000);
 				}
 
 				// No good

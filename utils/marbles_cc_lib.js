@@ -9,7 +9,7 @@ module.exports = function (chain, g_options, logger) {
 	l_logger.log = console.log;
 	l_logger.debug = console.log;
 	l_logger.error = console.log;
-	var fcw = require(path.join(__dirname, '../fc_wrangler/index.js'))(l_logger);
+	var fcw = require(path.join(__dirname, './fc_wrangler/index.js'))(l_logger);
 
 
 	// Chaincode -------------------------------------------------------------------------------

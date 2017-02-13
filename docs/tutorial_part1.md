@@ -374,7 +374,7 @@ In our case it should detect a `transfer_marble` type.
 This is the function that will tell the SDK to build the proposal and kick off this whole transfer. 
 Next lets look at `marbles_lib.set_marble_owner()`. 
 
-__/utils/marbles_cc_lib/marbles.js__
+__/utils/marbles_cc_lib.js__
 
 ```js
 	//-------------------------------------------------------------------
