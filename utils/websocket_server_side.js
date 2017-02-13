@@ -5,7 +5,6 @@
 var path = require('path');
 
 module.exports = function (checkPerodically, marbles_lib, logger) {
-	//var hfc = require('hfc');
 	var helper = require(path.join(__dirname, './helper.js'))(process.env.creds_filename, console);
 	var ws_server = {};
 	var webUser = null;
@@ -24,7 +23,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 	ws_server.process_msg = function(ws, data){
 		var options = 	{
 							chaincode_id: helper.getChaincodeId(),
-							peer_urls: [hfc.getPeer(helper.getPeersUrl(0))],
+							peer_urls: [helper.getPeersUrl(0)],
 							ws: ws,
 						};
 		if(marbles_lib === null) {
@@ -150,7 +149,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 	ws_server.check_for_updates = function(ws_client){
 		var options = 	{
 							chaincode_id: helper.getChaincodeId(),
-							peer_urls: [hfc.getPeer(helper.getPeersUrl(0))],
+							peer_urls: [helper.getPeersUrl(0)],
 						};
 
 		marbles_lib.read_everything(webUser, options, function(err, resp){

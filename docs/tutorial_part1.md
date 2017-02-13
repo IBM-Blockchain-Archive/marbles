@@ -196,21 +196,11 @@ Next, we need to send these fields to the SDK.
 
 ```js
 	//[1]
-	var hfc = require('hfc');                          //create instance
-	var utils = require('./utils/hfc/lib/utils.js');
+	var HFC = require('fabric-client');                          //create instance
+	var Orderer = require('fabric-client/lib/Orderer.js');
+	var User = require('fabric-client/lib/User.js');
+	var CaService = require('fabric-ca-client/lib/FabricCAClientImpl.js');
 
-	//[2] Creating an environment variable for ciphersuites
-	process.env['GRPC_SSL_CIPHER_SUITES'] = 'ECDHE-RSA-AES128-GCM-SHA256:' +
-		'ECDHE-RSA-AES128-SHA256:' +
-		'ECDHE-RSA-AES256-SHA384:' +
-		'ECDHE-RSA-AES256-GCM-SHA384:' +
-		'ECDHE-ECDSA-AES128-GCM-SHA256:' +
-		'ECDHE-ECDSA-AES128-SHA256:' +
-		'ECDHE-ECDSA-AES256-SHA384:' +
-		'ECDHE-ECDSA-AES256-GCM-SHA384';
-
-	utils.setConfigSetting('crypto-keysize', 256);
-	utils.setConfigSetting('crypto-hash-algo', 'SHA2');
 	var chain = hfc.newChain('mychain');
 
 	//[3]
