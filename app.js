@@ -24,7 +24,11 @@ var ws = require('ws');													//websocket module
 var block_delay = 2000;
 
 // --- Set Our Things --- //
-var hfc = require('hfc');
+var HFC = require('fabric-client');
+var Orderer = require('fabric-client/lib/Orderer.js');
+var User = require('fabric-client/lib/User.js');
+var CaService = require('fabric-ca-client/lib/FabricCAClientImpl.js');
+
 var more_entropy = randStr(32);
 var ws_server = require('./utils/websocket_server_side.js')(null, null, null);
 var helper = require(__dirname + '/utils/helper.js')(process.env.creds_filename, console);
@@ -124,25 +128,12 @@ else console.log('Running using Developer settings');
 // ==================================
 // Set up the blockchain sdk
 // ==================================
-var utils = require('./utils/hfc/lib/utils.js');
-var chain = hfc.newChain('mychain');
-
-// Creating an environment variable for ciphersuites
-process.env['GRPC_SSL_CIPHER_SUITES'] = 'ECDHE-RSA-AES128-GCM-SHA256:' +
-    'ECDHE-RSA-AES128-SHA256:' +
-    'ECDHE-RSA-AES256-SHA384:' +
-    'ECDHE-RSA-AES256-GCM-SHA384:' +
-    'ECDHE-ECDSA-AES128-GCM-SHA256:' +
-    'ECDHE-ECDSA-AES128-SHA256:' +
-    'ECDHE-ECDSA-AES256-SHA384:' +
-    'ECDHE-ECDSA-AES256-GCM-SHA384';
+var chain = {};
 var network_id = helper.getNetworkId();
 var uuid = network_id;
 var webUser = null;
 var marbles_lib = null;
 
-utils.setConfigSetting('crypto-keysize', 256);
-utils.setConfigSetting('crypto-hash-algo', 'SHA2');
 
 
 // -------------------------------------------------------------------
@@ -191,7 +182,7 @@ function setup_marbles_lib(){
 	console.log('Checking if chaincode is already deployed or not');
 	var options = 	{
 						chaincode_id: helper.getChaincodeId(),
-						peer_urls: [hfc.getPeer(helper.getPeersUrl(0))],
+						peer_urls: [helper.getPeersUrl(0)],
 					};
 	marbles_lib.check_if_already_deployed(webUser, options, function(not_deployed, enrollUser){
 		if(not_deployed){										//if this is truthy we have not yet deployed.... error
@@ -213,29 +204,80 @@ function setup_marbles_lib(){
 }
 
 //enroll admin
-function enroll_admin(id, secret, cop, cb){
-	var keyValueStoreObj =	 {
-								path: path.join(__dirname, './keyValStore-' + file_safe_name(process.env.marble_company) + '-' + uuid) 
-							};
-	chain.setKeyValueStore(hfc.newKeyValueStore(keyValueStoreObj));
-	chain.setMemberServicesUrl(cop);
+function enroll_admin(id, secret, ca_url, cb){
+	try {
+		var client = new HFC();
+		chain = client.newChain('mychain' + file_safe_name(process.env.marble_company) + '-' + uuid);
+	}
+	catch (e) {
+		//it might error about 1 chain per network, but that's not a problem just continue
+	}
+	chain.addOrderer(new Orderer(ca_url));
 
-	console.log('! using id', id, 'secret', secret);
+	// Make Cert kvs
+	HFC.newDefaultKeyValueStore({
+		path: path.join(__dirname, './keyValStore-' + file_safe_name(process.env.marble_company) + '-' + uuid) 
+	}).then(function(store){
+		client.setStateStore(store);
+		console.log('! using id', id, 'secret', secret);
+		return getSubmitter(id, secret, ca_url, client);		//do most of the work here
+	}).then(function(submitter){
 
-	chain.enroll(id, secret).then(
-		function(enrolledUser) {
-			console.log('Successfully enrolled ' + id);
-			webUser = enrolledUser;									//push var to higher scope
-			broadcast_state('enrolled');
-			setTimeout(function(){
-				if(cb) cb();
-			}, block_delay);
-		}
-	).catch(
-		function(err) {												//error with enrollment
+		// --- Success --- //
+		console.log('Successfully enrolled ' + id);
+		webUser = submitter;									//push var to higher scope
+		broadcast_state('enrolled');
+		setTimeout(function(){
+			if(cb) cb();
+		}, block_delay);
+		
+	}).catch(
+
+		// --- Failure --- //
+		function(err) {
 			console.log('Failed to enroll ' + id, err.stack ? err.stack : err);
 			broadcast_state('failed_enroll');
 			if(cb) cb(err);
+		}
+	);
+}
+
+// Get Submitter - ripped this function off from helper.js in fabric-client
+function getSubmitter(enroll_id, enroll_secret, ca_url, client) {
+	var member;
+	return client.getUserContext(enroll_id)
+		.then((user) => {
+			if (user && user.isEnrolled()) {
+				console.log('Successfully loaded admin from persistence');
+				return user;
+			} else {
+
+				// Need to enroll it with CA server
+				var ca_client = new CaService(ca_url);
+				return ca_client.enroll({
+					enrollmentID: enroll_id,
+					enrollmentSecret: enroll_secret
+
+				// Store Certs
+				}).then((enrollment) => {
+					console.log('Successfully enrolled admin \'' + enroll_id + '\'');
+					member = new User(enroll_id, client);
+					return member.setEnrollment(enrollment.key, enrollment.certificate);
+
+				// Save Submitter Enrollment
+				}).then(() => {
+					return client.setUserContext(member);
+
+				// Return Submitter Enrollment
+				}).then(() => {
+					return member;
+
+				// Send Errors to Callback
+				}).catch((err) => {
+					console.log('Failed to enroll and persist admin. Error: ' + err.stack ? err.stack : err);
+					throw new Error('Failed to enrolled admin');
+				});
+			}
 		}
 	);
 }
@@ -319,7 +361,7 @@ function create_assets(build_marbles_users){
 function pessimistic_create_owner(attempt, username, cb){
 	var options = 	{
 						chaincode_id: helper.getChaincodeId(),
-						peer_urls: [hfc.getPeer(helper.getPeersUrl(0))],
+						peer_urls: [helper.getPeersUrl(0)],
 						args: 	{
 									marble_owner: username,
 									owners_company: process.env.marble_company
@@ -362,7 +404,7 @@ function create_marbles(username, cb){
 		console.log('\n\ngoing to create marble:', randOptions);
 		var options = 	{
 							chaincode_id: helper.getChaincodeId(),
-							peer_urls: [hfc.getPeer(helper.getPeersUrl(0))],
+							peer_urls: [helper.getPeersUrl(0)],
 							args: randOptions
 						};
 		marbles_lib.create_a_marble(webUser, options, function(){
@@ -438,7 +480,7 @@ function setupWebSocket(){
 						var temp_marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, helper.getChaincodeId(), null);
 						var options = 	{
 											chaincode_id: helper.getChaincodeId(),
-											peer_urls: [hfc.getPeer(helper.getPeersUrl(0))],
+											peer_urls: [helper.getPeersUrl(0)],
 										};
 						temp_marbles_lib.deploy_chaincode(webUser, options, function(){
 							setup_marbles_lib();
