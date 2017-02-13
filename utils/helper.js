@@ -166,6 +166,10 @@ module.exports = function (config_filename, logger) {
 		return helper.creds.credentials.channel_id;
 	};
 
+	helper.getEventUrl = function(){
+		return helper.creds.credentials.event_url;
+	};
+
 	//safely retrieve marbles fields
 	function getMarblesField(marbles_field){
 		try{

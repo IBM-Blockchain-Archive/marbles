@@ -52,7 +52,6 @@ gulp.task('watch-js', ['build-js-hash'], function () {
 gulp.task('watch-server', function () {
 	gulp.watch(path.join(__dirname, '/routes/**/*.js'), ['server']);
 	gulp.watch([path.join(__dirname, '/utils/*.js')], ['server']);
-	gulp.watch([path.join(__dirname, '/utils/marbles_cc_lib/*.js')], ['server']);
 	gulp.watch(path.join(__dirname, '/app.js'), ['server']);
 });
 

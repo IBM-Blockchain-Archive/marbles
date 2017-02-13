@@ -173,10 +173,18 @@ function wait_to_init(){
 
 //setup marbles library and check if cc is deployed
 function setup_marbles_lib(){
-	chain.addOrderer(new Orderer(helper.getOrderersUrl(0)));
+	console.log('Setup Marbles Lib...');
+
+	try{
+		chain.addOrderer(new Orderer(helper.getOrderersUrl(0)));
+	}
+	catch(e){
+		//may error with duplicate orderer, thats ok
+	}
 	var opts = {
 		channel_id: helper.getChannelId(), 
-		chaincode_id: helper.getChaincodeId()
+		chaincode_id: helper.getChaincodeId(),
+		event_url: helper.getEventUrl()
 	};
 	marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, opts, console);
 	ws_server.setup(chain, marbles_lib, wss.broadcast, null);
@@ -372,7 +380,7 @@ function pessimistic_create_owner(attempt, username, cb){
 		console.log('\n\n\n!', attempt, e);
 
 		// --- Does the user exist yet? --- //
-		if(typeof e === 'string' && e.indexOf('owner already exists')){
+		if(e && e.parsed && e.parsed.indexOf('owner already exists') >= 0){
 			console.log('\n\nfinally the user exists, this is a good thing, moving on\n\n');
 			cb(null);
 		}
@@ -476,14 +484,19 @@ function setupWebSocket(){
 					//deploy chaincode
 					else if(data.configure === 'deploy_chaincode'){
 						helper.write(data);										//write new config data to file
-						chain.setOrderer(helper.getOrderersUrl(0));
-						var temp_marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, helper.getChaincodeId(), null);
-						var options = 	{
-											channel_id: helper.getChannelId(),
-											chaincode_id: helper.getChaincodeId(),
-											peer_urls: [helper.getPeersUrl(0)],
-										};
-						temp_marbles_lib.deploy_chaincode(chain, options, function(){
+						try{
+							chain.addOrderer(new Orderer(helper.getOrderersUrl(0)));
+						}
+						catch(e){
+							//may error with duplicate orderer, thats ok
+						}
+						var opts = {
+							channel_id: helper.getChannelId(), 
+							chaincode_id: helper.getChaincodeId(),
+							event_url: helper.getEventUrl()
+						};
+						var temp_marbles_lib = require('./utils/marbles_cc_lib/index.js')(chain, opts, null);
+						temp_marbles_lib.deploy_chaincode(chain, null, function(){
 							setup_marbles_lib();
 						});
 					}

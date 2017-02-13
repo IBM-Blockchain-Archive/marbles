@@ -1,10 +1,15 @@
 //-------------------------------------------------------------------
 // Marbles Chaincode Library
 //-------------------------------------------------------------------
+var path = require('path');
 
 module.exports = function (chain, g_options, logger) {
 	var marbles_chaincode = {};
-	var fcw = require('../fcw_wrangler/index.js')(logger);
+	var l_logger = console;
+	l_logger.log = console.log;
+	l_logger.debug = console.log;
+	l_logger.error = console.log;
+	var fcw = require(path.join(__dirname, '../fc_wrangler/index.js'))(l_logger);
 
 
 	// Chaincode -------------------------------------------------------------------------------
@@ -17,13 +22,14 @@ module.exports = function (chain, g_options, logger) {
 			peer_urls: options.peerl_urls,
 			path_2_chaincode: './marbles',
 			channel_id: g_options.channel_id,
+			event_url: g_options.event_url,
 			chaincode_id: g_options.chaincode_id,
 			endorsed_hook: options.endorsed_hook,
 			ordered_hook: options.ordered_hook,
 			cc_args: ['99'],
 			deploy_wait: 30000
 		};
-		fcw.deploy_chaincode(opts, cb);
+		fcw.deploy_chaincode(chain, opts, cb);
 	};
 
 	//check chaincode
@@ -31,13 +37,26 @@ module.exports = function (chain, g_options, logger) {
 		console.log('\nchecking for chaincode...');
 
 		var opts = {
-			targets: options.peer_urls,
-			chainId: g_options.channel_id,
-			chaincodeId: g_options.chaincode_id,
-			fcn: 'read',
-			args: '_ownerindex'
+			peer_urls: options.peer_urls,
+			channel_id: g_options.channel_id,
+			chaincode_id: g_options.chaincode_id,
+			cc_function: 'read',
+			cc_args: ['abc']
 		};
-		fcw.query_chaincode(chain, opts, cb);
+		fcw.query_chaincode(chain, opts, function(err, resp){
+			if(err != null){
+				if(cb) return cb(err, resp);
+			}
+			else{
+				console.log('WHAT', resp);
+				if(resp.parsed == null){							//if nothing is here, no chaincode
+					if(cb) return cb({error: 'chaincode not found'}, resp);
+				}
+				else{
+					if(cb) return cb(null, resp);
+				}
+			}
+		});
 	};
 
 
@@ -48,12 +67,13 @@ module.exports = function (chain, g_options, logger) {
 		console.log('\ncreating a marble...');
 
 		var opts = {
-			chainId: g_options.channel_id,
-			chaincodeId: g_options.chaincode_id,
+			channel_id: g_options.channel_id,
+			chaincode_id: g_options.chaincode_id,
+			event_url: g_options.event_url,
 			endorsed_hook: options.endorsed_hook,
 			ordered_hook: options.ordered_hook,
-			fcn: 'init_marble',
-			args: [
+			cc_function: 'init_marble',
+			cc_args: [
 				options.args.marble_id,
 				options.args.color,
 				options.args.size,
@@ -70,11 +90,11 @@ module.exports = function (chain, g_options, logger) {
 		console.log('\nfetching marble index list...');
 
 		var opts = {
-			targets: options.peer_urls,
-			chainId: g_options.channel_id,
-			chaincodeId: g_options.chaincode_id,
-			fcn: 'compelte_marble_index',
-			args: [' ']
+			peer_urls: options.peer_urls,
+			channel_id: g_options.channel_id,
+			chaincode_id: g_options.chaincode_id,
+			cc_function: 'compelte_marble_index',
+			cc_args: [' ']
 		};
 		fcw.query_chaincode(chain, opts, cb);
 	};
@@ -84,11 +104,11 @@ module.exports = function (chain, g_options, logger) {
 		console.log('\nfetching marble ' + options.marble_id + ' list...');
 
 		var opts = {
-			targets: options.peer_urls,
-			chainId: g_options.channel_id,
-			chaincodeId: g_options.chaincode_id,
-			fcn: 'read',
-			args: [options.args.marble_id]
+			peer_urls: options.peer_urls,
+			channel_id: g_options.channel_id,
+			chaincode_id: g_options.chaincode_id,
+			cc_function: 'read',
+			cc_args: [options.args.marble_id]
 		};
 		fcw.query_chaincode(chain, opts, cb);
 	};
@@ -98,12 +118,13 @@ module.exports = function (chain, g_options, logger) {
 		console.log('\nsetting marble owner...');
 
 		var opts = {
-			chainId: g_options.channel_id,
-			chaincodeId: g_options.chaincode_id,
+			channel_id: g_options.channel_id,
+			chaincode_id: g_options.chaincode_id,
+			event_url: g_options.event_url,
 			endorsed_hook: options.endorsed_hook,
 			ordered_hook: options.ordered_hook,
-			fcn: 'set_owner',
-			args: [
+			cc_function: 'set_owner',
+			cc_args: [
 				options.args.marble_id,
 				options.args.marble_owner,
 				options.args.owners_company,
@@ -118,12 +139,13 @@ module.exports = function (chain, g_options, logger) {
 		console.log('\ndeleting a marble...');
 
 		var opts = {
-			chainId: g_options.channel_id,
-			chaincodeId: g_options.chaincode_id,
+			channel_id: g_options.channel_id,
+			chaincode_id: g_options.chaincode_id,
+			event_url: g_options.event_url,
 			endorsed_hook: options.endorsed_hook,
 			ordered_hook: options.ordered_hook,
-			fcn: 'delete_marble',
-			args: [options.args.marble_id, options.args.auth_company]
+			cc_function: 'delete_marble',
+			cc_args: [options.args.marble_id, options.args.auth_company]
 		};
 		fcw.invoke_chaincode(chain, opts, cb);
 	};
@@ -136,12 +158,13 @@ module.exports = function (chain, g_options, logger) {
 		console.log('\nCreating a marble owner\n');
 
 		var opts = {
-			chainId: g_options.channel_id,
-			chaincodeId: g_options.chaincode_id,
+			channel_id: g_options.channel_id,
+			chaincode_id: g_options.chaincode_id,
+			event_url: g_options.event_url,
 			endorsed_hook: options.endorsed_hook,
 			ordered_hook: options.ordered_hook,
-			fcn: 'init_owner',
-			args: [options.args.marble_owner, options.args.owners_company]
+			cc_function: 'init_owner',
+			cc_args: [options.args.marble_owner, options.args.owners_company]
 		};
 		fcw.invoke_chaincode(chain, opts, cb);
 	};
@@ -152,11 +175,11 @@ module.exports = function (chain, g_options, logger) {
 		console.log('\nFetching owner ' + full_username + ' list...');
 
 		var opts = {
-			targets: options.peer_urls,
-			chainId: g_options.channel_id,
-			chaincodeId: g_options.chaincode_id,
-			fcn: 'read',
-			args: [full_username]
+			peer_urls: options.peer_urls,
+			channel_id: g_options.channel_id,
+			chaincode_id: g_options.chaincode_id,
+			cc_function: 'read',
+			cc_args: [full_username]
 		};
 		fcw.query_chaincode(chain, opts, cb);
 	};
@@ -166,11 +189,11 @@ module.exports = function (chain, g_options, logger) {
 		console.log('\nFetching owner index list...');
 
 		var opts = {
-			targets: options.peer_urls,
-			chainId: g_options.channel_id,
-			chaincodeId: g_options.chaincode_id,
-			fcn: 'read',
-			args: ['_ownerindex']
+			peer_urls: options.peer_urls,
+			channel_id: g_options.channel_id,
+			chaincode_id: g_options.chaincode_id,
+			cc_function: 'read',
+			cc_args: ['_ownerindex']
 		};
 		fcw.query_chaincode(chain, opts, cb);
 	};
@@ -188,11 +211,11 @@ module.exports = function (chain, g_options, logger) {
 		console.log('\nFetching EVERYTHING...');
 
 		var opts = {
-			targets: options.peer_urls,
-			chainId: g_options.channel_id,
-			chaincodeId: g_options.chaincode_id,
-			fcn: 'read_everything',
-			args: ['']
+			peer_urls: options.peer_urls,
+			channel_id: g_options.channel_id,
+			chaincode_id: g_options.chaincode_id,
+			cc_function: 'read_everything',
+			cc_args: ['']
 		};
 		fcw.query_chaincode(chain, opts, cb);
 	};

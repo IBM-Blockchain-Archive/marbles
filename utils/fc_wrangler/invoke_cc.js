@@ -6,7 +6,7 @@ var path = require('path');
 module.exports = function (logger) {
 	var common = require(path.join(__dirname, './common.js'))(logger);
 	var Peer = require('fabric-client/lib/Peer.js');
-	var EventHub = require('fabric-client/lib/EventHub.js');
+	//var EventHub = require('fabric-client/lib/EventHub.js');
 	var utils = require('fabric-client/lib/utils.js');
 	var invoke_cc = {};
 
@@ -18,6 +18,7 @@ module.exports = function (logger) {
 					peer_urls: [array of peer urls],
 					channel_id: "channel id",
 					chaincode_id: "chaincode id",
+					event_url: "event grpc url",
 					endorsed_hook: function(error, res){},
 					ordered_hook: function(error, res){},
 					cc_function: "function_name"
@@ -26,7 +27,7 @@ module.exports = function (logger) {
 	*/
 	invoke_cc.invoke_chaincode = function (chain, options, cb) {
 		logger.debug('\nInvoking Chaincode: ' + options.cc_function + '()\n');
-		var eventhub;
+		//var eventhub;
 
 		try {
 			for (var i in options.peer_urls) {
@@ -47,10 +48,12 @@ module.exports = function (logger) {
 			args: options.cc_args
 		};
 
+		console.log('\n\n sending:', request, options);
+
 		// Setup EventHub
-		eventhub = new EventHub();
+		/*eventhub = new EventHub();
 		eventhub.setPeerAddr(options.event_url);
-		eventhub.connect();
+		eventhub.connect();*/
 
 		// Send Proposal
 		chain.sendTransactionProposal(request
@@ -72,7 +75,7 @@ module.exports = function (logger) {
 					// Call optional order hook
 					if (options.ordered_hook) options.ordered_hook(null, request.txId.toString());
 
-					var watchdog = setTimeout(() => {
+					/*var watchdog = setTimeout(() => {
 						var msg = '[fcw] Failed to receive block event within the timeout period';
 						logger.error(msg);
 						throw msg;
@@ -86,7 +89,9 @@ module.exports = function (logger) {
 
 						if (cb) return cb(null);
 						else return;
-					});
+					});*/
+					if (cb) return cb(null);
+					else return;
 				}
 
 				// No good

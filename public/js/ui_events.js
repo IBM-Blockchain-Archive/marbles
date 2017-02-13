@@ -8,7 +8,7 @@ var known_companies = {};
 var start_up = true;
 var lsKey = 'marbles';
 var fromLS = {};
-var block_delay = 1500;
+var block_delay = 10000; //1500;
 
 // =================================================================================
 // On Load

@@ -7,13 +7,13 @@ var path = require('path');
 module.exports = function (checkPerodically, marbles_lib, logger) {
 	var helper = require(path.join(__dirname, './helper.js'))(process.env.creds_filename, console);
 	var ws_server = {};
-	var webUser = null;
+	var chain = null;
 	var broadcast = null;
 	var known_everything = {};
 
 	//setup this module
-	ws_server.setup = function(l_webUser, l_marbles_lib, l_broadcast, logger){
-		webUser = l_webUser;
+	ws_server.setup = function(l_chain, l_marbles_lib, l_broadcast, logger){
+		chain = l_chain;
 		marbles_lib = l_marbles_lib;
 		broadcast = l_broadcast;
 		logger = l_marbles_lib;
@@ -22,7 +22,6 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 	//process web socket messages
 	ws_server.process_msg = function(ws, data){
 		var options = 	{
-							chaincode_id: helper.getChaincodeId(),
 							peer_urls: [helper.getPeersUrl(0)],
 							ws: ws,
 						};
@@ -43,7 +42,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 								auth_company: process.env.marble_company
 							};
 
-			marbles_lib.create_a_marble(webUser, options, function(err, resp){
+			marbles_lib.create_a_marble(options, function(err, resp){
 				if(err != null) send_err(err, data);
 			});
 		}
@@ -58,7 +57,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 								auth_company: process.env.marble_company
 							};
 
-			marbles_lib.set_marble_owner(webUser, options, function(err, resp){
+			marbles_lib.set_marble_owner(options, function(err, resp){
 				if(err != null) send_err(err, data);
 			});
 		}
@@ -71,7 +70,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 								auth_company: process.env.marble_company
 							};
 
-			marbles_lib.delete_marble(webUser, options, function(err, resp){
+			marbles_lib.delete_marble(options, function(err, resp){
 				if(err != null) send_err(err, data);
 			});
 		}
@@ -148,17 +147,16 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 
 	ws_server.check_for_updates = function(ws_client){
 		var options = 	{
-							chaincode_id: helper.getChaincodeId(),
 							peer_urls: [helper.getPeersUrl(0)],
 						};
 
-		marbles_lib.read_everything(webUser, options, function(err, resp){
+		marbles_lib.read_everything(options, function(err, resp){
 			if(err != null){
 				console.log('\n\n[checking] could not get everything:', err);
 				sch_next_check();										//check again
 			}
 			else{
-				var data = resp.payload[0];
+				var data = resp.parsed;
 				if(data && data.owners_index && data.marbles){
 					console.log('\n\n[checking] number of owners:', data.owners_index.length);
 					console.log('[checking] number of marbles:', data.marbles.length, '\n\n');

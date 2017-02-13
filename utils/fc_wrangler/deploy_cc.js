@@ -20,6 +20,7 @@ module.exports = function (logger) {
 					path_2_chaincode: "path to chaincode from proj root",
 					channel_id: "channel id",
 					chaincode_id: "chaincode id",
+					event_url: "event grpc url",
 					endorsed_hook: function(error, res){},
 					ordered_hook: function(error, res){},
 					cc_args: ["argument 1"],
@@ -44,7 +45,7 @@ module.exports = function (logger) {
 		}
 
 		// fix GOPATH - does not need to be real!
-		process.env.GOPATH = path.join(__dirname, '../chaincode');
+		process.env.GOPATH = path.join(__dirname, '../../chaincode');
 
 		// send proposal to endorser
 		var request = {
@@ -60,6 +61,8 @@ module.exports = function (logger) {
 									WORKDIR $GOPATH\n\n 
 									RUN go install build-chaincode && mv $GOPATH/bin/build-chaincode $GOPATH/bin/%s`
 		};
+
+		//console.log('\n\n sending:', request, options);
 
 		// Setup EventHub
 		eventhub = new EventHub();
