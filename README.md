@@ -20,7 +20,7 @@ It is strongly recommended that if you have an existing network based on v0.5.3,
 
 
 - [Marbles - Branch v3.0](https://github.com/ibm-blockchain/marbles/tree/v3.0) **(Experimental)**
-	- Works with Hyperledger fabric `v0.7.x` aka `v1`
+	- Works with [Hyperledger Fabric v1.0](http://hyperledger-fabric.readthedocs.io/en/latest/gettingstarted) - hackfest images
 	- Does not work with the IBM Blockchain Bluemix Service
 
 ***
