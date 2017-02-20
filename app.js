@@ -21,7 +21,7 @@ var fs = require('fs');
 var cors = require('cors');
 var async = require('async');
 var ws = require('ws');													//websocket module
-var block_delay = 2000;
+var block_delay = 10000;
 
 // --- Set Our Things --- //
 var HFC = require('fabric-client');
@@ -184,7 +184,7 @@ function setup_marbles_lib(){
 	var opts = {
 		channel_id: helper.getChannelId(), 
 		chaincode_id: helper.getChaincodeId(),
-		event_url: helper.getEventUrl()
+		event_url: helper.getEventUrl(0)
 	};
 	marbles_lib = require('./utils/marbles_cc_lib.js')(chain, opts, console);
 	ws_server.setup(chain, marbles_lib, wss.broadcast, null);
@@ -214,7 +214,6 @@ function setup_marbles_lib(){
 
 //enroll admin
 function enroll_admin(id, secret, ca_url, cb){
-	console.log('here', id, secret, ca_url);
 	try {
 		var client = new HFC();
 		chain = client.newChain('mychain' + file_safe_name(process.env.marble_company) + '-' + uuid);
@@ -493,7 +492,7 @@ function setupWebSocket(){
 						var opts = {
 							channel_id: helper.getChannelId(), 
 							chaincode_id: helper.getChaincodeId(),
-							event_url: helper.getEventUrl()
+							event_url: helper.getEventUrl(0)
 						};
 						var temp_marbles_lib = require('./utils/marbles_cc_lib.js')(chain, opts, null);
 						temp_marbles_lib.deploy_chaincode(chain, null, function(){

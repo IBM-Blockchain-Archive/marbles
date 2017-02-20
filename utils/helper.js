@@ -15,7 +15,6 @@ module.exports = function (config_filename, logger) {
 		return shasum.digest('hex').toString();
 	};
 
-//	console.log('Creds = ', helper.creds);
 	helper.getNetworkId = function() {
 		return helper.creds.credentials.network_id;
 	};
@@ -166,8 +165,17 @@ module.exports = function (config_filename, logger) {
 		return helper.creds.credentials.channel_id;
 	};
 
-	helper.getEventUrl = function(){
-		return helper.creds.credentials.event_url;
+	//return event url or null
+	helper.getEventUrl = function(index){
+		if (index === undefined || index == null) {
+			throw new Error('Peers index not passed');
+		} else {
+			if (index < helper.creds.credentials.peers.length &&  helper.creds.credentials.peers[index].event_host) {
+				return 'grpc://' + helper.creds.credentials.peers[index].event_host + ':' + helper.creds.credentials.peers[index].event_port;
+			}
+			logger.warn('no event url found in creds');
+			return null;
+		}
 	};
 
 	//safely retrieve marbles fields

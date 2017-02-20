@@ -1,12 +1,18 @@
 #Use Local Hyperledger Network:
 
 ### Creating a Local Hyperledger Network
-There is a convenient docker-compose script that will get you a network very quickly.
+Use the published fabric docker images and docker-compose script to get a local network quickly.
 
-1. Follow the docker compose [Setup Instructions](https://github.com/IBM-Blockchain/connectathon).
+1. Follow the Fabric v1.0 [Hackfest setup instructions](http://hyperledger-fabric.readthedocs.io/en/latest/gettingstarted).
 
 ### Finished
-The network is all setup, right?
+The network is all setup, right? 
+So if you followed the Hackfest instructions exactly then your orderer will be batching new blocks every 10 seconds. 
+This is a litttttle long for our application, and may give you unexpected behavior. 
+Basicaly if you move a marble the trade will take 10 seconds to settle. 
+The **UI may redraw the marble back in its original position**, and then jump to a correct position after some time.
+This is normal and is because of a the long batch time. 
+Please be patient while we think of a better visual way handle and represent these long pauses. 
 
 Next we need to **pass the location of our peer to our marbles application**.
 This is done by editing the `/config/mycreds.json` file.
@@ -35,7 +41,9 @@ __sample mycreds.json__
         "peers": [
             {
                 "grpc_host": "192.168.99.100", //must match the ip or hostname of your peer
-                "grpc_port": 7051,             //must match the gRPC port on your peer
+                "grpc_port": 8051,             //must match the gRPC port on your peer
+				"event_host": "192.168.99.100",
+                "event_port:": 8053,
                 "type": "peer",                //leave this as peer
                 "network_id": "asdf",          //not important atm
                 "id": "peer1"                  //not important atm
@@ -44,7 +52,7 @@ __sample mycreds.json__
         "cas": [
             {
                 "host": "192.168.99.100",    //must match the ip or hostname of your peer
-                "port": 8888,                //must match the gRPC port on your peer
+                "port": 8054,                //must match the gRPC port on your peer
                 "type": "ca",                //leave this as ca
                 "network_id": "asdf"         //not important atm
 				"id": "asdf-ca",             //not important atm
@@ -53,7 +61,7 @@ __sample mycreds.json__
         "orderers": [
             {
                 "host": "192.168.99.100",    //must match the ip or hostname of your peer
-                "port": 5151,                //must match the gRPC port on your peer
+                "port": 8050,                //must match the gRPC port on your peer
                 "type": "orderer",           //leave this as ca
                 "network_id": "asdf",        //not important atm
                 "id": "orderer-01"           //not important atm
@@ -61,8 +69,8 @@ __sample mycreds.json__
         ],
         "users": [
             {
-                "enrollId": "bob",,          //must match enroll ID found in COP
-                "enrollSecret": "bobpw"      //must match enroll Secret found in COP
+                "enrollId": "admin",,          //must match enroll ID found in CA
+                "enrollSecret": "adminpw"      //must match enroll Secret found in CA
             }
         ],
         "cert": "https://blockchain-certs.mybluemix.net/us.blockchain.ibm.com.cert",
@@ -87,9 +95,9 @@ If its not there you need to add it such that `peers`, `cas` and etc are inside 
 
 Marbles only talks to 1 peer. 
 Therefore, you should have 1 entry in the `peers` array and 1 entry in the `users` array. 
-You can omit the `users` array entirely if the network does not use a COP. 
-The default docker-compose example does use a COP. 
-You will need to look up the default COP enroll ID/users for your Hyperledger Fabric version to populate the `users` array. 
+You can omit the `users` array entirely if the network does not use a CA. 
+The default docker-compose example does use a CA. 
+You will need to look up the default CA enroll ID/users for your Hyperledger Fabric version to populate the `users` array. 
 Fabric version 0.7.0 enroll Ids can be found in the [cop.json](https://github.com/hyperledger/fabric-cop/blob/master/docker/fabric-cop/cop.json) file.
 
 Example cop.json section:

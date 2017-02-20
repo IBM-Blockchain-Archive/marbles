@@ -5,6 +5,8 @@
 			{
 				"grpc_host": "PEER1_HOST",
 				"grpc_port": "PEER1_PORT",
+				"event_host": "PEER1_EVENT_HOST",
+				"event_port:": "PEER1_EVENT_PORT",
 				"type": "peer",
 				"network_id": "NETWORK_ID",
 				"id": "peer1"

@@ -8,7 +8,7 @@ Lets do the very last setup for marbles.
 	
 		> npm install gulp -g
 		> npm install
-		> gulp
+		> gulp united_marbles
 		
 1. If all goes well you should see this message in the console:
 
@@ -20,7 +20,7 @@ Lets do the very last setup for marbles.
 	
 
 1. Next the settuping up panel should pop up. Ideally it will walk itself through the 3 stages of initial setup.
-	1. Enroll Admin - this step is communicating with your network's COP to verify the admin user credentails (enrollID/enrollSecret)
+	1. Enroll Admin - this step is communicating with your network's CA to verify the admin user credentails (enrollID/enrollSecret)
 		- if it fails double check the enrollID and enrollSecret fields in your `mycreds.json` file
 	1. Finding Chaincode - this step is looking for the marbles chaincode on your peer. It is using the chaincode ID found in your `mycreds.json` file. If this is a brand new network it will not exist yet. Simply click the "Deploy" button.
 		- if the chaincode was deployed but it was unable to find it try the "Retry" button.

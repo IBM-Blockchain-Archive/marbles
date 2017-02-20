@@ -114,7 +114,7 @@ git submodule update --init --recursive
 <strike>
 - **Option 1:** Create a Bluemix IBM Blockchain network - [instructions](./use_bluemix_hyperledger.md)
 </strike>
-- **Option 2:** Use a locally hosted Hyperledger Network (such as one from docker-compose) - [instructions](./use_local_hyperledger.md)
+- **Option 2:** Use a locally hosted Hyperledger Network - [instructions](./use_local_hyperledger.md)
 
 ### Host Marbles
 <a name="hostmarbles"></a>Finally we need marbles running somewhere.
@@ -156,7 +156,7 @@ Lets get some definitions out of the way first.
 
 **Peer** - A peer is a member of the blockchain and is running Hyperledger Fabric. From marble's context, the peers are owned and operated by my marble company.
 
-**COP** - The COP is responsible for gatekeeping our blockchain network. It will provide transaction certificates for clients such as our marbles node.js application. 
+**CA** - The CA (Certificate Authority) is responsible for gatekeeping our blockchain network. It will provide transaction certificates for clients such as our marbles node.js application. 
 
 **Orderer** - An orderer or ordering service is a member of the blockchain network whose main responsibility is to package transactions into blocks.
 
@@ -174,9 +174,9 @@ Lets get some definitions out of the way first.
 
 Let’s look at the operations involved when creating a new marble.
 
-1. The first thing that happens in marbles is registering our admin `user` with our network's `COP`. If successful, the `COP` will send Marbles transaction certificates that the SDK will store for us in our local file system. 
+1. The first thing that happens in marbles is registering our admin `user` with our network's `CA`. If successful, the `CA` will send Marbles transaction certificates that the SDK will store for us in our local file system. 
 1. When the admin creates a new marble from the user interface the SDK will create an invocation transaction.
-1. The create marble transaction gets built as a `proposal` to invoke the chaincode function `init_marble()`. The `proposal` was created in part by signing transaction certificates that were generated from our networks COP.
+1. The create marble transaction gets built as a `proposal` to invoke the chaincode function `init_marble()`. The `proposal` was created in part by signing transaction certificates that were generated from our networks CA.
 1. Marbles (via the SDK) will send this `proposal` to a `peer` for endorsement. 
 1. The `peer` will simulate the transaction by running the Go function `init_marble()` and record any changes it attempted to write to the `ledger`. 
 1. If the function returns successfully the `peer` will endorse the `proposal` and send it back to Marbles. Errors will also be sent back, but they will not be endorsed.
@@ -187,70 +187,65 @@ Let’s look at the operations involved when creating a new marble.
 
 
 #HFC SDK Deeper Dive
-Now lets see how we configured the SDK and what it did for us. 
-Most of the config options can be found in `/config/mycreds.json`. 
+Now lets see how we interface with the Fabric Client SDK. 
+Most of the configuration options can be found in `/config/mycreds.json`. 
 This file list the hostname (or ip) and port of various components of our blockchain network. 
+The `helper` functions will retreive IPs and ports from the configuration file.
 
 ### Configure HFC (SDK):
 Next, we need to send these fields to the SDK.
 
 ```js
-	//[1]
-	var HFC = require('fabric-client');                          //create instance
-	var Orderer = require('fabric-client/lib/Orderer.js');
-	var User = require('fabric-client/lib/User.js');
-	var CaService = require('fabric-ca-client/lib/FabricCAClientImpl.js');
+//enroll admin
+function enroll_admin(id, secret, ca_url, cb){
+	try {
+		//[1]
+		var client = new HFC();
+		chain = client.newChain('mychain' + file_safe_name(process.env.marble_company) + '-' + uuid);
+	}
+	catch (e) {
+	  //it might error about 1 chain per network, but that's not a problem just continue
+	}
 
-	var chain = hfc.newChain('mychain');
+	// [2] - Make Cert kvs
+	HFC.newDefaultKeyValueStore({
+		path: path.join(__dirname, './keyValStore-' + file_safe_name(process.env.marble_company) + '-' + uuid) 
+	}).then(function(store){
+		client.setStateStore(store);
+		console.log('! using id', id, 'secret', secret);
 
 	//[3]
-	chain.addOrderer(new Orderer(helper.getOrderersUrl(0))); //configure orderer's address
-	
-	//[4]
-	var keyValueStoreObj =	 {
-								path: path.join(__dirname, './keyValStore-' + file_safe_name(process.env.marble_company) + '-' + uuid) 
-							};
-	chain.setKeyValueStore(hfc.newKeyValueStore(keyValueStoreObj));
-	
-	//[5]
-	chain.setMemberServicesUrl(cop_url);
-```
+		return getSubmitter(id, secret, ca_url, client);       //do most of the work here
+	}).then(function(submitter){
 
-1. The first thing the code does is create an instance of HFC, our SDK.
-1. Next we set cipher suites and some crypto settings that should work for us.
-1. The next important part is to set the orderer's address.
-1. Then set the key value store folder location.
-	- the key value store location will be the folder containing our admin's certificates
-1. Then set the COP's address.
+		// --- Success --- //
+		console.log('Successfully enrolled ' + id);
+		setTimeout(function(){
+			if(cb) cb();
+		}, block_delay);
+		
+	}).catch(
 
-```js
-	chain.enroll(id, secret).then(
-		function(enrolledUser) {
-			console.log('Successfully enrolled ' + id);
-			webUser = enrolledUser;									//push var to higher scope
-			broadcast_state('enrolled');
-			setTimeout(function(){
-				if(cb) cb();
-			}, block_delay);
-		}
-	).catch(
-		function(err) {												//error with enrollment
+		// --- Failure --- //
+		function(err) {
 			console.log('Failed to enroll ' + id, err.stack ? err.stack : err);
-			broadcast_state('failed_enroll');
 			if(cb) cb(err);
 		}
 	);
+}
 ```
 
-1. Finally we enroll our admin. This is when we authenticate to the COP with our enroll ID and enroll secret. The COP will issue transactions certificates which HFC will store in the key value store location.
-1. After successful enrollment HFC is fully configured and ready to interact with the blockchain.
+1. The first thing the code does is create an instance of HFC, our SDK.
+1. Next we create a key value store to store the enrollment certifcates with `newDefaultKeyValueStore`
+1. Next we enroll our admin. This is when we authenticate to the CA with our enroll ID and enroll secret. The CA will issue enrollment certificates which the SDK will store in the key value store. Since we are using the default key value store, it will be stored in our local file system. This will be in the marbles directory in a folder named something like `keyValStore-united_marbles`.
+1. After successful enrollment the SDK is fully configured and ready to interact with the blockchain.
 
 
 #Marbles Deeper Dive
 Hopefully you have successfully traded a marble or two between users. 
 Let’s look at how transfering a marble is done by starting at the chaincode.
 
-__/chaincode/lib_owners.go__
+__/chaincode/marbles.go__
 
 ```go
 	type Marble struct {
@@ -260,19 +255,33 @@ __/chaincode/lib_owners.go__
 		Size       int           `json:"size"`
 		Owner      OwnerRelation `json:"owner"`
 	}
+```
 
+__/chaincode/write_ledger.go__
+
+```go
 	// ============================================================================================================================
-	// Set Owner Permission on Marble
+	// Set Owner on Marble
 	// ============================================================================================================================
-	func set_owner(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	func set_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 		var err error
 		fmt.Println("starting set_owner")
+
+		//todo! dsh - get the "company that authed the transfer" from the certificate instead of an argument
+		//should be possible since we can now add attributes to tx cert during
+		//as is this is broken (security wise), but it's much easier to demo...
 
 		//   0   ,     1  ,        2                 3
 		// marble, to user,       to company,  company that auth the transfer
 		// "name",   "bob", "united_marbles", "united_mables" 
 		if len(args) < 4 {
-			return nil, errors.New("Incorrect number of arguments. Expecting 4")
+			return shim.Error("Incorrect number of arguments. Expecting 4")
+		}
+
+		// input sanitation
+		err = sanitize_arguments(args)
+		if err != nil {
+			return shim.Error(err.Error())
 		}
 
 		var marble_id = args[0]
@@ -284,32 +293,32 @@ __/chaincode/lib_owners.go__
 		// get marble's current state 
 		marbleAsBytes, err := stub.GetState(marble_id)
 		if err != nil {
-			return nil, errors.New("Failed to get marble")
+			return shim.Error("Failed to get marble")
 		}
 		res := Marble{}
 		json.Unmarshal(marbleAsBytes, &res)          //un stringify it aka JSON.parse()
 
 		//check authorizing company
 		if res.Owner.Company != authed_by_company{
-			return nil, errors.New("The company '" + authed_by_company + "' cannot authorize transfers for '" + res.Owner.Company + "'.")
+			return shim.Error("The company '" + authed_by_company + "' cannot authorize transfers for '" + res.Owner.Company + "'.")
 		}
 
 		//transfer the marble
 		res.Owner.Username = new_user                 //change the owner
 		res.Owner.Company = new_company               //change the owner
 		jsonAsBytes, _ := json.Marshal(res)
-		err = stub.PutState(args[0], jsonAsBytes)     //rewrite the marble with id as key
+		err = stub.PutState(args[0], jsonAsBytes)    //rewrite the marble with id as key
 		if err != nil {
-			return nil, err
+			return shim.Error(err.Error())
 		}
 
 		fmt.Println("- end set owner")
-		return nil, nil
+		return shim.Success(nil)
 	}
 ```
 
 This `set_users()` function will change the owner of a particular marble. 
-It takes in an array of strings input argument and returns `nil, nil` if successful. 
+It takes in an array of strings input argument and returns `nil` if successful. 
 Within the array the first index should have the name of the marble which is also the key in the key/value pair. 
 We first need to retrieve the current marble struct. 
 This is done with `stub.GetState(marble_id)` and then unmarshal it into a marble structure with `json.Unmarshal(marbleAsBytes, &res)`. 
@@ -323,30 +332,28 @@ __/utils/websocket_server_side.js__
 ```js
 	//process web socket messages
 	ws_server.process_msg = function(ws, data){
-		var options = {};
+		var options = 	{
+							peer_urls: [helper.getPeersUrl(0)],
+							ws: ws,
+						};
 		if(marbles_lib === null) {
 			console.log('error! marbles lib is null...');				//can't run in this state
 			return;
 		}
 			
 		// create a new marble
-		// create a new marble
 		if(data.type == 'create'){
 			console.log('[ws] create marbles req');
-			var options = 	{
-								chaincode_id: helper.getChaincodeId(),
-								peer_urls: [hfc.getPeer(helper.getPeersUrl(0))],
-								args: 	{
-											marble_id: data.name,
-											color: data.color,
-											size: data.size,
-											marble_owner: data.username,
-											owners_company: data.company,
-											auth_company: process.env.marble_company
-										},
-										ws: ws,
+			options.args = 	{
+								marble_id: data.name,
+								color: data.color,
+								size: data.size,
+								marble_owner: data.username,
+								owners_company: data.company,
+								auth_company: process.env.marble_company
 							};
-			marbles_lib.create_a_marble(webUser, options, function(err, resp){
+
+			marbles_lib.create_a_marble(options, function(err, resp){
 				if(err != null) send_err(err, data);
 			});
 		}
@@ -361,7 +368,7 @@ __/utils/websocket_server_side.js__
 								auth_company: process.env.marble_company
 							};
 
-			marbles_lib.set_marble_owner(webUser, options, function(err, resp){
+			marbles_lib.set_marble_owner(options, function(err, resp){
 				if(err != null) send_err(err, data);
 			});
 		}
@@ -380,28 +387,33 @@ __/utils/marbles_cc_lib.js__
 	//-------------------------------------------------------------------
 	// Set Marble Owner 
 	//-------------------------------------------------------------------
-	marbles.set_marble_owner = function (webUser, peerUrls, ws, options, cb) {
+	marbles_chaincode.set_marble_owner = function (options, cb) {
 		console.log('\nsetting marble owner...');
 
-		// send proposal to endorser
-		var request = {
-			targets: options.peer_urls,
-			chaincodeId: options.chaincode_id,
-			fcn: 'set_owner',
-			args: [
-					options.args.marble_id, 
-					options.args.marble_owner, 
-					options.args.owners_company, 
-					options.args.auth_company
-					]  //args == ["name", "bob", "united_marbles", "united_marbles"]
+		var opts = {
+			channel_id: g_options.channel_id,
+			chaincode_id: g_options.chaincode_id,
+			event_url: g_options.event_url,
+			endorsed_hook: options.endorsed_hook,
+			ordered_hook: options.ordered_hook,
+			cc_function: 'set_owner',
+			cc_args: [
+				options.args.marble_id,
+				options.args.marble_owner,
+				options.args.owners_company,
+				options.args.auth_company
+			]
 		};
-		webUser.sendTransactionProposal(request)
+		fcw.invoke_chaincode(chain, opts, cb);
+	};
 		...
 ```
 
-The important parts of `set_marble_owner()` are above. 
-It is setting the proposal's invocation function name to "set_user" with the line `fcn: 'set_user'`. 
-It is also setting other important fields such as the address/port to our peer, the chaincode id, and the arguments that our chaincode function is expecting. 
+The the `set_marble_owner()` function is listed above. 
+The important parts are that it is setting the proposal's invocation function name to "set_user" with the line `fcn: 'set_user'`. 
+Note that the peer and orderer URLs have already been set when we enrolled the admin. 
+By default the SDK will send this transaction to all peers that have been added with `chain.addPeer`. 
+In our case the SDK will send to only 1 peer, since we have only added the 1 peer.
 
 Now let’s look 1 more step up to how we sent this websocket message.
 

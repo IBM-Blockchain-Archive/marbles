@@ -85,11 +85,11 @@
 		br
 		br
 		.stepHelpTxt
-			p Sorry, we could not enroll the admin against the COP. 
+			p Sorry, we could not enroll the admin against the CA. 
 			p Edit the details below to try again.
 		br
-		.stepInputLegend COP 
-		input(type="text" placeholder="COP ex: 192.168.99.100:8888" name="copUrl" value="#{bag.creds.cop}").longer
+		.stepInputLegend CA
+		input(type="text" placeholder="CA ex: 192.168.99.100:8888" name="copUrl" value="#{bag.creds.ca}").longer
 		br
 		.stepInputLegend Enroll ID 
 		input(type="text" placeholder="Enroll Id" name="enrollId" value="#{bag.creds.admin_id}").longer

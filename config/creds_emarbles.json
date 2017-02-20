@@ -5,7 +5,7 @@
 		"peers": [
 			{
 				"grpc_host": "192.168.99.100",
-				"grpc_port": 8053,
+				"grpc_port": 8056,
 				"type": "peer",
 				"network_id": "asdf",
 				"id": "peer2"

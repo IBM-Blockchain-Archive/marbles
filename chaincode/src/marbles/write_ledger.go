@@ -190,7 +190,7 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) 
 }
 
 // ============================================================================================================================
-// Set Owner Permission on Marble
+// Set Owner on Marble
 // ============================================================================================================================
 func set_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	var err error
