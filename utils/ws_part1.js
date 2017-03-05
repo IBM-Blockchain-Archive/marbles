@@ -15,7 +15,7 @@ module.exports.process_msg = function(ws, data){
 		if(data.type == 'create'){
 			console.log('its a create!');
 			if(data.name && data.color && data.size && data.user){
-				chaincode.invoke.init_marble([data.name, data.color, data.size, data.user], cb_invoked);	//create a new marble
+				chaincode.invoke.init_marble([data.name, data.color, data.size, data.user, data.feature], cb_invoked);	//create a new marble
 			}
 		}
 		else if(data.type == 'get'){
