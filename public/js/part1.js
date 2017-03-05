@@ -151,7 +151,7 @@ function connect_to_server(){
 	connect();
 
 	function connect(){
-		var wsUri = 'ws://' + document.location.hostname + ':' + document.location.port;
+		var wsUri = 'wss://' + document.location.hostname + ':' + document.location.port;
 		console.log('Connectiong to websocket', wsUri);
 		
 		ws = new WebSocket(wsUri);
