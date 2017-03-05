@@ -20,6 +20,7 @@ $(document).on('ready', function() {
 						color: $('.colorSelected').attr('color'),
 						size: $('select[name="size"]').val(),
 						user: $('select[name="user"]').val(),
+			                        feature:'expensive',
 						v: 1
 					};
 		if(obj.user && obj.name && obj.color){
@@ -226,6 +227,7 @@ function build_ball(data){
 	data.name = escapeHtml(data.name);
 	data.color = escapeHtml(data.color);
 	data.user = escapeHtml(data.user);
+	data.feature = escapeHtml(data.feature);
 	
 	console.log('got a marble: ', data.color);
 	if(!$('#' + data.name).length){								//only populate if it doesn't exists
