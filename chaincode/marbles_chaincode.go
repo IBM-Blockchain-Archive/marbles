@@ -255,10 +255,10 @@ func (t *SimpleChaincode) Write(stub shim.ChaincodeStubInterface, args []string)
 func (t *SimpleChaincode) init_marble(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var err error
 
-	//   0       1       2     3
-	// "asdf", "blue", "35", "bob"
-	if len(args) != 4 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 4")
+	//   0       1       2     3     4
+	// "asdf", "blue", "35", "bob"  "expensive"	
+     if len(args) != 5 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 5")
 	}
 
 	//input sanitation
@@ -279,6 +279,7 @@ func (t *SimpleChaincode) init_marble(stub shim.ChaincodeStubInterface, args []s
 	color := strings.ToLower(args[1])
 	user := strings.ToLower(args[3])
 	size, err := strconv.Atoi(args[2])
+	feature=args[4]
 	if err != nil {
 		return nil, errors.New("3rd argument must be a numeric string")
 	}
@@ -297,7 +298,7 @@ func (t *SimpleChaincode) init_marble(stub shim.ChaincodeStubInterface, args []s
 	}
 	
 	//build the marble json string manually
-	str := `{"name": "` + name + `", "color": "` + color + `", "size": ` + strconv.Itoa(size) + `, "user": "` + user + `"}`
+	str := `{"name": "` + name + `", "color": "` + color + `", "size": ` + strconv.Itoa(size) + `, "user": "` + user + '","feature":"'+feature+`"}`
 	err = stub.PutState(name, []byte(str))									//store marble with id as key
 	if err != nil {
 		return nil, err
