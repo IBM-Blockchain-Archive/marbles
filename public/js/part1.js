@@ -1,6 +1,5 @@
-/* global new_block,formatDate, randStr, bag, $, clear_blocks, document, WebSocket, escapeHtml, window */
 var ws = {};
-var bgcolors = ['whitebg', 'blackbg', 'redbg', 'greenbg', 'bluebg', 'purplebg', 'pinkbg', 'orangebg', 'yellowbg'];
+
 
 // =================================================================================
 // On Load
@@ -13,23 +12,21 @@ $(document).on('ready', function() {
 	// jQuery UI Events
 	// =================================================================================
 	$('#submit').click(function(){
-		console.log('creating marble');
+		console.log('creating user');
 		var obj = 	{
 						type: 'create',
 						name: $('input[name="name"]').val().replace(' ', ''),
-						color: $('.colorSelected').attr('color'),
-						size: $('select[name="size"]').val(),
-						user: $('select[name="user"]').val(),
-			                        feature: 'expensive',
+						keyword: $('input[name="keyword"]').val(),
+						sex: $('select[name="sex"]').val(),
 						v: 1
 					};
-		if(obj.user && obj.name && obj.color){
-			console.log('creating marble, sending', obj);
+		if(obj.keyword && obj.name && obj.sex){
+			console.log('creating user, sending', obj);
 			ws.send(JSON.stringify(obj));
 			showHomePanel();
-			$('.colorValue').html('Color');											//reset
-			for(var i in bgcolors) $('.createball').removeClass(bgcolors[i]);		//reset
-			$('.createball').css('border', '2px dashed #fff');						//reset
+			
+			$('#user1wrap').append("<p>"+obj.name+" sex:"+obj.sex+"</p>");					
+			
 		}
 		return false;
 	});
@@ -43,48 +40,23 @@ $(document).on('ready', function() {
 	});
 
 	
-	//marble color picker
-	$(document).on('click', '.colorInput', function(){
-		$('.colorOptionsWrap').hide();											//hide any others
-		$(this).parent().find('.colorOptionsWrap').show();
-	});
-	$(document).on('click', '.colorOption', function(){
-		var color = $(this).attr('color');
-		var html = '<span class="fa fa-circle colorSelected ' + color + '" color="' + color + '"></span>';
-		
-		$(this).parent().parent().find('.colorValue').html(html);
-		$(this).parent().hide();
-
-		for(var i in bgcolors) $('.createball').removeClass(bgcolors[i]);			//remove prev color
-		$('.createball').css('border', '0').addClass(color + 'bg');				//set new color
-	});
-	
 	
 	//drag and drop marble
-	$('#user2wrap, #user1wrap, #trashbin').sortable({connectWith: '.sortable'}).disableSelection();
-	$('#user2wrap').droppable({drop:
-		function( event, ui ) {
-			var user = $(ui.draggable).attr('user');
-			if(user.toLowerCase() != bag.setup.USER2){
-				$(ui.draggable).addClass('invalid');
-				transfer($(ui.draggable).attr('id'), bag.setup.USER2);
-			}
-		}
-	});
+	$('#user1wrap, #trashbin').sortable({connectWith: '.sortable'}).disableSelection();
+	
+	
 	$('#user1wrap').droppable({drop:
 		function( event, ui ) {
-			var user = $(ui.draggable).attr('user');
-			if(user.toLowerCase() != bag.setup.USER1){
-				$(ui.draggable).addClass('invalid');
-				transfer($(ui.draggable).attr('id'), bag.setup.USER1);
-			}
+			//	$(ui.draggable).addClass('invalid');
+			//	transfer($(ui.draggable).attr('id'), bag.setup.USER1);
 		}
 	});
+	
 	$('#trashbin').droppable({drop:
 		function( event, ui ) {
 			var id = $(ui.draggable).attr('id');
 			if(id){
-				console.log('removing marble', id);
+				console.log('removing user', id);
 				var obj = 	{
 								type: 'remove',
 								name: id,
@@ -112,29 +84,16 @@ $(document).on('ready', function() {
 		var part = window.location.pathname.substring(0,3);
 		window.history.pushState({},'', part + '/home');						//put it in url so we can f5
 		
-		console.log('getting new balls');
+		console.log('getting new users');
 		setTimeout(function(){
-			$('#user1wrap').html('');											//reset the panel
-			$('#user2wrap').html('');
+			//$('#user1wrap').html('');											//reset the panel
 			ws.send(JSON.stringify({type: 'get', v: 1}));						//need to wait a bit
 			ws.send(JSON.stringify({type: 'chainstats', v: 1}));
+			
 		}, 1000);
 	}
 	
-	//transfer selected ball to user
-	function transfer(marbleName, user){
-		if(marbleName){
-			console.log('transfering', marbleName);
-			var obj = 	{
-							type: 'transfer',
-							name: marbleName,
-							user: user,
-							v: 1
-						};
-			ws.send(JSON.stringify(obj));
-			showHomePanel();
-		}
-	}
+	
 });
 
 
@@ -143,14 +102,8 @@ $(document).on('ready', function() {
 // =================================================================================
 function connect_to_server(){
 	var connected = false;
-
-    // Redirect https requests to http so the server can handle them
-    if(this.location.href.indexOf("https://") > -1) {
-        this.location.href = this.location.href.replace("https://", "http://");
-    }
-
 	connect();
-
+	
 	function connect(){
 		var wsUri = 'ws://' + document.location.hostname + ':' + document.location.port;
 		console.log('Connectiong to websocket', wsUri);
@@ -179,22 +132,23 @@ function connect_to_server(){
 
 	function onMessage(msg){
 		try{
+			
 			var msgObj = JSON.parse(msg.data);
 			if(msgObj.marble){
 				console.log('rec', msgObj.msg, msgObj);
 				build_ball(msgObj.marble);
 			}
 			else if(msgObj.msg === 'chainstats'){
+				alert(msg.data);
 				console.log('rec', msgObj.msg, ': ledger blockheight', msgObj.chainstats.height, 'block', msgObj.blockstats.height);
-				if(msgObj.blockstats && msgObj.blockstats.transactions) {
-                    var e = formatDate(msgObj.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
-                    $('#blockdate').html('<span style="color:#fff">TIME</span>&nbsp;&nbsp;' + e + ' UTC');
-                    var temp =  {
-                        id: msgObj.blockstats.height,
-                        blockstats: msgObj.blockstats
-                    };
-                    new_block(temp);								//send to blockchain.js
-				}
+				var e = formatDate(msgObj.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
+				alert(e);
+				$('#blockdate').html('<span style="color:#fff">TIME</span>&nbsp;&nbsp;' + e + ' UTC');
+				var temp =  {
+								id: msgObj.blockstats.height, 
+								blockstats: msgObj.blockstats
+							};
+				new_block(temp);								//send to blockchain.js
 			}
 			else console.log('rec', msgObj.msg, msgObj);
 		}
@@ -221,26 +175,15 @@ function connect_to_server(){
 // =================================================================================
 function build_ball(data){
 	var html = '';
-	var colorClass = '';
-	var size = 'fa-5x';
 	
 	data.name = escapeHtml(data.name);
-	data.color = escapeHtml(data.color);
-	data.user = escapeHtml(data.user);
-	data.feature = escapeHtml(data.feature);
 	
-	console.log('got a marble: ', data.color);
-	if(!$('#' + data.name).length){								//only populate if it doesn't exists
-		if(data.size == 16) size = 'fa-3x';
-		if(data.color) colorClass = data.color.toLowerCase();
+	data.keyword = escapeHtml(data.keyword);
+	data.sex = escapeHtml(data.sex);
+	
 		
-		html += '<span id="' + data.name + '" class="fa fa-circle ' + size + ' ball ' + colorClass + ' title="' + data.name + '" user="' + data.user + '"></span>';
-		if(data.user && data.user.toLowerCase() == bag.setup.USER1){
+		html+=("<p>"+data.name+"  sex:"+data.sex+"</p>");
 			$('#user1wrap').append(html);
-		}
-		else{
-			$('#user2wrap').append(html);
-		}
-	}
+	
 	return html;
 }
