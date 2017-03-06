@@ -20,7 +20,7 @@ $(document).on('ready', function() {
 						color: $('.colorSelected').attr('color'),
 						size: $('select[name="size"]').val(),
 						user: $('select[name="user"]').val(),
-			                        feature:'expensive',
+			                        feature: 'expensive',
 						v: 1
 					};
 		if(obj.user && obj.name && obj.color){
