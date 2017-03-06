@@ -42,7 +42,7 @@ type Marble struct{
 	Color string `json:"color"`
 	Size int `json:"size"`
 	User string `json:"user"`
-	Feature string 'json:"feature"'
+	Feature string `json:"feature"`     
 }
 
 type Description struct{
@@ -299,7 +299,7 @@ func (t *SimpleChaincode) init_marble(stub shim.ChaincodeStubInterface, args []s
 	}
 	
 	//build the marble json string manually
-	str:='{"name":"'+name+'","color":"'+color+'","size":'+strconv.Itoa(size)+',"user":"'+user+'","feature":"'+feature+'"}'
+	str := `{"name": "` + name + `", "color": "` + color + `", "size": ` + strconv.Itoa(size) + `, "user": "` + user + `", "feature": "` + feature + `"}`
 	err = stub.PutState(name, []byte(str))									//store marble with id as key
 	if err != nil {
 		return nil, err
