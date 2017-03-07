@@ -40,7 +40,7 @@ var openTradesStr = "_opentrades"				//name for the key/value that will store al
 type Marble struct{
 	Name string `json:"name"`					//the fieldtags are needed to keep case from bouncing around
 	Keyword string `json:"keyword"`
-	Sex int `json:"sex"`
+	Sex string `json:"sex"`
 }
 
 type Description struct{
