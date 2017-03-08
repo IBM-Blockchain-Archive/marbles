@@ -37,10 +37,10 @@ type SimpleChaincode struct {
 var marbleIndexStr = "_marbleindex"				//name for the key/value that will store a list of all known marbles
 var openTradesStr = "_opentrades"				//name for the key/value that will store all open trades
 
-type Marble struct{
+type User struct{
 	Name string `json:"name"`					//the fieldtags are needed to keep case from bouncing around
 	Keyword string `json:"keyword"`
-	Sex string `json:"sex"`
+	Sex int `json:"sex"`
 }
 
 type Description struct{
@@ -132,21 +132,9 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return res, err
 	} else if function == "write" {											//writes a value to the chaincode state
 		return t.Write(stub, args)
-	} else if function == "init_marble" {									//create a new marble
-		return t.init_marble(stub, args)
-	} else if function == "set_user" {										//change owner of a marble
-		res, err := t.set_user(stub, args)
-		cleanTrades(stub)													//lets make sure all open trades are still valid
-		return res, err
-	} else if function == "open_trade" {									//create a new trade order
-		return t.open_trade(stub, args)
-	} else if function == "perform_trade" {									//forfill an open trade order
-		res, err := t.perform_trade(stub, args)
-		cleanTrades(stub)													//lets clean just in case
-		return res, err
-	} else if function == "remove_trade" {									//cancel an open trade order
-		return t.remove_trade(stub, args)
-	}
+	} else if function == "create_user" {									//create a new user
+		return t.create_user(stub, args)
+	} 
 	fmt.Println("invoke did not find func: " + function)					//error
 
 	return nil, errors.New("Received unknown function invocation")
@@ -251,7 +239,7 @@ func (t *SimpleChaincode) Write(stub shim.ChaincodeStubInterface, args []string)
 // ============================================================================================================================
 // Init Marble - create a new marble, store into chaincode state
 // ============================================================================================================================
-func (t *SimpleChaincode) init_marble(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func (t *SimpleChaincode) create_user(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var err error
 
 	//   0       1       2     
@@ -282,12 +270,12 @@ func (t *SimpleChaincode) init_marble(stub shim.ChaincodeStubInterface, args []s
 	if err != nil {
 		return nil, errors.New("Failed to get marble name")
 	}
-	res := Marble{}
+	res := User{}
 	json.Unmarshal(marbleAsBytes, &res)
 	if res.Name == name{
-		fmt.Println("This marble arleady exists: " + name)
+		fmt.Println("This user arleady exists: " + name)
 		fmt.Println(res);
-		return nil, errors.New("This marble arleady exists")				//all stop a marble by this name exists
+		return nil, errors.New("This user arleady exists")		
 	}
 	
 	//build the marble json string manually
@@ -315,54 +303,3 @@ func (t *SimpleChaincode) init_marble(stub shim.ChaincodeStubInterface, args []s
 	return nil, nil
 }
 
-// ============================================================================================================================
-// Set User Permission on Marble
-// ============================================================================================================================
-func (t *SimpleChaincode) set_user(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	
-	return nil, nil
-}
-
-// ============================================================================================================================
-// Open Trade - create an open trade for a marble you want with marbles you have 
-// ============================================================================================================================
-func (t *SimpleChaincode) open_trade(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	
-	return nil, nil
-}
-
-// ============================================================================================================================
-// Perform Trade - close an open trade and move ownership
-// ============================================================================================================================
-func (t *SimpleChaincode) perform_trade(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-
-	return nil, nil
-}
-
-// ============================================================================================================================
-// findMarble4Trade - look for a matching marble that this user owns and return it
-// ============================================================================================================================
-
-
-// ============================================================================================================================
-// Make Timestamp - create a timestamp in ms
-// ============================================================================================================================
-func makeTimestamp() int64 {
-    return time.Now().UnixNano() / (int64(time.Millisecond)/int64(time.Nanosecond))
-}
-
-// ============================================================================================================================
-// Remove Open Trade - close an open trade
-// ============================================================================================================================
-func (t *SimpleChaincode) remove_trade(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	
-	return nil, nil
-}
-
-// ============================================================================================================================
-// Clean Up Open Trades - make sure open trades are still possible, remove choices that are no longer possible, remove trades that have no valid choices
-// ============================================================================================================================
-func cleanTrades(stub shim.ChaincodeStubInterface)(err error){
-
-	return nil
-}
