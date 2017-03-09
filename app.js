@@ -139,7 +139,7 @@ require('cf-deployment-tracker-client').track();		//reports back to us, this hel
 // 														Work Area
 // ============================================================================================================================
 var part1 = require('./utils/ws_part1');														//websocket message processing for part 1
-var part2 = require('./utils/ws_part2');														//websocket message processing for part 2
+//var part2 = require('./utils/ws_part2');														//websocket message processing for part 2
 var ws = require('ws');																			//websocket mod
 var wss = {};
 var Ibc1 = require('ibm-blockchain-js');														//rest based SDK for ibm blockchain
@@ -226,7 +226,7 @@ var options = 	{
 					chaincode:{
 						zip_url: 'https://github.com/qianlizimu/marbles/archive/v2.0.zip',
 						unzip_dir: 'marbles-2.0/chaincode',													//subdirectroy name of chaincode after unzipped
-						git_url: 'http://gopkg.in/qianlizimu/marbles.v2/chaincode',						//GO get http url
+						git_url: 'http://gopkg.in/qianlizimu/marbles.v2/chaincode'						//GO get http url
 					
 						//hashed cc name from prev deployment, comment me out to always deploy, uncomment me when its already deployed to skip deploying again
 						//deployed_name: '16e655c0fce6a9882896d3d6d11f7dcd4f45027fd4764004440ff1e61340910a9d67685c4bb723272a497f3cf428e6cf6b009618612220e1471e03b6c0aa76cb'
@@ -247,8 +247,7 @@ ibc.load(options, function (err, cc){														//parse/load chaincode, respo
 	else{
 		chaincode = cc;
 		part1.setup(ibc, cc);																//pass the cc obj to part 1 node code
-		part2.setup(ibc, cc);																//pass the cc obj to part 2 node code
-
+		
 		// ---- To Deploy or Not to Deploy ---- //
 		if(!cc.details.deployed_name || cc.details.deployed_name === ''){					//yes, go deploy
 			cc.deploy('init', ['99'], {delay_ms: 30000}, function(e){ 						//delay_ms is milliseconds to wait after deploy for conatiner to start, 50sec recommended
@@ -257,7 +256,9 @@ ibc.load(options, function (err, cc){														//parse/load chaincode, respo
 		}
 		else{																				//no, already deployed
 			console.log('chaincode summary file indicates chaincode has been previously deployed');
-			check_if_deployed(null, 1);
+				cc.deploy('init', ['99'], {delay_ms: 30000}, function(e){ 						//delay_ms is milliseconds to wait after deploy for conatiner to start, 50sec recommended
+				check_if_deployed(e, 1);
+			});
 		}
 	}
 });
@@ -322,7 +323,7 @@ function cb_deployed(e){
 				try{
 					var data = JSON.parse(message);
 					part1.process_msg(ws, data);											//pass the websocket msg to part 1 processing
-					part2.process_msg(ws, data);											//pass the websocket msg to part 2 processing
+				//	part2.process_msg(ws, data);											//pass the websocket msg to part 2 processing
 				}
 				catch(e){
 					console.log('ws message error', e);
@@ -396,21 +397,7 @@ function cb_deployed(e){
 				}
 			}
 			
-			//call back for getting open trades, lets send the trades
-			function cb_got_trades(e, trades){
-				if(e != null) console.log('trade error:', e);
-				else {
-					try{
-						trades = JSON.parse(trades);
-						if(trades && trades.open_trades){
-							wss.broadcast({msg: 'open_trades', open_trades: trades.open_trades});
-						}
-					}
-					catch(e){
-						console.log('trade msg error', e);
-					}
-				}
-			}
+		
 		});
 	}
 }
