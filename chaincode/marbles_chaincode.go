@@ -203,7 +203,7 @@ func (t *SimpleChaincode) Write(stub shim.ChaincodeStubInterface, args []string)
 }
 
 // ============================================================================================================================
-// Init Marble - create a new marble, store into chaincode state
+// create a new user
 // ============================================================================================================================
 func (t *SimpleChaincode) create_user(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var err error
@@ -211,11 +211,11 @@ func (t *SimpleChaincode) create_user(stub shim.ChaincodeStubInterface, args []s
 	//   0       1       2     
 	// "Tom", "12345", "man"	
      if len(args) != 3 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 5")
+		return nil, errors.New("Incorrect number of arguments. Expecting 3")
 	}
 
 	//input sanitation
-	fmt.Println("- start init marble")
+	fmt.Println("- start create user")
 	if len(args[0]) <= 0 {
 		return nil, errors.New("1st argument must be a non-empty string")
 	}
@@ -251,20 +251,20 @@ func (t *SimpleChaincode) create_user(stub shim.ChaincodeStubInterface, args []s
 		return nil, err
 	}
 		
-	//get the marble index
+	//get the user index
 	marblesAsBytes, err := stub.GetState(marbleIndexStr)
 	if err != nil {
-		return nil, errors.New("Failed to get marble index")
+		return nil, errors.New("Failed to get user index")
 	}
 	var marbleIndex []string
 	json.Unmarshal(marblesAsBytes, &marbleIndex)							//un stringify it aka JSON.parse()
 	
 	//append
-	marbleIndex = append(marbleIndex, name)									//add marble name to index list
-	fmt.Println("! marble index: ", marbleIndex)
+	marbleIndex = append(marbleIndex, name)									//add user name to index list
+	fmt.Println("! user index: ", marbleIndex)
 	jsonAsBytes, _ := json.Marshal(marbleIndex)
-	err = stub.PutState(marbleIndexStr, jsonAsBytes)						//store name of marble
+	err = stub.PutState(marbleIndexStr, jsonAsBytes)						//store name of user
 
-	fmt.Println("- end init marble")
+	fmt.Println("- end create user")
 	return nil, nil
 }
