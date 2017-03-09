@@ -20,6 +20,7 @@ $(document).on('ready', function() {
 						sex: $('select[name="sex"]').val(),
 						v: 1
 					};
+					alert("click");
 		if(obj.keyword && obj.name && obj.sex){
 			console.log('creating user, sending', obj);
 			ws.send(JSON.stringify(obj));
@@ -139,10 +140,10 @@ function connect_to_server(){
 				build_ball(msgObj.marble);
 			}
 			else if(msgObj.msg === 'chainstats'){
-				alert(msg.data);
+			
 				console.log('rec', msgObj.msg, ': ledger blockheight', msgObj.chainstats.height, 'block', msgObj.blockstats.height);
 				var e = formatDate(msgObj.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
-				alert(e);
+		
 				$('#blockdate').html('<span style="color:#fff">TIME</span>&nbsp;&nbsp;' + e + ' UTC');
 				var temp =  {
 								id: msgObj.blockstats.height, 
@@ -177,7 +178,6 @@ function build_ball(data){
 	var html = '';
 	
 	data.name = escapeHtml(data.name);
-	
 	data.keyword = escapeHtml(data.keyword);
 	data.sex = escapeHtml(data.sex);
 	
