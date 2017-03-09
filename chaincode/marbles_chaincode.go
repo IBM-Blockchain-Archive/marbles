@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"strconv"
 	"encoding/json"
-	
-
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
@@ -16,17 +14,12 @@ type SimpleChaincode struct {
 }
 
 var marbleIndexStr = "_marbleindex"				//name for the key/value that will store a list of all known marbles
-var openTradesStr = "_opentrades"				//name for the key/value that will store all open trades
+
 
 type User struct{
 	Name string `json:"name"`					//the fieldtags are needed to keep case from bouncing around
 	Keyword string `json:"keyword"`
 	Sex int `json:"sex"`
-}
-
-type Description struct{
-	Color string `json:"color"`
-	Size int `json:"size"`
 }
 
 
@@ -231,10 +224,10 @@ func (t *SimpleChaincode) create_user(stub shim.ChaincodeStubInterface, args []s
 	sex := args[2]
 	
 
-	//check if marble already exists
+	//check if user already exists
 	marbleAsBytes, err := stub.GetState(name)
 	if err != nil {
-		return nil, errors.New("Failed to get marble name")
+		return nil, errors.New("Failed to get user name")
 	}
 	res := User{}
 	json.Unmarshal(marbleAsBytes, &res)
