@@ -13,7 +13,7 @@ module.exports.setup = function(sdk, cc){
 module.exports.process_msg = function(ws, data){
 	if(data.v === 1){																						//only look at messages for part 1
 		if(data.type == 'create'){
-			chaincode.invoke.init( cb_invoked);
+			
 			console.log('its a create!');
 			if(data.name && data.sex && data.keyword){
 				console.log(chaincode.invoke.create_user([data.name, data.keyword, data.sex], cb_invoked) );	//create a new marble
