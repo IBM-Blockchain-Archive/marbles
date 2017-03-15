@@ -266,7 +266,7 @@ func (t *SimpleChaincode) init_marble(stub shim.ChaincodeStubInterface, args []s
 	if err != nil {
 		return nil, errors.New("Failed to get user name")
 	}
-	res := User{}
+	res := Marble{}
 	json.Unmarshal(marbleAsBytes, &res)
 	if res.Name == name{
 		fmt.Println("This user arleady exists: " + name)
