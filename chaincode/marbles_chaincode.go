@@ -25,7 +25,6 @@ import (
 	"strconv"
 	"encoding/json"
 	"time"
-	"strings"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
@@ -89,12 +88,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 		return nil, err
 	}
 	
-	var trades AllTrades
-	jsonAsBytes, _ = json.Marshal(trades)								//clear the open trade struct
-	err = stub.PutState(openTradesStr, jsonAsBytes)
-	if err != nil {
-		return nil, err
-	}
+	
 	
 	return nil, nil
 }
