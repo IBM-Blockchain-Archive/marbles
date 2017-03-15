@@ -1,3 +1,21 @@
+/*
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+*/
 
 package main
 
@@ -6,6 +24,9 @@ import (
 	"fmt"
 	"strconv"
 	"encoding/json"
+	"time"
+	"strings"
+
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
@@ -14,14 +35,18 @@ type SimpleChaincode struct {
 }
 
 var marbleIndexStr = "_marbleindex"				//name for the key/value that will store a list of all known marbles
+var openTradesStr = "_opentrades"				//name for the key/value that will store all open trades
 
-
-type User struct{
+type Marble struct{
 	Name string `json:"name"`					//the fieldtags are needed to keep case from bouncing around
 	Keyword string `json:"keyword"`
 	Sex int `json:"sex"`
 }
 
+type Description struct{
+	Color string `json:"color"`
+	Size int `json:"size"`
+}
 
 
 // ============================================================================================================================
@@ -64,6 +89,12 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 		return nil, err
 	}
 	
+	var trades AllTrades
+	jsonAsBytes, _ = json.Marshal(trades)								//clear the open trade struct
+	err = stub.PutState(openTradesStr, jsonAsBytes)
+	if err != nil {
+		return nil, err
+	}
 	
 	return nil, nil
 }
@@ -87,13 +118,25 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.Init(stub, "init", args)
 	} else if function == "delete" {										//deletes an entity from its state
 		res, err := t.Delete(stub, args)
-															//lets make sure all open trades are still valid
+		cleanTrades(stub)													//lets make sure all open trades are still valid
 		return res, err
 	} else if function == "write" {											//writes a value to the chaincode state
 		return t.Write(stub, args)
-	} else if function == "create_user" {									//create a new user
-		return t.create_user(stub, args)
-	} 
+	} else if function == "init_marble" {									//create a new marble
+		return t.init_marble(stub, args)
+	} else if function == "set_user" {										//change owner of a marble
+		res, err := t.set_user(stub, args)
+		cleanTrades(stub)													//lets make sure all open trades are still valid
+		return res, err
+	} else if function == "open_trade" {									//create a new trade order
+		return t.open_trade(stub, args)
+	} else if function == "perform_trade" {									//forfill an open trade order
+		res, err := t.perform_trade(stub, args)
+		cleanTrades(stub)													//lets clean just in case
+		return res, err
+	} else if function == "remove_trade" {									//cancel an open trade order
+		return t.remove_trade(stub, args)
+	}
 	fmt.Println("invoke did not find func: " + function)					//error
 
 	return nil, errors.New("Received unknown function invocation")
@@ -196,9 +239,9 @@ func (t *SimpleChaincode) Write(stub shim.ChaincodeStubInterface, args []string)
 }
 
 // ============================================================================================================================
-// create a new user
+// Init Marble - create a new marble, store into chaincode state
 // ============================================================================================================================
-func (t *SimpleChaincode) create_user(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func (t *SimpleChaincode) init_marble(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var err error
 
 	//   0       1       2     
@@ -260,4 +303,61 @@ func (t *SimpleChaincode) create_user(stub shim.ChaincodeStubInterface, args []s
 
 	fmt.Println("- end create user")
 	return nil, nil
+}
+
+// ============================================================================================================================
+// Set User Permission on Marble
+// ============================================================================================================================
+func (t *SimpleChaincode) set_user(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	
+	return nil, nil
+}
+
+// ============================================================================================================================
+// Open Trade - create an open trade for a marble you want with marbles you have 
+// ============================================================================================================================
+func (t *SimpleChaincode) open_trade(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+
+	return nil, nil
+}
+
+// ============================================================================================================================
+// Perform Trade - close an open trade and move ownership
+// ============================================================================================================================
+func (t *SimpleChaincode) perform_trade(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	
+	return nil, nil
+}
+
+// ============================================================================================================================
+// findMarble4Trade - look for a matching marble that this user owns and return it
+// ============================================================================================================================
+func findMarble4Trade(stub shim.ChaincodeStubInterface, user string, color string, size int )(m Marble, err error){
+	
+		res := Marble{}
+		return res, nil
+	
+}
+
+// ============================================================================================================================
+// Make Timestamp - create a timestamp in ms
+// ============================================================================================================================
+func makeTimestamp() int64 {
+    return time.Now().UnixNano() / (int64(time.Millisecond)/int64(time.Nanosecond))
+}
+
+// ============================================================================================================================
+// Remove Open Trade - close an open trade
+// ============================================================================================================================
+func (t *SimpleChaincode) remove_trade(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	
+	return nil, nil
+}
+
+// ============================================================================================================================
+// Clean Up Open Trades - make sure open trades are still possible, remove choices that are no longer possible, remove trades that have no valid choices
+// ============================================================================================================================
+func cleanTrades(stub shim.ChaincodeStubInterface)(err error){
+	
+	return nil
 }
