@@ -317,7 +317,7 @@ __/chaincode/write_ledger.go__
 	}
 ```
 
-This `set_users()` function will change the owner of a particular marble. 
+This `set_owner()` function will change the owner of a particular marble. 
 It takes in an array of strings input argument and returns `nil` if successful. 
 Within the array the first index should have the name of the marble which is also the key in the key/value pair. 
 We first need to retrieve the current marble struct. 
@@ -410,7 +410,7 @@ __/utils/marbles_cc_lib.js__
 ```
 
 The the `set_marble_owner()` function is listed above. 
-The important parts are that it is setting the proposal's invocation function name to "set_user" with the line `fcn: 'set_user'`. 
+The important parts are that it is setting the proposal's invocation function name to "set_owner" with the line `fcn: 'set_owner'`. 
 Note that the peer and orderer URLs have already been set when we enrolled the admin. 
 By default the SDK will send this transaction to all peers that have been added with `chain.addPeer`. 
 In our case the SDK will send to only 1 peer, since we have only added the 1 peer.
