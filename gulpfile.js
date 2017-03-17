@@ -33,10 +33,8 @@ gulp.task('build-js-hash', function () {
 
 // ---------------- Run Application Task ---------------- //
 gulp.task('server', function(a, b) {
-	console.log('\n\nGulp Task - server');
 	if(node) node.kill();
 	node = spawn('node', ['app.js'], {env: env, stdio: 'inherit'});	//command, file, options
-	return;
 });
 
 // ---------------- Watch for Changes Tasks ---------------- //

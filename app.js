@@ -14,12 +14,12 @@ var serve_static = require('serve-static');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var http = require('http');
+var http = require('http');  
 var app = express();
 var url = require('url');
 var cors = require('cors');
 var async = require('async');
-var ws = require('ws');											//websocket module
+var ws = require('ws');											//websocket module 
 
 // --- Set Our Things --- //
 var block_delay = 10000;										//should be exactly the block delay
@@ -417,22 +417,12 @@ function setupWebSocket(){
 					//find deployed chaincode
 					else if(data.configure === 'find_chaincode'){
 						helper.write(data);										//write new config data to file
-						setup_marbles_lib();
-					}
-
-					//deploy chaincode
-					/*else if(data.configure === 'deploy_chaincode'){
-						helper.write(data);										//write new config data to file
-						var opts = {
-							channel_id: helper.getChannelId(), 
-							chaincode_id: helper.getChaincodeId(),
-							event_url: helper.getPeerEventUrl(0)
-						};
-						var temp_marbles_lib = require('./utils/marbles_cc_lib.js')(enrollObj.chain, opts, null);
-						temp_marbles_lib.deploy_chaincode(enrollObj.chain, null, function(){
-							setup_marbles_lib();
+						enroll_admin(function(e){								//re-renroll b/c we may be using new peer/order urls
+							if(e == null){
+								setup_marbles_lib();
+							}
 						});
-					}*/
+					}
 
 					//register marble owners
 					else if(data.configure === 'register'){

@@ -63,20 +63,32 @@ $(document).on('ready', function() {
 	// ----------------------------- Nav -------------------------------------
 	//show register user panel
 	$('#step1 .stepEdit').click(function(){
-		$('.stepHelpWrap').hide();
-		$('#adminStep').slideDown();
+		if($('#adminStep').is(':visible')){
+			$('#adminStep').slideUp();
+		} else {
+			$('.stepHelpWrap').hide();
+			$('#adminStep').slideDown();
+		}
 	});
 
 	//show register user panel
 	$('#step2 .stepEdit').click(function(){
-		$('.stepHelpWrap').hide();
-		$('#chaincodeStep').slideDown();
+		if($('#chaincodeStep').is(':visible')){
+			$('#chaincodeStep').slideUp();
+		} else {
+			$('.stepHelpWrap').hide();
+			$('#chaincodeStep').slideDown();
+		}
 	});
 
 	//show find chaincode panel
 	$('#step3 .stepEdit').click(function(){
-		$('.stepHelpWrap').hide();
-		$('#regUserStep').slideDown();
+		if($('#regUserStep').is(':visible')){
+			$('#regUserStep').slideUp();
+		} else {
+			$('.stepHelpWrap').hide();
+			$('#regUserStep').slideDown();
+		}
 	});
 
 	$('.closeStartUp').click(function(){
