@@ -89,7 +89,7 @@
 			p Edit the details below to try again.
 		br
 		.stepInputLegend CA
-		input(type="text" placeholder="CA ex: 192.168.99.100:8888" name="copUrl" value="#{bag.creds.ca}").longer
+		input(type="text" placeholder="CA ex: 192.168.99.100:8888" name="caUrl" value="#{bag.creds.ca}").longer
 		br
 		.stepInputLegend Enroll ID 
 		input(type="text" placeholder="Enroll Id" name="enrollId" value="#{bag.creds.admin_id}").longer
@@ -107,13 +107,12 @@
 		br
 		.stepHelpTxt
 			p Sorry, we could not find the chaincode on your peer. 
-			p 
-				span Edit the chaincode ID to try again 
-				strong OR 
-				span deploy the chaincode. 
-
 			br
-			p If this is the first time running the demo you will need to choose "Deploy".
+			p Edit the options below to try again 
+			p OR...
+			p Deploy the chaincode if this is your first time using the application
+			strong
+				a(href="https://github.com/IBM-Blockchain/marbles/blob/v3.0/README.md" target="_blank" style="color:#fff;") How to deploy marbles chaincode
 		br
 		.stepInputLegend Orderer 
 		input(type="text" placeholder="Orderer ex: 192.168.99.100:5151" name="ordererUrl" value="#{bag.creds.orderer}").longer
@@ -124,10 +123,10 @@
 		.stepInputLegend Chaincode ID 
 		input(type="text" placeholder="Chaincode ID" name="chaincodeId" value="#{bag.creds.chaincode_id}").longer
 		br
+		.stepInputLegend Chaincode Version 
+		input(type="text" placeholder="Chaincode Version" name="chaincodeVersion" value="#{bag.creds.chaincode_version}").longer
 		br
 		button(type="button")#retryDeploy Retry
-		span &nbsp; OR &nbsp;
-		button(type="button")#deployButton Deploy
 
 	//---------- Register User Help
 	.stepHelpWrap#regUserStep

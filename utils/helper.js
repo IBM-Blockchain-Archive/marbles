@@ -178,13 +178,16 @@ module.exports = function (config_filename, logger) {
 			creds_file.credentials.peers[0].grpc_host = parsed.hostname;
 			creds_file.credentials.peers[0].grpc_port = Number(parsed.port);
 		}
-		if(obj.copUrl){
-			parsed = url.parse(obj.copUrl, true);
+		if(obj.caUrl){
+			parsed = url.parse(obj.caUrl, true);
 			creds_file.credentials.cas[0].host = parsed.hostname;
 			creds_file.credentials.cas[0].port = Number(parsed.port);
 		}
 		if(obj.chaincodeId){
 			creds_file.credentials.marbles.chaincode_id = obj.chaincodeId;
+		}
+		if(obj.chaincodeVersion){
+			creds_file.credentials.marbles.chaincode_version = obj.chaincodeVersion;
 		}
 		if(obj.enrollId && obj.enrollSecret){
 			creds_file.credentials.users[0] = 	{

@@ -987,7 +987,7 @@ td.userRights, th.userRights{
 .stepDescription {
   font-size: 13px;
   text-align: left;
-  height: 150px; }
+  height: 115px; }
 
 .stepEdit {
   font-size: 12px;
@@ -1017,12 +1017,13 @@ td.userRights, th.userRights{
   padding-top: 15px; }
 
 .stepHelpTxt {
-  font-size: 13px; }
+  font-size: 13px;
+  line-height: 16px; }
 
 .stepInputLegend {
   display: inline-block;
   text-align: right;
-  width: 100px;
+  width: 115px;
   font-size: 13px;
   margin-right: 5px; }
 

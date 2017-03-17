@@ -20,24 +20,10 @@ $(document).on('ready', function() {
 						configure: 'find_chaincode',
 						ordererUrl: $('input[name="ordererUrl"]').val(),
 						peerUrl: $('input[name="peerUrl"]').val(),
-						chaincodeId: $('input[name="chaincodeId"]').val()
+						chaincodeId: $('input[name="chaincodeId"]').val(),
+						chaincodeVersion: $('input[name="chaincodeVersion"]').val()
 					};
 		console.log('[startup] sending find_chaincode msg');
-		ws.send(JSON.stringify(obj));
-		$('#chaincodeStep').slideUp();
-		$('#step2').removeClass('stepFailed');
-	});
-
-	//deploy chaincode
-	$('#deployButton').click(function(){
-		var obj = 	{
-						type: 'setup',
-						configure: 'deploy_chaincode',
-						ordererUrl: $('input[name="ordererUrl"]').val(),
-						peerUrl: $('input[name="peerUrl"]').val(),
-						chaincodeId: $('input[name="chaincodeId"]').val()
-					};
-		console.log('[startup] sending deploy_chaincode msg');
 		ws.send(JSON.stringify(obj));
 		$('#chaincodeStep').slideUp();
 		$('#step2').removeClass('stepFailed');
@@ -64,7 +50,7 @@ $(document).on('ready', function() {
 		var obj = 	{
 						type: 'setup',
 						configure: 'enrollment',
-						copUrl: $('input[name="copUrl"]').val(),
+						caUrl: $('input[name="caUrl"]').val(),
 						enrollId: $('input[name="enrollId"]').val(),
 						enrollSecret: $('input[name="enrollSecret"]').val(),
 					};
