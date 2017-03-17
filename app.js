@@ -20,18 +20,22 @@ var url = require('url');
 var fs = require('fs');
 var cors = require('cors');
 var async = require('async');
-var ws = require('ws');													//websocket module
-var block_delay = 10000;
+var ws = require('ws');											//websocket module
 
 // --- Set Our Things --- //
-var HFC = require('fabric-client');
-var Orderer = require('fabric-client/lib/Orderer.js');
-var User = require('fabric-client/lib/User.js');
-var CaService = require('fabric-ca-client/lib/FabricCAClientImpl.js');
+var block_delay = 10000;
+var logger = {													//overwrite console to work with info/warn/debug
+	log: console.log,
+	info: console.log,
+	error: console.error,
+	warn: console.log,
+	debug: console.log
+};
+var fcw = require('./utils/fc_wrangler/index.js')(logger);
 
 var more_entropy = randStr(32);
 var ws_server = require('./utils/websocket_server_side.js')(null, null, null);
-var helper = require(__dirname + '/utils/helper.js')(process.env.creds_filename, console);
+var helper = require(__dirname + '/utils/helper.js')(process.env.creds_filename, logger);
 var host = 'localhost';
 var port = helper.getMarblesPort();
 var wss = {};
@@ -128,12 +132,8 @@ else console.log('Running using Developer settings');
 // ==================================
 // Set up the blockchain sdk
 // ==================================
-var chain = null;
-var network_id = helper.getNetworkId();
-var uuid = network_id;
+var enrollObj = null;
 var marbles_lib = null;
-
-
 
 // -------------------------------------------------------------------
 // Life Starts Here!
@@ -149,14 +149,13 @@ try{
 		console.log('\n\nDetected that we have launched successfully before');
 		console.log('Welcome back - Initiating start up\n\n');
 		process.env.app_first_setup = 'no';
-		enroll_admin(helper.getUsers(0).enrollId, helper.getUsers(0).enrollSecret, helper.getCasUrl(0), function(e){
+		enroll_admin(function(e){
 			if(e == null){
 				setup_marbles_lib();
 			}
 		});
 	}
 	else wait_to_init();
-	
 }
 catch(e){
 	wait_to_init();
@@ -170,24 +169,18 @@ function wait_to_init(){
 }
 // -------------------------------------------------------------------
 
-
 //setup marbles library and check if cc is deployed
 function setup_marbles_lib(){
 	console.log('Setup Marbles Lib...');
 
-	try{
-		chain.addOrderer(new Orderer(helper.getOrderersUrl(0)));
-	}
-	catch(e){
-		//may error with duplicate orderer, thats ok
-	}
 	var opts = {
 		channel_id: helper.getChannelId(), 
 		chaincode_id: helper.getChaincodeId(),
-		event_url: helper.getEventUrl(0)
+		event_url: helper.getPeerEventUrl(0),
+		chaincode_version: helper.getChaincodeVersion(),
 	};
-	marbles_lib = require('./utils/marbles_cc_lib.js')(chain, opts, console);
-	ws_server.setup(chain, marbles_lib, wss.broadcast, null);
+	marbles_lib = require('./utils/marbles_cc_lib.js')(enrollObj, opts, console);
+	ws_server.setup(enrollObj, marbles_lib, wss.broadcast, null);
 
 	console.log('Checking if chaincode is already deployed or not');
 	var options = 	{
@@ -212,82 +205,27 @@ function setup_marbles_lib(){
 	});
 }
 
-//enroll admin
-function enroll_admin(id, secret, ca_url, cb){
-	try {
-		var client = new HFC();
-		chain = client.newChain('mychain' + file_safe_name(process.env.marble_company) + '-' + uuid);
-	}
-	catch (e) {
-		//it might error about 1 chain per network, but that's not a problem just continue
-	}
-
-	// Make Cert kvs
-	HFC.newDefaultKeyValueStore({
-		path: path.join(__dirname, './keyValStore-' + file_safe_name(process.env.marble_company) + '-' + uuid) 
-	}).then(function(store){
-		client.setStateStore(store);
-		console.log('! using id', id, 'secret', secret);
-		return getSubmitter(id, secret, ca_url, client);		//do most of the work here
-	}).then(function(submitter){
-
-		// --- Success --- //
-		console.log('Successfully enrolled ' + id);
-		//chain = submitter;									//push var to higher scope
-		broadcast_state('enrolled');
-		setTimeout(function(){
-			if(cb) cb();
-		}, block_delay);
-		
-	}).catch(
-
-		// --- Failure --- //
-		function(err) {
-			console.log('Failed to enroll ' + id, err.stack ? err.stack : err);
-			broadcast_state('failed_enroll');
-			if(cb) cb(err);
+//enroll an admin with the CA for this peer/channel
+function enroll_admin(cb){
+	var user = helper.getUser(0);
+	var options = {
+		channel_id: helper.getChannelId(),
+		uuid: helper.getNetworkId() + '-' + helper.getChannelId(),
+		ca_url: helper.getCasUrl(0),
+		orderer_url: helper.getOrderersUrl(0),
+		enroll_id: user.enrollId,
+		enroll_secret: user.enrollSecret,
+		msp_id: helper.getPeersMspId(0)
+	};
+	fcw.enroll(options, function(errCode, obj){
+		if (errCode != null) {
+			console.error('could not enroll');
+			if(cb) cb(errCode);
+		} else{
+			enrollObj = obj;
+			if(cb) cb(null);
 		}
-	);
-}
-
-// Get Submitter - ripped this function off from helper.js in fabric-client
-function getSubmitter(enroll_id, enroll_secret, ca_url, client) {
-	var member;
-	return client.getUserContext(enroll_id)
-		.then((user) => {
-			if (user && user.isEnrolled()) {
-				console.log('Successfully loaded admin from persistence');
-				return user;
-			} else {
-
-				// Need to enroll it with CA server
-				var ca_client = new CaService(ca_url);
-				return ca_client.enroll({
-					enrollmentID: enroll_id,
-					enrollmentSecret: enroll_secret
-
-				// Store Certs
-				}).then((enrollment) => {
-					console.log('Successfully enrolled admin \'' + enroll_id + '\'');
-					member = new User(enroll_id, client);
-					return member.setEnrollment(enrollment.key, enrollment.certificate);
-
-				// Save Submitter Enrollment
-				}).then(() => {
-					return client.setUserContext(member);
-
-				// Return Submitter Enrollment
-				}).then(() => {
-					return member;
-
-				// Send Errors to Callback
-				}).catch((err) => {
-					console.log('Failed to enroll and persist admin. Error: ' + err.stack ? err.stack : err);
-					throw new Error('Failed to enrolled admin');
-				});
-			}
-		}
-	);
+	});
 }
 
 //random integer
@@ -467,7 +405,7 @@ function setupWebSocket(){
 					//enroll admin
 					if(data.configure === 'enrollment'){
 						helper.write(data);										//write new config data to file
-						enroll_admin(helper.getUsers(0).enrollId, helper.getUsers(0).enrollSecret, helper.getCasUrl(0), function(e){
+						enroll_admin(function(e){
 							if(e == null){
 								setup_marbles_lib();
 							}
@@ -481,24 +419,18 @@ function setupWebSocket(){
 					}
 
 					//deploy chaincode
-					else if(data.configure === 'deploy_chaincode'){
+					/*else if(data.configure === 'deploy_chaincode'){
 						helper.write(data);										//write new config data to file
-						try{
-							chain.addOrderer(new Orderer(helper.getOrderersUrl(0)));
-						}
-						catch(e){
-							//may error with duplicate orderer, thats ok
-						}
 						var opts = {
 							channel_id: helper.getChannelId(), 
 							chaincode_id: helper.getChaincodeId(),
-							event_url: helper.getEventUrl(0)
+							event_url: helper.getPeerEventUrl(0)
 						};
-						var temp_marbles_lib = require('./utils/marbles_cc_lib.js')(chain, opts, null);
-						temp_marbles_lib.deploy_chaincode(chain, null, function(){
+						var temp_marbles_lib = require('./utils/marbles_cc_lib.js')(enrollObj.chain, opts, null);
+						temp_marbles_lib.deploy_chaincode(enrollObj.chain, null, function(){
 							setup_marbles_lib();
 						});
-					}
+					}*/
 
 					//register marble owners
 					else if(data.configure === 'register'){

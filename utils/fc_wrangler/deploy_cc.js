@@ -2,38 +2,31 @@
 // Deploy Chaincode
 //-------------------------------------------------------------------
 var path = require('path');
-var fs = require('fs');
 
 module.exports = function (logger) {
 	var common = require(path.join(__dirname, './common.js'))(logger);
 	var Peer = require('fabric-client/lib/Peer.js');
 	//var EventHub = require('fabric-client/lib/EventHub.js');
+	//var Orderer = require('fabric-client/lib/Orderer.js');
 	var utils = require('fabric-client/lib/utils.js');
 	var deploy_cc = {};
 
 	//-------------------------------------------------------------------
-	// Deploy Chaincode
+	// Install Chaincode
 	//-------------------------------------------------------------------
 	/*
 		options: {
 					peer_urls: [array of peer urls],
 					path_2_chaincode: "path to chaincode from proj root",
-					channel_id: "channel id",
 					chaincode_id: "chaincode id",
-					event_url: "event grpc url",
+					chaincode_version: "v0",
 					endorsed_hook: function(error, res){},
-					ordered_hook: function(error, res){},
-					cc_args: ["argument 1"],
-					deploy_wait: 30000
+					ordered_hook: function(error, res){}
 		}
 	*/
-	deploy_cc.deploy_chaincode = function (chain, options, cb) {
-		logger.debug('\nDeploying Chaincode\n');
-		//var eventhub;
-
-		if (!fs.existsSync('/tmp')) {								//help out fabric-client sdk (it will need this folder on local fs)
-			fs.mkdirSync('/tmp');
-		}
+	deploy_cc.install_chaincode = function (obj, options, cb) {
+		logger.debug('\n[fcw] Installing Chaincode\n');
+		var chain = obj.chain;
 
 		try {
 			for (var i in options.peer_urls) {
@@ -45,87 +38,152 @@ module.exports = function (logger) {
 		}
 
 		// fix GOPATH - does not need to be real!
-		process.env.GOPATH = path.join(__dirname, '../../chaincode');
+		process.env.GOPATH = path.join(__dirname, '../');
+		var nonce = utils.getNonce();
 
 		// send proposal to endorser
 		var request = {
-			chaincodePath: options.path_2_chaincode,		//rel path from /chaincode/src/ to chaincode folder ex: './marbles'
-			chainId: options.channel_id,
+			chaincodePath: options.path_2_chaincode,		//rel path from /server/libs/src/ to chaincode folder ex: './marbles_chaincode'
 			chaincodeId: options.chaincode_id,
-			txId: utils.buildTransactionID({ length: 12 }),
-			nonce: utils.getNonce(),
-			fcn: 'init',
-			args: options.cc_args,
-			'dockerfile-contents': `from hyperledger/fabric-ccenv\n 
-									COPY . $GOPATH/src/build-chaincode/\n  
-									WORKDIR $GOPATH\n\n 
-									RUN go install build-chaincode && mv $GOPATH/bin/build-chaincode $GOPATH/bin/%s`
+			chaincodeVersion: options.chaincode_version,
+			txId: chain.buildTransactionID(nonce, obj.submitter),
+			nonce: nonce
 		};
+		logger.debug('[fcw] Sending install req', request);
 
-		//console.log('\n\n sending:', request, options);
-
-		// Setup EventHub
-		/*eventhub = new EventHub();
-		eventhub.setPeerAddr(options.event_url);
-		eventhub.connect();*/
-
-		chain.sendDeploymentProposal(request
+		chain.sendInstallProposal(request
 			//nothing
 		).then(
 			function (results) {
-
 				//check response
-				var request = common.check_proposal_res(results, options.endorsed_hook);
-				return chain.sendTransaction(request);
-			}
-			).then(
-			function (response) {
-
-				// All good
-				if (response.status === 'SUCCESS') {
-					logger.debug('[fcw] Successfully ordered deployment endorsement. Now we wait.');
-
-					// Call optional order hook
-					if (options.ordered_hook) options.ordered_hook(null, request.txId.toString());
-
-					/*var watchdog = setTimeout(() => {
-						var msg = '[fcw] Failed to receive block event within the timeout period';
-						logger.error(msg);
-						throw msg;
-					}, 60000);
-
-					// Wait for block event
-					eventhub.registerTxEvent(request.txId.toString(), (tx) => {
-						logger.debug('---------------------------------------------------------------------------\n');
-						logger.info('[fcw] The chaincode deploy tx block committed successfully\n\n');
-						clearTimeout(watchdog);
-						//eventhub.disconnect();								//dsh this seems to crash the application...
-
-						if (cb) return cb(null);
-						else return;
-					});*/
-
-					setTimeout(function(){
-						if (cb) return cb(null);
-						else return;
-					}, 20000);
-				}
-
-				// No good
-				else {
-					logger.error('[fcw] Failed to order the deployment endorsement.');
-					throw response;
-				}
+				common.check_proposal_res(results, options.endorsed_hook);
+				if (cb) return cb(null, results);
 			}
 			).catch(
 			function (err) {
-				logger.error('[fcw] Error in deploy catch block', typeof err, err);
+				logger.error('[fcw] Error in install catch block', typeof err, err);
 				var formatted = common.format_error_msg(err);
 
 				if (cb) return cb(formatted, null);
 				else return;
 			}
 		);
+	};
+
+
+	//-------------------------------------------------------------------
+	// Instantiate Chaincode
+	//-------------------------------------------------------------------
+	/*
+		options: {
+					peer_urls: [array of peer urls],
+					path_2_chaincode: "path to chaincode from proj root",
+					channel_id: "channel id",
+					chaincode_id: "chaincode id",
+					chaincode_version: "v0",
+					endorsed_hook: function(error, res){},
+					ordered_hook: function(error, res){},
+					cc_args: ["argument 1"],
+					deploy_wait: 30000
+		}
+	*/
+	deploy_cc.instantiate_chaincode = function (obj, options, cb) {
+		logger.debug('\n[fcw] Instantiating Chaincode\n', options);
+		var chain = obj.chain;
+		//var eventhub;
+
+		try {
+			for (var i in options.peer_urls) {
+				chain.addPeer(new Peer(options.peer_urls[i]));
+			}
+		}
+		catch (e) {
+			//might error if peer already exists, but we don't care
+		}
+
+		// fix GOPATH - does not need to be real!
+		process.env.GOPATH = path.join(__dirname, '../');
+		var nonce = utils.getNonce();
+
+		// send proposal to endorser
+		var request = {
+			chainId: options.channel_id,
+			chaincodePath: options.path_2_chaincode,		//rel path from /server/libs/src/ to chaincode folder ex: './marbles_chaincode'
+			chaincodeId: options.chaincode_id,
+			chaincodeVersion: options.chaincode_version,
+			fcn: 'init',
+			args: options.cc_args,
+			txId: chain.buildTransactionID(nonce, obj.submitter),
+			nonce: nonce,
+		};
+		logger.debug('[fcw] Sending instantiate req', request);
+
+		// Setup EventHub
+		//eventhub = new EventHub();
+		//eventhub.setPeerAddr(options.event_url);
+		//eventhub.connect();
+
+		chain.initialize().then(()=>{
+			chain.sendInstantiateProposal(request
+				//nothing
+			).then(
+				function (results) {
+
+					//check response
+					var request = common.check_proposal_res(results, options.endorsed_hook);
+					return chain.sendTransaction(request);
+				}
+				).then(
+				function (response) {
+
+					// All good
+					if (response.status === 'SUCCESS') {
+						logger.debug('[fcw] Successfully ordered instantiate endorsement.');
+
+						// Call optional order hook
+						if (options.ordered_hook) options.ordered_hook(null, request.txId.toString());
+
+						/*var watchdog = setTimeout(() => {
+							var msg = '[fcw] Failed to receive block event within the timeout period';
+							logger.error(msg);
+							throw msg;
+						}, options.deploy_wait || 60000);
+
+						// Wait for block event
+						eventhub.registerTxEvent(request.txId.toString(), (tx, invalid) => {
+							logger.debug('---------------------------------------------------------------------------\n');
+							logger.info('[fcw] The chaincode instantiate tx block committed successfully\n\n');
+							clearTimeout(watchdog);
+							//eventhub.unregisterTxEvent(request.txId.toString());		//dsh this seems to end the application...??!
+
+							console.log('! event hub says',  invalid);
+
+							if (cb) return cb(null);
+							else return;
+						});*/
+
+						setTimeout(function(){
+							if (cb) return cb(null);
+							else return;
+						}, 5000);
+					}
+
+					// No good
+					else {
+						logger.error('[fcw] Failed to order the instantiate endorsement.');
+						throw response;
+					}
+				}
+				).catch(
+				function (err) {
+					logger.error('[fcw] Error in instantiate catch block', typeof err, err);
+					var formatted = common.format_error_msg(err);
+
+					if (cb) return cb(formatted, null);
+					else return;
+				}
+			);			
+		});
 	};
 
 	return deploy_cc;

@@ -3,7 +3,7 @@
 //-------------------------------------------------------------------
 var path = require('path');
 
-module.exports = function (chain, g_options, logger) {
+module.exports = function (enrollObj, g_options, logger) {
 	var marbles_chaincode = {};
 	var l_logger = console;
 	l_logger.log = console.log;
@@ -24,12 +24,13 @@ module.exports = function (chain, g_options, logger) {
 			channel_id: g_options.channel_id,
 			event_url: g_options.event_url,
 			chaincode_id: g_options.chaincode_id,
+			chaincode_version: g_options.chaincode_version,
 			endorsed_hook: options.endorsed_hook,
 			ordered_hook: options.ordered_hook,
 			cc_args: ['99'],
 			deploy_wait: 30000
 		};
-		fcw.deploy_chaincode(chain, opts, cb);
+		fcw.deploy_chaincode(enrollObj, opts, cb);
 	};
 
 	//check chaincode
@@ -40,15 +41,15 @@ module.exports = function (chain, g_options, logger) {
 			peer_urls: options.peer_urls,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
+			chaincode_version: g_options.chaincode_version,
 			cc_function: 'read',
 			cc_args: ['abc']
 		};
-		fcw.query_chaincode(chain, opts, function(err, resp){
+		fcw.query_chaincode(enrollObj, opts, function(err, resp){
 			if(err != null){
 				if(cb) return cb(err, resp);
 			}
 			else{
-				console.log('WHAT', resp);
 				if(resp.parsed == null){							//if nothing is here, no chaincode
 					if(cb) return cb({error: 'chaincode not found'}, resp);
 				}
@@ -67,8 +68,10 @@ module.exports = function (chain, g_options, logger) {
 		console.log('\ncreating a marble...');
 
 		var opts = {
+			peer_urls: options.peer_urls,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
+			chaincode_version: g_options.chaincode_version,
 			event_url: g_options.event_url,
 			endorsed_hook: options.endorsed_hook,
 			ordered_hook: options.ordered_hook,
@@ -82,7 +85,7 @@ module.exports = function (chain, g_options, logger) {
 				options.args.auth_company
 			]
 		};
-		fcw.invoke_chaincode(chain, opts, cb);
+		fcw.invoke_chaincode(enrollObj, opts, cb);
 	};
 
 	//get list of marbles
@@ -92,11 +95,12 @@ module.exports = function (chain, g_options, logger) {
 		var opts = {
 			peer_urls: options.peer_urls,
 			channel_id: g_options.channel_id,
+			chaincode_version: g_options.chaincode_version,
 			chaincode_id: g_options.chaincode_id,
 			cc_function: 'compelte_marble_index',
 			cc_args: [' ']
 		};
-		fcw.query_chaincode(chain, opts, cb);
+		fcw.query_chaincode(enrollObj, opts, cb);
 	};
 
 	//get marble
@@ -106,11 +110,12 @@ module.exports = function (chain, g_options, logger) {
 		var opts = {
 			peer_urls: options.peer_urls,
 			channel_id: g_options.channel_id,
+			chaincode_version: g_options.chaincode_version,
 			chaincode_id: g_options.chaincode_id,
 			cc_function: 'read',
 			cc_args: [options.args.marble_id]
 		};
-		fcw.query_chaincode(chain, opts, cb);
+		fcw.query_chaincode(enrollObj, opts, cb);
 	};
 
 	//set marble owner
@@ -118,8 +123,10 @@ module.exports = function (chain, g_options, logger) {
 		console.log('\nsetting marble owner...');
 
 		var opts = {
+			peer_urls: options.peer_urls,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
+			chaincode_version: g_options.chaincode_version,
 			event_url: g_options.event_url,
 			endorsed_hook: options.endorsed_hook,
 			ordered_hook: options.ordered_hook,
@@ -131,7 +138,7 @@ module.exports = function (chain, g_options, logger) {
 				options.args.auth_company
 			]
 		};
-		fcw.invoke_chaincode(chain, opts, cb);
+		fcw.invoke_chaincode(enrollObj, opts, cb);
 	};
 
 	//delete marble
@@ -139,15 +146,17 @@ module.exports = function (chain, g_options, logger) {
 		console.log('\ndeleting a marble...');
 
 		var opts = {
+			peer_urls: options.peer_urls,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
+			chaincode_version: g_options.chaincode_version,
 			event_url: g_options.event_url,
 			endorsed_hook: options.endorsed_hook,
 			ordered_hook: options.ordered_hook,
 			cc_function: 'delete_marble',
 			cc_args: [options.args.marble_id, options.args.auth_company]
 		};
-		fcw.invoke_chaincode(chain, opts, cb);
+		fcw.invoke_chaincode(enrollObj, opts, cb);
 	};
 
 
@@ -158,15 +167,17 @@ module.exports = function (chain, g_options, logger) {
 		console.log('\nCreating a marble owner\n');
 
 		var opts = {
+			peer_urls: options.peer_urls,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
+			chaincode_version: g_options.chaincode_version,
 			event_url: g_options.event_url,
 			endorsed_hook: options.endorsed_hook,
 			ordered_hook: options.ordered_hook,
 			cc_function: 'init_owner',
 			cc_args: [options.args.marble_owner, options.args.owners_company]
 		};
-		fcw.invoke_chaincode(chain, opts, cb);
+		fcw.invoke_chaincode(enrollObj, opts, cb);
 	};
 
 	//get a owner/user
@@ -178,10 +189,11 @@ module.exports = function (chain, g_options, logger) {
 			peer_urls: options.peer_urls,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
+			chaincode_version: g_options.chaincode_version,
 			cc_function: 'read',
 			cc_args: [full_username]
 		};
-		fcw.query_chaincode(chain, opts, cb);
+		fcw.query_chaincode(enrollObj, opts, cb);
 	};
 
 	//get the owner list
@@ -192,10 +204,11 @@ module.exports = function (chain, g_options, logger) {
 			peer_urls: options.peer_urls,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
+			chaincode_version: g_options.chaincode_version,
 			cc_function: 'read',
 			cc_args: ['_ownerindex']
 		};
-		fcw.query_chaincode(chain, opts, cb);
+		fcw.query_chaincode(enrollObj, opts, cb);
 	};
 
 	//build full name
@@ -213,11 +226,12 @@ module.exports = function (chain, g_options, logger) {
 		var opts = {
 			peer_urls: options.peer_urls,
 			channel_id: g_options.channel_id,
+			chaincode_version: g_options.chaincode_version,
 			chaincode_id: g_options.chaincode_id,
 			cc_function: 'read_everything',
 			cc_args: ['']
 		};
-		fcw.query_chaincode(chain, opts, cb);
+		fcw.query_chaincode(enrollObj, opts, cb);
 	};
 
 

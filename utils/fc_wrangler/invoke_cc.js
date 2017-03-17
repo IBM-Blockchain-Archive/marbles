@@ -18,16 +18,18 @@ module.exports = function (logger) {
 					peer_urls: [array of peer urls],
 					channel_id: "channel id",
 					chaincode_id: "chaincode id",
-					event_url: "event grpc url",
+					chaincode_version: "v0",
 					endorsed_hook: function(error, res){},
 					ordered_hook: function(error, res){},
 					cc_function: "function_name"
 					cc_args: ["argument 1"]
 		}
 	*/
-	invoke_cc.invoke_chaincode = function (chain, options, cb) {
-		logger.debug('\nInvoking Chaincode: ' + options.cc_function + '()\n');
+	invoke_cc.invoke_chaincode = function (obj, options, cb) {
+		logger.debug('\n[fcw] Invoking Chaincode: ' + options.cc_function + '()\n');
 		//var eventhub;
+		var chain = obj.chain;
+		var nonce = utils.getNonce();
 
 		try {
 			for (var i in options.peer_urls) {
@@ -42,18 +44,18 @@ module.exports = function (logger) {
 		var request = {
 			chainId: options.channel_id,
 			chaincodeId: options.chaincode_id,
-			txId: utils.buildTransactionID({ length: 12 }),
-			nonce: utils.getNonce(),
+			chaincodeVersion: options.chaincode_version,
 			fcn: options.cc_function,
-			args: options.cc_args
+			args: options.cc_args,
+			txId: chain.buildTransactionID(nonce, obj.submitter),
+			nonce: nonce,
 		};
-
-		console.log('\n\n sending:', request, options);
+		logger.debug('[fcw] Sending invoke req', request);
 
 		// Setup EventHub
-		/*eventhub = new EventHub();
-		eventhub.setPeerAddr(options.event_url);
-		eventhub.connect();*/
+		//eventhub = new EventHub();
+		//eventhub.setPeerAddr(options.event_url);
+		//eventhub.connect();
 
 		// Send Proposal
 		chain.sendTransactionProposal(request
@@ -90,8 +92,11 @@ module.exports = function (logger) {
 						if (cb) return cb(null);
 						else return;
 					});*/
-					if (cb) return cb(null);
-					else return;
+
+					setTimeout(function(){
+						if (cb) return cb(null);
+						else return;
+					},10000);
 				}
 
 				// No good
@@ -109,6 +114,7 @@ module.exports = function (logger) {
 				else return;
 			}
 		);
+
 	};
 
 	return invoke_cc;

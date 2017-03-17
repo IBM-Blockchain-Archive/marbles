@@ -25,8 +25,8 @@ function build_bag(req){
 function get_credential_data(){
 	var helper = require(__dirname + '/../utils/helper.js')(process.env.creds_filename, console);
 	var ret =	{
-					admin_id: helper.getUsers(0).enrollId,
-					admin_secret: helper.getUsers(0).enrollSecret,
+					admin_id: helper.getUser(0).enrollId,
+					admin_secret: helper.getUser(0).enrollSecret,
 					orderer: helper.getOrderersUrl(0),
 					ca: helper.getCasUrl(0),
 					peer: helper.getPeersUrl(0),

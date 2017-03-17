@@ -11,3 +11,4 @@ certificate.pem
 /chaincode/Dockerfile
 chaincode.exe
 app_state*
+/utils/fc_wrangler/kvs

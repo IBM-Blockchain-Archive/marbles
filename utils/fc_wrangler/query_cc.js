@@ -1,10 +1,8 @@
 //-------------------------------------------------------------------
-// Query Chaincode - read the ledger
+// Query Chaincode - read chaincode state
 //-------------------------------------------------------------------
-var path = require('path');
 
 module.exports = function (logger) {
-	var common = require(path.join(__dirname, './common.js'))(logger);
 	var Peer = require('fabric-client/lib/Peer.js');
 	var utils = require('fabric-client/lib/utils.js');
 	var query_cc = {};
@@ -17,12 +15,14 @@ module.exports = function (logger) {
 					peer_urls: [array of peer urls],
 					channel_id: "channel id",
 					chaincode_id: "chaincode id",
+					chaincode_version: "v0",
 					cc_function: "function_name"
 					cc_args: ["argument 1"]
 		}
 	*/
-	query_cc.query_chaincode = function (chain, options, cb) {
-		logger.debug('Querying Chaincode: ' + options.cc_function + '()\n');
+	query_cc.query_chaincode = function (obj, options, cb) {
+		logger.debug('[fcw] Querying Chaincode: ' + options.cc_function + '()\n');
+		var chain = obj.chain;
 
 		try{
 			for (var i in options.peer_urls) {
@@ -33,16 +33,19 @@ module.exports = function (logger) {
 			//might error if peer already exists, but we don't care
 		}
 
+		var nonce = utils.getNonce();
+
 		// send proposal to peer
 		var request = {
-			targets: common.fmt_peers(options.peer_urls),
 			chainId: options.channel_id,
 			chaincodeId: options.chaincode_id,
-			txId: utils.buildTransactionID(),
-			nonce: utils.getNonce(),
+			chaincodeVersion: options.chaincode_version,
 			fcn: options.cc_function,
-			args: options.cc_args
+			args: options.cc_args,
+			txId: chain.buildTransactionID(nonce, obj.submitter),
+			nonce: nonce,
 		};
+		logger.debug('[fcw] Sending query req', request);
 
 		chain.queryByChaincode(request
 			//nothing

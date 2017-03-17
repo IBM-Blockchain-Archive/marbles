@@ -15,30 +15,19 @@ module.exports = function (config_filename, logger) {
 		return shasum.digest('hex').toString();
 	};
 
+	// get network id
 	helper.getNetworkId = function() {
 		return helper.creds.credentials.network_id;
 	};
 
-	helper.getPeers = function (index) {
-		if (index === undefined || index == null) {
-			return helper.creds.credentials.peers;
-		} else {
-			if (index < helper.creds.credentials.peers.length) {
-				return helper.creds.credentials.peers;
-			} else {
-				throw new Error('Peer index out of bounds. Total peers = ' + helper.creds.credentials.peers.length);
-			}
-		}
-	};
-
+	// get a peer's grpc url
 	helper.getPeersUrl = function (index) {
 		if (index === undefined || index == null) {
 			throw new Error('Peer index not passed');
 		}
 		else {
 			if (index < helper.creds.credentials.peers.length) {
-				//console.log('Peer = ', helper.creds.credentials.peers[index]);
-				return 'grpc://' + helper.creds.credentials.peers[index].grpc_host + ':' + helper.creds.credentials.peers[index].grpc_port;
+				return helper.creds.credentials.peers[index].discovery;
 			}
 			else {
 				throw new Error('Peer index out of bounds. Total peers = ' + helper.creds.credentials.peers.length);
@@ -46,59 +35,49 @@ module.exports = function (config_filename, logger) {
 		}
 	};
 
-	helper.getCas = function (index) {
+	// get a peer's msp id
+	helper.getPeersMspId = function (index) {
 		if (index === undefined || index == null) {
-			return helper.creds.credentials.cas;
+			throw new Error('Peer index not passed');
 		}
 		else {
-			if (index < helper.creds.credentials.cas.length) {
-				return helper.creds.credentials.cas[index];
+			if (index < helper.creds.credentials.peers.length) {
+				return helper.creds.credentials.peers[index].msp_id;
 			}
 			else {
-				throw new Error('CA index out of bounds. Total CA = '	+ helper.creds.credentials.cas.length);
+				throw new Error('Peer index out of bounds. Total peers = ' + helper.creds.credentials.peers.length);
 			}
 		}
 	};
 
+	// get a ca's http url
 	helper.getCasUrl = function (index) {
 		if (index === undefined || index == null) {
 			throw new Error('CA index not passed');
 		} else {
 			if (index < helper.creds.credentials.cas.length) {
-				return 'http://' + helper.creds.credentials.cas[index].host + ':' + helper.creds.credentials.cas[index].port;
+				return helper.creds.credentials.cas[index].api;
 			} else {
 				throw new Error('CA index out of bounds. Total CA = ' + helper.creds.credentials.cas.length);
 			}
 		}
 	};
 
-	helper.getOrderers = function (index) {
-		if (index === undefined || index == null) {
-			return helper.creds.credentials.orderers;
-		}
-		else {
-			if (index < helper.creds.credentials.orderers.length) {
-				return helper.creds.credentials.orderers[index];
-			}
-			else {
-				throw new Error('Orderers index out of bounds. Total CA = '	+ helper.creds.credentials.orderers.length);
-			}
-		}
-	};
-
+	// get an orderer's grpc url
 	helper.getOrderersUrl = function (index) {
 		if (index === undefined || index == null) {
 			throw new Error('Orderers index not passed');
 		} else {
 			if (index < helper.creds.credentials.orderers.length) {
-				return 'grpc://' + helper.creds.credentials.orderers[index].host + ':' + helper.creds.credentials.orderers[index].port;
+				return helper.creds.credentials.orderers[index].discovery;
 			} else {
 				throw new Error('Orderers index out of bounds. Total CA = ' + helper.creds.credentials.orderers.length);
 			}
 		}
 	};
 
-	helper.getUsers = function (index) {
+	// get a enrollment user
+	helper.getUser = function (index) {
 		if (index === undefined || index == null) {
 			return helper.creds.credentials.users;
 		}
@@ -112,10 +91,67 @@ module.exports = function (config_filename, logger) {
 		}
 	};
 
+	// get a peer's grpc event url
+	helper.getPeerEventUrl = function(index){
+		if (index === undefined || index == null) {
+			throw new Error('Peers index not passed');
+		} else {
+			if (index < helper.creds.credentials.peers.length) {
+				return helper.creds.credentials.peers[index].event;
+			}
+			logger.warn('no event url found in creds');
+			return null;
+		}
+	};
+
+	// get the chaincode id
 	helper.getChaincodeId = function () {
 		return getMarblesField('chaincode_id');
 	};
 
+	// get the marble owner names
+	helper.getMarbleUsernames = function(){
+		return getMarblesField('usernames');
+	};
+
+	// get the marbles trading company name
+	helper.getCompanyName = function(){
+		return getMarblesField('company');
+	};
+
+	// get the marble's server port number
+	helper.getMarblesPort = function(){
+		return getMarblesField('port');
+	};
+
+	// get the marble's channel
+	helper.getChannelId = function(){
+		return getMarblesField('channel_id');
+	};
+
+	// get the marble's chaincode version
+	helper.getChaincodeVersion = function(){
+		return getMarblesField('chaincode_version');
+	};
+
+	//safely retrieve marbles fields
+	function getMarblesField(marbles_field){
+		try{
+			if(helper.creds.credentials.marbles[marbles_field]) {
+				return helper.creds.credentials.marbles[marbles_field];
+			}
+			else {
+				console.log('Error - "' + marbles_field +'" not found in creds json');
+				return null;
+			}
+		}
+		catch(e){
+			console.log('Error - "' + marbles_field +'" not found in creds json');
+			return null;
+		}
+	}
+
+	// write new settings
 	helper.write = function(obj){
 		var creds_file = JSON.parse(fs.readFileSync(creds_path, 'utf8'));
 		var parsed = '';
@@ -145,55 +181,9 @@ module.exports = function (config_filename, logger) {
 													enrollSecret: obj.enrollSecret
 												};
 		}
-		fs.writeFileSync(creds_path, JSON.stringify(creds_file, null, 4), 'utf8');							//save to file
+		fs.writeFileSync(creds_path, JSON.stringify(creds_file, null, 4), 'utf8');	//save to file
 		helper.creds = creds_file;													//replace old copy
 	};
-
-	helper.getMarbleUsernames = function(){
-		return getMarblesField('usernames');
-	};
-
-	helper.getCompanyName = function(){
-		return getMarblesField('company');
-	};
-
-	helper.getMarblesPort = function(){
-		return getMarblesField('port');
-	};
-
-	helper.getChannelId = function(){
-		return helper.creds.credentials.channel_id;
-	};
-
-	//return event url or null
-	helper.getEventUrl = function(index){
-		if (index === undefined || index == null) {
-			throw new Error('Peers index not passed');
-		} else {
-			if (index < helper.creds.credentials.peers.length &&  helper.creds.credentials.peers[index].event_host) {
-				return 'grpc://' + helper.creds.credentials.peers[index].event_host + ':' + helper.creds.credentials.peers[index].event_port;
-			}
-			logger.warn('no event url found in creds');
-			return null;
-		}
-	};
-
-	//safely retrieve marbles fields
-	function getMarblesField(marbles_field){
-		try{
-			if(helper.creds.credentials.marbles[marbles_field]) {
-				return helper.creds.credentials.marbles[marbles_field];
-			}
-			else {
-				console.log('Error - "' + marbles_field +'" not found in creds json');
-				return null;
-			}
-		}
-		catch(e){
-			console.log('Error - "' + marbles_field +'" not found in creds json');
-			return null;
-		}
-	}
 
 	return helper;
 };
