@@ -11,7 +11,14 @@ module.exports = function (config_filename, logger) {
 	//hash of credential json file
 	helper.getHash = function(){
 		var shasum = crypto.createHash('sha1');
+		var hash = '';
+		if(helper.creds.credentials.marbles && helper.creds.credentials.marbles.last_startup_hash){	//remove hash from hash...
+			console.log('deleting');
+			hash = helper.creds.credentials.marbles.last_startup_hash;
+			delete helper.creds.credentials.marbles.last_startup_hash;
+		}
 		shasum.update(JSON.stringify(helper.creds));
+		helper.creds.credentials.marbles.last_startup_hash = hash;
 		return shasum.digest('hex').toString();
 	};
 
@@ -134,6 +141,11 @@ module.exports = function (config_filename, logger) {
 		return getMarblesField('chaincode_version');
 	};
 
+	// get the status of marbles previous startup
+	helper.getMarbleStartUpHash = function () {
+		return getMarblesField('last_startup_hash');
+	};
+
 	//safely retrieve marbles fields
 	function getMarblesField(marbles_field){
 		try{
@@ -146,7 +158,7 @@ module.exports = function (config_filename, logger) {
 			}
 		}
 		catch(e){
-			console.log('Error - "' + marbles_field +'" not found in creds json');
+			console.log('Error - "' + marbles_field +'" not found in creds json', helper.creds.credentials.marbles);
 			return null;
 		}
 	}
@@ -155,7 +167,6 @@ module.exports = function (config_filename, logger) {
 	helper.write = function(obj){
 		var creds_file = JSON.parse(fs.readFileSync(creds_path, 'utf8'));
 		var parsed = '';
-		//console.log('hey there', obj);
 
 		if(obj.ordererUrl){
 			parsed = url.parse(obj.ordererUrl, true);
@@ -180,6 +191,9 @@ module.exports = function (config_filename, logger) {
 													enrollId: obj.enrollId, 
 													enrollSecret: obj.enrollSecret
 												};
+		}
+		if(obj.hash && creds_file.credentials.marbles){
+			creds_file.credentials.marbles.last_startup_hash = obj.hash;
 		}
 		fs.writeFileSync(creds_path, JSON.stringify(creds_file, null, 4), 'utf8');	//save to file
 		helper.creds = creds_file;													//replace old copy

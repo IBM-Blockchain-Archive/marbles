@@ -17,7 +17,6 @@ var bodyParser = require('body-parser');
 var http = require('http');
 var app = express();
 var url = require('url');
-var fs = require('fs');
 var cors = require('cors');
 var async = require('async');
 var ws = require('ws');											//websocket module
@@ -138,14 +137,14 @@ var marbles_lib = null;
 // -------------------------------------------------------------------
 // Life Starts Here!
 // -------------------------------------------------------------------
-var app_state_file = './app_state_ ' + file_safe_name(process.env.marble_company) + '.json';
 process.env.app_state = 'starting';
 process.env.app_first_setup = 'yes';
 setupWebSocket();
 
 try{
-	var state = require(app_state_file);
-	if(state && state.hash === helper.getHash()){
+	var hash = helper.getMarbleStartUpHash();
+	console.log('what is what', hash, helper.getHash());
+	if(hash === helper.getHash()){
 		console.log('\n\nDetected that we have launched successfully before');
 		console.log('Welcome back - Initiating start up\n\n');
 		process.env.app_first_setup = 'no';
@@ -241,11 +240,6 @@ function randStr(length){
 	var possible = 'abcdefghijkmnpqrstuvwxyz0123456789';
 	for(var i=0; i < length; i++ ) text += possible.charAt(Math.floor(Math.random() * possible.length));
 	return text;
-}
-
-//remove non alphanumerical characters
-function file_safe_name(a_string){
-	return a_string.replace(new RegExp('[^A-Za-z0-9_]', 'g'), '');
 }
 
 //real simple hash
@@ -370,10 +364,12 @@ function create_marbles(username, cb){
 
 //we are done, inform the clients
 function all_done(){
+	console.log('\n------------------------------------------ All Done ------------------------------------------\n');
 	broadcast_state('registered_owners');
 	process.env.app_first_setup = 'no';
-	var state_file = {hash: helper.getHash()};						//write state file so we know we started before
-	fs.writeFileSync(app_state_file, JSON.stringify(state_file, null, 4), 'utf8');
+
+	console.log('hash is', helper.getHash());
+	helper.write({hash: helper.getHash()});							//write state file so we know we started before
 	ws_server.check_for_updates(null);								//call the periodic task to get the state of everything
 }
 

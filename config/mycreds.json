@@ -1,6 +1,6 @@
 {
     "credentials": {
-        "network_id": "asdf",
+        "network_id": "MarblesTradingConsortium",
         "peers": [
             {
                 "discovery": "grpc://varadvm2.rtp.raleigh.ibm.com:7051",
@@ -33,7 +33,8 @@
                 "cliff",
                 "cody"
             ],
-            "port": 3002
+            "port": 3002,
+            "last_startup_hash": "8ce9297da0fc90807df3d813e742a90e38035b32"
         }
     }
 }
