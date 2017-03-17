@@ -142,7 +142,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 				sch_next_check();
 				ws_server.check_for_updates(null);
 			}
-		}, 12000);														//check perodically
+		}, 8000);														//check perodically, should be slighly shorter than the block delay
 	}
 
 	ws_server.check_for_updates = function(ws_client){

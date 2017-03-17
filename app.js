@@ -23,7 +23,7 @@ var async = require('async');
 var ws = require('ws');											//websocket module
 
 // --- Set Our Things --- //
-var block_delay = 10000;
+var block_delay = 10000;										//should be exactly the block delay
 var logger = {													//overwrite console to work with info/warn/debug
 	log: console.log,
 	info: console.log,
@@ -279,21 +279,28 @@ function create_assets(build_marbles_users){
 		async.eachLimit(build_marbles_users, 1, function(username, user_cb) { 	//iter through each one ONLY ONE! [important]
 			console.log('debug 3 - on user', username, Date.now());
 
-			// --- Create Each User --- //
+			// --- Create Each User, Serially --- //
 			pessimistic_create_owner(0, username, function(){
-
-				// --- Create 2x Marbles --- //
-				setTimeout(function(){											//delay for peer catch up
-					create_marbles(username, user_cb);
-				}, block_delay);
+				user_cb();
 			});
 
 		}, function(err) {
-			console.log('- finished creating assets, waiting for peer catch up');
+			console.log('- finished creating owners, now for marbles');
 			if(err == null) {
-				setTimeout(function(){											//marble owner creation finished
-					all_done();													//delay for peer catch up
-				}, block_delay);
+
+				// --- Create Marbles, 2 Users at a Time --- //
+				async.eachLimit(build_marbles_users, 2, function(username, marble_cb) { //iter through each one 
+
+					// --- Create 2 Marbles Serially --- //
+					console.log('debug 4 - on user', username, Date.now());
+					create_marbles(username, marble_cb);
+
+				}, function(err) {													//marble owner creation finished
+					console.log('- finished creating assets, waiting for peer catch up');
+					if(err == null) {
+						all_done();													//delay for peer catch up
+					}
+				});
 			}
 		});
 	}
@@ -303,7 +310,7 @@ function create_assets(build_marbles_users){
 	}
 }
 
-//create the owner in a loop until it exists - repeat until we see the correct error! (yes)
+//create the owner in a loop until it exists - repeat until we see the correct error! (yes, i know)
 function pessimistic_create_owner(attempt, username, cb){
 	var options = 	{
 						peer_urls: [helper.getPeersUrl(0)],
@@ -314,7 +321,6 @@ function pessimistic_create_owner(attempt, username, cb){
 					};
 
 	marbles_lib.register_owner(options, function(e){
-		console.log('\n\n\n!', attempt, e);
 
 		// --- Does the user exist yet? --- //
 		if(e && e.parsed && e.parsed.indexOf('owner already exists') >= 0){
@@ -338,7 +344,6 @@ function pessimistic_create_owner(attempt, username, cb){
 				else return;
 			}
 		}
-		
 	});
 }
 
