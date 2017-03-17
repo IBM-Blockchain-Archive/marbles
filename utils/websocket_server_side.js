@@ -152,13 +152,13 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 
 		marbles_lib.read_everything(options, function(err, resp){
 			if(err != null){
-				console.log('\n\n[checking] could not get everything:', err);
+				console.log('\n[checking] could not get everything:', err);
 				sch_next_check();										//check again
 			}
 			else{
 				var data = resp.parsed;
 				if(data && data.owners_index && data.marbles){
-					console.log('\n\n[checking] number of owners:', data.owners_index.length);
+					console.log('\n[checking] number of owners:', data.owners_index.length);
 					console.log('[checking] number of marbles:', data.marbles.length, '\n\n');
 				}
 

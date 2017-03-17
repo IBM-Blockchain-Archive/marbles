@@ -19,7 +19,6 @@ module.exports = function (enrollObj, g_options, logger) {
 		console.log('\ndeploying marbles chaincode...');
 
 		var opts = {
-			peer_urls: options.peerl_urls,
 			path_2_chaincode: './marbles',
 			channel_id: g_options.channel_id,
 			event_url: g_options.event_url,
@@ -38,7 +37,6 @@ module.exports = function (enrollObj, g_options, logger) {
 		console.log('\nchecking for chaincode...');
 
 		var opts = {
-			peer_urls: options.peer_urls,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
 			chaincode_version: g_options.chaincode_version,
@@ -68,7 +66,6 @@ module.exports = function (enrollObj, g_options, logger) {
 		console.log('\ncreating a marble...');
 
 		var opts = {
-			peer_urls: options.peer_urls,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
 			chaincode_version: g_options.chaincode_version,
@@ -93,7 +90,6 @@ module.exports = function (enrollObj, g_options, logger) {
 		console.log('\nfetching marble index list...');
 
 		var opts = {
-			peer_urls: options.peer_urls,
 			channel_id: g_options.channel_id,
 			chaincode_version: g_options.chaincode_version,
 			chaincode_id: g_options.chaincode_id,
@@ -108,7 +104,6 @@ module.exports = function (enrollObj, g_options, logger) {
 		console.log('\nfetching marble ' + options.marble_id + ' list...');
 
 		var opts = {
-			peer_urls: options.peer_urls,
 			channel_id: g_options.channel_id,
 			chaincode_version: g_options.chaincode_version,
 			chaincode_id: g_options.chaincode_id,
@@ -123,7 +118,6 @@ module.exports = function (enrollObj, g_options, logger) {
 		console.log('\nsetting marble owner...');
 
 		var opts = {
-			peer_urls: options.peer_urls,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
 			chaincode_version: g_options.chaincode_version,
@@ -146,7 +140,6 @@ module.exports = function (enrollObj, g_options, logger) {
 		console.log('\ndeleting a marble...');
 
 		var opts = {
-			peer_urls: options.peer_urls,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
 			chaincode_version: g_options.chaincode_version,
@@ -167,7 +160,6 @@ module.exports = function (enrollObj, g_options, logger) {
 		console.log('\nCreating a marble owner\n');
 
 		var opts = {
-			peer_urls: options.peer_urls,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
 			chaincode_version: g_options.chaincode_version,
@@ -186,7 +178,6 @@ module.exports = function (enrollObj, g_options, logger) {
 		console.log('\nFetching owner ' + full_username + ' list...');
 
 		var opts = {
-			peer_urls: options.peer_urls,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
 			chaincode_version: g_options.chaincode_version,
@@ -201,7 +192,6 @@ module.exports = function (enrollObj, g_options, logger) {
 		console.log('\nFetching owner index list...');
 
 		var opts = {
-			peer_urls: options.peer_urls,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
 			chaincode_version: g_options.chaincode_version,
@@ -224,7 +214,6 @@ module.exports = function (enrollObj, g_options, logger) {
 		console.log('\nFetching EVERYTHING...');
 
 		var opts = {
-			peer_urls: options.peer_urls,
 			channel_id: g_options.channel_id,
 			chaincode_version: g_options.chaincode_version,
 			chaincode_id: g_options.chaincode_id,

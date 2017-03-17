@@ -212,6 +212,7 @@ function enroll_admin(cb){
 		uuid: helper.getNetworkId() + '-' + helper.getChannelId(),
 		ca_url: helper.getCasUrl(0),
 		orderer_url: helper.getOrderersUrl(0),
+		peer_urls: [helper.getPeersUrl(0)],
 		enroll_id: user.enrollId,
 		enroll_secret: user.enrollSecret,
 		msp_id: helper.getPeersMspId(0)

@@ -5,8 +5,7 @@ var path = require('path');
 
 module.exports = function (logger) {
 	var common = require(path.join(__dirname, './common.js'))(logger);
-	var Peer = require('fabric-client/lib/Peer.js');
-	//var EventHub = require('fabric-client/lib/EventHub.js');
+	var EventHub = require('fabric-client/lib/EventHub.js');
 	var utils = require('fabric-client/lib/utils.js');
 	var invoke_cc = {};
 
@@ -15,10 +14,10 @@ module.exports = function (logger) {
 	//-------------------------------------------------------------------
 	/*
 		options: {
-					peer_urls: [array of peer urls],
 					channel_id: "channel id",
 					chaincode_id: "chaincode id",
 					chaincode_version: "v0",
+					event_url: "peers event url",
 					endorsed_hook: function(error, res){},
 					ordered_hook: function(error, res){},
 					cc_function: "function_name"
@@ -27,18 +26,9 @@ module.exports = function (logger) {
 	*/
 	invoke_cc.invoke_chaincode = function (obj, options, cb) {
 		logger.debug('\n[fcw] Invoking Chaincode: ' + options.cc_function + '()\n');
-		//var eventhub;
+		var eventhub;
 		var chain = obj.chain;
 		var nonce = utils.getNonce();
-
-		try {
-			for (var i in options.peer_urls) {
-				chain.addPeer(new Peer(options.peer_urls[i]));
-			}
-		}
-		catch (e) {
-			//might error if peer already exists, but we don't care
-		}
 
 		// send proposal to endorser
 		var request = {
@@ -53,9 +43,10 @@ module.exports = function (logger) {
 		logger.debug('[fcw] Sending invoke req', request);
 
 		// Setup EventHub
-		//eventhub = new EventHub();
-		//eventhub.setPeerAddr(options.event_url);
-		//eventhub.connect();
+		console.log('listening to even url', options.event_url);
+		eventhub = new EventHub();
+		eventhub.setPeerAddr(options.event_url);
+		eventhub.connect();
 
 		// Send Proposal
 		chain.sendTransactionProposal(request
@@ -77,26 +68,32 @@ module.exports = function (logger) {
 					// Call optional order hook
 					if (options.ordered_hook) options.ordered_hook(null, request.txId.toString());
 
-					/*var watchdog = setTimeout(() => {
+					var watchdog = setTimeout(() => {
 						var msg = '[fcw] Failed to receive block event within the timeout period';
 						logger.error(msg);
 						throw msg;
 					}, 30000);
 
 					// Wait for block event
-					eventhub.registerTxEvent(request.txId.toString(), (tx) => {
-						logger.info('[fcw] The chaincode transaction has been successfully committed');
+					eventhub.registerTxEvent(request.txId.toString(), (tx, code) => {
+						logger.info('[fcw] The chaincode transaction has been committed, success:', code);
 						clearTimeout(watchdog);
-						//eventhub.disconnect();								//dsh this seems to crash the application...
 
-						if (cb) return cb(null);
-						else return;
-					});*/
+						if(code !== 'VALID') {
+							if (cb) return cb(code);					//pass error back
+							else return;
+						} else {
+							if (cb) return cb(null);					//all good, pass it back
+							else return;
+						}
+					});
 
+					/* use this instead of above if eventhub is causing issues
 					setTimeout(function(){
 						if (cb) return cb(null);
 						else return;
 					},10000);
+					*/
 				}
 
 				// No good

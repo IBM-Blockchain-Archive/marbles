@@ -14,29 +14,12 @@ module.exports = function (logger) {
 	//-------------------------------------------------------------------
 	/*
 		options: {
-					peer_urls: [array of peer urls],
 					block_id: integer - block number
 		}
 	*/
 	query_peer.query_block = function (obj, options, cb) {
 		logger.debug('[fcw] Querying Block: ' + options.block_id + '\n');
 		var chain = obj.chain;
-
-		try{
-			for (var i in options.peer_urls) {
-				chain.addPeer(new Peer(options.peer_urls[i]));
-			}
-		}
-		catch(e){
-			//might error if peer already exists, but we don't care
-		}
-
-		try{
-			chain.setPrimaryPeer(new Peer(options.peer_urls[0]));
-		}
-		catch(e){
-			//might error if peer already exists, but we don't care
-		}
 
 		// send proposal to peer
 		chain.queryBlock(Number(options.block_id)).then(
@@ -59,29 +42,12 @@ module.exports = function (logger) {
 	//-------------------------------------------------------------------
 	/*
 		options: {
-					peer_urls: [array of peer urls],
 					block_id: integer - block number
 		}
 	*/
 	query_peer.query_channel = function (obj, options, cb) {
 		logger.debug('[fcw] Querying Channel:\n');
 		var chain = obj.chain;
-
-		try{
-			for (var i in options.peer_urls) {
-				chain.addPeer(new Peer(options.peer_urls[i]));
-			}
-		}
-		catch(e){
-			//might error if peer already exists, but we don't care
-		}
-
-		try{
-			chain.setPrimaryPeer(new Peer(options.peer_urls[0]));
-		}
-		catch(e){
-			//might error b/c bugs, don't care
-		}
 
 		// send proposal to peer
 		chain.queryInfo().then(
@@ -106,22 +72,12 @@ module.exports = function (logger) {
 	//-------------------------------------------------------------------
 	/*
 		options: {
-					peer_urls: [array of peer urls],
 					block_id: integer - block number
 		}
 	*/
 	query_peer.query_channel_members = function (obj, options, cb) {
 		logger.debug('[fcw] Querying Channel Members:\n');
 		var chain = obj.chain;
-
-		try{
-			for (var i in options.peer_urls) {
-				chain.addPeer(new Peer(options.peer_urls[i]));
-			}
-		}
-		catch(e){
-			//might error if peer already exists, but we don't care
-		}
 
 		chain.initialize().then(()=>{
 			let orgs = chain.getOrganizationUnits();
@@ -143,23 +99,8 @@ module.exports = function (logger) {
 		console.log('\n\nusing options (channel)', options);			//dsh todo remove
 		console.log('');
 
-		var peer = new Peer(options.peer_urls[0]);
-		try{
-			chain.addPeer(peer);
-		}
-		catch(e){
-			//might error if peer already exists, but we don't care
-		}
-
-		try{
-			chain.setPrimaryPeer(peer);
-		}
-		catch(e){
-			//might error b/c bugs, don't care
-		}
-
 		// send proposal to peer
-		chain.queryChannels(peer).then(
+		chain.queryChannels(new Peer(options.peer_urls[0])).then(
 			function(chain_resp) {
 				chain_resp.channels = _.sortBy(chain_resp.channels, [channel =>  channel.channel_id]);
 				if (cb) return cb(null, chain_resp);
@@ -279,14 +220,6 @@ module.exports = function (logger) {
 		logger.debug('[fcw] Querying Installed Chaincodes\n');
 		var chain = obj.chain;
 
-		try{
-			for (var i in options.peer_urls) {
-				chain.addPeer(new Peer(options.peer_urls[i]));
-			}
-		}
-		catch(e){
-			//might error if peer already exists, but we don't care
-		}
 
 		// send proposal to peer
 		chain.queryInstalledChaincodes(new Peer(options.peer_urls[0])).then(
@@ -309,30 +242,12 @@ module.exports = function (logger) {
 	// Get Instantiated Chaincodes
 	//-------------------------------------------------------------------
 	/*
-		options: {
-					peer_urls: [array of peer urls],
-		}
+		options: {}
 	*/
 	query_peer.query_instantiated_cc = function (obj, options, cb) {
 		logger.debug('[fcw] Querying Instantiated Chaincodes:\n');
 		var chain = obj.chain;
 		
-		try{
-			for (var i in options.peer_urls) {
-				chain.addPeer(new Peer(options.peer_urls[i]));
-			}
-		}
-		catch(e){
-			//might error if peer already exists, but we don't care
-		}
-
-		try{
-			chain.setPrimaryPeer(new Peer(options.peer_urls[0]));
-		}
-		catch(e){
-			//might error b/c bugs, don't care
-		}
-
 		// send proposal to peer
 		chain.queryInstantiatedChaincodes().then(
 			function(resp) {

@@ -3,7 +3,6 @@
 //-------------------------------------------------------------------
 
 module.exports = function (logger) {
-	var Peer = require('fabric-client/lib/Peer.js');
 	var utils = require('fabric-client/lib/utils.js');
 	var query_cc = {};
 
@@ -12,7 +11,6 @@ module.exports = function (logger) {
 	//-------------------------------------------------------------------
 	/*
 		options: {
-					peer_urls: [array of peer urls],
 					channel_id: "channel id",
 					chaincode_id: "chaincode id",
 					chaincode_version: "v0",
@@ -23,16 +21,6 @@ module.exports = function (logger) {
 	query_cc.query_chaincode = function (obj, options, cb) {
 		logger.debug('[fcw] Querying Chaincode: ' + options.cc_function + '()\n');
 		var chain = obj.chain;
-
-		try{
-			for (var i in options.peer_urls) {
-				chain.addPeer(new Peer(options.peer_urls[i]));
-			}
-		}
-		catch(e){
-			//might error if peer already exists, but we don't care
-		}
-
 		var nonce = utils.getNonce();
 
 		// send proposal to peer
@@ -60,7 +48,7 @@ module.exports = function (logger) {
 
 				// --- response looks good --- //
 				else {
-					logger.debug('[fcw] Successful query transaction.', formatted.parsed);
+					logger.debug('[fcw] Successful query transaction.'); //, formatted.parsed);
 				}
 				if (cb) return cb(null, formatted);
 			}
@@ -90,7 +78,8 @@ module.exports = function (logger) {
 			var as_string = peer_responses[i].toString('utf8');
 			var as_obj = {};
 
-			logger.debug('[fcw] Peer ' + i, 'payload as str:', as_string, 'len', as_string.length);
+			//logger.debug('[fcw] Peer ' + i, 'payload as str:', as_string, 'len', as_string.length);
+			logger.debug('[fcw] Peer ' + i, 'len', as_string.length);
 			ret.raw_peer_payloads.push(as_string);
 
 			// -- compare peer responses -- //
@@ -109,7 +98,8 @@ module.exports = function (logger) {
 				else {
 					as_obj = JSON.parse(as_string);
 				}
-				logger.debug('[fcw] Peer ' + i, 'payload as self:', as_obj, 'type', typeof as_obj);
+				//logger.debug('[fcw] Peer ' + i, 'payload as self:', as_obj, 'type', typeof as_obj);
+				logger.debug('[fcw] Peer ' + i, 'type', typeof as_obj);
 				if (ret.parsed === null) ret.parsed = as_obj;	//store the first one here
 			}
 			catch (e) {

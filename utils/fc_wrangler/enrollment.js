@@ -10,6 +10,7 @@ module.exports = function (logger) {
 	var User = require('fabric-client/lib/User.js');
 	var CaService = require('fabric-ca-client/lib/FabricCAClientImpl.js');
 	var Orderer = require('fabric-client/lib/Orderer.js');
+	var Peer = require('fabric-client/lib/Peer.js');
 
 
 	//-----------------------------------------------------------------
@@ -17,6 +18,7 @@ module.exports = function (logger) {
 	//-----------------------------------------------------------------
 	/*
 		options = {
+			peer_urls: ['array of peer grpc urls'],
 			channel_id: 'channel name',
 			uuid: 'unique name for this enollment',
 			ca_url: 'http://urlhere:port',
@@ -56,6 +58,21 @@ module.exports = function (logger) {
 		}).then(function (submitter) {
 
 			chain.addOrderer(new Orderer(options.orderer_url));
+
+			try {
+				for (var i in options.peer_urls) {
+					chain.addPeer(new Peer(options.peer_urls[i]));
+				}
+			}
+			catch (e) {
+				//might error if peer already exists, but we don't care
+			}
+			try{
+				chain.setPrimaryPeer(new Peer(options.peer_urls[0]));
+			}
+			catch(e){
+				//might error b/c bugs, don't care
+			}
 
 			// --- Success --- //
 			logger.debug('[fcw] Successfully got enrollment ' + options.uuid);

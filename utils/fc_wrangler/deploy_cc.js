@@ -5,9 +5,7 @@ var path = require('path');
 
 module.exports = function (logger) {
 	var common = require(path.join(__dirname, './common.js'))(logger);
-	var Peer = require('fabric-client/lib/Peer.js');
 	//var EventHub = require('fabric-client/lib/EventHub.js');
-	//var Orderer = require('fabric-client/lib/Orderer.js');
 	var utils = require('fabric-client/lib/utils.js');
 	var deploy_cc = {};
 
@@ -16,7 +14,6 @@ module.exports = function (logger) {
 	//-------------------------------------------------------------------
 	/*
 		options: {
-					peer_urls: [array of peer urls],
 					path_2_chaincode: "path to chaincode from proj root",
 					chaincode_id: "chaincode id",
 					chaincode_version: "v0",
@@ -27,15 +24,6 @@ module.exports = function (logger) {
 	deploy_cc.install_chaincode = function (obj, options, cb) {
 		logger.debug('\n[fcw] Installing Chaincode\n');
 		var chain = obj.chain;
-
-		try {
-			for (var i in options.peer_urls) {
-				chain.addPeer(new Peer(options.peer_urls[i]));
-			}
-		}
-		catch (e) {
-			//might error if peer already exists, but we don't care
-		}
 
 		// fix GOPATH - does not need to be real!
 		process.env.GOPATH = path.join(__dirname, '../');
@@ -76,7 +64,6 @@ module.exports = function (logger) {
 	//-------------------------------------------------------------------
 	/*
 		options: {
-					peer_urls: [array of peer urls],
 					path_2_chaincode: "path to chaincode from proj root",
 					channel_id: "channel id",
 					chaincode_id: "chaincode id",
@@ -91,15 +78,6 @@ module.exports = function (logger) {
 		logger.debug('\n[fcw] Instantiating Chaincode\n', options);
 		var chain = obj.chain;
 		//var eventhub;
-
-		try {
-			for (var i in options.peer_urls) {
-				chain.addPeer(new Peer(options.peer_urls[i]));
-			}
-		}
-		catch (e) {
-			//might error if peer already exists, but we don't care
-		}
 
 		// fix GOPATH - does not need to be real!
 		process.env.GOPATH = path.join(__dirname, '../');
