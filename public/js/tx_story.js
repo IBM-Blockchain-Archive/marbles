@@ -56,6 +56,7 @@ function show_tx_step(obj, cb_orig){
 		//1
 		if(state === 'building_proposal'){
 			reset();
+			$('.closeTxStory').hide();
 			$('#txStep1').removeClass('inactiveStep');
 			$('#txStep2, #txStep3, #txStep4').addClass('inactiveStep');
 			$('#txStep1, #txStep2, #txStep3, #txStep4').removeClass('stepComplete');//reset
@@ -104,6 +105,7 @@ function show_tx_step(obj, cb_orig){
 			$('#txStep1, #txStep2, #txStep3, #txStep4').addClass('stepComplete');
 			$('#commitBoxStable span').removeClass('fa-search').addClass('fa-check');
 			$('#doneTxStep').slideDown();
+			$('.closeTxStory').show();
 		}
 
 		//error states
@@ -115,6 +117,7 @@ function show_tx_step(obj, cb_orig){
 			$('#txStep2').addClass('stepFailed');
 			$('#endorseMarbleStable .fa-check').removeClass('fa-check').addClass('fa-close');
 			$('#endorseMarbleStable span').fadeIn();
+			$('.closeTxStory').show();
 		}
 		else if(state === 'ordering_failed'){
 			$('#txStep1, #txStep2, #txStep3').removeClass('inactiveStep');
@@ -122,6 +125,7 @@ function show_tx_step(obj, cb_orig){
 			$('#txStep1, #txStep2').addClass('stepComplete');
 
 			$('#txStep3').addClass('stepFailed');
+			$('.closeTxStory').show();
 		}
 		else if(state === 'committing_failed'){
 			$('#txStep1, #txStep2, #txStep3, #txStep4').removeClass('inactiveStep');
@@ -129,6 +133,7 @@ function show_tx_step(obj, cb_orig){
 
 			$('#txStep4').addClass('stepFailed');
 			$('#commitBoxStable span').removeClass('fa-search').addClass('fa-close');
+			$('.closeTxStory').show();
 		}
 	}, 300);
 }
