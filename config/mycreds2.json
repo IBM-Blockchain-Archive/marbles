@@ -31,10 +31,11 @@
             "channel_id": "mychannel",
             "usernames": [
                 "cliff",
-                "cody"
+                "cody",
+                "chuck"
             ],
-            "port": 3002,
-            "last_startup_hash": "8ce9297da0fc90807df3d813e742a90e38035b32"
+            "port": 3003,
+            "last_startup_hash": "380c2263aab82a818586b5abaaf96dfd1cdd25be"
         }
     }
 }

@@ -56,11 +56,18 @@ gulp.task('watch-server', function () {
 
 // ---------------- Gulp Tasks ---------------- //
 gulp.task('default', ['watch-sass', 'watch-js', 'watch-server', 'server']);	//run with command `gulp`
-gulp.task('marbles', ['start_marbles', 'watch-sass', 'watch-js', 'watch-server', 'server']); //run with command `gulp marbles` [THIS ONE!]
+gulp.task('marbles1', ['start_marbles1', 'watch-sass', 'watch-js', 'watch-server', 'server']); //run with command `gulp marbles` [THIS ONE!]
+gulp.task('marbles2', ['start_marbles2', 'watch-sass', 'watch-js', 'watch-server', 'server']); //run with command `gulp marbles` [THIS ONE!]
 
 
-//generic marbles
-gulp.task('start_marbles', function () {
-	env['creds_filename'] = 'mycreds.json';
-	console.log('\n[International Marbles Trading Consortium]\n');
+//marbles 2
+gulp.task('start_marbles1', function () {
+	env['creds_filename'] = 'mycreds1.json';
+	console.log('\n[International Marbles Trading Consortium] 1\n');
+});
+
+//marbles 1
+gulp.task('start_marbles2', function () {
+	env['creds_filename'] = 'mycreds2.json';
+	console.log('\n[International Marbles Trading Consortium] 2\n');
 });

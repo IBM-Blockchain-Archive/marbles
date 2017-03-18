@@ -1,0 +1,41 @@
+{
+    "credentials": {
+        "network_id": "MarblesTradingConsortium",
+        "peers": [
+            {
+                "discovery": "grpc://varadvm2.rtp.raleigh.ibm.com:7051",
+                "event": "grpc://varadvm2.rtp.raleigh.ibm.com:7053",
+                "msp_id": "Org1MSP"
+            }
+        ],
+        "cas": [
+            {
+                "api": "http://varadvm2.rtp.raleigh.ibm.com:7054"
+            }
+        ],
+        "orderers": [
+            {
+                "discovery": "grpc://varadvm2.rtp.raleigh.ibm.com:7050"
+            }
+        ],
+        "users": [
+            {
+                "enrollId": "admin",
+                "enrollSecret": "adminpw"
+            }
+        ],
+        "marbles": {
+            "company": "United Marbles",
+            "chaincode_id": "marbles",
+            "chaincode_version": "v0",
+            "channel_id": "mychannel",
+            "usernames": [
+                "amy",
+                "alice",
+                "ava"
+            ],
+            "port": 3002,
+            "last_startup_hash": "a6b69ade1e3529ae79a3093a7ecd53f687565839"
+        }
+    }
+}
