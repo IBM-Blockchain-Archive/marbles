@@ -19,11 +19,14 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 		logger = l_marbles_lib;
 	};
 
+
 	//process web socket messages
 	ws_server.process_msg = function(ws, data){
 		var options = 	{
 							peer_urls: [helper.getPeersUrl(0)],
 							ws: ws,
+							endorsed_hook: endorse_hook,
+							ordered_hook: orderer_hook
 						};
 		if(marbles_lib === null) {
 			console.log('error! marbles lib is null...');				//can't run in this state
@@ -39,11 +42,12 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 								size: data.size,
 								marble_owner: data.username,
 								owners_company: data.company,
-								auth_company: process.env.marble_company
+								auth_company: process.env.marble_company,
 							};
 
 			marbles_lib.create_a_marble(options, function(err, resp){
 				if(err != null) send_err(err, data);
+				else options.ws.send(JSON.stringify({msg: 'tx_step', state: 'finished'}));
 			});
 		}
 
@@ -59,6 +63,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 
 			marbles_lib.set_marble_owner(options, function(err, resp){
 				if(err != null) send_err(err, data);
+				else options.ws.send(JSON.stringify({msg: 'tx_step', state: 'finished'}));
 			});
 		}
 
@@ -72,6 +77,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 
 			marbles_lib.delete_marble(options, function(err, resp){
 				if(err != null) send_err(err, data);
+				else options.ws.send(JSON.stringify({msg: 'tx_step', state: 'finished'}));
 			});
 		}
 
@@ -115,6 +121,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 		//send transaction error msg 
 		function send_err(msg, input){
 			sendMsg({msg: 'tx_error', e: msg, input: input});
+			options.ws.send(JSON.stringify({msg: 'tx_step', state: 'committing_failed'}));
 		}
 
 		//send a message, socket might be closed...
@@ -127,6 +134,16 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 					console.log('[ws error] could not send msg', e);
 				}
 			}
+		}
+
+		function endorse_hook(err){
+			if(err) options.ws.send(JSON.stringify({msg: 'tx_step', state: 'endorsing_failed'}));
+			else options.ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering'}));
+		}
+
+		function orderer_hook(err){
+			if(err) options.ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering_failed'}));
+			else options.ws.send(JSON.stringify({msg: 'tx_step', state: 'committing'}));
 		}
 	};
 

@@ -55,6 +55,7 @@ module.exports = function (logger) {
 
 		//check response
 		if (!proposalResponses || !proposalResponses[0] || !proposalResponses[0].response || proposalResponses[0].response.status !== 200) {
+			if (endorsed_hook) endorsed_hook('failed');
 			logger.error('[fcw] Failed to obtain endorsement for transaction.', proposalResponses);
 			throw proposalResponses;
 		}

@@ -14,24 +14,6 @@ module.exports = function (enrollObj, g_options, logger) {
 
 	// Chaincode -------------------------------------------------------------------------------
 
-	//deploy chaincode
-	marbles_chaincode.deploy_chaincode = function (options, cb) {
-		console.log('\ndeploying marbles chaincode...');
-
-		var opts = {
-			path_2_chaincode: './marbles',
-			channel_id: g_options.channel_id,
-			event_url: g_options.event_url,
-			chaincode_id: g_options.chaincode_id,
-			chaincode_version: g_options.chaincode_version,
-			endorsed_hook: options.endorsed_hook,
-			ordered_hook: options.ordered_hook,
-			cc_args: ['99'],
-			deploy_wait: 30000
-		};
-		fcw.deploy_chaincode(enrollObj, opts, cb);
-	};
-
 	//check chaincode
 	marbles_chaincode.check_if_already_deployed = function (options, cb) {
 		console.log('\nchecking for chaincode...');

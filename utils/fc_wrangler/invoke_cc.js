@@ -98,6 +98,7 @@ module.exports = function (logger) {
 
 				// No good
 				else {
+					if (options.ordered_hook) options.ordered_hook('failed');
 					logger.error('[fcw] Failed to order the transaction. Error code: ', response);
 					throw response;
 				}
@@ -106,6 +107,7 @@ module.exports = function (logger) {
 			function (err) {
 				logger.error('[fcw] Error in invoke catch block', typeof err, err);
 				var formatted = common.format_error_msg(err);
+				if (options.ordered_hook) options.ordered_hook('failed');
 
 				if (cb) return cb(formatted, null);
 				else return;
