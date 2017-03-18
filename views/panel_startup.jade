@@ -17,10 +17,10 @@
 				div
 		.stepDescription 
 			span Enrollment will verify your admin identity. 
-			span If successful, this application will download transaction certificates (tCerts). 
+			span If successful, this application will download an enrollment certificate. 
 			br
 			br
-			span The admin's certificates are used to sign and authorize marble transactions. 
+			span The admin's certificate is used to authenticate himself for marble transactions. 
 		.stepCircleStatus
 
 	.stepNext
@@ -64,8 +64,8 @@
 				span
 				div
 		.stepDescription 
-			span As a marbles trading company you may bring new identities onboard that can own marbles. 
-			span These marble owners represent your user base, and will transact on the network via your organization’s endorsing peer. 
+			span As a marbles trading company you may bring new marble owners onboard. 
+			span These marble owners represent your user base, and will transact on the network via your organization’s peer. 
 		.stepCircleStatus
 
 	//----------------- All done
@@ -106,13 +106,13 @@
 		br
 		br
 		.stepHelpTxt
-			p Sorry, we could not find the chaincode on your peer. 
+			p Whoops, we could not find the chaincode on your peer. 
 			br
 			p Edit the options below to try again 
 			p OR...
-			p Deploy the chaincode if this is your first time using the application
+			p Install and instantiate the chaincode if this is your first time using the application
 			strong
-				a(href="https://github.com/IBM-Blockchain/marbles/blob/v3.0/README.md" target="_blank" style="color:#fff;") How to deploy marbles chaincode
+				a(href="https://github.com/IBM-Blockchain/marbles/blob/v3.0/README.md" target="_blank" style="color:#fff;") How to install/instantiate chaincode
 		br
 		.stepInputLegend Orderer 
 		input(type="text" placeholder="Orderer ex: 192.168.99.100:5151" name="ordererUrl" value="#{bag.creds.orderer}").longer
