@@ -1072,10 +1072,17 @@ td.userRights, th.userRights{
 #txStoryErrorWrap {
   display: none;
   text-align: center;
-  margin-top: 20px; }
+  width: 700px;
+  margin: auto;
+  margin-top: 30px;
+  font-size: 14px;
+  color: #343D48;
+  background: #fff;
+  padding: 10px;
+  border-radius: 10px; }
 
 #txStoryErrorTxt {
-  color: orange; }
+  margin-left: 15px; }
 
 .settingsWrap {
   margin-bottom: 50px; }

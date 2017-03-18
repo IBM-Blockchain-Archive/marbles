@@ -92,9 +92,11 @@ function connect_to_server(){
 			//transaction error
 			else if(msgObj.msg === 'tx_error'){
 				console.log('[ws] rec', msgObj.msg, msgObj);
-				addshow_notification(build_notification(true, escapeHtml(msgObj.e)), true);
-				$('#txStoryErrorTxt').html(msgObj.e);
-				$('#txStoryErrorWrap').slideDown();
+				if(msgObj.e){
+					addshow_notification(build_notification(true, escapeHtml(msgObj.e.parsed)), true);
+					$('#txStoryErrorTxt').html(msgObj.e.parsed);
+					$('#txStoryErrorWrap').show();
+				}
 			}
 
 			//all marbles sent

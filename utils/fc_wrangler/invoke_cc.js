@@ -107,7 +107,7 @@ module.exports = function (logger) {
 			function (err) {
 				logger.error('[fcw] Error in invoke catch block', typeof err, err);
 				var formatted = common.format_error_msg(err);
-				if (options.ordered_hook) options.ordered_hook('failed');
+				if (options.ordered_hook) options.ordered_hook('failed', formatted);
 
 				if (cb) return cb(formatted, null);
 				else return;

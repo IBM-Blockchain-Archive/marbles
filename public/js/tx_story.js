@@ -51,16 +51,11 @@ function show_tx_step(obj, cb_orig){
 		else return;
 	}
 
-	$('#txStoryPanel, #tint').fadeIn(300);
-	$('#txStep1, #txStep2, #txStep3, #txStep4').removeClass('stepFailed');	//reset
-	$('#txStoryErrorTxt').html('');
-	$('#txStoryErrorWrap').hide();
-	$('#commitBoxStable span').removeClass('fa-check').removeClass('fa-close').addClass('fa-search');
-
 	setTimeout(function(){													//wait for initial panel fade in
 		
 		//1
 		if(state === 'building_proposal'){
+			reset();
 			$('#txStep1').removeClass('inactiveStep');
 			$('#txStep2, #txStep3, #txStep4').addClass('inactiveStep');
 			$('#txStep1, #txStep2, #txStep3, #txStep4').removeClass('stepComplete');//reset
@@ -74,6 +69,7 @@ function show_tx_step(obj, cb_orig){
 
 		//2
 		else if(state === 'endorsing'){
+			reset();
 			$('#txStep1, #txStep2').removeClass('inactiveStep');
 			$('#txStep3, #txStep4').addClass('inactiveStep');
 			$('#txStep1').addClass('stepComplete');
@@ -135,6 +131,14 @@ function show_tx_step(obj, cb_orig){
 			$('#commitBoxStable span').removeClass('fa-search').addClass('fa-close');
 		}
 	}, 300);
+}
+
+function reset(){
+	$('#txStoryPanel, #tint').fadeIn(300);
+	$('#txStep1, #txStep2, #txStep3, #txStep4').removeClass('stepFailed');	//reset
+	$('#txStoryErrorTxt').html('');
+	$('#txStoryErrorWrap').hide();
+	$('#commitBoxStable span').removeClass('fa-check').removeClass('fa-close').addClass('fa-search');
 }
 
 //1. animate borders to join marble in center

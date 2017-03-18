@@ -121,7 +121,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 		//send transaction error msg 
 		function send_err(msg, input){
 			sendMsg({msg: 'tx_error', e: msg, input: input});
-			options.ws.send(JSON.stringify({msg: 'tx_step', state: 'committing_failed'}));
+			sendMsg({msg: 'tx_step', state: 'committing_failed'});
 		}
 
 		//send a message, socket might be closed...
@@ -137,13 +137,13 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 		}
 
 		function endorse_hook(err){
-			if(err) options.ws.send(JSON.stringify({msg: 'tx_step', state: 'endorsing_failed'}));
-			else options.ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering'}));
+			if(err) sendMsg({msg: 'tx_step', state: 'endorsing_failed'});
+			else sendMsg({msg: 'tx_step', state: 'ordering'});
 		}
 
 		function orderer_hook(err){
-			if(err) options.ws.send(JSON.stringify({msg: 'tx_step', state: 'ordering_failed'}));
-			else options.ws.send(JSON.stringify({msg: 'tx_step', state: 'committing'}));
+			if(err) sendMsg({msg: 'tx_step', state: 'ordering_failed'});
+			else sendMsg({msg: 'tx_step', state: 'committing'});
 		}
 	};
 
