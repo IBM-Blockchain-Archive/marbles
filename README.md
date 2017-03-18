@@ -18,12 +18,12 @@ It is strongly recommended that if you have an existing network based on v0.5.3,
 
 - [Marbles - Branch v2.0](https://github.com/ibm-blockchain/marbles/tree/v2.0)
 	- Works with Hyperledger fabric `v0.6-developer-preview`
-	- Works with IBM Blockchain Bluemix Service `v1.0.0+`
+	- Works with IBM Blockchain Bluemix Service - Plan **Starter** or **HSBN**
 
 
 - [Marbles - Branch v3.0](https://github.com/ibm-blockchain/marbles/tree/v3.0) **(Experimental)**
-	- Works with [Hyperledger Fabric v1.0](http://hyperledger-fabric.readthedocs.io/en/latest/gettingstarted) - hackfest images
-	- Does not work with the IBM Blockchain Bluemix Service
+	- Works with Hyperledger Fabric `v1.0` (getting started tutorial coming soon! 3/17/2017)
+	- Works with the IBM Blockchain Bluemix Service - Plan **HSBN vNext**
 
 ***
 
