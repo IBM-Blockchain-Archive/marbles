@@ -44,7 +44,9 @@ We are going to create a Web based UI that can set these values and store them i
 Start the tutorials below to have your own marbles blockchain demo!
 
 ## Tutorial / Documentation
-- Looking for chaincode documentation? Check out the [learn chaincode](https://github.com/IBM-Blockchain/learn-chaincode) repo - **start here!**
+- Looking for chaincode documentation?
+	- Check out the [learn chaincode](https://github.com/IBM-Blockchain/learn-chaincode) repo
 - [Tutorial for Marbles](/docs/tutorial_start_here.md)
+	- covers how to set it up and how to use it
 
 ***

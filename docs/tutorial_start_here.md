@@ -78,13 +78,11 @@ It will set up your environment and teach you what chaincode is and how it's wri
 
 <strike>
 Decide if you want to use the deploy to Bluemix button. 
-Using the button will bypass all the setup below, but you will not have much control over the application. 
-This is great for just seeing what marbles is, but you cannot easily play with the code. 
 </strike> 
 
 **Update:** *this version of marbles is no longer compatible with the deploy to Bluemix buttons*
 
-- Follow these environment setup [instructions](https://github.com/IBM-Blockchain/learn-chaincode/blob/v2.0/docs/setup.md) to install **Git, Go** and **Node.js**.
+Follow these environment setup [instructions](https://github.com/IBM-Blockchain/learn-chaincode/blob/v2.0/docs/setup.md) to install **Git, Go** and **Node.js**.
 	- When you have finished come back to this tutorial. Start the next section "Download Marbles" below.
 
 ### Download Marbles
@@ -116,7 +114,7 @@ Now we need a blockchain network.
 - **Option 2:** Use a locally hosted Hyperledger Network - instructions
 </strike>
 
-^ instructions coming soon
+*^ instructions coming soon*
 
 <a name="installchaincode"></a>
 
@@ -130,8 +128,10 @@ Choose the **only** option that is relevant for your setup:
 - **Option 1:** Install chaincode with the IBM Blockchain Service - [instructions](./install_chaincode.md)
 
 <strike>
-- **Option 2:** Install chaincode with the SDK locally - instructions coming soon!
+- **Option 2:** Install chaincode with the SDK locally
 </strike>
+
+*^ instructions coming soon*
 
 <a name="hostmarbles"></a>
 
