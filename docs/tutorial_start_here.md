@@ -82,10 +82,12 @@ Decide if you want to use the deploy to Bluemix button.
 
 **Update:** *this version of marbles is no longer compatible with the deploy to Bluemix buttons*
 
+### 0. Setup Local Environment
+
 Follow these environment setup [instructions](https://github.com/IBM-Blockchain/learn-chaincode/blob/v2.0/docs/setup.md) to install **Git, Go** and **Node.js**.
 	- When you have finished come back to this tutorial. Start the next section "Download Marbles" below.
 
-### Download Marbles
+### 1. Download Marbles
 We need to download marbles to your local system. 
 Let’s do this with Git by cloning this repository. 
 You will need to do this step even if you plan on hosting marbles in Bluemix.
@@ -101,7 +103,7 @@ git clone http://gopkg.in/ibm-blockchain/marbles.v3
 
 <a name="getnetwork"></a>
 
-### Get a Network
+### 2. Get a Network
 
 Now we need a blockchain network.
 
@@ -118,7 +120,7 @@ Now we need a blockchain network.
 
 <a name="installchaincode"></a>
 
-### Install and Instantiate Chaincode
+### 3. Install and Instantiate Chaincode
 
 OK, almost there! Now we need to get our marbles chaincode running. 
 There are two ways to do this. 
@@ -135,9 +137,9 @@ Choose the **only** option that is relevant for your setup:
 
 <a name="hostmarbles"></a>
 
-### Host Marbles
+### 4. Host Marbles
 
-Finally we need marbles running somewhere.
+Last but not least we need marbles running somewhere.
 
 **Choose 1 option below:**
 
