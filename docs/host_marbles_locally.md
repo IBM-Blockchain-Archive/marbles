@@ -8,7 +8,7 @@ Lets do the very last setup for marbles.
 	
 		> npm install gulp -g
 		> npm install
-		> gulp united_marbles
+		> gulp marbles1
 		
 1. If all goes well you should see this message in the console:
 
