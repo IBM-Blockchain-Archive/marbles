@@ -32,4 +32,4 @@ Lets do the very last setup for marbles.
 
 ![](/doc_images/localhost4.png)
 		
-1. Marbles is all setup! Now [Continue tutorial 1](./tutorial_part1.md#use).
+1. Marbles is all setup! Now [Continue tutorial 1](./tutorial_start_here.md#use).

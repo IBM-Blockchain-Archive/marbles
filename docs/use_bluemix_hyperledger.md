@@ -45,6 +45,6 @@ The network is all setup. If you want more detail on the IBM Blockchain service,
 1. Click the "Service Credentials" link on the very bottom left of the dashboard.
 1. This will open the file in your browser. Replace the entire contents of the `mycreds_bluemix.json` file in the root of the `/git/<project>` directory you cloned earlier with this text.
 1. Double check that [app.js](../app.js#L154) is using the correct file. Line 154 uses `mycreds_docker_compose.json` and should be commented out. Line 155 with `mycreds_bluemix.json` should NOT be commented out. 
-1. Continue where you left off in [tutorial 1](./tutorial_part1.md#hostmarbles).
+1. Continue where you left off in [tutorial 1](./tutorial_start_here.md#hostmarbles).
 
 </strike>

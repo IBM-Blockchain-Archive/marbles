@@ -79,12 +79,9 @@ Using the button will bypass all the setup below, but you will not have much con
 This is great for just seeing what marbles is, but you cannot easily play with the code. 
 </strike> 
 
-**Update:** *this version of marbles is not yet compatible with the deploy to Bluemix buttons*
+**Update:** *this version of marbles is no longer compatible with the deploy to Bluemix buttons*
 
-**Choose 1 option below:**
-
-- <strike>**Option 1:**  [Button Instructions](./host_marbles_bluemix_button.md)</strike>
-- **Option 2:** Follow these machine setup [instructions](https://github.com/IBM-Blockchain/learn-chaincode/blob/v2.0/docs/setup.md) to install **Git, Go** and **Node.js**.
+- Follow these environment setup [instructions](https://github.com/IBM-Blockchain/learn-chaincode/blob/v2.0/docs/setup.md) to install **Git, Go** and **Node.js**.
 	- When you have finished come back to this tutorial. Start the next section "Download Marbles" below.
 
 ### Download Marbles
@@ -100,21 +97,20 @@ git clone http://gopkg.in/ibm-blockchain/marbles.v3
 ```
 
 - This will clone the v3.0 branch to your local system. 
-- Next run this command to populate the HFC submodule:
-
-```
-git submodule update --init --recursive
-```
 
 ### Get a Network
 <a name="getnetwork"></a> Now we need a blockchain network.
 
 **Choose 1 option below:**
 
+
+- **Option 1:** Create a network with the Bluemix IBM Blockchain Service - [instructions](./use_bluemix_hyperledger.md)
+
 <strike>
-- **Option 1:** Create a Bluemix IBM Blockchain network - [instructions](./use_bluemix_hyperledger.md)
-</strike>
 - **Option 2:** Use a locally hosted Hyperledger Network - [instructions](./use_local_hyperledger.md)
+</strike>
+
+^ instructions coming soon
 
 ### Host Marbles
 <a name="hostmarbles"></a>Finally we need marbles running somewhere.
@@ -124,11 +120,23 @@ git submodule update --init --recursive
 - **Option 1:** Host marbles on Bluemix - [instructions](./host_marbles_bluemix.md)
 - **Option 2:** Host marbles locally - [instructions](./host_marbles_locally.md)
 
+### Install and Instantiate Chaincode
+OK, almost there! Now we need to get our marbles chaincode running. 
+There are two ways to do this. 
+
+Choose the **only** option that is relevant for your setup:
+
+- **Option 1:** Install chaincode with the IBM Blockchain Service - [instructions](./install_chaincode.md)
+
+<strike>
+- **Option 2:** Install chaincode with the SDK locally - instructions coming soon!
+</strike>
+
 ***
 
-
 #<a name="use"></a>Use Marbles App
-1. Open up your browser and browse to [http://localhost:3000](http://localhost:3000) or your Bluemix www route.
+1. If you are at this step, you should have your environment setup, blockchain network created, marbles app and chaincode running. Right? If not look up for help (up the page, not literaly upwards).
+1. Open up your browser and browse to [http://localhost:3001](http://localhost:3001) or your Bluemix www route.
 1. Finally we can test the application. Click the "+" icon on one of your users in the "United Marbles" section
 
 ![](/doc_images/use_marbles1.png)

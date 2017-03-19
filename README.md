@@ -22,7 +22,7 @@ It is strongly recommended that if you have an existing network based on v0.5.3,
 
 
 - [Marbles - Branch v3.0](https://github.com/ibm-blockchain/marbles/tree/v3.0) **(Experimental)**
-	- Works with Hyperledger Fabric `v1.0` (getting started tutorial coming soon! 3/17/2017)
+	- Works with Hyperledger Fabric `v1.0` (getting started tutorial coming soon!)
 	- Works with the IBM Blockchain Bluemix Service - Plan **HSBN vNext**
 
 ***
@@ -53,6 +53,6 @@ Start the tutorials below to have your own marbles blockchain demo!
 
 ## Tutorial / Documentation
 - Looking for chaincode documentation? Check out the [learn chaincode](https://github.com/IBM-Blockchain/learn-chaincode) repo - **start here!**
-- [Tutorial for Marbles](/docs/tutorial_part1.md)
+- [Tutorial for Marbles](/docs/tutorial_start_here.md)
 
 ***

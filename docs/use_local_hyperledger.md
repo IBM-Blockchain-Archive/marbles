@@ -125,4 +125,4 @@ Maps to:
 
 Once you have edited `mycreds.json` you are ready to run Marbles. 
 
-1. Continue where you left off in [tutorial 1](./tutorial_part1.md#hostmarbles).
+1. Continue where you left off in [tutorial 1](./tutorial_start_here.md#hostmarbles).

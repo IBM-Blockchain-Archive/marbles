@@ -57,4 +57,4 @@
 		[ibc-js] Deploying Chaincode - Complete
 		---------------------------------------- Websocket Up ------------------------------------------
 
-1. Marbles is running! Now [Continue tutorial 1](./tutorial_part1.md#use).
+1. Marbles is running! Now [Continue tutorial 1](./tutorial_start_here.md#use).
