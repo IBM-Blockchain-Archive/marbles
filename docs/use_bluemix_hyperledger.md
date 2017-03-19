@@ -28,11 +28,12 @@
 
 ![](/doc_images/1-welcome.PNG)
 
-<a name ="get_credentials" ></a> If all goes well you should be on the welcome screen for your new service. Click the "Create Network" button to see the dashboard for your network. 
+<a name ="get_credentials" ></a> 
+- If all goes well you should be on the welcome screen for your new service. Click the "Create Network" button to see the dashboard for your network. 
 
 ![](/doc_images/2-create-wizard.PNG)
 
-- Now you should see the create network wizard. Fill out the wizard and I'll meet you onthe summary page.
+- Now you should see the create network wizard. Fill out the wizard and I'll meet you on the summary page.
 
 ![](/doc_images/3-create-summary.PNG)
 
@@ -45,13 +46,14 @@
 
 ![](/doc_images/5-after-added-peer.PNG)
 
-- When you have at least one peer, we can move on to making a channel. Click the "Channels" tab on the left.
+- When you have at least one peer, we can move on to making a channel. 
 	- A channel is used to isolate our blockchain ledger from others on the network.  Later we will have the oppturnity to invite members of our network to our channel. Members on the same channel will be able to vaildate eachothers transactions. For now we just want to make a channel for ourself!
+- Click the "Channels" tab on the left.
 - Next click the create "New Channel" button in the top right
 
 ![](/doc_images/7-create-channel.PNG)
 
-- Give you channel a name
+- Give your channel a name
 - We will want to add ourself to this channel, so select yourself from the channel drop down and then click "Add Member"
 - Next click the "Create" button
 
@@ -73,15 +75,29 @@
 
 ![](/doc_images/11-installed-marbles.PNG)
 
-- Great, so you should see marbles list in the chaincode table for this peer.
+- Great, so you should see marbles listed in the chaincode table for this peer.
+- All we've done so far is upload the files ont the peer. Next we need to tell it what channel to run on.
+- Click the "Insantiate" button in the marbles row
 
-(Note if in the future you find yourself on the main Bluemix Dashboard and want to get back to this service screen just click your blockchain tile from the "Services" section in your Bluemix Dashboard)
+![](/doc_images/12-instantiate-marbles.PNG)
+
+- The arguments input box is for entering the arguments we want to pass to our chaincode's Init() function.
+- Marbles chaincode is expecting a single integer. Enter your favorite number. Mines 314. 
+- Next from teh channel list select our 1 and only channel
+- Then click the "Submit" button
+
+![](/doc_images/13-instantiated-marbles.PNG)
+
+- Now that the chaincode has been instantiated on the channel, lets look at it
+- Click the "Channels" link on the left navigation
+- Click the channel you instantiated marbles on
+- Click the "Chaincode" tab
+- On this panel you should see something simialr to the picture above.  Marbles is deployed on both peers and we can click the logs button to see it has started up. 
+- The last thing we need to do is grab all of the service instance's credentials for our network. We will use this data to inform the marbles node.js application of our blockchain's networking addresses and credentials.
+- Get basic service credentials by clicking the "JSON" button
+- This will open the JSON in your browser. Copy this data and save/replace the entire contents of the file `<marbles directory>/config/mycreds1.json` 
 
 ### Finish Up
-The network is all setup. If you want more detail on the IBM Blockchain service, available plans, or a detailed overview of the IBM Blockchain Dashboard, continue [here](https://console.ng.bluemix.net/docs/services/blockchain/index.html?pos=2)
+Congrats! The network is all setup and marbles chaincode is running. If you want more detail on the IBM Blockchain service, available plans, or a detailed overview of the IBM Blockchain Dashboard, jump over [here](https://console.ng.bluemix.net/docs/services/blockchain/index.html?pos=2). If not lets continue the setup. 
 
-1. Next we need to **copy the peer data and pass it to our demo node.js application**.
-1. Click the "Service Credentials" link on the very bottom left of the dashboard.
-1. This will open the file in your browser. Replace the entire contents of the `mycreds_bluemix.json` file in the root of the `/git/<project>` directory you cloned earlier with this text.
-1. Double check that [app.js](../app.js#L154) is using the correct file. Line 154 uses `mycreds_docker_compose.json` and should be commented out. Line 155 with `mycreds_bluemix.json` should NOT be commented out. 
-1. Continue where you left off in [tutorial 1](./tutorial_start_here.md#hostmarbles).
+- Continue where you left off in the [tutorial](./tutorial_start_here.md#hostmarbles).
