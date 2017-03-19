@@ -2,8 +2,8 @@
 
 ### Creating a Blockchain Network in IBM Bluemix
 1. Don't fret, this is as simple as clicking on a particular button and filling out a text input field or two, or three. 
-  Meh its about a dozen. 
-  But thats not too bad. 
+  Meh it’s about a dozen. 
+  But that’s not too bad. 
   The Bluemix service will let you create or join a blockchain network. 
 
   1. First [create an IBM ID](https://console.ng.bluemix.net/registration/) if you do not already have one.
@@ -47,7 +47,7 @@
 ![](/doc_images/5-after-added-peer.PNG)
 
 - When you have at least one peer, we can move on to making a channel. 
-	- A channel is used to isolate our blockchain ledger from others on the network.  Later we will have the oppturnity to invite members of our network to our channel. Members on the same channel will be able to vaildate eachothers transactions. For now we just want to make a channel for ourself!
+    - A channel is used to isolate our blockchain ledger from others on the network.  Later we will have the oppturnity to invite members of our network to our channel. Members on the same channel will be able to vaildate eachothers transactions. For now we just want to make a channel for ourself!
 - Click the "Channels" tab on the left.
 - Next click the create "New Channel" button in the top right
 
@@ -76,14 +76,14 @@
 ![](/doc_images/11-installed-marbles.PNG)
 
 - Great, so you should see marbles listed in the chaincode table for this peer.
-- All we've done so far is upload the files ont the peer. Next we need to tell it what channel to run on.
-- Click the "Insantiate" button in the marbles row
+- All we've done so far is upload the files ont the peer. Next, we need to tell it what channel to run on.
+- Click the "Instantiate" button in the marbles row
 
 ![](/doc_images/12-instantiate-marbles.PNG)
 
 - The arguments input box is for entering the arguments we want to pass to our chaincode's Init() function.
 - Marbles chaincode is expecting a single integer. Enter your favorite number. Mines 314. 
-- Next from teh channel list select our 1 and only channel
+- Next from the channel list select our 1 and only channel
 - Then click the "Submit" button
 
 ![](/doc_images/13-instantiated-marbles.PNG)
@@ -92,8 +92,8 @@
 - Click the "Channels" link on the left navigation
 - Click the channel you instantiated marbles on
 - Click the "Chaincode" tab
-- On this panel you should see something simialr to the picture above.  Marbles is deployed on both peers and we can click the logs button to see it has started up. 
-- The last thing we need to do is grab all of the service instance's credentials for our network. We will use this data to inform the marbles node.js application of our blockchain's networking addresses and credentials.
+- On this panel, you should see something simialr to the picture above.  Marbles is deployed on both peers and we can click the logs button to see it has started up. 
+- The last thing we need to do is grab all the service instance's credentials for our network. We will use this data to inform the marbles node.js application of our blockchain's networking addresses and credentials.
 - Get basic service credentials by clicking the "JSON" button
 - This will open the JSON in your browser. Copy this data and save/replace the entire contents of the file `<marbles directory>/config/mycreds1.json` 
 
@@ -101,3 +101,5 @@
 Congrats! The network is all setup and marbles chaincode is running. If you want more detail on the IBM Blockchain service, available plans, or a detailed overview of the IBM Blockchain Dashboard, jump over [here](https://console.ng.bluemix.net/docs/services/blockchain/index.html?pos=2). If not lets continue the setup. 
 
 - Continue where you left off in the [tutorial](./tutorial_start_here.md#hostmarbles).
+
+
