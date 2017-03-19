@@ -3,11 +3,14 @@
 //-------------------------------------------------------------------
 var path = require('path');
 
-module.exports = function (logger) {
+module.exports = function (g_options, logger) {
 	var common = require(path.join(__dirname, './common.js'))(logger);
 	var EventHub = require('fabric-client/lib/EventHub.js');
 	var utils = require('fabric-client/lib/utils.js');
 	var invoke_cc = {};
+
+	if(!g_options) g_options = {};
+	if(!g_options.block_delay) g_options.block_delay = 10000;
 
 	//-------------------------------------------------------------------
 	// Create User - options are {username: bob}
@@ -29,6 +32,7 @@ module.exports = function (logger) {
 		var eventhub;
 		var chain = obj.chain;
 		var nonce = utils.getNonce();
+		var cbCalled = false;
 
 		// send proposal to endorser
 		var request = {
@@ -71,8 +75,13 @@ module.exports = function (logger) {
 					var watchdog = setTimeout(() => {
 						var msg = '[fcw] Failed to receive block event within the timeout period';
 						logger.error(msg);
-						throw msg;
-					}, 120000);
+						
+						if (cb && !cbCalled) {
+							cbCalled = true;
+							return cb(null);						//timeout pass it back
+						}
+						else return;
+					}, g_options.block_delay + 2000);
 
 					// Wait for block event
 					eventhub.registerTxEvent(request.txId.toString(), (tx, code) => {
@@ -80,10 +89,16 @@ module.exports = function (logger) {
 						clearTimeout(watchdog);
 
 						if(code !== 'VALID') {
-							if (cb) return cb(code);					//pass error back
+							if (cb && !cbCalled) {
+								cbCalled = true;
+								return cb(code);					//pass error back
+							}
 							else return;
 						} else {
-							if (cb) return cb(null);					//all good, pass it back
+							if (cb && !cbCalled) {
+								cbCalled = true;
+								return cb(null);				//all good, pass it back
+							}
 							else return;
 						}
 					});

@@ -30,7 +30,7 @@ var logger = {													//overwrite console to work with info/warn/debug
 	warn: console.log,
 	debug: console.log
 };
-var fcw = require('./utils/fc_wrangler/index.js')(logger);
+var fcw = require('./utils/fc_wrangler/index.js')({block_delay: block_delay}, logger);
 
 var more_entropy = randStr(32);
 var ws_server = require('./utils/websocket_server_side.js')(null, null, null);
@@ -173,6 +173,7 @@ function setup_marbles_lib(){
 	console.log('Setup Marbles Lib...');
 
 	var opts = {
+		block_delay: block_delay,
 		channel_id: helper.getChannelId(), 
 		chaincode_id: helper.getChaincodeId(),
 		event_url: helper.getPeerEventUrl(0),
@@ -353,9 +354,9 @@ function create_marbles(username, cb){
 							args: randOptions
 						};
 		marbles_lib.create_a_marble(options, function(){
-			setTimeout(function(){
+			//setTimeout(function(){
 				marble_cb();
-			}, block_delay);
+			//}, block_delay);
 		});
 	}, function() {
 		console.log('debug 2 - ok returning', Date.now());
