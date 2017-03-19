@@ -40,7 +40,7 @@
 - Click the "Channels" link on the left navigation
 - Click the channel you instantiated marbles on
 - Click the "Chaincode" tab
-- On this panel, you should see something simialr to the picture above.  Marbles is deployed on both peers and we can click the logs button to see it has started up. 
+- On this panel, you should see something simialr to the picture above.  Marbles is instantiated on both peers and we can click the logs button to see it has started up. 
 - The last thing we need to do is grab all the service instance's credentials for our network. We will use this data to inform the marbles node.js application of our blockchain's networking addresses and credentials.
 - Get basic service credentials by clicking the "JSON" button
 - This will open the JSON in your browser. Copy this data and save/replace the entire contents of the file `<marbles directory>/config/blockchain_creds1.json` 

@@ -61,7 +61,7 @@ __sample blockchain_creds1.json__
 		],
 		"app": {
 			"channel_id": "mychannel",       //name of the blockchain channel
-			"chaincode_id": "marbles",       //name of deployed chaincode
+			"chaincode_id": "marbles",       //name of instantiated chaincode
 			"chaincode_version": "v0"
 		}
 	}

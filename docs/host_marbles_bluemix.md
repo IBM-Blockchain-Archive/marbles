@@ -49,12 +49,8 @@
 	
 		--------------------------------- Server Up - localhost:3000 ------------------------------------
 		
-1. The app is already coded to auto deploy the chaincode.  You should see further message about it deploying.
- **[IMPORTANT]** You will need to wait about 60 seconds for the cc to fully deploy. The SDK will do the waiting for us by stalling our callback.
- 
 1. Once you see this message you are good to go: 
 		
-		[ibc-js] Deploying Chaincode - Complete
 		---------------------------------------- Websocket Up ------------------------------------------
 
 1. Marbles is running! Now [Continue tutorial 1](./tutorial_start_here.md#use).
