@@ -60,46 +60,8 @@
 ![](/doc_images/8-created-channel.PNG)
 
 - If all went well you have successfully created a channel
-- Click the "Chaincode" link on the left navigation
-
-![](/doc_images/9-chaincode.PNG)
-
-- Select 1 of your peers in the drop down
-- Now click the "Install Chaincode" button
-
-![](/doc_images/10-install-marbles.PNG)
-
-- Fill out the chaincode name as "marbles"
-- Fill out the chaincode version as "v0"
-- Click "Submit"
-
-![](/doc_images/11-installed-marbles.PNG)
-
-- Great, so you should see marbles listed in the chaincode table for this peer.
-- All we've done so far is upload the files ont the peer. Next, we need to tell it what channel to run on.
-- Click the "Instantiate" button in the marbles row
-
-![](/doc_images/12-instantiate-marbles.PNG)
-
-- The arguments input box is for entering the arguments we want to pass to our chaincode's Init() function.
-- Marbles chaincode is expecting a single integer. Enter your favorite number. Mines 314. 
-- Next from the channel list select our 1 and only channel
-- Then click the "Submit" button
-
-![](/doc_images/13-instantiated-marbles.PNG)
-
-- Now that the chaincode has been instantiated on the channel, lets look at it
-- Click the "Channels" link on the left navigation
-- Click the channel you instantiated marbles on
-- Click the "Chaincode" tab
-- On this panel, you should see something simialr to the picture above.  Marbles is deployed on both peers and we can click the logs button to see it has started up. 
-- The last thing we need to do is grab all the service instance's credentials for our network. We will use this data to inform the marbles node.js application of our blockchain's networking addresses and credentials.
-- Get basic service credentials by clicking the "JSON" button
-- This will open the JSON in your browser. Copy this data and save/replace the entire contents of the file `<marbles directory>/config/mycreds1.json` 
 
 ### Finish Up
-Congrats! The network is all setup and marbles chaincode is running. If you want more detail on the IBM Blockchain service, available plans, or a detailed overview of the IBM Blockchain Dashboard, jump over [here](https://console.ng.bluemix.net/docs/services/blockchain/index.html?pos=2). If not lets continue the setup. 
+Congrats! The network is all setup. If you want more detail on the IBM Blockchain service, available plans, or a detailed overview of the IBM Blockchain Dashboard, jump over [here](https://console.ng.bluemix.net/docs/services/blockchain/index.html?pos=2). If not lets continue the setup. 
 
-- Continue where you left off in the [tutorial](./tutorial_start_here.md#hostmarbles).
-
-
+- Continue where you left off in the [tutorial](./tutorial_start_here.md#installchaincode).

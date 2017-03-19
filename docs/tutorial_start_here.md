@@ -7,7 +7,7 @@
 
 ***
 
-##Marbles Goals
+## Marbles Goals
 - Admin can create a marble and store it in the chaincode state
 - Admin can read and display all marbles in the chaincode state
 - Admin can transfer a marble to another marble owner
@@ -112,15 +112,8 @@ git clone http://gopkg.in/ibm-blockchain/marbles.v3
 
 ^ instructions coming soon
 
-### Host Marbles
-<a name="hostmarbles"></a>Finally we need marbles running somewhere.
-
-**Choose 1 option below:**
-
-- **Option 1:** Host marbles on Bluemix - [instructions](./host_marbles_bluemix.md)
-- **Option 2:** Host marbles locally - [instructions](./host_marbles_locally.md)
-
 ### Install and Instantiate Chaincode
+<a name="installchaincode"></a>
 OK, almost there! Now we need to get our marbles chaincode running. 
 There are two ways to do this. 
 
@@ -131,6 +124,14 @@ Choose the **only** option that is relevant for your setup:
 <strike>
 - **Option 2:** Install chaincode with the SDK locally - instructions coming soon!
 </strike>
+
+### Host Marbles
+<a name="hostmarbles"></a>Finally we need marbles running somewhere.
+
+**Choose 1 option below:**
+
+- **Option 1:** Host marbles on Bluemix - [instructions](./host_marbles_bluemix.md)
+- **Option 2:** Host marbles locally - [instructions](./host_marbles_locally.md)
 
 ***
 
