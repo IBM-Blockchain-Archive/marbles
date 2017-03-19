@@ -146,9 +146,9 @@ Finally we need marbles running somewhere.
 
 ***
 
-<a name="use"></a>Use
+<a name="use"></a>
 
-#  Marbles App
+# Use Marbles
 
 1. If you are at this step, you should have your environment setup, blockchain network created, marbles app and chaincode running. Right? If not look up for help (up the page, not literaly upwards).
 1. Open up your browser and browse to [http://localhost:3001](http://localhost:3001) or your Bluemix www route.
