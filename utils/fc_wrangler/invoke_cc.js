@@ -47,10 +47,10 @@ module.exports = function (g_options, logger) {
 		logger.debug('[fcw] Sending invoke req', request);
 
 		// Setup EventHub
-		console.log('listening to even url', options.event_url);
-		eventhub = new EventHub();
-		eventhub.setPeerAddr(options.event_url);
-		eventhub.connect();
+		console.log('listening to event url', options.event_url);
+		//eventhub = new EventHub();
+		//eventhub.setPeerAddr(options.event_url);
+		//eventhub.connect();
 
 		// Send Proposal
 		chain.sendTransactionProposal(request
@@ -72,7 +72,7 @@ module.exports = function (g_options, logger) {
 					// Call optional order hook
 					if (options.ordered_hook) options.ordered_hook(null, request.txId.toString());
 
-					var watchdog = setTimeout(() => {
+					/*var watchdog = setTimeout(() => {
 						var msg = '[fcw] Failed to receive block event within the timeout period';
 						logger.error(msg);
 						
@@ -101,14 +101,14 @@ module.exports = function (g_options, logger) {
 							}
 							else return;
 						}
-					});
+					});*/
 
-					/* use this instead of above if eventhub is causing issues
+					//use this instead of above if eventhub is causing issues
 					setTimeout(function(){
 						if (cb) return cb(null);
 						else return;
 					},10000);
-					*/
+					
 				}
 
 				// No good
