@@ -62,6 +62,7 @@ module.exports = function (logger) {
 			try {
 				for (var i in options.peer_urls) {
 					chain.addPeer(new Peer(options.peer_urls[i]));
+					console.log('added peer', options.peer_urls[i]);
 				}
 			}
 			catch (e) {
@@ -69,6 +70,7 @@ module.exports = function (logger) {
 			}
 			try{
 				chain.setPrimaryPeer(new Peer(options.peer_urls[0]));
+				console.log('added primary peer', options.peer_urls[0]);
 			}
 			catch(e){
 				//might error b/c bugs, don't care
@@ -104,7 +106,7 @@ module.exports = function (logger) {
 					// Need to enroll it with CA server
 					var ca_client = new CaService(options.ca_url);
 					console.log('id', options.enroll_id, 'secret', options.enroll_secret);					//dsh todo remove this
-
+					console.log('msp_id', options.msp_id);
 					return ca_client.enroll({
 						enrollmentID: options.enroll_id,
 						enrollmentSecret: options.enroll_secret

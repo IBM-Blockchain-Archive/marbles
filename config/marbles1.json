@@ -1,0 +1,11 @@
+{
+    "cred_filename": "blockchain_creds3.json",
+    "company": "United Marbles",
+    "usernames": [
+        "amy",
+        "alice",
+        "ava"
+    ],
+    "port": 3001,
+    "last_startup_hash": "a6b69ade1e3529ae79a3093a7ecd53f687565839"
+}

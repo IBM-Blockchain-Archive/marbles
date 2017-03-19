@@ -17,6 +17,8 @@
 
 - Fill out the chaincode name as "marbles"
 - Fill out the chaincode version as "v0"
+- Select the "Choose Files" button and select **all 5** files found in `<marbles directory>/chaincode/src/marbles`
+	- Alternatively you can zip up the 5 .go files and submit a single zip file
 - Click "Submit"
 
 ![](/doc_images/11-installed-marbles.PNG)
@@ -41,7 +43,8 @@
 - On this panel, you should see something simialr to the picture above.  Marbles is deployed on both peers and we can click the logs button to see it has started up. 
 - The last thing we need to do is grab all the service instance's credentials for our network. We will use this data to inform the marbles node.js application of our blockchain's networking addresses and credentials.
 - Get basic service credentials by clicking the "JSON" button
-- This will open the JSON in your browser. Copy this data and save/replace the entire contents of the file `<marbles directory>/config/mycreds1.json` 
+- This will open the JSON in your browser. Copy this data and save/replace the entire contents of the file `<marbles directory>/config/blockchain_creds1.json` 
+  - This JSON a simplified version of your Service Credentials.  It has 1 orderer, 1 ca, 1 peer which is all we need for marbles.
 
 ### Finish Up
 

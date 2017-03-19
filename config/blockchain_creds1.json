@@ -1,0 +1,37 @@
+{
+    "credentials": {
+        "network_id": "test",
+        "network_name": "Marbles Tutorial",
+        "orderers": [
+            {
+                "discovery": "grpc://varadvm2.rtp.raleigh.ibm.com:7050",
+                "msp_id": "Org1MSP"
+            }
+        ],
+        "cas": [
+            {
+                "api": "http://varadvm2.rtp.raleigh.ibm.com:7054",
+                "msp_id": "Org1MSP",
+                "users": [
+                    {
+                        "enrollId": "admin",
+                        "enrollSecret": "adminpw"
+                    }
+                ]
+            }
+        ],
+        "peers": [
+            {
+                "name": "fabric-peer-1a",
+                "discovery": "grpc://varadvm2.rtp.raleigh.ibm.com:7051",
+                "events": "grpc://varadvm2.rtp.raleigh.ibm.com:7053",
+                "msp_id": "Org1MSP"
+            }
+        ],
+        "app": {
+            "channel_id": "mychannel",
+            "chaincode_id": "marbles",
+            "chaincode_version": "v0"
+        }
+    }
+}

@@ -16,7 +16,7 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ${CREDS_LOCATION}/creds_united_marbles.json:/app/mycreds.json
+      - ${CREDS_LOCATION}/blockchain_creds1.json:/app/marbles1.json
       - ${CREDS_LOCATION}/keyValStore-1:/app/keyValStore-asdf
     container_name: united_marbles
     entrypoint: gulp united_marbles
@@ -35,7 +35,7 @@ services:
     ports:
       - 3001:3000
     volumes:
-      - ${CREDS_LOCATION}/creds_marble_market.json:/app/mycreds.json
+      - ${CREDS_LOCATION}/blockchain_creds2.json:/app/marbles2.json
       - ${CREDS_LOCATION}/keyValStore-2:/app/keyValStore-asdf
     container_name: marble_market
     entrypoint: gulp marble_market

@@ -18,24 +18,24 @@ This is normal and is because of a the long batch time.
 Please be patient while we think of a better visual way handle and represent these long pauses. 
 
 Next we need to **pass the location of our peer to our marbles application**.
-This is done by editing the `/config/mycreds.json` file.
+This is done by editing the `/config/blockchain_creds1.json` file.
 
 There are multiple credential files to show different setups. 
 Marbles will open the file found in the environmental variable `creds_filename`. 
 Gulp will set this for us based on what gulp task we tell it to do. 
-**Double check that [gulpfile.js](../gulpfile.js#L67) is using the mycreds.json filename.** 
+**Double check that [gulpfile.js](../gulpfile.js#L67) is using the blockchain_creds1.json filename.** 
 
 ```js
 	gulp.task('start_marbles', function () {
-		env['creds_filename'] = 'mycreds.json';
+		env['creds_filename'] = 'blockchain_creds1.json';
 		console.log('\n[International Marbles Trading Consortium]\n');
 	});
 ```
 
-Next we must edit `mycreds.json` with information about your network.
+Next we must edit `blockchain_creds1.json` with information about your network.
 Below is a sample showing the information that must be in the JSON file. 
 
-__sample mycreds.json__
+__sample blockchain_creds1.json__
 
 ```js
 {
@@ -123,6 +123,6 @@ Maps to:
 }
 ```
 
-Once you have edited `mycreds.json` you are ready to run Marbles. 
+Once you have edited `blockchain_creds1.json` you are ready to run Marbles. 
 
 1. Continue where you left off in [tutorial 1](./tutorial_start_here.md#hostmarbles).

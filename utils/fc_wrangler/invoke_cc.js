@@ -72,7 +72,7 @@ module.exports = function (logger) {
 						var msg = '[fcw] Failed to receive block event within the timeout period';
 						logger.error(msg);
 						throw msg;
-					}, 30000);
+					}, 120000);
 
 					// Wait for block event
 					eventhub.registerTxEvent(request.txId.toString(), (tx, code) => {
