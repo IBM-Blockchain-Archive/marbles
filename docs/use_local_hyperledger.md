@@ -15,7 +15,6 @@ This is a litttttle long for our application, and may give you unexpected behavi
 Basicaly if you move a marble the trade will take 10 seconds to settle. 
 The **UI may redraw the marble back in its original position**, and then jump to a correct position after some time.
 This is normal and is because of a the long batch time. 
-Please be patient while we think of a better visual way handle and represent these long pauses. 
 
 Next we need to **pass the location of our peer to our marbles application**.
 This is done by editing the `/config/blockchain_creds1.json` file.
@@ -23,14 +22,8 @@ This is done by editing the `/config/blockchain_creds1.json` file.
 There are multiple credential files to show different setups. 
 Marbles will open the file found in the environmental variable `creds_filename`. 
 Gulp will set this for us based on what gulp task we tell it to do. 
-**Double check that [gulpfile.js](../gulpfile.js#L67) is using the blockchain_creds1.json filename.** 
 
-```js
-	gulp.task('start_marbles', function () {
-		env['creds_filename'] = 'blockchain_creds1.json';
-		console.log('\n[International Marbles Trading Consortium]\n');
-	});
-```
+This initial file (`marbles1.json`) points to our blockchain credentials file with the field "cred_filename". Thats the file that holds our network ips/hostnames/ports and other similar data. 
 
 Next we must edit `blockchain_creds1.json` with information about your network.
 Below is a sample showing the information that must be in the JSON file. 
@@ -39,54 +32,39 @@ __sample blockchain_creds1.json__
 
 ```js
 {
-    "credentials": {
-        "network_id": "asdf",                  //not important atm
-        "peers": [
-            {
-                "grpc_host": "192.168.99.100", //must match the ip or hostname of your peer
-                "grpc_port": 8051,             //must match the gRPC port on your peer
-				"event_host": "192.168.99.100",
-                "event_port:": 8053,
-                "type": "peer",                //leave this as peer
-                "network_id": "asdf",          //not important atm
-                "id": "peer1"                  //not important atm
-            }
-        ],
-        "cas": [
-            {
-                "host": "192.168.99.100",    //must match the ip or hostname of your peer
-                "port": 8054,                //must match the gRPC port on your peer
-                "type": "ca",                //leave this as ca
-                "network_id": "asdf"         //not important atm
-				"id": "asdf-ca",             //not important atm
-            }
-        ],
-        "orderers": [
-            {
-                "host": "192.168.99.100",    //must match the ip or hostname of your peer
-                "port": 8050,                //must match the gRPC port on your peer
-                "type": "orderer",           //leave this as ca
-                "network_id": "asdf",        //not important atm
-                "id": "orderer-01"           //not important atm
-            }
-        ],
-        "users": [
-            {
-                "enrollId": "admin",,          //must match enroll ID found in CA
-                "enrollSecret": "adminpw"      //must match enroll Secret found in CA
-            }
-        ],
-        "cert": "https://blockchain-certs.mybluemix.net/us.blockchain.ibm.com.cert",
-        "marbles": {
-            "company": "Marble Market",      //name of marble company
-            "chaincode_id": "marbles",       //name of deployed chaincode
-            "usernames": [                   //marble owner usernames
-                "amy",
-                "bill"
-            ],
-            "port": 3000                     //port for marbles to use
-        }
-    }
+	"credentials": {
+		"network_id": "asdf",                  //not important atm
+		"peers": [
+			{
+				"discovery": "grpc://192.168.99.100:8051", //must match the ip or hostname of your peer
+				"events": "grpc://192.168.99.100:8053",    //must match the ip or hostname of your peer
+				"msp_id": "Org1MSP"
+			}
+		],
+		"cas": [
+			{
+				"api": "http://192.168.99.100:8054",    //must match the ip or hostname of your ca
+				"msp_id": "Org1MSP",
+				 "users": [
+					{
+						"enrollId": "admin",
+						"enrollSecret": "adminpw"
+					}
+				]
+			}
+		],
+		"orderers": [
+			{
+				"discovery": "grpc://192.168.99.100",    //must match the ip or hostname of your peer
+				"msp_id": "Org1MSP"
+			}
+		],
+		"app": {
+			"channel_id": "mychannel",       //name of the blockchain channel
+			"chaincode_id": "marbles",       //name of deployed chaincode
+			"chaincode_version": "v0"
+		}
+	}
 }
 ```
 
@@ -98,8 +76,6 @@ If its not there you need to add it such that `peers`, `cas` and etc are inside 
 
 Marbles only talks to 1 peer. 
 Therefore, you should have 1 entry in the `peers` array and 1 entry in the `users` array. 
-You can omit the `users` array entirely if the network does not use a CA. 
-The default docker-compose example does use a CA. 
 You will need to look up the default CA enroll ID/users for your Hyperledger Fabric version to populate the `users` array. 
 Fabric version 0.7.0 enroll Ids can be found in the [cop.json](https://github.com/hyperledger/fabric-cop/blob/master/docker/fabric-cop/cop.json) file.
 

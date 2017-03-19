@@ -222,25 +222,46 @@ Next, we need to send these fields to the SDK.
 //enroll admin
 function enroll_admin(id, secret, ca_url, cb){
 	try {
-		//[1]
+	// [Step 1]
 		var client = new HFC();
-		chain = client.newChain('mychain' + file_safe_name(process.env.marble_company) + '-' + uuid);
+		chain = client.newChain(options.channel_id);
 	}
 	catch (e) {
 	  //it might error about 1 chain per network, but that's not a problem just continue
 	}
 
-	// [2] - Make Cert kvs
+	// [Step 2] - Make Cert kvs
 	HFC.newDefaultKeyValueStore({
-		path: path.join(__dirname, './keyValStore-' + file_safe_name(process.env.marble_company) + '-' + uuid) 
-	}).then(function(store){
+		path: path.join(__dirname, '/kvs/' + options.uuid)	//store eCert in the kvs directory
+	}).then(function (store) {
 		client.setStateStore(store);
-		console.log('! using id', id, 'secret', secret);
 
-	//[3]
-		return getSubmitter(id, secret, ca_url, client);       //do most of the work here
+	// [Step 3]
+		return getSubmitter(client, options);              //do most of the work here
 	}).then(function(submitter){
 
+	// [Step 4]
+		chain.addOrderer(new Orderer(options.orderer_url));
+
+	// [Step 5]
+		try {
+			for (var i in options.peer_urls) {
+				chain.addPeer(new Peer(options.peer_urls[i]));
+				console.log('added peer', options.peer_urls[i]);
+			}
+		}
+		catch (e) {
+			//might error if peer already exists, but we don't care
+		}
+		try{
+			chain.setPrimaryPeer(new Peer(options.peer_urls[0]));
+			console.log('added primary peer', options.peer_urls[0]);
+		}
+		catch(e){
+			//might error b/c bugs, don't care
+		}
+
+	// [Step 6]
 		// --- Success --- //
 		console.log('Successfully enrolled ' + id);
 		setTimeout(function(){
@@ -258,10 +279,12 @@ function enroll_admin(id, secret, ca_url, cb){
 }
 ```
 
-1. The first thing the code does is create an instance of HFC, our SDK.
+1. The first thing the code does is create an instance of our SDK.
 1. Next we create a key value store to store the enrollment certifcates with `newDefaultKeyValueStore`
-1. Next we enroll our admin. This is when we authenticate to the CA with our enroll ID and enroll secret. The CA will issue enrollment certificates which the SDK will store in the key value store. Since we are using the default key value store, it will be stored in our local file system. This will be in the marbles directory in a folder named something like `keyValStore-united_marbles`.
-1. After successful enrollment the SDK is fully configured and ready to interact with the blockchain.
+1. Next we enroll our admin. This is when we authenticate to the CA with our enroll ID and enroll secret. The CA will issue enrollment certificates which the SDK will store in the key value store. Since we are using the default key value store, it will be stored in our local file system. 
+1. After successful enrollment we set the orderer URL.  The orderer is not needed yet, but will be when we try to invoke chaincode. 
+1. Next we set the Peer URLs. These are also not needed yet, but we are going to setup our SDK chain object fully.
+1. At this point the SDK is fully configured and ready to interact with the blockchain.
 
 
 # Marbles Deeper Dive
