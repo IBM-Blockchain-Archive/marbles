@@ -107,7 +107,7 @@ git clone http://gopkg.in/ibm-blockchain/marbles.v3
 - **Option 1:** Create a network with the Bluemix IBM Blockchain Service - [instructions](./use_bluemix_hyperledger.md)
 
 <strike>
-- **Option 2:** Use a locally hosted Hyperledger Network - [instructions](./use_local_hyperledger.md)
+- **Option 2:** Use a locally hosted Hyperledger Network - instructions
 </strike>
 
 ^ instructions coming soon
@@ -134,7 +134,7 @@ Choose the **only** option that is relevant for your setup:
 
 ***
 
-#<a name="use"></a>Use Marbles App
+# <a name="use"></a>Use Marbles App
 1. If you are at this step, you should have your environment setup, blockchain network created, marbles app and chaincode running. Right? If not look up for help (up the page, not literaly upwards).
 1. Open up your browser and browse to [http://localhost:3001](http://localhost:3001) or your Bluemix www route.
 1. Finally we can test the application. Click the "+" icon on one of your users in the "United Marbles" section
@@ -160,7 +160,7 @@ Choose the **only** option that is relevant for your setup:
 Before we talk about how Marbles works lets discuss the flow and topology of Hyperledger Fabric. 
 Lets get some definitions out of the way first.
 
-###Definitions:
+### Definitions:
 
 **Peer** - A peer is a member of the blockchain and is running Hyperledger Fabric. From marble's context, the peers are owned and operated by my marble company.
 
@@ -194,7 +194,7 @@ Let’s look at the operations involved when creating a new marble.
 1. At this point the new marble exists in our ledger and should soon exist in all peer's ledgers.
 
 
-#HFC SDK Deeper Dive
+# SDK Deeper Dive
 Now lets see how we interface with the Fabric Client SDK. 
 Most of the configuration options can be found in `/config/mycreds.json`. 
 This file list the hostname (or ip) and port of various components of our blockchain network. 
@@ -249,7 +249,7 @@ function enroll_admin(id, secret, ca_url, cb){
 1. After successful enrollment the SDK is fully configured and ready to interact with the blockchain.
 
 
-#Marbles Deeper Dive
+# Marbles Deeper Dive
 Hopefully you have successfully traded a marble or two between users. 
 Let’s look at how transfering a marble is done by starting at the chaincode.
 
