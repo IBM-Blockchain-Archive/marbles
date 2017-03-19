@@ -23,7 +23,7 @@
   1. Leave the "Service Name" alone or you can choose to rename it to something more friendly such as "Awesome Marbles Demo"
   1. Leave the "Credential name" field as its default value
   1. Leave the "Connected To:" field as "Leave unbound" (unless you already have an application, but you probably don't yet)
-  1. Change the "Selected Plan" to **High Security Business Network vNext(Limited Beta)**
+  1. Scroll to the bottom and change the "Selected Plan" to **High Security Business Network vNext(Limited Beta)** (its important to select the **vNext** Plan)
   1. Click the "Create" button at the bottom right.
 
 ![](/doc_images/1-welcome.PNG)
