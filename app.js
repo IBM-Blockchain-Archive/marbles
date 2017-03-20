@@ -176,7 +176,7 @@ function setup_marbles_lib(){
 		block_delay: block_delay,
 		channel_id: helper.getChannelId(), 
 		chaincode_id: helper.getChaincodeId(),
-		event_url: helper.getPeerEventUrl(0),
+		event_url: (helper.getEventsSetting()) ? helper.getPeerEventUrl(0) : null,
 		chaincode_version: helper.getChaincodeVersion(),
 	};
 	marbles_lib = require('./utils/marbles_cc_lib.js')(enrollObj, opts, console);

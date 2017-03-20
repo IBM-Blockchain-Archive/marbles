@@ -1,5 +1,6 @@
 {
 	"credentials": "marbles2.json",
+	"use_events": true,
 	"company": "eMarbles",
 	"usernames": [
 		"cliff",

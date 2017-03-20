@@ -9,8 +9,8 @@ module.exports = function (g_options, logger) {
 	var utils = require('fabric-client/lib/utils.js');
 	var invoke_cc = {};
 
-	if(!g_options) g_options = {};
-	if(!g_options.block_delay) g_options.block_delay = 10000;
+	if (!g_options) g_options = {};
+	if (!g_options.block_delay) g_options.block_delay = 10000;
 
 	//-------------------------------------------------------------------
 	// Create User - options are {username: bob}
@@ -23,8 +23,8 @@ module.exports = function (g_options, logger) {
 					event_url: "peers event url",
 					endorsed_hook: function(error, res){},
 					ordered_hook: function(error, res){},
-					cc_function: "function_name"
-					cc_args: ["argument 1"]
+					cc_function: "function_name",
+					cc_args: ["argument 1"],
 		}
 	*/
 	invoke_cc.invoke_chaincode = function (obj, options, cb) {
@@ -47,51 +47,55 @@ module.exports = function (g_options, logger) {
 		logger.debug('[fcw] Sending invoke req', request);
 
 		// Setup EventHub
-		console.log('listening to event url', options.event_url);
-		//eventhub = new EventHub();
-		//eventhub.setPeerAddr(options.event_url);
-		//eventhub.connect();
+		if (options.event_url) {
+			logger.debug('[fcw] listening to event url', options.event_url);
+			eventhub = new EventHub();
+			eventhub.setPeerAddr(options.event_url);
+			eventhub.connect();
+		} else {
+			logger.debug('[fcw] will not use tx event');
+		}
 
 		// Send Proposal
-		chain.sendTransactionProposal(request
-			//nothing
-		).then(
-			function (results) {
+		chain.sendTransactionProposal(request).then(function (results) {
 
-				//check response
-				var request = common.check_proposal_res(results, options.endorsed_hook);
-				return chain.sendTransaction(request);
-			}
-			).then(
-			function (response) {
+			// Check Response
+			var request = common.check_proposal_res(results, options.endorsed_hook);
+			return chain.sendTransaction(request);
+		}).then(function (response) {
 
-				// All good
-				if (response.status === 'SUCCESS') {
-					logger.debug('[fcw] Successfully ordered endorsement transaction.');
+			// All good
+			if (response.status === 'SUCCESS') {
+				logger.debug('[fcw] Successfully ordered endorsement transaction.');
 
-					// Call optional order hook
-					if (options.ordered_hook) options.ordered_hook(null, request.txId.toString());
+				// Call optional order hook
+				if (options.ordered_hook) options.ordered_hook(null, request.txId.toString());
 
-					/*var watchdog = setTimeout(() => {
+
+				// ------- Use Event for Tx Confirmation ------- //
+				if (options.event_url) {
+
+					// Watchdog for no block event
+					var watchdog = setTimeout(() => {
 						var msg = '[fcw] Failed to receive block event within the timeout period';
 						logger.error(msg);
-						
+
 						if (cb && !cbCalled) {
 							cbCalled = true;
-							return cb(null);						//timeout pass it back
+							return cb(null);					//timeout pass it back
 						}
 						else return;
 					}, g_options.block_delay + 2000);
 
-					// Wait for block event
+					// Wait for tx committed event
 					eventhub.registerTxEvent(request.txId.toString(), (tx, code) => {
 						logger.info('[fcw] The chaincode transaction has been committed, success:', code);
 						clearTimeout(watchdog);
 
-						if(code !== 'VALID') {
+						if (code !== 'VALID') {
 							if (cb && !cbCalled) {
 								cbCalled = true;
-								return cb(code);					//pass error back
+								return cb(code);				//pass error back
 							}
 							else return;
 						} else {
@@ -101,36 +105,31 @@ module.exports = function (g_options, logger) {
 							}
 							else return;
 						}
-					});*/
+					});
+				} else {
 
-					//use this instead of above if eventhub is causing issues
-					setTimeout(function(){
+					// ------- Wait xxxx ms for Block  ------- //
+					setTimeout(function () {
 						if (cb) return cb(null);
 						else return;
-					},10000);
-					
-				}
-
-				// No good
-				else {
-					if (options.ordered_hook) options.ordered_hook('failed');
-					logger.error('[fcw] Failed to order the transaction. Error code: ', response);
-					throw response;
+					}, g_options.block_delay + 2000);
 				}
 			}
-			).catch(
-			function (err) {
-				logger.error('[fcw] Error in invoke catch block', typeof err, err);
-				var formatted = common.format_error_msg(err);
-				if (options.ordered_hook) options.ordered_hook('failed', formatted);
 
-				if (cb) return cb(formatted, null);
-				else return;
+			// No good
+			else {
+				if (options.ordered_hook) options.ordered_hook('failed');
+				logger.error('[fcw] Failed to order the transaction. Error code: ', response);
+				throw response;
 			}
-		);
+		}).catch(function (err) {
+			logger.error('[fcw] Error in invoke catch block', typeof err, err);
+			var formatted = common.format_error_msg(err);
+			if (options.ordered_hook) options.ordered_hook('failed', formatted);
 
+			if (cb) return cb(formatted, null);
+			else return;
+		});
 	};
-
 	return invoke_cc;
 };
-
