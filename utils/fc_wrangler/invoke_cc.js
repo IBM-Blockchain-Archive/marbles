@@ -128,12 +128,12 @@ module.exports = function (g_options, logger) {
 			console.log('!', err.toString(), err.toString().indexOf('REQUEST_TIMEOUT'));
 
 			// --- Decide if we need to try again --- //
-			if(err.toString().indexOf('REQUEST_TIMEOUT') >= 0) {	//sometimes our connection breaks b/c of a timeout
-				if(!options.attempt) options.attempt = 1;
-				if(options.attempt <= 3) {							//just try it again!
+			if (err.toString().indexOf('REQUEST_TIMEOUT') >= 0) {	//sometimes our connection breaks b/c of a timeout
+				if (!options.attempt) options.attempt = 1;
+				if (options.attempt <= 3) {							//just try it again!
 					logger.error('[fcw] Ahhh crap... lets try the invoke again. failed attempts:', options.attempt);
 					options.attempt++;
-					setTimeout(function(){
+					setTimeout(function () {
 						return invoke_cc.invoke_chaincode(obj, options, cb);
 					}, 1000 * options.attempt);
 				}

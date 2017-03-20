@@ -21,16 +21,16 @@ module.exports = function (enrollObj, g_options, logger) {
 			cc_function: 'read',
 			cc_args: ['abc']
 		};
-		fcw.query_chaincode(enrollObj, opts, function(err, resp){
-			if(err != null){
-				if(cb) return cb(err, resp);
+		fcw.query_chaincode(enrollObj, opts, function (err, resp) {
+			if (err != null) {
+				if (cb) return cb(err, resp);
 			}
-			else{
-				if(resp.parsed == null){							//if nothing is here, no chaincode
-					if(cb) return cb({error: 'chaincode not found'}, resp);
+			else {
+				if (resp.parsed == null) {							//if nothing is here, no chaincode
+					if (cb) return cb({ error: 'chaincode not found' }, resp);
 				}
-				else{
-					if(cb) return cb(null, resp);
+				else {
+					if (cb) return cb(null, resp);
 				}
 			}
 		});

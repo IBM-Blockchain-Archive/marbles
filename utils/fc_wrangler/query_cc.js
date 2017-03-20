@@ -38,7 +38,7 @@ module.exports = function (logger) {
 		chain.queryByChaincode(request
 			//nothing
 		).then(
-			function(response_payloads) {
+			function (response_payloads) {
 				var formatted = format_query_resp(response_payloads);
 
 				// --- response looks bad -- //
@@ -52,20 +52,20 @@ module.exports = function (logger) {
 				}
 				if (cb) return cb(null, formatted);
 			}
-		).catch(
-			function(err) {
+			).catch(
+			function (err) {
 				logger.error('[fcw] Error in query catch block', typeof err, err);
 
 				if (cb) return cb(err, null);
 				else return;
 			}
-		);
+			);
 	};
 
 	//-----------------------------------------------------------------
 	// Format Query Responses
 	//------------------------------------------------------------------
-	function format_query_resp (peer_responses) {
+	function format_query_resp(peer_responses) {
 		var ret = {
 			parsed: null,
 			peers_agree: true,
