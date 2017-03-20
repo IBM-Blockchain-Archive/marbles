@@ -199,8 +199,8 @@ function setup_marbles_lib() {
 			broadcast_state('no_chaincode');
 		}
 		else {													//else we already deployed
-			console.log('');
-			logger.debug('Chaincode already deployed\n\n');
+
+			console.log('\n------------------------------------------ Chaincode Found ------------------------------------------\n');
 			broadcast_state('found_chaincode');
 
 			var user_base = null;

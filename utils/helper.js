@@ -160,7 +160,10 @@ module.exports = function (config_filename, logger) {
 
 	// get the status of marbles previous startup
 	helper.getEventsSetting = function () {
-		return getMarblesField('use_events');
+		if (helper.config['use_events']) {
+			return helper.config['use_events'];
+		}
+		return false;
 	};
 
 	// safely retrieve marbles fields

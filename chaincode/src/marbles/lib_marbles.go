@@ -69,7 +69,7 @@ func get_complete_marble_index(stub shim.ChaincodeStubInterface) ([]string, erro
 		
 		//append to array
 		completedMarbleIndex = append(completedMarbleIndex, owner.Marbles...) //add this owner's marble list to complete list
-		fmt.Println("marble index so far - ", completedMarbleIndex)
+		//fmt.Println("marble index so far - ", completedMarbleIndex)
 	}
 
 	return completedMarbleIndex, nil

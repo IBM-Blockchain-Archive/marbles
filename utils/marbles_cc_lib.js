@@ -12,7 +12,7 @@ module.exports = function (enrollObj, g_options, logger) {
 
 	//check chaincode
 	marbles_chaincode.check_if_already_deployed = function (options, cb) {
-		logger.info('checking for chaincode...');
+		logger.info('Checking for chaincode...');
 
 		var opts = {
 			channel_id: g_options.channel_id,
@@ -41,7 +41,7 @@ module.exports = function (enrollObj, g_options, logger) {
 
 	//create a marble
 	marbles_chaincode.create_a_marble = function (options, cb) {
-		logger.info('creating a marble...');
+		logger.info('Creating a marble...');
 
 		var opts = {
 			channel_id: g_options.channel_id,
@@ -65,7 +65,7 @@ module.exports = function (enrollObj, g_options, logger) {
 
 	//get list of marbles
 	marbles_chaincode.get_marble_list = function (options, cb) {
-		logger.info('fetching marble index list...');
+		logger.info('Fetching marble index list...');
 
 		var opts = {
 			channel_id: g_options.channel_id,
@@ -93,7 +93,7 @@ module.exports = function (enrollObj, g_options, logger) {
 
 	//set marble owner
 	marbles_chaincode.set_marble_owner = function (options, cb) {
-		logger.info('setting marble owner...');
+		logger.info('Setting marble owner...');
 
 		var opts = {
 			channel_id: g_options.channel_id,
@@ -115,7 +115,7 @@ module.exports = function (enrollObj, g_options, logger) {
 
 	//delete marble
 	marbles_chaincode.delete_marble = function (options, cb) {
-		logger.info('deleting a marble...');
+		logger.info('Deleting a marble...');
 
 		var opts = {
 			channel_id: g_options.channel_id,
