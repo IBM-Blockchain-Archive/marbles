@@ -4,12 +4,13 @@
 //var async = require('async');
 var path = require('path');
 
-module.exports = function (checkPerodically, marbles_lib, logger) {
+module.exports = function (checkPerodically, logger) {
 	var helper = require(path.join(__dirname, './helper.js'))(process.env.creds_filename, console);
 	var ws_server = {};
 	var chain = null;
 	var broadcast = null;
 	var known_everything = {};
+	var marbles_lib = null;
 
 	//setup this module
 	ws_server.setup = function(l_chain, l_marbles_lib, l_broadcast, logger){
@@ -29,13 +30,13 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 							ordered_hook: orderer_hook
 						};
 		if(marbles_lib === null) {
-			console.log('error! marbles lib is null...');				//can't run in this state
+			logger.error('marbles lib is null...');				//can't run in this state
 			return;
 		}
 			
 		// create a new marble
 		if(data.type == 'create'){
-			console.log('[ws] create marbles req');
+			logger.info('[ws] create marbles req');
 			options.args = 	{
 								marble_id: data.name,
 								color: data.color,
@@ -53,7 +54,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 
 		//transfer a marble
 		else if(data.type == 'transfer_marble'){
-			console.log('[ws] transfering req');
+			logger.info('[ws] transfering req');
 			options.args = 	{
 								marble_id: data.name,
 								marble_owner: data.username,
@@ -69,7 +70,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 
 		//delete marble
 		else if(data.type == 'delete_marble'){
-			console.log('[ws] delete marble req');
+			logger.info('[ws] delete marble req');
 			options.args = 	{
 								marble_id: data.name,
 								auth_company: process.env.marble_company
@@ -83,13 +84,13 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 
 		//get all owners, marbles, & companies
 		else if(data.type == 'read_everything'){
-			console.log('[ws] read everything req');
+			logger.info('[ws] read everything req');
 			ws_server.check_for_updates(ws);
 		}
 
 		/*
 		else if(data.type == 'chainstats'){
-			console.log('get chainstats');
+			logger.info('get chainstats');
 			hfc_util.getChainStats(peer, cb_chainstats);
 		}*/
 		
@@ -109,7 +110,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 							stats.height = block_height;
 							sendMsg({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
 						} else {
-							console.log(' - error getting block stats: ' + e);
+							logger.debug(' - error getting block stats: ' + e);
 						}
 						cb(null);
 					});
@@ -131,7 +132,7 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 					ws.send(JSON.stringify(json));
 				}
 				catch(e){
-					console.log('[ws error] could not send msg', e);
+					logger.debug('[ws error] could not send msg', e);
 				}
 			}
 		}
@@ -155,7 +156,8 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 				ws_server.check_for_updates(null);
 			}
 			catch(e){
-				console.log('\n\n! Error in sch next check\n\n', e);
+				console.log('');
+				logger.error('Error in sch next check\n\n', e);
 				sch_next_check();
 				ws_server.check_for_updates(null);
 			}
@@ -169,14 +171,16 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 
 		marbles_lib.read_everything(options, function(err, resp){
 			if(err != null){
-				console.log('\n[checking] could not get everything:', err);
+				console.log('');
+				logger.debug('[checking] could not get everything:', err);
 				sch_next_check();										//check again
 			}
 			else{
 				var data = resp.parsed;
 				if(data && data.owners_index && data.marbles){
-					console.log('\n[checking] number of owners:', data.owners_index.length);
-					console.log('[checking] number of marbles:', data.marbles.length, '\n\n');
+					console.log('');
+					logger.debug('[checking] number of owners:', data.owners_index.length);
+					logger.debug('[checking] number of marbles:', data.marbles.length);
 				}
 
 				data.owners_index = organize_usernames(data.owners_index);
@@ -185,14 +189,14 @@ module.exports = function (checkPerodically, marbles_lib, logger) {
 				var latestListAsString = JSON.stringify(data);
 
 				if(knownAsString === latestListAsString){
-					console.log('[checking] same everything as last time');
+					logger.debug('[checking] same everything as last time');
 					if(ws_client !== null) {							//if this is answering a clients req, send it to them
-						console.log('[checking] sending to 1 client');
+						logger.debug('[checking] sending to 1 client');
 						ws_client.send(JSON.stringify({msg: 'everything', e: err, everything: data}));
 					}
 				}
 				else{													//detected new things, send it out
-					console.log('[checking] there are new things, sending to all clients');
+					logger.debug('[checking] there are new things, sending to all clients');
 					known_everything = data;
 					broadcast({msg: 'everything', e: err, everything: data});
 				}

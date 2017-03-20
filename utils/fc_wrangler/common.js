@@ -22,7 +22,7 @@ module.exports = function (logger) {
 			}
 		}
 		catch (e) {
-			logger.error('\n[fcw] could not format error');
+			logger.error('[fcw] could not format error');
 		}
 		return temp;
 	};
@@ -60,7 +60,7 @@ module.exports = function (logger) {
 			throw proposalResponses;
 		}
 		else {
-			console.log('\n');
+			console.log('');
 			logger.debug('[fcw] Successfully obtained transaction endorsement.\n');
 
 			//call optional endorsement hook

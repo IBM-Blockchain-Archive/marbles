@@ -28,7 +28,8 @@ module.exports = function (g_options, logger) {
 		}
 	*/
 	invoke_cc.invoke_chaincode = function (obj, options, cb) {
-		logger.debug('\n[fcw] Invoking Chaincode: ' + options.cc_function + '()\n');
+		console.log('');
+		logger.debug('[fcw] Invoking Chaincode: ' + options.cc_function + '()\n');
 		var eventhub;
 		var chain = obj.chain;
 		var nonce = utils.getNonce();
@@ -77,8 +78,7 @@ module.exports = function (g_options, logger) {
 
 					// Watchdog for no block event
 					var watchdog = setTimeout(() => {
-						var msg = '[fcw] Failed to receive block event within the timeout period';
-						logger.error(msg);
+						logger.error('[fcw] Failed to receive block event within the timeout period');
 
 						if (cb && !cbCalled) {
 							cbCalled = true;
@@ -124,6 +124,21 @@ module.exports = function (g_options, logger) {
 			}
 		}).catch(function (err) {
 			logger.error('[fcw] Error in invoke catch block', typeof err, err);
+
+			console.log('!', err.toString(), err.toString().indexOf('REQUEST_TIMEOUT'));
+
+			// --- Decide if we need to try again --- //
+			if(err.toString().indexOf('REQUEST_TIMEOUT') >= 0) {	//sometimes our connection breaks b/c of a timeout
+				if(!options.attempt) options.attempt = 1;
+				if(options.attempt <= 3) {							//just try it again!
+					logger.error('[fcw] Ahhh crap... lets try the invoke again. failed attempts:', options.attempt);
+					options.attempt++;
+					setTimeout(function(){
+						return invoke_cc.invoke_chaincode(obj, options, cb);
+					}, 1000 * options.attempt);
+				}
+			}
+
 			var formatted = common.format_error_msg(err);
 			if (options.ordered_hook) options.ordered_hook('failed', formatted);
 

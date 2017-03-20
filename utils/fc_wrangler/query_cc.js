@@ -19,7 +19,7 @@ module.exports = function (logger) {
 		}
 	*/
 	query_cc.query_chaincode = function (obj, options, cb) {
-		logger.debug('[fcw] Querying Chaincode: ' + options.cc_function + '()\n');
+		logger.debug('[fcw] Querying Chaincode: ' + options.cc_function + '()');
 		var chain = obj.chain;
 		var nonce = utils.getNonce();
 
@@ -85,7 +85,7 @@ module.exports = function (logger) {
 			// -- compare peer responses -- //
 			if (last != null) {								//check if all peers agree
 				if (last !== as_string) {
-					logger.warn('\n[fcw] warning - some peers do not agree on query', last, as_string);
+					logger.warn('[fcw] warning - some peers do not agree on query', last, as_string);
 					ret.peers_agree = false;
 				}
 				last = as_string;

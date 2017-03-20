@@ -170,12 +170,12 @@ module.exports = function (config_filename, logger) {
 				return helper.config[marbles_field];
 			}
 			else {
-				console.log('Error - "' + marbles_field + '" not found in config json');
+				logger.debug('Error - "' + marbles_field + '" not found in config json');
 				return null;
 			}
 		}
 		catch (e) {
-			console.log('Error - "' + marbles_field + '" not found in config json');
+			logger.debug('Error - "' + marbles_field + '" not found in config json');
 			return null;
 		}
 	}
@@ -187,12 +187,12 @@ module.exports = function (config_filename, logger) {
 				return helper.creds.credentials.app[field];
 			}
 			else {
-				console.log('Error - "' + field + '" not found in config json');
+				logger.debug('Error - "' + field + '" not found in config json');
 				return null;
 			}
 		}
 		catch (e) {
-			console.log('Error - "' + field + '" not found in config json');
+			logger.debug('Error - "' + field + '" not found in config json');
 			return null;
 		}
 	}

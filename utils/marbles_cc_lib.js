@@ -5,18 +5,14 @@ var path = require('path');
 
 module.exports = function (enrollObj, g_options, logger) {
 	var marbles_chaincode = {};
-	var l_logger = console;
-	l_logger.log = console.log;
-	l_logger.debug = console.log;
-	l_logger.error = console.log;
-	var fcw = require(path.join(__dirname, './fc_wrangler/index.js'))(g_options, l_logger);
+	var fcw = require(path.join(__dirname, './fc_wrangler/index.js'))(g_options, logger);
 
 
 	// Chaincode -------------------------------------------------------------------------------
 
 	//check chaincode
 	marbles_chaincode.check_if_already_deployed = function (options, cb) {
-		console.log('\nchecking for chaincode...');
+		logger.info('checking for chaincode...');
 
 		var opts = {
 			channel_id: g_options.channel_id,
@@ -45,7 +41,7 @@ module.exports = function (enrollObj, g_options, logger) {
 
 	//create a marble
 	marbles_chaincode.create_a_marble = function (options, cb) {
-		console.log('\ncreating a marble...');
+		logger.info('creating a marble...');
 
 		var opts = {
 			channel_id: g_options.channel_id,
@@ -69,7 +65,7 @@ module.exports = function (enrollObj, g_options, logger) {
 
 	//get list of marbles
 	marbles_chaincode.get_marble_list = function (options, cb) {
-		console.log('\nfetching marble index list...');
+		logger.info('fetching marble index list...');
 
 		var opts = {
 			channel_id: g_options.channel_id,
@@ -83,7 +79,7 @@ module.exports = function (enrollObj, g_options, logger) {
 
 	//get marble
 	marbles_chaincode.get_marble = function (options, cb) {
-		console.log('\nfetching marble ' + options.marble_id + ' list...');
+		logger.info('fetching marble ' + options.marble_id + ' list...');
 
 		var opts = {
 			channel_id: g_options.channel_id,
@@ -97,7 +93,7 @@ module.exports = function (enrollObj, g_options, logger) {
 
 	//set marble owner
 	marbles_chaincode.set_marble_owner = function (options, cb) {
-		console.log('\nsetting marble owner...');
+		logger.info('setting marble owner...');
 
 		var opts = {
 			channel_id: g_options.channel_id,
@@ -119,7 +115,7 @@ module.exports = function (enrollObj, g_options, logger) {
 
 	//delete marble
 	marbles_chaincode.delete_marble = function (options, cb) {
-		console.log('\ndeleting a marble...');
+		logger.info('deleting a marble...');
 
 		var opts = {
 			channel_id: g_options.channel_id,
@@ -139,7 +135,7 @@ module.exports = function (enrollObj, g_options, logger) {
 
 	//register a owner/user
 	marbles_chaincode.register_owner = function (options, cb) {
-		console.log('\nCreating a marble owner\n');
+		logger.info('Creating a marble owner\n');
 
 		var opts = {
 			channel_id: g_options.channel_id,
@@ -157,7 +153,7 @@ module.exports = function (enrollObj, g_options, logger) {
 	//get a owner/user
 	marbles_chaincode.get_owner = function (options, cb) {
 		var full_username = build_owner_name(options.args.marble_owner, options.args.owners_company);
-		console.log('\nFetching owner ' + full_username + ' list...');
+		logger.info('Fetching owner ' + full_username + ' list...');
 
 		var opts = {
 			channel_id: g_options.channel_id,
@@ -171,7 +167,7 @@ module.exports = function (enrollObj, g_options, logger) {
 
 	//get the owner list
 	marbles_chaincode.get_owner_list = function (options, cb) {
-		console.log('\nFetching owner index list...');
+		logger.info('Fetching owner index list...');
 
 		var opts = {
 			channel_id: g_options.channel_id,
@@ -193,7 +189,8 @@ module.exports = function (enrollObj, g_options, logger) {
 
 	//build full name
 	marbles_chaincode.read_everything = function (options, cb) {
-		console.log('\nFetching EVERYTHING...');
+		console.log('\n');
+		logger.info('Fetching EVERYTHING...');
 
 		var opts = {
 			channel_id: g_options.channel_id,

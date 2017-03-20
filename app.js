@@ -14,26 +14,27 @@ var serve_static = require('serve-static');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var http = require('http');  
+var http = require('http');
 var app = express();
 var url = require('url');
 var cors = require('cors');
 var async = require('async');
 var ws = require('ws');											//websocket module 
+var winston = require('winston');								//logginer module
 
 // --- Set Our Things --- //
 var block_delay = 10000;										//should be exactly the block delay
-var logger = {													//overwrite console to work with info/warn/debug
-	log: console.log,
-	info: console.log,
-	error: console.error,
-	warn: console.log,
-	debug: console.log
-};
+var logger = new (winston.Logger)({
+	level: 'debug',
+	transports: [
+		new (winston.transports.Console)({ colorize: true }),
+	]
+});
+
 var fcw = require('./utils/fc_wrangler/index.js')({block_delay: block_delay}, logger);
 
 var more_entropy = randStr(32);
-var ws_server = require('./utils/websocket_server_side.js')(null, null, null);
+var ws_server = require('./utils/websocket_server_side.js')(null, logger);
 var helper = require(__dirname + '/utils/helper.js')(process.env.creds_filename, logger);
 var host = 'localhost';
 var port = helper.getMarblesPort();
@@ -66,24 +67,24 @@ var bust_js = require('./busters_js.json');
 var bust_css = require('./busters_css.json');
 process.env.cachebust_js = bust_js['public/js/singlejshash'];			//i'm just making 1 hash against all js for easier jade implementation
 process.env.cachebust_css = bust_css['public/css/singlecsshash'];		//i'm just making 1 hash against all css for easier jade implementation
-console.log('cache busting hash js', process.env.cachebust_js, 'css', process.env.cachebust_css);
+logger.debug('cache busting hash js', process.env.cachebust_js, 'css', process.env.cachebust_css);
 
 // ============================================================================================================================
 // 													Webserver Routing
 // ============================================================================================================================
 app.use(function(req, res, next){
 	var keys;
-	console.log('------------------------------------------ incoming request ------------------------------------------');
-	console.log('New ' + req.method + ' request for', req.url);
+	logger.debug('------------------------------------------ incoming request ------------------------------------------');
+	logger.debug('New ' + req.method + ' request for', req.url);
 	req.bag = {};																			//create object for my stuff
 	req.bag.session = req.session;
 
 	var url_parts = url.parse(req.url, true);
 	req.parameters = url_parts.query;
 	keys = Object.keys(req.parameters);
-	if(req.parameters && keys.length > 0) console.log({parameters: req.parameters});		//print request parameters for debug
+	if(req.parameters && keys.length > 0) logger.debug({parameters: req.parameters});		//print request parameters for debug
 	keys = Object.keys(req.body);
-	if (req.body && keys.length > 0) console.log({body: req.body});							//print request body for debug
+	if (req.body && keys.length > 0) logger.debug({body: req.body});							//print request body for debug
 	next();
 });
 app.use('/', require('./routes/site_router'));
@@ -95,7 +96,7 @@ app.use(function(req, res, next) {
 	next(err);
 });
 app.use(function(err, req, res, next) {														// = development error handler, print stack trace
-	console.log('Error Handeler -', req.url);
+	logger.debug('Error Handeler -', req.url);
 	var errorCode = err.status || 500;
 	res.status(errorCode);
 	req.bag.error = {msg:err.stack, status:errorCode};
@@ -112,8 +113,8 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 process.env.NODE_ENV = 'production';
 server.timeout = 240000;																							// Ta-da.
 console.log('------------------------------------------ Server Up - ' + host + ':' + port + ' ------------------------------------------');
-if(process.env.PRODUCTION) console.log('Running using Production settings');
-else console.log('Running using Developer settings');
+if(process.env.PRODUCTION) logger.debug('Running using Production settings');
+else logger.debug('Running using Developer settings');
 
 
 // ============================================================================================================================
@@ -143,10 +144,12 @@ setupWebSocket();
 
 try{
 	var hash = helper.getMarbleStartUpHash();
-	console.log('what is what', hash, helper.getHash());
+	logger.debug('what is what', hash, helper.getHash());
 	if(hash === helper.getHash()){
-		console.log('\n\nDetected that we have launched successfully before');
-		console.log('Welcome back - Initiating start up\n\n');
+		console.log('');
+		console.log('');
+		logger.debug('Detected that we have launched successfully before');
+		logger.debug('Welcome back - Initiating start up\n\n');
 		process.env.app_first_setup = 'no';
 		enroll_admin(function(e){
 			if(e == null){
@@ -163,14 +166,15 @@ catch(e){
 function wait_to_init(){
 	process.env.app_state = 'start_waiting';
 	process.env.app_first_setup = 'yes';
-	console.log('\n\nDetected that we have NOT launched successfully yet');
-	console.log('Open your browser to http://' + host + ':' + port + ' and login as "admin" to initiate startup\n\n');
+	console.log('');
+	logger.debug('Detected that we have NOT launched successfully yet');
+	logger.debug('Open your browser to http://' + host + ':' + port + ' and login as "admin" to initiate startup\n\n');
 }
 // -------------------------------------------------------------------
 
 //setup marbles library and check if cc is deployed
 function setup_marbles_lib(){
-	console.log('Setup Marbles Lib...');
+	logger.debug('Setup Marbles Lib...');
 
 	var opts = {
 		block_delay: block_delay,
@@ -179,23 +183,24 @@ function setup_marbles_lib(){
 		event_url: (helper.getEventsSetting()) ? helper.getPeerEventUrl(0) : null,
 		chaincode_version: helper.getChaincodeVersion(),
 	};
-	marbles_lib = require('./utils/marbles_cc_lib.js')(enrollObj, opts, console);
+	marbles_lib = require('./utils/marbles_cc_lib.js')(enrollObj, opts, logger);
 	ws_server.setup(enrollObj, marbles_lib, wss.broadcast, null);
 
-	console.log('Checking if chaincode is already deployed or not');
+	logger.debug('Checking if chaincode is already deployed or not');
 	var options = 	{
 						peer_urls: [helper.getPeersUrl(0)],
 					};
 	marbles_lib.check_if_already_deployed(options, function(not_deployed, enrollUser){
 		if(not_deployed){										//if this is truthy we have not yet deployed.... error
-			console.log('\n\nChaincode ID was not detected: "' + helper.getChaincodeId()+ '", all stop');
-			console.log('\n\nYou can deploy this chaincode or change the ID from the UI');
-			console.log('Open your browser to http://' + host + ':' + port + ' and login to redo/init startup');
+			console.log('');
+			logger.debug('Chaincode ID was not detected: "' + helper.getChaincodeId()+ '", all stop');
+			logger.debug('Open your browser to http://' + host + ':' + port + ' and login to redo/init startup');
 			process.env.app_first_setup = 'yes';				//overwrite state, bad startup
 			broadcast_state('no_chaincode');
 		}
 		else{													//else we already deployed
-			console.log('\n\nChaincode already deployed\n\n');
+			console.log('');
+			logger.debug('Chaincode already deployed\n\n');
 			broadcast_state('found_chaincode');
 
 			var user_base = null;
@@ -220,7 +225,7 @@ function enroll_admin(cb){
 	};
 	fcw.enroll(options, function(errCode, obj){
 		if (errCode != null) {
-			console.error('could not enroll');
+			logger.error('could not enroll');
 			if(cb) cb(errCode);
 		} else{
 			enrollObj = obj;
@@ -269,11 +274,11 @@ function build_marble_options(username, company){
 
 //this only runs after we deploy
 function create_assets(build_marbles_users){
-	console.log('Creating marble owners and marbles');
+	logger.debug('Creating marble owners and marbles');
 
 	if(build_marbles_users && build_marbles_users.length > 0){
 		async.eachLimit(build_marbles_users, 1, function(username, user_cb) { 	//iter through each one ONLY ONE! [important]
-			console.log('debug 3 - on user', username, Date.now());
+			logger.debug('debug 3 - on user', username, Date.now());
 
 			// --- Create Each User, Serially --- //
 			pessimistic_create_owner(0, username, function(){
@@ -281,18 +286,18 @@ function create_assets(build_marbles_users){
 			});
 
 		}, function(err) {
-			console.log('- finished creating owners, now for marbles');
+			logger.debug('- finished creating owners, now for marbles');
 			if(err == null) {
 
 				// --- Create Marbles, 2 Users at a Time --- //
 				async.eachLimit(build_marbles_users, 2, function(username, marble_cb) { //iter through each one 
 
 					// --- Create 2 Marbles Serially --- //
-					console.log('debug 4 - on user', username, Date.now());
+					logger.debug('debug 4 - on user', username, Date.now());
 					create_marbles(username, marble_cb);
 
 				}, function(err) {													//marble owner creation finished
-					console.log('- finished creating assets, waiting for peer catch up');
+					logger.debug('- finished creating assets, waiting for peer catch up');
 					if(err == null) {
 						all_done();													//delay for peer catch up
 					}
@@ -301,7 +306,7 @@ function create_assets(build_marbles_users){
 		});
 	}
 	else{
-		console.log('- there are no new marble owners to create');
+		logger.debug('- there are no new marble owners to create');
 		all_done();
 	}
 }
@@ -320,7 +325,8 @@ function pessimistic_create_owner(attempt, username, cb){
 
 		// --- Does the user exist yet? --- //
 		if(e && e.parsed && e.parsed.indexOf('owner already exists') >= 0){
-			console.log('\n\nfinally the user exists, this is a good thing, moving on\n\n');
+			console.log('');
+			logger.debug('finally the user exists, this is a good thing, moving on\n\n');
 			cb(null);
 		}
 		else{
@@ -328,14 +334,14 @@ function pessimistic_create_owner(attempt, username, cb){
 			// -- Try again -- //
 			if(attempt < 4){
 				setTimeout(function(){								//delay for peer catch up
-					console.log('owner existance is not yet confirmed, trying again', attempt, username, Date.now());
+					logger.debug('owner existance is not yet confirmed, trying again', attempt, username, Date.now());
 					return pessimistic_create_owner(++attempt, username, cb);
 				}, block_delay + 1000*attempt);
 			}
 
 			// -- Give Up -- //
 			else{
-				console.log('giving up on creating the user', attempt, username, Date.now());
+				logger.debug('giving up on creating the user', attempt, username, Date.now());
 				if(cb) return cb(e);
 				else return;
 			}
@@ -347,7 +353,8 @@ function pessimistic_create_owner(attempt, username, cb){
 function create_marbles(username, cb){
 	async.eachLimit([1,2], 1, function(block_height, marble_cb) {	//create two marbles for every user
 		var randOptions = build_marble_options(username, process.env.marble_company);
-		console.log('\n\ngoing to create marble:', randOptions);
+		console.log('');
+		logger.debug('[startup] going to create marble:', randOptions);
 		var options = 	{
 							chaincode_id: helper.getChaincodeId(),
 							peer_urls: [helper.getPeersUrl(0)],
@@ -359,7 +366,6 @@ function create_marbles(username, cb){
 			//}, block_delay);
 		});
 	}, function() {
-		console.log('debug 2 - ok returning', Date.now());
 		return cb();												//marble creation finished
 	});
 }
@@ -370,7 +376,7 @@ function all_done(){
 	broadcast_state('registered_owners');
 	process.env.app_first_setup = 'no';
 
-	console.log('hash is', helper.getHash());
+	logger.debug('hash is', helper.getHash());
 	helper.write({hash: helper.getHash()});							//write state file so we know we started before
 	ws_server.check_for_updates(null);								//call the periodic task to get the state of everything
 }
@@ -399,11 +405,11 @@ function setupWebSocket(){
 	wss = new ws.Server({server: server});										//start the websocket now
 	wss.on('connection', function connection(ws) {
 		ws.on('message', function incoming(message) {
-			console.log('received ws msg:', message);
+			logger.debug('received ws msg:', message);
 			try{
 				var data = JSON.parse(message);
 				if(data.type == 'setup'){
-					console.log('! [ws] setup message', data);
+					logger.debug('! [ws] setup message', data);
 
 					//enroll admin
 					if(data.configure === 'enrollment'){
@@ -435,12 +441,12 @@ function setupWebSocket(){
 				}
 			}
 			catch(e){
-				console.log('ws message error', e.stack);
+				logger.debug('ws message error', e.stack);
 			}
 		});
 
-		ws.on('error', function(e){console.log('ws error', e);});
-		ws.on('close', function(){console.log('ws closed');});
+		ws.on('error', function(e){logger.debug('ws error', e);});
+		ws.on('close', function(){logger.debug('ws closed');});
 		ws.send(JSON.stringify(build_state_msg()));								//tell client our app state
 	});
 
@@ -448,11 +454,11 @@ function setupWebSocket(){
 		var i = 0;
 		wss.clients.forEach(function each(client) {
 			try{
-				console.log('broadcasting to client', (++i), data.msg);
+				logger.debug('broadcasting to client', (++i), data.msg);
 				client.send(JSON.stringify(data));
 			}
 			catch(e){
-				console.log('error broadcast ws', e);
+				logger.debug('error broadcast ws', e);
 			}
 		});
 	};
@@ -465,7 +471,7 @@ function setupWebSocket(){
 
 	/*hfc_util.monitor_blockheight(hfc.getPeer(peer_url), function(chain_stats) {		//there is a new block, lets refresh everything that has a state
 		if(chain_stats && chain_stats.height){
-			console.log('\nHey new block, lets refresh and broadcast to all', chain_stats.height-1);
+			logger.debug('\nHey new block, lets refresh and broadcast to all', chain_stats.height-1);
 			hfc_util.getBlockStats(peer, chain_stats.height - 1, cb_blockstats);
 			wss.broadcast({msg: 'reset'});
 			hfc_util.queryCC(admin, chaincode_id, 'read', ['_marbleindex'], cb_got_index);
@@ -474,7 +480,7 @@ function setupWebSocket(){
 
 		//got the block's stats, lets send the statistics
 		function cb_blockstats(e, stats){
-			if(e != null) console.log('blockstats error:', e);
+			if(e != null) logger.debug('blockstats error:', e);
 			else {
 				chain_stats.height = chain_stats.height - 1;							//its 1 higher than actual height
 				stats.height = chain_stats.height;										//copy
@@ -484,41 +490,41 @@ function setupWebSocket(){
 
 		//got the marble index, lets get each marble
 		function cb_got_index(e, index){
-			if(e != null) console.log('marble index error:', e);
+			if(e != null) logger.debug('marble index error:', e);
 			else{
 				try{
 					var json = JSON.parse(index);
 					for(var i in json){
-						console.log('!', i, json[i]);
+						logger.debug('!', i, json[i]);
 						//iter over each, read their values
 						hfc_util.queryCC(admin, chaincode_id, 'read', [json[i]], cb_got_marble);
 					}
 				}
 				catch(e){
-					console.log('marbles index msg error:', e);
+					logger.debug('marbles index msg error:', e);
 				}
 			}
 		}
 
 		//call back for getting a marble, lets send a message
 		function cb_got_marble(e, marble){
-			if(e != null) console.log('marble error:', e);
+			if(e != null) logger.debug('marble error:', e);
 			else {
 				try{
 					wss.broadcast({msg: 'marbles', marble: JSON.parse(marble)});
 				}
 				catch(e){
-					console.log('marble msg error', e);
+					logger.debug('marble msg error', e);
 				}
 			}
 		}
 
 		//call back for getting open trades, lets send the trades
 		function cb_got_trades(e, trades){
-			if(e != null) console.log('trade error:', e);
+			if(e != null) logger.debug('trade error:', e);
 			else {
 				try{
-					console.log('Found open trades: ' + trades);
+					logger.debug('Found open trades: ' + trades);
 					if (trades !== '') {
 						trades = JSON.parse(trades);
 						if(trades && trades.open_trades){
@@ -526,11 +532,11 @@ function setupWebSocket(){
 						}
 					}
 					else {
-						console.log('No open trades');
+						logger.debug('No open trades');
 					}
 				}
 				catch(e){
-					console.log('trade msg error', e);
+					logger.debug('trade msg error', e);
 				}
 			}
 		}

@@ -96,8 +96,8 @@ module.exports = function (logger) {
 		logger.debug('List Channels:\n');
 		var chain = obj.chain;
 
-		console.log('\n\nusing options (channel)', options);			//dsh todo remove
 		console.log('');
+		logger.debug('using options (channel)', options);
 
 		// send proposal to peer
 		chain.queryChannels(new Peer(options.peer_urls[0])).then(
@@ -175,7 +175,7 @@ module.exports = function (logger) {
 		}
 
 		// -- DONE -- //
-		console.log('parsed data:', ret.parsed);
+		logger.debug('parsed data:', ret.parsed);
 		return ret;
 	}
 
