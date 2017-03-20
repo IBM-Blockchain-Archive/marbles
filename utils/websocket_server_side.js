@@ -5,14 +5,15 @@
 var path = require('path');
 
 module.exports = function (checkPerodically, logger) {
-	var helper = require(path.join(__dirname, './helper.js'))(process.env.creds_filename, console);
+	var helper = require(path.join(__dirname, './helper.js'))(process.env.creds_filename, logger);
 	var ws_server = {};
 	var chain = null;
 	var broadcast = null;
 	var known_everything = {};
 	var marbles_lib = null;
+	var known_height = 0;
 
-	//setup this module
+	// setup this module
 	ws_server.setup = function (l_chain, l_marbles_lib, l_broadcast, logger) {
 		chain = l_chain;
 		marbles_lib = l_marbles_lib;
@@ -20,8 +21,7 @@ module.exports = function (checkPerodically, logger) {
 		logger = l_marbles_lib;
 	};
 
-
-	//process web socket messages
+	// process web socket messages
 	ws_server.process_msg = function (ws, data) {
 		var options = {
 			peer_urls: [helper.getPeersUrl(0)],
@@ -52,7 +52,7 @@ module.exports = function (checkPerodically, logger) {
 			});
 		}
 
-		//transfer a marble
+		// transfer a marble
 		else if (data.type == 'transfer_marble') {
 			logger.info('[ws] transfering req');
 			options.args = {
@@ -68,7 +68,7 @@ module.exports = function (checkPerodically, logger) {
 			});
 		}
 
-		//delete marble
+		// delete marble
 		else if (data.type == 'delete_marble') {
 			logger.info('[ws] delete marble req');
 			options.args = {
@@ -82,50 +82,20 @@ module.exports = function (checkPerodically, logger) {
 			});
 		}
 
-		//get all owners, marbles, & companies
+		// get all owners, marbles, & companies
 		else if (data.type == 'read_everything') {
 			logger.info('[ws] read everything req');
 			ws_server.check_for_updates(ws);
 		}
 
-		/*
-		else if(data.type == 'chainstats'){
-			logger.info('get chainstats');
-			hfc_util.getChainStats(peer, cb_chainstats);
-		}*/
 
-		//call back for getting the blockchain stats, lets get the block stats now
-		/*function cb_chainstats(e, chain_stats){
-			if(chain_stats && chain_stats.height){
-				chain_stats.height = chain_stats.height - 1;								//its 1 higher than actual height
-				var list = [];
-				for(var i = chain_stats.height; i >= 1; i--){								//create a list of heights we need
-					list.push(i);
-					if(list.length >= 8) break;
-				}
-				list.reverse();																//flip it so order is correct in UI
-				async.eachLimit(list, 1, function(block_height, cb) {						//iter through each one, and send it
-					hfc_util.getBlockStats(peer, block_height, function(e, stats){
-						if(e == null){
-							stats.height = block_height;
-							sendMsg({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
-						} else {
-							logger.debug(' - error getting block stats: ' + e);
-						}
-						cb(null);
-					});
-				}, function() {
-				});
-			}
-		}*/
-
-		//send transaction error msg 
+		// send transaction error msg 
 		function send_err(msg, input) {
 			sendMsg({ msg: 'tx_error', e: msg, input: input });
 			sendMsg({ msg: 'tx_step', state: 'committing_failed' });
 		}
 
-		//send a message, socket might be closed...
+		// send a message, socket might be closed...
 		function sendMsg(json) {
 			if (ws) {
 				try {
@@ -137,18 +107,22 @@ module.exports = function (checkPerodically, logger) {
 			}
 		}
 
+		// endorsement stage callback
 		function endorse_hook(err) {
 			if (err) sendMsg({ msg: 'tx_step', state: 'endorsing_failed' });
 			else sendMsg({ msg: 'tx_step', state: 'ordering' });
 		}
 
+		// ordering stage callback
 		function orderer_hook(err) {
 			if (err) sendMsg({ msg: 'tx_step', state: 'ordering_failed' });
 			else sendMsg({ msg: 'tx_step', state: 'committing' });
 		}
 	};
 
-	//sch next periodic check
+	//------------------------------------------------------------------------------------------
+
+	// sch next periodic check
 	function sch_next_check() {
 		clearTimeout(checkPerodically);
 		checkPerodically = setTimeout(function () {
@@ -161,10 +135,44 @@ module.exports = function (checkPerodically, logger) {
 				sch_next_check();
 				ws_server.check_for_updates(null);
 			}
-		}, 8000);														//check perodically, should be slighly shorter than the block delay
+		}, 2000);													//check perodically, should be slighly shorter than the block delay
 	}
 
+	// --------------------------------------------------------
+	// Check for Updates to Ledger
+	// --------------------------------------------------------
 	ws_server.check_for_updates = function (ws_client) {
+		marbles_lib.channel_stats(null, function (err, resp) {
+			var newBlock = false;
+			if (err == null) {
+				if (resp && resp.height && resp.height.low) {
+					if (resp.height.low > known_height || ws_client) {
+						if (!ws_client) {
+							logger.info('New block detected!', resp.height.low, resp);
+							known_height = resp.height.low;
+							newBlock = true;
+							logger.debug('[checking] there are new things, sending to all clients');
+							broadcast({ msg: 'block', e: null, block_height: resp.height.low });				//send to all clients
+						} else {
+							logger.debug('[checking] on demand req, sending to a client');
+							ws_client.send(JSON.stringify({ msg: 'block', e: null, block_height: resp.height.low })); //send to a client
+						}
+					}
+				}
+			}
+
+			if (newBlock || ws_client) {
+				read_everything(ws_client, function () {
+					sch_next_check();						//check again
+				});
+			} else {
+				sch_next_check();							//check again
+			}
+		});
+	};
+
+	// read complete state of marble world
+	function read_everything(ws_client, cb) {
 		var options = {
 			peer_urls: [helper.getPeersUrl(0)],
 		};
@@ -173,7 +181,7 @@ module.exports = function (checkPerodically, logger) {
 			if (err != null) {
 				console.log('');
 				logger.debug('[checking] could not get everything:', err);
-				sch_next_check();										//check again
+				if (cb) cb();
 			}
 			else {
 				var data = resp.parsed;
@@ -185,31 +193,31 @@ module.exports = function (checkPerodically, logger) {
 
 				data.owners_index = organize_usernames(data.owners_index);
 				data.marbles = organize_marbles(data.marbles);
-				var knownAsString = JSON.stringify(known_everything);	//stringify for easy comparison (order should stay the same)
+				var knownAsString = JSON.stringify(known_everything);			//stringify for easy comparison (order should stay the same)
 				var latestListAsString = JSON.stringify(data);
 
 				if (knownAsString === latestListAsString) {
 					logger.debug('[checking] same everything as last time');
-					if (ws_client !== null) {							//if this is answering a clients req, send it to them
+					if (ws_client !== null) {									//if this is answering a clients req, send to 1 client
 						logger.debug('[checking] sending to 1 client');
 						ws_client.send(JSON.stringify({ msg: 'everything', e: err, everything: data }));
 					}
 				}
-				else {													//detected new things, send it out
+				else {															//detected new things, send it out
 					logger.debug('[checking] there are new things, sending to all clients');
 					known_everything = data;
-					broadcast({ msg: 'everything', e: err, everything: data });
+					broadcast({ msg: 'everything', e: err, everything: data });	//sent to all clients
 				}
-				sch_next_check();										//check again
+				if (cb) cb();
 			}
 		});
-	};
+	}
 
-	//organize the marble owner list
+	// organize the marble owner list
 	function organize_usernames(data) {
 		var ownerList = [];
 		var myUsers = [];
-		for (var i in data) {							//lets reformat it a bit, only need 1 peer's response
+		for (var i in data) {						//lets reformat it a bit, only need 1 peer's response
 			var pos = data[i].indexOf('.');
 			var temp = {
 				username: data[i].substring(0, pos),
@@ -244,7 +252,7 @@ module.exports = function (checkPerodically, logger) {
 		return ret;
 	}
 
-	///alpha sort everyone else
+	// alpha sort everyone else
 	function sort_usernames(temp) {
 		temp.sort(function (a, b) {
 			var entryA = a.company + a.username;

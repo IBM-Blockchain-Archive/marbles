@@ -68,16 +68,10 @@ function connect_to_server(){
 				populate_users_marbles(msgObj);
 			}
 
-			//chainstats
-			else if(msgObj.msg === 'chainstats'){
-				console.log('[ws] rec', msgObj.msg, ': ledger blockheight', msgObj.chainstats.height, 'block', msgObj.blockstats.height);
-				//var e = formatDate(msgObj.blockstats.transactions[0].timestamp.seconds * 1000, '%M/%d/%Y &nbsp;%I:%m%P');
-				//$('#blockdate').html('<span style="color:#fff">TIME</span>&nbsp;&nbsp;' + e + ' UTC');
-				var temp =  {
-								id: msgObj.blockstats.height, 
-								blockstats: msgObj.blockstats
-							};
-				new_block(temp);														//send to blockchain.js
+			// block
+			else if(msgObj.msg === 'block'){
+				console.log('[ws] rec', msgObj.msg, ': ledger blockheight', msgObj.block_height);
+				new_block(msgObj.block_height);														//send to blockchain.js
 			}
 
 			//marble owners

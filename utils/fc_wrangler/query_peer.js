@@ -38,12 +38,10 @@ module.exports = function (logger) {
 	};
 
 	//-------------------------------------------------------------------
-	// Get Channel Info
+	// Get Channel Stats
 	//-------------------------------------------------------------------
 	/*
-		options: {
-					block_id: integer - block number
-		}
+		options: {}
 	*/
 	query_peer.query_channel = function (obj, options, cb) {
 		logger.debug('[fcw] Querying Channel:\n');
@@ -71,9 +69,7 @@ module.exports = function (logger) {
 	// Get Channel Members
 	//-------------------------------------------------------------------
 	/*
-		options: {
-					block_id: integer - block number
-		}
+		options: {}
 	*/
 	query_peer.query_channel_members = function (obj, options, cb) {
 		logger.debug('[fcw] Querying Channel Members:\n');

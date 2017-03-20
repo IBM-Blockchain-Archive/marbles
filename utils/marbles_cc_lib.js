@@ -202,6 +202,13 @@ module.exports = function (enrollObj, g_options, logger) {
 		fcw.query_chaincode(enrollObj, opts, cb);
 	};
 
+	// get block height
+	marbles_chaincode.channel_stats = function (options, cb) {
+		console.log('\n');
+		logger.info('Fetching block height...');
+		fcw.query_channel(enrollObj, null, cb);
+	};
+
 
 	// Other -------------------------------------------------------------------------------
 
