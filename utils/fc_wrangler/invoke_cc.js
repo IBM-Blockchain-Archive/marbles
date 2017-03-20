@@ -125,20 +125,6 @@ module.exports = function (g_options, logger) {
 		}).catch(function (err) {
 			logger.error('[fcw] Error in invoke catch block', typeof err, err);
 
-			console.log('!', err.toString(), err.toString().indexOf('REQUEST_TIMEOUT'));
-
-			// --- Decide if we need to try again --- //
-			if (err.toString().indexOf('REQUEST_TIMEOUT') >= 0) {	//sometimes our connection breaks b/c of a timeout
-				if (!options.attempt) options.attempt = 1;
-				if (options.attempt <= 3) {							//just try it again!
-					logger.error('[fcw] Ahhh crap... lets try the invoke again. failed attempts:', options.attempt);
-					options.attempt++;
-					setTimeout(function () {
-						return invoke_cc.invoke_chaincode(obj, options, cb);
-					}, 1000 * options.attempt);
-				}
-			}
-
 			var formatted = common.format_error_msg(err);
 			if (options.ordered_hook) options.ordered_hook('failed', formatted);
 
