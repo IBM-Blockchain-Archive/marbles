@@ -80,6 +80,7 @@ func main() {
 // Init - reset all the things
 // ============================================================================================================================
 func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
+	fmt.Println("Marbles Is Starting Up")
 	_, args := stub.GetFunctionAndParameters()
 	var Aval int
 	var err error
@@ -108,6 +109,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 		return shim.Error(err.Error())
 	}
 
+	fmt.Println(" - ready for action")
 	return shim.Success(nil)
 }
 
@@ -117,6 +119,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 // ============================================================================================================================
 func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	function, args := stub.GetFunctionAndParameters()
+	fmt.Println(" ")
 	fmt.Println("starting invoke, for - " + function)
 
 	// Handle different functions
@@ -150,7 +153,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 // Query - legacy function
 // ============================================================================================================================
 func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) pb.Response {
-	return shim.Error("Unknown supported call")
+	return shim.Error("Unknown supported call - Query()")
 }
 
 
