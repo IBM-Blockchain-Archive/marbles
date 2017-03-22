@@ -213,7 +213,7 @@ function enroll_admin(cb) {
 	var user = helper.getUser(0);
 	var options = {
 		channel_id: helper.getChannelId(),
-		uuid: helper.getNetworkId() + '-' + helper.getChannelId(),
+		uuid: 'marbles-' + helper.getNetworkId() + '-' + helper.getChannelId(),
 		ca_url: helper.getCasUrl(0),
 		orderer_url: helper.getOrderersUrl(0),
 		peer_urls: [helper.getPeersUrl(0)],
