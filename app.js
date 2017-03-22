@@ -13,7 +13,6 @@ var compression = require('compression');
 var serve_static = require('serve-static');
 var path = require('path');
 var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
 var http = require('http');
 var app = express();
 var url = require('url');
@@ -50,8 +49,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.engine('.html', require('jade').__express);
 app.use(compression());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(serve_static(path.join(__dirname, 'public')));
 app.use(session({ secret: 'Somethignsomething1234!test', resave: true, saveUninitialized: true }));
@@ -71,18 +68,10 @@ logger.debug('cache busting hash js', process.env.cachebust_js, 'css', process.e
 // 													Webserver Routing
 // ============================================================================================================================
 app.use(function (req, res, next) {
-	var keys;
 	logger.debug('------------------------------------------ incoming request ------------------------------------------');
 	logger.debug('New ' + req.method + ' request for', req.url);
 	req.bag = {};																			//create object for my stuff
 	req.bag.session = req.session;
-
-	var url_parts = url.parse(req.url, true);
-	req.parameters = url_parts.query;
-	keys = Object.keys(req.parameters);
-	if (req.parameters && keys.length > 0) logger.debug({ parameters: req.parameters });		//print request parameters for debug
-	keys = Object.keys(req.body);
-	if (req.body && keys.length > 0) logger.debug({ body: req.body });							//print request body for debug
 	next();
 });
 app.use('/', require('./routes/site_router'));

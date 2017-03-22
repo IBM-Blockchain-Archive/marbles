@@ -12,7 +12,6 @@ var router = express.Router();
 //anything in here gets passed to JADE template engine
 function build_bag(req) {
 	return {
-		session: req.session.user,					//pass session info
 		e: process.error,							//send any setup errors
 		jshash: process.env.cachebust_js,			//js cache busting hash (not important)
 		csshash: process.env.cachebust_css,			//css cache busting hash (not important)
@@ -39,10 +38,6 @@ function get_credential_data() {
 	return ret;
 }
 
-function toTitleCase(str) {
-	return str.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
-}
-
 // ============================================================================================================================
 // Root
 // ============================================================================================================================
@@ -58,7 +53,7 @@ router.route('/login').get(function (req, res) {
 });
 
 router.route('/login').post(function (req, res) {
-	req.session.user = { username: toTitleCase(req.body.username) };
+	req.session.user = { username: 'Admin' };
 	res.redirect('/home');
 });
 

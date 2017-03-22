@@ -2,14 +2,14 @@
 	img(src="/imgs/logo.png")#logoIcon
 	span #{bag.marble_company}
 
-if(bag && bag.session && bag.session.username)
-	#whoAmI
-		span.fa.fa-user#userIcon
-		span#userField #{bag.session.username}
-		span &nbsp;
-		span.fa.fa-angle-down#carrot
-		
 
-		#userSelect
-			#triangle
-			a(href="/logout").userLine Logout
+#whoAmI
+	span.fa.fa-user#userIcon
+	span#userField Admin
+	span &nbsp;
+	span.fa.fa-angle-down#carrot
+	
+
+	#userSelect
+		#triangle
+		a(href="/logout").userLine Logout

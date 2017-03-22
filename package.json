@@ -8,7 +8,6 @@
   },
   "dependencies": {
     "async": "0.9.*",
-    "body-parser": "1.15.*",
     "compression": "1.6.*",
     "cookie-parser": "1.4.*",
     "cors": "2.8.*",
