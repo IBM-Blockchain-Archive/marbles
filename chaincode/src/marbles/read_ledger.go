@@ -90,8 +90,8 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 		
 		//append to array
 		everything.Marbles = append(everything.Marbles, marble)   //add this marble to the list
-		fmt.Println("marble index so far - ", everything.Marbles)
 	}
+	fmt.Println("marble index - ", everything.Marbles)
 
 	//change to array of bytes
 	arrayAsBytes, _ := json.Marshal(everything)
