@@ -169,7 +169,7 @@ function setup_marbles_lib() {
 		event_url: (helper.getEventsSetting()) ? helper.getPeerEventUrl(0) : null,
 		chaincode_version: helper.getChaincodeVersion(),
 	};
-	marbles_lib = require('./utils/marbles_cc_lib.js')(enrollObj, opts, logger);
+	marbles_lib = require('./utils/marbles_cc_lib.js')(enrollObj, opts, fcw, logger);
 	ws_server.setup(enrollObj, marbles_lib, wss.broadcast, null);
 
 	logger.debug('Checking if chaincode is already deployed or not');

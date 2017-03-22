@@ -1,12 +1,9 @@
 //-------------------------------------------------------------------
 // Marbles Chaincode Library
 //-------------------------------------------------------------------
-var path = require('path');
 
-module.exports = function (enrollObj, g_options, logger) {
+module.exports = function (enrollObj, g_options, fcw, logger) {
 	var marbles_chaincode = {};
-	var fcw = require(path.join(__dirname, './fc_wrangler/index.js'))(g_options, logger);
-
 
 	// Chaincode -------------------------------------------------------------------------------
 
