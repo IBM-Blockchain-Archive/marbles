@@ -77,7 +77,8 @@ function build_user_panels(data) {
 		full_owner = build_full_owner(data[i].username, data[i].company);
 		console.log('[ui] building owner panel ' + full_owner);
 
-		html += '<div id="user' + i + 'wrap" username="' + data[i].username + '" company="' + data[i].company + '" full_owner="' + full_owner + '" class="marblesWrap ' + colorClass + '">';
+		html += '<div id="user' + i + 'wrap" username="' + data[i].username + '" company="' + data[i].company + 
+			'" full_owner="' + full_owner + '" class="marblesWrap ' + colorClass + '">';
 		html += '<div class="legend" style="' + size_user_name(data[i].username) + '">';
 		html += toTitleCase(data[i].username);
 		html += '<span class="fa fa-thumb-tack marblesCloseSectionPos marblesFix" title="Never Hide Owner"></span>';

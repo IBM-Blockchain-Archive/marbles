@@ -6,11 +6,11 @@ var crypto = require('crypto');
 module.exports = function (config_filename, logger) {
 	var helper = {};
 
-    // default config file name
-    if (!config_filename) {
-        config_filename = 'marbles1.json';
-    }
-    
+	// default config file name
+	if (!config_filename) {
+		config_filename = 'marbles1.json';
+	}
+
 	var config_path = path.join(__dirname, '../config/' + config_filename);
 	helper.config = require(config_path);
 	var creds_path = path.join(__dirname, '../config/' + helper.config.cred_filename);

@@ -93,7 +93,7 @@ module.exports = function (logger) {
 			);
 	};
 
-	// Get Submitter - ripped this function off from helper.js in fabric-client
+	// Get Submitter - ripped this function off from fabric-client
 	function getSubmitter(client, options) {
 		var member;
 		return client.getUserContext(options.enroll_id).then((user) => {
