@@ -341,8 +341,7 @@ strong {
   margin-left: -50px; }
 
 #notificationHandle:hover {
-  cursor: pointer;
-  color: orange; }
+  cursor: pointer; }
 
 .closeNotification {
   float: right;

@@ -1,7 +1,7 @@
 {
   "name": "marbles",
   "version": "3.1.0",
-  "description": "A demonstratioin Node.js web application on Hyperledger Fabric.",
+  "description": "A demonstration Node.js web application on Hyperledger Fabric.",
   "main": "app.js",
   "scripts": {
     "start": "node app.js"

@@ -1,6 +1,6 @@
 #Use Local Hyperledger Network:
 
-### Creating a Local Hyperledger Network
+### Creating a Local Hyperledger Fabric Network
 Use the published fabric docker images and docker-compose script to get a local network quickly.
 <strike>
 1. Follow the Fabric v1.0 [Hackfest setup instructions](http://hyperledger-fabric.readthedocs.io/en/latest/asset_setup/).
