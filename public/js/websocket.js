@@ -1,6 +1,6 @@
 /* global new_block, $, document, WebSocket, escapeHtml, ws:true, start_up:true, known_companies:true, autoCloseNoticePanel:true */
 /* global show_start_up_step, build_notification, build_user_panels, build_company_panel, populate_users_marbles, show_tx_step*/
-/* global getRandomInt, block_delay*/
+/* global getRandomInt, block_ui_delay:true*/
 /* exported transfer_marble, record_company, connect_to_server*/
 
 //var getMarblesTimeout = null;
@@ -71,7 +71,8 @@ function connect_to_server() {
 			// block
 			else if (msgObj.msg === 'block') {
 				console.log('[ws] rec', msgObj.msg, ': ledger blockheight', msgObj.block_height);
-				new_block(msgObj.block_height);														//send to blockchain.js
+				if(msgObj.block_delay) block_ui_delay = msgObj.block_delay * 1.5;			// should be slightly longer than block delay
+				new_block(msgObj.block_height);												// send to blockchain.js
 			}
 
 			//marble owners
@@ -80,7 +81,6 @@ function connect_to_server() {
 				clearTimeout(getOwnersTimeout);
 				build_user_panels(msgObj.owners);
 				console.log('[ws] sending get_marbles msg');
-				//get_marbles_or_else();
 			}
 
 			//transaction error
@@ -141,9 +141,8 @@ function connect_to_server() {
 function refreshHomePanel() {
 	setTimeout(function () {								//need to wait a bit
 		console.log('[ws] sending get_marbles msg');
-		//get_marbles_or_else();
 		get_owners_or_else();
-	}, block_delay);
+	}, block_ui_delay);
 }
 
 //transfer_marble selected ball to user
@@ -234,27 +233,6 @@ function get_owners_or_else(attempt) {
 		}
 	}, 5000 + getRandomInt(0, 10000));
 }
-
-//get marbles with timeout to get marbles again!
-/*
-function get_marbles_or_else(attempt){
-	clearTimeout(getMarblesTimeout);
-	ws.send(JSON.stringify({type: 'get_marbles', v: 1}));
-
-	if(!attempt) attempt = 1;
-	else attempt++;
-
-	getMarblesTimeout = setTimeout(function(){
-		if(attempt <= 3) {
-			console.log('\n\n! [timeout] did not get marbles in time, impatiently calling it again', attempt, '\n\n');
-			get_marbles_or_else(attempt);
-		}
-		else{
-			console.log('\n\n! [timeout] did not get marbles in time, hopeless', attempt, '\n\n');
-		}
-	}, 5000 + getRandomInt(0, 10000));
-}
-*/
 
 //emtpy trash marble wrap
 function clear_trash() {

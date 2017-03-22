@@ -8,7 +8,7 @@ module.exports = function (config_filename, logger) {
 
     // default config file name
     if (!config_filename) {
-        config_filename = "marbles1.json";
+        config_filename = 'marbles1.json';
     }
     
 	var config_path = path.join(__dirname, '../config/' + config_filename);
@@ -144,6 +144,13 @@ module.exports = function (config_filename, logger) {
 		return getBlockchainField('chaincode_version');
 	};
 
+	// get the chaincode id on network
+	helper.getBlockDelay = function () {
+		var ret = getBlockchainField('block_delay');
+		if(!ret || isNaN(ret)) ret = 10000;
+		return ret;
+	};
+
 	// get the marble owner names
 	helper.getMarbleUsernames = function () {
 		return getMarblesField('usernames');
@@ -171,6 +178,7 @@ module.exports = function (config_filename, logger) {
 		}
 		return false;
 	};
+	
 
 	// safely retrieve marbles fields
 	function getMarblesField(marbles_field) {

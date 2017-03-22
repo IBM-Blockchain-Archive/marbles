@@ -31,7 +31,8 @@
         "app": {
             "channel_id": "mychannel",
             "chaincode_id": "marbles",
-            "chaincode_version": "v0"
+            "chaincode_version": "v0",
+			"block_delay": 1000
         }
     }
 }

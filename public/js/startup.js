@@ -1,4 +1,4 @@
-/* global $, window, document, ws, fromLS, lsKey, block_delay, get_owners_or_else */
+/* global $, window, document, ws, fromLS, lsKey, block_ui_delay, get_owners_or_else */
 /* exported show_start_up_step */
 
 // =================================================================================
@@ -192,7 +192,7 @@ function show_start_up_step(obj){
 		if(cb){
 			setTimeout(function(){
 				cb();
-			}, block_delay);
+			}, block_ui_delay);
 		}
 	}
 

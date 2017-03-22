@@ -1,6 +1,6 @@
 /* global $, window, document */
 /* global randStr, toTitleCase, connect_to_server, refreshHomePanel, closeNoticePanel, openNoticePanel, show_tx_step*/
-/* exported record_company, autoCloseNoticePanel, start_up, block_delay*/
+/* exported record_company, autoCloseNoticePanel, start_up, block_ui_delay*/
 var ws = {};
 var bgcolors = ['whitebg', 'blackbg', 'redbg', 'greenbg', 'bluebg', 'purplebg', 'pinkbg', 'orangebg', 'yellowbg'];
 var autoCloseNoticePanel = null;
@@ -8,7 +8,7 @@ var known_companies = {};
 var start_up = true;
 var lsKey = 'marbles';
 var fromLS = {};
-var block_delay = 11000; //should be slightly longer than the real block delay
+var block_ui_delay = 12000; 								//default, gets set in ws block msg
 
 // =================================================================================
 // On Load

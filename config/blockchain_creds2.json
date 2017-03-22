@@ -1,41 +1,38 @@
 {
     "credentials": {
-        "network_id": "MarblesTradingConsortium",
-        "peers": [
+        "network_id": "test",
+        "network_name": "Marbles Tutorial",
+        "orderers": [
             {
-                "discovery": "grpc://varadvm2.rtp.raleigh.ibm.com:7051",
-                "event": "grpc://varadvm2.rtp.raleigh.ibm.com:7053",
+                "discovery": "grpc://varadvm2.rtp.raleigh.ibm.com:7050",
                 "msp_id": "Org1MSP"
             }
         ],
         "cas": [
             {
-                "api": "http://varadvm2.rtp.raleigh.ibm.com:7054"
+                "api": "http://varadvm2.rtp.raleigh.ibm.com:7054",
+                "msp_id": "Org1MSP",
+                "users": [
+                    {
+                        "enrollId": "admin",
+                        "enrollSecret": "adminpw"
+                    }
+                ]
             }
         ],
-        "orderers": [
+        "peers": [
             {
-                "discovery": "grpc://varadvm2.rtp.raleigh.ibm.com:7050"
+                "name": "fabric-peer-1a",
+                "discovery": "grpc://varadvm2.rtp.raleigh.ibm.com:7051",
+                "events": "grpc://varadvm2.rtp.raleigh.ibm.com:7053",
+                "msp_id": "Org1MSP"
             }
         ],
-        "users": [
-            {
-                "enrollId": "admin",
-                "enrollSecret": "adminpw"
-            }
-        ],
-        "marbles": {
-            "company": "eMarbles",
+        "app": {
+            "channel_id": "mychannel",
             "chaincode_id": "marbles",
             "chaincode_version": "v0",
-            "channel_id": "mychannel",
-            "usernames": [
-                "cliff",
-                "cody",
-                "chuck"
-            ],
-            "port": 3002,
-            "last_startup_hash": "380c2263aab82a818586b5abaaf96dfd1cdd25be"
+			"block_delay": 1000
         }
     }
 }

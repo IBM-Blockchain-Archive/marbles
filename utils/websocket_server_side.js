@@ -4,7 +4,7 @@
 //var async = require('async');
 var path = require('path');
 
-module.exports = function (checkPerodically, logger) {
+module.exports = function (g_options, logger) {
 	var helper = require(path.join(__dirname, './helper.js'))(process.env.creds_filename, logger);
 	var ws_server = {};
 	var chain = null;
@@ -12,6 +12,7 @@ module.exports = function (checkPerodically, logger) {
 	var known_everything = {};
 	var marbles_lib = null;
 	var known_height = 0;
+	var checkPerodically = null;
 
 	// setup this module
 	ws_server.setup = function (l_chain, l_marbles_lib, l_broadcast, logger) {
@@ -135,7 +136,7 @@ module.exports = function (checkPerodically, logger) {
 				sch_next_check();
 				ws_server.check_for_updates(null);
 			}
-		}, 2000);													//check perodically, should be slighly shorter than the block delay
+		}, 8000);
 	}
 
 	// --------------------------------------------------------
@@ -152,10 +153,16 @@ module.exports = function (checkPerodically, logger) {
 							known_height = resp.height.low;
 							newBlock = true;
 							logger.debug('[checking] there are new things, sending to all clients');
-							broadcast({ msg: 'block', e: null, block_height: resp.height.low });				//send to all clients
+							broadcast({ msg: 'block', e: null, block_height: resp.height.low });	//send to all clients
 						} else {
 							logger.debug('[checking] on demand req, sending to a client');
-							ws_client.send(JSON.stringify({ msg: 'block', e: null, block_height: resp.height.low })); //send to a client
+							var obj = {
+								msg: 'block',
+								e: null,
+								block_height: resp.height.low,
+								block_delay: g_options.block_delay
+							};
+							ws_client.send(JSON.stringify(obj)); 									//send to a client
 						}
 					}
 				}
