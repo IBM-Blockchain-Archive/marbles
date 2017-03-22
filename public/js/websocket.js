@@ -3,8 +3,8 @@
 /* global getRandomInt, block_ui_delay:true*/
 /* exported transfer_marble, record_company, connect_to_server*/
 
-//var getMarblesTimeout = null;
 var getOwnersTimeout = null;
+var wsTxt = '[ws]';
 
 // =================================================================================
 // Socket Stuff
@@ -14,8 +14,14 @@ function connect_to_server() {
 	connect();
 
 	function connect() {
-		var wsUri = 'ws://' + document.location.hostname + ':' + document.location.port;
-		console.log('[ws] Connecting to websocket', wsUri);
+		var wsUri = null;
+		if(document.location.protocol === 'https:') {
+			wsTxt = '[wss]';
+			wsUri = 'wss://' + document.location.hostname + ':' + document.location.port;
+		} else {
+			wsUri = 'ws://' + document.location.hostname + ':' + document.location.port;
+		}
+		console.log(wsTxt + ' Connecting to websocket', wsUri);
 
 		ws = new WebSocket(wsUri);
 		ws.onopen = function (evt) { onOpen(evt); };
@@ -25,13 +31,13 @@ function connect_to_server() {
 	}
 
 	function onOpen(evt) {
-		console.log('[ws] CONNECTED');
+		console.log(wsTxt + ' CONNECTED');
 		addshow_notification(build_notification(false, 'Connected to Marbles application'), false);
 		connected = true;
 	}
 
 	function onClose(evt) {
-		console.log('[ws] DISCONNECTED', evt);
+		console.log(wsTxt + ' DISCONNECTED', evt);
 		connected = false;
 		addshow_notification(build_notification(true, 'Lost connection to Marbles application'), true);
 		setTimeout(function () { connect(); }, 5000);					//try again one more time, server restarts are quick
@@ -43,7 +49,7 @@ function connect_to_server() {
 
 			//marbles
 			if (msgObj.msg === 'everything') {
-				console.log('[ws] rec', msgObj.msg, msgObj);
+				console.log(wsTxt + ' rec', msgObj.msg, msgObj);
 				clearTimeout(getOwnersTimeout);
 				$('#appStartingText').hide();
 				clear_trash();
@@ -63,29 +69,28 @@ function connect_to_server() {
 
 			//marbles
 			else if (msgObj.msg === 'users_marbles') {
-				console.log('[ws] rec', msgObj.msg, msgObj);
-				//clearTimeout(getMarblesTimeout);
+				console.log(wsTxt + ' rec', msgObj.msg, msgObj);
 				populate_users_marbles(msgObj);
 			}
 
 			// block
 			else if (msgObj.msg === 'block') {
-				console.log('[ws] rec', msgObj.msg, ': ledger blockheight', msgObj.block_height);
+				console.log(wsTxt + ' rec', msgObj.msg, ': ledger blockheight', msgObj.block_height);
 				if(msgObj.block_delay) block_ui_delay = msgObj.block_delay * 1.5;			// should be slightly longer than block delay
 				new_block(msgObj.block_height);												// send to blockchain.js
 			}
 
 			//marble owners
 			else if (msgObj.msg === 'owners') {
-				console.log('[ws] rec', msgObj.msg, msgObj);
+				console.log(wsTxt + ' rec', msgObj.msg, msgObj);
 				clearTimeout(getOwnersTimeout);
 				build_user_panels(msgObj.owners);
-				console.log('[ws] sending get_marbles msg');
+				console.log(wsTxt + ' sending get_marbles msg');
 			}
 
 			//transaction error
 			else if (msgObj.msg === 'tx_error') {
-				console.log('[ws] rec', msgObj.msg, msgObj);
+				console.log(wsTxt + ' rec', msgObj.msg, msgObj);
 				if (msgObj.e) {
 					addshow_notification(build_notification(true, escapeHtml(msgObj.e.parsed)), true);
 					$('#txStoryErrorTxt').html(msgObj.e.parsed);
@@ -95,7 +100,7 @@ function connect_to_server() {
 
 			//all marbles sent
 			else if (msgObj.msg === 'all_marbles_sent') {
-				console.log('[ws] rec', msgObj.msg, msgObj);
+				console.log(wsTxt + ' rec', msgObj.msg, msgObj);
 				start_up = false;
 
 				$('.marblesWrap').each(function () {
@@ -108,7 +113,7 @@ function connect_to_server() {
 
 			//app startup state
 			else if (msgObj.msg === 'app_state') {
-				console.log('[ws] rec', msgObj.msg, msgObj);
+				console.log(wsTxt + ' rec', msgObj.msg, msgObj);
 				setTimeout(function () {
 					show_start_up_step(msgObj);
 				}, 1000);
@@ -116,20 +121,20 @@ function connect_to_server() {
 
 			//tx state
 			else if (msgObj.msg === 'tx_step') {
-				console.log('[ws] rec', msgObj.msg, msgObj);
+				console.log(wsTxt + ' rec', msgObj.msg, msgObj);
 				show_tx_step(msgObj);
 			}
 
 			//unknown
-			else console.log('[ws] rec', msgObj.msg, msgObj);
+			else console.log(wsTxt + ' rec', msgObj.msg, msgObj);
 		}
 		catch (e) {
-			console.log('[ws] error handling a ws message', e);
+			console.log(wsTxt + ' error handling a ws message', e);
 		}
 	}
 
 	function onError(evt) {
-		console.log('[ws] ERROR ', evt);
+		console.log(wsTxt + ' ERROR ', evt);
 	}
 }
 
@@ -140,7 +145,7 @@ function connect_to_server() {
 //show admin panel page
 function refreshHomePanel() {
 	setTimeout(function () {								//need to wait a bit
-		console.log('[ws] sending get_marbles msg');
+		console.log(wsTxt + ' sending get_marbles msg');
 		get_owners_or_else();
 	}, block_ui_delay);
 }
@@ -155,7 +160,7 @@ function transfer_marble(marbleName, to_username, to_company) {
 			company: to_company,
 			v: 1
 		};
-		console.log('[ws] sending transfer marble msg', obj);
+		console.log(wsTxt + ' sending transfer marble msg', obj);
 		ws.send(JSON.stringify(obj));
 		refreshHomePanel();
 	});
