@@ -124,7 +124,7 @@ module.exports = function (config_filename, logger) {
 			if (index < helper.creds.credentials.peers.length) {
 				return helper.creds.credentials.peers[index].events;
 			}
-			logger.warn('no events url found in creds');
+			logger.warn('no events url found in creds json: ' + creds_path);
 			return null;
 		}
 	};
@@ -187,12 +187,12 @@ module.exports = function (config_filename, logger) {
 				return helper.config[marbles_field];
 			}
 			else {
-				logger.warn('"' + marbles_field + '" not found in config json');
+				logger.warn('"' + marbles_field + '" not found in config json: ' + config_path);
 				return null;
 			}
 		}
 		catch (e) {
-			logger.warn('"' + marbles_field + '" not found in config json');
+			logger.warn('"' + marbles_field + '" not found in config json: ' + config_path);
 			return null;
 		}
 	}
@@ -204,12 +204,12 @@ module.exports = function (config_filename, logger) {
 				return helper.creds.credentials.app[field];
 			}
 			else {
-				logger.warn('"' + field + '" not found in config json');
+				logger.warn('"' + field + '" not found in creds json: ' + creds_path);
 				return null;
 			}
 		}
 		catch (e) {
-			logger.warn('"' + field + '" not found in config json');
+			logger.warn('"' + field + '" not found in creds json: ' + creds_path);
 			return null;
 		}
 	}

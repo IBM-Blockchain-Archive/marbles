@@ -15,7 +15,6 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var http = require('http');
 var app = express();
-var url = require('url');
 var cors = require('cors');
 var async = require('async');
 var ws = require('ws');											//websocket module 
@@ -51,7 +50,7 @@ app.engine('.html', require('jade').__express);
 app.use(compression());
 app.use(cookieParser());
 app.use(serve_static(path.join(__dirname, 'public')));
-app.use(session({ secret: 'Somethignsomething1234!test', resave: true, saveUninitialized: true }));
+app.use(session({ secret: 'lostmymarbles', resave: true, saveUninitialized: true }));
 app.options('*', cors());
 app.use(cors());
 
