@@ -107,7 +107,7 @@ function build_user_panels(data){
 								v: 1
 							};
 					ws.send(JSON.stringify(obj));
-					$(ui.draggable).addClass('invalid');
+					$(ui.draggable).addClass('invalid bounce');
 					refreshHomePanel();
 				});
 			}
@@ -120,7 +120,7 @@ function build_user_panels(data){
 
 				console.log('dropped a marble', dragged_user, dropped_user, dropped_company);
 				if(dragged_user != dropped_user){										//only transfer marbles that changed owners
-					$(ui.draggable).addClass('invalid');
+					$(ui.draggable).addClass('invalid bounce');
 					transfer_marble(marble_id, dropped_user, dropped_company);
 					return true;
 				}
