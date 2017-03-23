@@ -233,10 +233,6 @@ strong {
   font-weight: 600; }
 
 /*Main Layout*/
-#headerPanel {
-  background: #fff;
-  margin-top: 10px; }
-
 #navPanel {
   height: 60px;
   line-height: 60px;
@@ -262,26 +258,6 @@ strong {
   border-top: 1px #646B73 solid;
   height: 40px;
   padding-bottom: 20px; }
-
-.nav {
-  color: #E5EBEF;
-  padding: 0px 30px;
-  display: inline-block; }
-
-.nav:hover {
-  text-decoration: underline;
-  cursor: pointer; }
-
-.selectedNav {
-  color: #fff; }
-
-#linkWraps {
-  text-align: center;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2; }
 
 #logo {
   display: inline-block;
@@ -593,83 +569,10 @@ strong {
   width: 100%;
   border-top: 25px #222832 solid; }
 
-#notificationPanel {
-  display: none;
-  width: 0;
-  position: absolute;
-  right: 0;
-  top: 90px;
-  color: #E5EBEF;
-  background: #222832;
-  padding: 30px 0;
-  border-left: 25px #6CC284 solid;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-  text-align: center; }
-
-#noticeIcon, #errorNoticeIcon {
-  position: absolute;
-  left: -19px;
-  top: 45px;
-  color: #222832; }
-
-#userTable {
-  vertical-align: top; }
-
-/*
-#userTable tbody{
-	max-height: 124px;
-	overflow: auto;
-	//display: block;
-}*/
-.userRow {
-  border-bottom-width: 1px;
-  font-size: 12px;
-  cursor: pointer; }
-
-.userRow td, .userRow th {
-  padding: 5px;
-  text-align: left;
-  margin: 0; }
-
-/*
-.userMarbles{
-	width: 60px;
-}
-.userName{
-	width: 200px;
-}
-.userCompany{
-	width: 225px;
-}
-td.userRights, th.userRights{
-	width: 70px;
-	text-align: center;
-}*/
-.selectedRow {
-  background: #222832; }
-
 .myCompany {
   background: #545658;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px; }
-
-#errorNotificationPanel {
-  display: none;
-  width: 450px;
-  position: absolute;
-  right: 0;
-  top: 90px;
-  color: #E5EBEF;
-  background: #222832;
-  padding: 30px 0;
-  border-left: 25px orange solid;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-  text-align: center; }
-
-#errorNoticeIcon {
-  top: 42%; }
 
 .white {
   color: #FFFEF3; }
@@ -806,12 +709,6 @@ td.userRights, th.userRights{
   color: orange;
   text-align: center; }
 
-#loginTitle {
-  margin-left: 15px;
-  font-weight: 600;
-  color: #fff;
-  font-size: 16px; }
-
 #adminText {
   font-size: 15px;
   margin-top: 15px;
@@ -841,10 +738,6 @@ td.userRights, th.userRights{
   line-height: 40px;
   font-size: 16px; }
 
-/*
-.ball.leftPos{
-	left: 15px;
-}*/
 #marbleBorderTop, #proposeMarble, #endorseMarbleStable, #endorseMarble, #marbleBorderBottom, #marbleBorderLeft, #marbleBorderRight {
   display: none; }
 
@@ -1207,13 +1100,6 @@ td.userRights, th.userRights{
 .million {
   font-size: 7px; }
 
-/*
-.block:last-of-type{
-	background:#555;
-	color:#fff;
-	border-color:#555;
-}
-*/
 .lastblock {
   transition: background-color 1s ease;
   background: #2EB9D6;

@@ -1,11 +1,6 @@
 @import 'color_theme';
 
 /*Main Layout*/
-#headerPanel {
-  background:$main_color;
-  margin-top:10px;
-}
-
 #navPanel{
 	height:60px;
 	line-height: 60px;
@@ -38,26 +33,6 @@
 
 
 
-.nav {
-	color:$acc_color3;
-	padding: 0px 30px;
-	display:inline-block;
-}
-.nav:hover{
-	text-decoration: underline;
-	cursor: pointer;
-}
-.selectedNav{
-	color: $main_color;
-}
-#linkWraps{
-	text-align:center;
-	width:100%;
-	position: absolute;
-	top:0;
-	left:0;
-	z-index: 2;
-}
 #logo{
 	display:inline-block;
 	font-weight: 600;
@@ -221,7 +196,6 @@
 .ball:hover{
 	cursor: pointer;
 	border-color: $main_color;
-	//transition: all .25s linear;		//terrible drag and drop performance...
 }
 
 .whitebg.ball:hover{
@@ -299,7 +273,6 @@
 	text-align: center;
 }
 .addMarble:hover{
-	//color: $hi_color1;
 	cursor: pointer;
 	border-color: $main_color;
 	transition: all .25s linear;
@@ -382,93 +355,12 @@
 	width:100%;
 	border-top:25px $acc_color1 solid;
 }
-
-#notificationPanel{
-	display:none;
-	width: 0;
-	position: absolute;
-	right:0;
-	top: 90px;
-	color: $acc_color3;
-	background: $acc_color1;
-	padding: 30px 0;
-	border-left: 25px $hi_color3 solid;
-	border-top-left-radius: 10px;
-	border-bottom-left-radius: 10px;
-	text-align: center;
-}
-#noticeIcon, #errorNoticeIcon{
-	position:absolute; 
-	left:-19px; 
-	top: 45px; 
-	color:$acc_color1;
-}
-
-// -- Table -- //
-#userTable{
-	//width: 612px;
-	vertical-align: top;
-}
-/*
-#userTable tbody{
-	max-height: 124px;
-	overflow: auto;
-	//display: block;
-}*/
-.userRow{
-	border-bottom-width: 1px;
-	font-size: 12px;
-	cursor: pointer;
-}
-.userRow td, .userRow th{
-	padding: 5px;
-	text-align: left;
-	margin: 0;
-}/*
-.userMarbles{
-	width: 60px;
-}
-.userName{
-	width: 200px;
-}
-.userCompany{
-	width: 225px;
-}
-td.userRights, th.userRights{
-	width: 70px;
-	text-align: center;
-}*/
-
-.selectedRow{
-	background: $acc_color1;
-}
-
 .myCompany{
 	background: #545658;
 	border-top-left-radius: 3px;
 	border-top-right-radius: 3px;
 }
 
-
-
-// --------- error msg ---------
-#errorNotificationPanel{
-	display:none;
-	width: 450px;
-	position: absolute;
-	right:0;
-	top: 90px;
-	color: $acc_color3;
-	background: $acc_color1;
-	padding: 30px 0;
-	border-left: 25px $hi_color1 solid;
-	border-top-left-radius: 10px;
-	border-bottom-left-radius: 10px;
-	text-align: center;
-}
-#errorNoticeIcon{
-	top:42%;
-}
 
 // --------- marble colors ---------
 .white{color:#FFFEF3;}
@@ -578,12 +470,6 @@ td.userRights, th.userRights{
 	color:$hi_color1; 
 	text-align:center;
 }
-#loginTitle{
-	margin-left: 15px;
-	font-weight: 600;
-	color: $main_color;
-	font-size: 16px;
-}
 #adminText{
 	font-size: 15px;
 	margin-top: 15px;
@@ -603,8 +489,6 @@ $marble_top: 15px;
 $marble_left: 0;
 #proposeMarbleStable, #proposeMarble, #endorseMarbleStable, #endorseMarble, #marbleBorderTop, #marbleBorderBottom, #marbleBorderLeft, #marbleBorderRight, .ordererMarbles{
 	border: 3px solid #3D76BA;
-	//border-top-color: #205ca2;
-	//border-bottom-color: $hi_color3;
 	height: 40px;
 	width: 40px;
 	position: relative;
@@ -618,10 +502,6 @@ $marble_left: 0;
 	line-height: 40px;
 	font-size: 16px;
 }
-/*
-.ball.leftPos{
-	left: 15px;
-}*/
 #marbleBorderTop, #proposeMarble, #endorseMarbleStable, #endorseMarble, #marbleBorderBottom, #marbleBorderLeft, #marbleBorderRight{
 	display: none;
 }
@@ -630,7 +510,6 @@ $marble_left: 0;
 }
 
 #proposeMarbleStable, #proposeMarble, #endorseMarbleStable, #endorseMarble{
-	//border-color: transparent;
 	background: #fff;
 }
 
@@ -952,9 +831,7 @@ $marble_left: 0;
 	top: 72px;
 	right: -10px;
 	z-index:2;
-	//right: -10px;
 	color: $acc_color2;
-	//padding: 10px 0;
 	background: $acc_color3;
 	border-radius: 10px;
 	width: 140px;
