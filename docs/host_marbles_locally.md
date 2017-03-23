@@ -21,10 +21,11 @@ Lets do the very last setup for marbles.
 
 1. Next the settuping up panel should pop up. Ideally it will walk itself through the 3 stages of initial setup.
 	1. Enroll Admin - this step is communicating with your network's CA to verify the admin user credentails (enrollID/enrollSecret)
-		- if it fails double check the enrollID and enrollSecret fields in your `blockchain_creds1.json` file
+		- If it fails double check the enrollID and enrollSecret fields in your `blockchain_creds1.json` file
 	1. Finding Chaincode - this step is looking for the marbles chaincode on your peer. It is using the chaincode ID found in your `blockchain_creds1.json` file. If this is a brand new network it will not exist yet. 
-		- if the chaincode was instantiated but it was unable to find it try the "Retry" button.
+		- If the chaincode was instantiated but it was unable to find it try the "Retry" button.
 	1. Register Marble Owners - this step will create the marble owners you specificed in the `blockchain_creds1.json` file
+		- This can take awhile 1-2minutes. Check your console logs for progress.
  
 ![](/doc_images/localhost3.png)
 
