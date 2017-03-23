@@ -15,6 +15,7 @@ module.exports = function (logger) {
 			raw: error_message
 		};
 		try {
+			temp.parsed = error_message.toString();
 			temp.parsed = error_message[0].toString();
 			var pos = temp.parsed.lastIndexOf(':');
 			if (pos >= 0) {
