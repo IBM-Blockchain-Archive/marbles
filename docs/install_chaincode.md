@@ -30,9 +30,12 @@
 ![](/doc_images/12-instantiate-marbles.PNG)
 
 - The arguments input box is for entering the arguments we want to pass to our chaincode's Init() function.
-- Marbles chaincode is expecting a single integer. Enter your favorite number. Mines 314. 
-- Next from the channel list select our 1 and only channel
+	- Typically this is an array of strings.  As you type you can see exactly what will be sent in the lower input named "Chaincode Arguments".
+- Marbles chaincode is expecting a single numeric input argument. Therefore enter your favorite number. Mines 314. 
+	- Marbles chaincode will store this number to the ledger as a self-test of sorts. It can literaly be any number you want. 
+- Next from the "Channel" drop down, select our 1 and only channel
 - Then click the "Submit" button
+- If it went well the chaincode page will refresh
 
 ![](/doc_images/13-instantiated-marbles.PNG)
 
@@ -40,9 +43,17 @@
 - Click the "Channels" link on the left navigation
 - Click the channel you instantiated marbles on
 - Click the "Chaincode" tab
-- On this panel, you should see something simialr to the picture above.  Marbles is instantiated on both peers and we can click the logs button to see it has started up. 
+- On this panel, you should see something simialr to the picture above.  Marbles is instantiated on at least one peer. 
+- Expand the row to see which peer. 
+- Click the log button to see if marbles has started up. You should log messages like:
+
+```
+	Marbles Is Starting Up
+ 	- ready for action
+```
+
 - The last thing we need to do is grab all the service instance's credentials for our network. We will use this data to inform the marbles node.js application of our blockchain's networking addresses and credentials.
-- Get basic service credentials by clicking the "JSON" button
+- Get basic service credentials by clicking the "JSON" button under the "App Integration" column (you may need to expand the chaincode row first)
 - This will open the JSON in your browser. Copy this data and save/replace the entire contents of the file `<marbles directory>/config/blockchain_creds1.json` 
   - This JSON a simplified version of your Service Credentials.  It has 1 orderer, 1 ca, 1 peer which is all we need for marbles.
 

@@ -18,7 +18,6 @@ module.exports = function (logger) {
 		}
 	*/
 	query_peer.query_block = function (obj, options, cb) {
-		console.log('');
 		logger.debug('[fcw] Querying Block: ' + options.block_id);
 		var chain = obj.chain;
 
@@ -45,7 +44,6 @@ module.exports = function (logger) {
 		options: {}
 	*/
 	query_peer.query_channel = function (obj, options, cb) {
-		console.log('');
 		logger.debug('[fcw] Querying Channel Stats:');
 		var chain = obj.chain;
 
