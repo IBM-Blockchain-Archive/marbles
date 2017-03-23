@@ -3,10 +3,9 @@
 ### Run Marbles on Bluemix (command line)
 
 1. Well to do this correctly you need to first [run marbles locally](./host_marbles_locally.md).
-1. Seriously make sure marbles starts up completely and you have traded a marble successfully before you continue.
+1. Seriously make sure marbles on your local machine starts up completely and you have traded a marble successfully before you continue.
 1. Edit manifest.yml 
-	- change the app name and host name since "marbles" is taken
-	- remove lines 9 and 10 so that your file looks like:
+	- change the app name and since "marbles" is taken
 
 	```
 	---
@@ -16,40 +15,46 @@
 	  command: "node app.js"
 	  path: "."
 	  instances: 1
-	  memory: 512M
+	  memory: 256M
 	```
 
 1. Install the Cloud Foundry Command Line Tool
-	- [download](https://github.com/cloudfoundry/cli/releases) an installer for your OS
-	- run the installer
-	- lets test it by opening a command prompt or terminal window and typing
+	- [Download](https://github.com/cloudfoundry/cli/releases) an installer for your OS
+	- Run the installer
+	- Lets test it by opening a command prompt or terminal window and typing
 		
 			> cf
-			You should see a bunch of text.
-			If you get something like command not found, then your installation was either not successful or CF is not added to your system path.
-			Windows/Linux/Mac have different ways to add stuff to your PATH so you will need to look it up for your OS.
+	
+	- You should see a bunch of text.
+	- If you get something like command not found, then your installation was either not successful or CF is not added to your system path.
+			Windows/Linux/Mac have different ways to edit the PATH therefore look up instructions for your OS.
 	
 1. Login to CF
-	- open a command prompt or terminal window
-	- type:
+	- Open a command prompt or terminal window
+	- Type:
 		
 			> cf api https://api.ng.bluemix.net 
 			> cf login
 			(follow the prompts to enter your Bluemix ID and password)
 
-1. Push the application by opening a command prompt and browsing to this directory
+1. Push the application by opening a command prompt and browsing to your marbles directory
 	
-	> cf push YOUR_APP_NAME_HERE 
+		> cf push YOUR_APP_NAME_HERE 
 
-1. This can take some time to complete (1-3 minutes). You will see logs from Bluemix but they will stop once the app launches. To see logs from marbles during its start up open a new terminal/command prompt and type:
+1. This can take some time to complete (1-3 minutes). You will see logs from Bluemix, but they will stop once the app launches. 
+	- To see logs from marbles during and after its start up open a second terminal/command prompt and type:
 
-	> cf logs YOUR_APP_NAME_HERE
+		> cf logs YOUR_APP_NAME_HERE
+
+	- If you missed the start up logs try:
+
+		> cf logs YOUR_APP_NAME_HERE --recent
 
 1. If all goes well you should see this message in the console:
 	
-		--------------------------------- Server Up - localhost:3000 ------------------------------------
+		--------------------------------- Server Up - 0.0.0.0:xxxx ------------------------------------
 		
-1. Once you see this message you are good to go: 
+1. Once you see the message below you are good to go: 
 		
 		---------------------------------------- Websocket Up ------------------------------------------
 

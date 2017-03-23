@@ -43,8 +43,8 @@
 - Click the "Channels" link on the left navigation
 - Click the channel you instantiated marbles on
 - Click the "Chaincode" tab
-- On this panel, you should see something simialr to the picture above.  Marbles is instantiated on at least one peer. 
-- Expand the row to see which peer. 
+- On this panel, you should see something simialr to the picture above.  Marbles is instantiated on at least one peer
+- Expand the row to see which peer
 - Click the log button to see if marbles has started up. You should log messages like:
 
 ```
