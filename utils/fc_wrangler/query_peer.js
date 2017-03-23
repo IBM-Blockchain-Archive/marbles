@@ -18,7 +18,8 @@ module.exports = function (logger) {
 		}
 	*/
 	query_peer.query_block = function (obj, options, cb) {
-		logger.debug('[fcw] Querying Block: ' + options.block_id + '\n');
+		console.log('');
+		logger.debug('[fcw] Querying Block: ' + options.block_id);
 		var chain = obj.chain;
 
 		// send proposal to peer
@@ -44,7 +45,8 @@ module.exports = function (logger) {
 		options: {}
 	*/
 	query_peer.query_channel = function (obj, options, cb) {
-		logger.debug('[fcw] Querying Channel:\n');
+		console.log('');
+		logger.debug('[fcw] Querying Channel:');
 		var chain = obj.chain;
 
 		// send proposal to peer
@@ -72,7 +74,8 @@ module.exports = function (logger) {
 		options: {}
 	*/
 	query_peer.query_channel_members = function (obj, options, cb) {
-		logger.debug('[fcw] Querying Channel Members:\n');
+		console.log('');
+		logger.debug('[fcw] Querying Channel Members:');
 		var chain = obj.chain;
 
 		chain.initialize().then(()=>{
@@ -89,7 +92,8 @@ module.exports = function (logger) {
 		channels... but that's the way the SDK operates now
 	*/
 		query_peer.query_list_channels = function (obj, options, cb) {
-		logger.debug('List Channels:\n');
+		console.log('');
+		logger.debug('List Channels:');
 		var chain = obj.chain;
 
 		console.log('');

@@ -19,6 +19,7 @@ module.exports = function (logger) {
 		}
 	*/
 	query_cc.query_chaincode = function (obj, options, cb) {
+		console.log('');
 		logger.debug('[fcw] Querying Chaincode: ' + options.cc_function + '()');
 		var chain = obj.chain;
 		var nonce = utils.getNonce();

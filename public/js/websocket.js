@@ -1,10 +1,11 @@
 /* global new_block, $, document, WebSocket, escapeHtml, ws:true, start_up:true, known_companies:true, autoCloseNoticePanel:true */
 /* global show_start_up_step, build_notification, build_user_panels, build_company_panel, populate_users_marbles, show_tx_step*/
 /* global getRandomInt, block_ui_delay:true*/
-/* exported transfer_marble, record_company, connect_to_server*/
+/* exported transfer_marble, record_company, connect_to_server, refreshHomePanel*/
 
-var getOwnersTimeout = null;
+var getEverythingWatchdog = null;
 var wsTxt = '[ws]';
+var pendingTransaction = null;
 
 // =================================================================================
 // Socket Stuff
@@ -50,7 +51,8 @@ function connect_to_server() {
 			//marbles
 			if (msgObj.msg === 'everything') {
 				console.log(wsTxt + ' rec', msgObj.msg, msgObj);
-				clearTimeout(getOwnersTimeout);
+				clearTimeout(getEverythingWatchdog);
+				clearTimeout(pendingTransaction);
 				$('#appStartingText').hide();
 				clear_trash();
 				build_user_panels(msgObj.everything.owners_index);
@@ -83,7 +85,7 @@ function connect_to_server() {
 			//marble owners
 			else if (msgObj.msg === 'owners') {
 				console.log(wsTxt + ' rec', msgObj.msg, msgObj);
-				clearTimeout(getOwnersTimeout);
+				clearTimeout(getEverythingWatchdog);
 				build_user_panels(msgObj.owners);
 				console.log(wsTxt + ' sending get_marbles msg');
 			}
@@ -144,10 +146,10 @@ function connect_to_server() {
 // ================================================================================
 //show admin panel page
 function refreshHomePanel() {
-	setTimeout(function () {								//need to wait a bit
-		console.log(wsTxt + ' sending get_marbles msg');
-		get_owners_or_else();
-	}, block_ui_delay);
+	clearTimeout(pendingTransaction);
+	pendingTransaction = setTimeout(function () {								//need to wait a bit
+		get_everything_or_else();
+	}, block_ui_delay * 1.2);
 }
 
 //transfer_marble selected ball to user
@@ -220,18 +222,19 @@ function closeNoticePanel() {
 	clearTimeout(autoCloseNoticePanel);
 }
 
-//get owners with timeout to get marbles again!
-function get_owners_or_else(attempt) {
-	clearTimeout(getOwnersTimeout);
+//get everything with timeout to get it all again!
+function get_everything_or_else(attempt) {
+	console.log(wsTxt + ' sending get everything msg');
+	clearTimeout(getEverythingWatchdog);
 	ws.send(JSON.stringify({ type: 'read_everything', v: 1 }));
 
 	if (!attempt) attempt = 1;
 	else attempt++;
 
-	getOwnersTimeout = setTimeout(function () {
+	getEverythingWatchdog = setTimeout(function () {
 		if (attempt <= 3) {
 			console.log('\n\n! [timeout] did not get owners in time, impatiently calling it again', attempt, '\n\n');
-			get_owners_or_else(attempt);
+			get_everything_or_else(attempt);
 		}
 		else {
 			console.log('\n\n! [timeout] did not get owners in time, hopeless', attempt, '\n\n');

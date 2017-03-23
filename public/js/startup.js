@@ -1,4 +1,4 @@
-/* global $, window, document, ws, fromLS, lsKey, block_ui_delay, get_owners_or_else */
+/* global $, window, document, ws, fromLS, lsKey, block_ui_delay, get_everything_or_else */
 /* exported show_start_up_step */
 
 // =================================================================================
@@ -172,12 +172,11 @@ function show_start_up_step(obj){
 	}, 2000);
 
 	function start_marbles(){
-		//$('#startUpPanel, #tint').hide();
 		$('.stepHelpWrap').hide();
 		$('#doneStep').slideDown();
 
-		console.log('[startup] sending get_owners msg');
-		get_owners_or_else();
+		console.log('[startup] sending get everything msg');
+		get_everything_or_else();
 		fromLS.startedUpBefore = true;
 		window.localStorage.setItem(lsKey, JSON.stringify(fromLS));		//save
 	}

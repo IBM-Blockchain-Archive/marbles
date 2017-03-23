@@ -23,7 +23,7 @@ module.exports = function (logger) {
 	*/
 	deploy_cc.install_chaincode = function (obj, options, cb) {
 		console.log('');
-		logger.debug('[fcw] Installing Chaincode\n');
+		logger.debug('[fcw] Installing Chaincode');
 		var chain = obj.chain;
 
 		// fix GOPATH - does not need to be real!
@@ -77,7 +77,7 @@ module.exports = function (logger) {
 	*/
 	deploy_cc.instantiate_chaincode = function (obj, options, cb) {
 		console.log('');
-		logger.debug('[fcw] Instantiating Chaincode\n', options);
+		logger.debug('[fcw] Instantiating Chaincode', options);
 		var chain = obj.chain;
 		//var eventhub;
 
