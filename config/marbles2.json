@@ -1,6 +1,6 @@
 {
-	"credentials": "marbles2.json",
-	"use_events": true,
+	"cred_filename": "blockchain_creds2.json",
+	"use_events": false,
 	"company": "eMarbles",
 	"usernames": [
 		"cliff",
