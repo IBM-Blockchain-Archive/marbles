@@ -1,7 +1,7 @@
 # Marbles - Demo
 
 *Note these docs are under active development*
-The instructions are not yet compelte nor 100% accurate! 3/18/2017
+The instructions are not yet complete nor 100% accurate! 3/18/2017
 
 ## About Marbles
 - The underlying network for this application is the [Hyperledger Fabric](https://github.com/hyperledger/fabric/tree/master/docs), a Linux Foundation project.  You may want to review these instructions to understand a bit about the Hyperledger Fabric.
