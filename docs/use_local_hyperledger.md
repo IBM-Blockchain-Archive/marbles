@@ -32,46 +32,46 @@ __sample blockchain_creds1.json__
 
 ```js
 {
-	"credentials": {
-		"network_id": "asdf",                  //not important atm
-		"peers": [
-			{
-				"discovery": "grpc://192.168.99.100:8051", //must match the ip or hostname of your peer
-				"events": "grpc://192.168.99.100:8053",    //must match the ip or hostname of your peer
-				"msp_id": "Org1MSP"
-			}
-		],
-		"cas": [
-			{
-				"api": "http://192.168.99.100:8054",    //must match the ip or hostname of your ca
-				"msp_id": "Org1MSP",
-				 "users": [
-					{
-						"enrollId": "admin",
-						"enrollSecret": "adminpw"
-					}
-				]
-			}
-		],
-		"orderers": [
-			{
-				"discovery": "grpc://192.168.99.100",    //must match the ip or hostname of your peer
-				"msp_id": "Org1MSP"
-			}
-		],
-		"app": {
-			"channel_id": "mychannel",       //name of the blockchain channel
-			"chaincode_id": "marbles",       //name of instantiated chaincode
-			"chaincode_version": "v0"
-		}
-	}
+    "credentials": {
+        "network_id": "asdf",                  //not important atm
+        "peers": [
+            {
+                "discovery": "grpc://192.168.99.100:8051", //must match the ip or hostname of your peer
+                "events": "grpc://192.168.99.100:8053",    //must match the ip or hostname of your peer
+                "msp_id": "Org1MSP"
+            }
+        ],
+        "cas": [
+            {
+                "api": "http://192.168.99.100:8054",    //must match the ip or hostname of your ca
+                "msp_id": "Org1MSP",
+                 "users": [
+                    {
+                        "enrollId": "admin",
+                        "enrollSecret": "adminpw"
+                    }
+                ]
+            }
+        ],
+        "orderers": [
+            {
+                "discovery": "grpc://192.168.99.100",    //must match the ip or hostname of your peer
+                "msp_id": "Org1MSP"
+            }
+        ],
+        "app": {
+            "channel_id": "mychannel",       //name of the blockchain channel
+            "chaincode_id": "marbles",       //name of instantiated chaincode
+            "chaincode_version": "v0"
+        }
+    }
 }
 ```
 
 Remove any comments in your json file
 
 **Do you see the "credentials" field in your json file?** 
-It should be the outter most field like in the sample above. 
+It should be the outer most field like in the sample above. 
 If its not there you need to add it such that `peers`, `cas` and etc are inside `credentials`.
 
 Marbles only talks to 1 peer. 
@@ -82,7 +82,7 @@ Fabric version 0.7.0 enroll Ids can be found in the [cop.json](https://github.co
 Example cop.json section:
 
 ```json
-	"alice": {
+    "alice": {
       "pass": "alicepw",
       "type": "client",
       "group": "bank_a",
@@ -94,8 +94,8 @@ Maps to:
 
 ```json
 {
-	"enrollId": "alice",
-	"enrollSecret": "alicepw"
+    "enrollId": "alice",
+    "enrollSecret": "alicepw"
 }
 ```
 

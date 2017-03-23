@@ -5,7 +5,7 @@
   Meh it’s about a dozen. 
   But that’s not too bad. 
   The Bluemix service will run our peers and orderer, thus forming our blockchain network. 
-  We also have the ability to join other networks, but lets focus on creating our own. 
+  We also have the ability to join other networks, but let’s focus on creating our own. 
 
 1. First [create an IBM ID](https://console.ng.bluemix.net/registration/) if you do not already have one.
 1. Then login to [Bluemix](https://console.ng.bluemix.net)  
@@ -18,7 +18,7 @@
 ![](/doc_images/bluemix_ibc2.png)
 
 1. The service will be created in the currenty selected space. This is found on the top toolbar near your email address. Click the space if you want to create the Blockchain service in a different space. This will bring up multiple options for Region/Org/Space.
-	- All of this is a Bluemix concept for organzing services/apps. If these terms confuse you then leave the values alone.
+    - All of this is a Bluemix concept for organzing services/apps. If these terms confuse you then leave the values alone.
 
 ![](/doc_images/bluemix_ibc3.png)
 
@@ -49,7 +49,7 @@
 ![](/doc_images/5-after-added-peer.PNG)
 
 - When you have at least one peer, we can move on to making a channel. 
-	- A channel is used to isolate our blockchain ledger from others on the network.  (Later we will have the oppturnity to invite members of our network to our channel) Members on the same channel will be able to vaildate eachothers transactions. For now we just want to make a channel for ourself.
+    - A channel is used to isolate our blockchain ledger from others on the network.  (Later we will have the oppturnity to invite members of our network to our channel) Members on the same channel will be able to vaildate eachothers transactions. For now we just want to make a channel for ourself.
 - Click the "Channels" link on the left.
 - Next click the create "New Channel" button in the top right
 
@@ -64,6 +64,6 @@
 - If all went well you should see the channel name listed after the panel refreshes.
 
 ### Finish Up
-Congrats! The network is all setup. If you want more detail on the IBM Blockchain service, available plans, or a detailed overview of the IBM Blockchain Dashboard, jump over [here](https://console.ng.bluemix.net/docs/services/blockchain/index.html?pos=2). If not lets continue the setup. 
+Congrats! The network is all setup. If you want more detail on the IBM Blockchain service, available plans, or a detailed overview of the IBM Blockchain Dashboard, jump over [here](https://console.ng.bluemix.net/docs/services/blockchain/index.html?pos=2). If not let’s continue the setup. 
 
 - Continue where you left off in the [tutorial](./tutorial_start_here.md#installchaincode).

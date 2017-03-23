@@ -29,7 +29,7 @@ We are going to do this in Node.js and a bit of GoLang.
 The backend of this application will be the GoLang code running in our blockchain network. 
 From here on out the GoLang code will be referred to as 'chaincode' or 'cc'. 
 The chaincode itself will create a marble by storing it to the chaincode state. 
-The chaincode itself is able to store data as a string in a key/value pair setup. 
+The chaincode itself can store data as a string in a key/value pair setup. 
 Thus, we will stringify JSON objects to store more complex structures. 
 
 Attributes of a marble:
@@ -38,7 +38,7 @@ Attributes of a marble:
   1. color (string, css color names)
   1. size (int, size in mm)
   1. owner (string)
-	
+    
 We are going to create a Web based UI that can set these values and store them in our blockchain. 
 The marble gets created in the blockchain storage aka ledger as a key value pair. 
 The `key` is the marble name, and the `value` is a JSON string containing the attributes of the marble (listed above). 
@@ -68,7 +68,7 @@ There are certain keywords and context clues to help you identify one from anoth
 1. The Client Side JS Part - This is JavaScript code running in the user's browser. User interface interaction happens here. These files live in `/public/js.`
 1. The Server Side JS Part - This is JavaScript code running our application's backend. ie `Node.js` code which is the heart of Marbles! Sometimes referred to as our `node` or `server` code. Functions as the glue between the marble admin and our blockchain. These files live in `/utils` and `/routes`. 
 
-Remember these 3 parts are isolated from eachother. 
+Remember these 3 parts are isolated from each other. 
 They do not share variables nor functions. 
 They will communicate via a networking protocol such as gRPC or WebSockets. 
 
@@ -85,7 +85,7 @@ Decide if you want to use the deploy to Bluemix button.
 ### 0. Setup Local Environment
 
 Follow these environment setup [instructions](https://github.com/IBM-Blockchain/learn-chaincode/blob/v2.0/docs/setup.md) to install **Git, Go** and **Node.js**.
-	- When you have finished come back to this tutorial. Start the next section "Download Marbles" below.
+    - When you have finished come back to this tutorial. Start the next section "Download Marbles" below.
 
 ### 1. Download Marbles
 We need to download marbles to your local system. 
@@ -108,7 +108,6 @@ git clone http://gopkg.in/ibm-blockchain/marbles.v3
 Now we need a blockchain network.
 
 **Choose 1 option below:**
-
 
 - **Option 1:** Create a network with the Bluemix IBM Blockchain Service - [instructions](./use_bluemix_hyperledger.md)
 
@@ -154,28 +153,27 @@ Last but not least we need marbles running somewhere.
 
 1. If you are at this step, you should have your environment setup, blockchain network created, marbles app and chaincode running. Right? If not look up for help (up the page, not literaly upwards).
 1. Open up your browser and browse to [http://localhost:3001](http://localhost:3001) or your Bluemix www route.
-	- If the site does not load, check your node console logs for the hostname/ip and port marbles is using.
+    - If the site does not load, check your node console logs for the hostname/ip and port marbles is using.
 1. Finally we can test the application. Click the "+" icon on one of your users in the "United Marbles" section
 
 ![](/doc_images/use_marbles1.png)
 
 1. Fill out all the fields, then click the "CREATE" button
 1. After a few seconds your new marble should have appeared.
-	- If not refresh the page
+    - If not refresh the page
 1. Next let’s trade a marble.  Drag and drop a marble from one owner to another. Only trade it to owners within "United Marbles" if you have multiple marble companies. It should temporary disappear and then redraw the marble within its new owner. That means it worked!
-	- If not refresh the page
-1. Now lets delete a marble by dragging and dropping it into the trash can. It should disappear after a few seconds.
+    - If not refresh the page
+1. Now let’s delete a marble by dragging and dropping it into the trash can. It should disappear after a few seconds.
 
 ![](/doc_images/use_marbles2.png)
 
 1. Refresh the page to double check that your actions "stuck". 
 1. Use the search box to filter on marble owners or marble company names.  This is helpful when there are many companies/owners. 
-	- The pin icon will prevent that user from being filtered out by the search box. 
+    - The pin icon will prevent that user from being filtered out by the search box. 
 1. Congratulations you have a working marbles application :)! 
 
-
 # Blockchain Background
-Before we talk about how Marbles works lets discuss the flow and topology of Hyperledger Fabric. 
+Before we talk about how Marbles works let’s discuss the flow and topology of Hyperledger Fabric. 
 Lets get some definitions out of the way first.
 
 ### Definitions:
@@ -198,7 +196,6 @@ Lets get some definitions out of the way first.
 
 **Assets** - An asset is an entity that exists in the ledger. It’s a key value pair. In the context of marbles this is a marble, or a marble owner. 
 
-
 Let’s look at the operations involved when creating a new marble.
 
 1. The first thing that happens in marbles is registering our admin `user` with our network's `CA`. If successful, the `CA` will send Marbles enrollment certificates that the SDK will store for us in our local file system. 
@@ -212,7 +209,6 @@ Let’s look at the operations involved when creating a new marble.
 1. Our `peer` will receive the new block and validate it by looking at various signatures and hashes. It is then finally committed to the `peer's` `ledger`.
 1. At this point the new marble exists in our ledger and should soon exist in all peer's ledgers.
 
-
 # SDK Deeper Dive
 Now lets see how we interface with the Fabric Client SDK. 
 Most of the configuration options can be found in `/config/blockchain_creds1.json`. 
@@ -225,73 +221,73 @@ First action is to enroll the admin:
 ```js
 //enroll admin
 enrollment.enroll = function (options, cb) {
-	var chain = {};
-	var client = null;
-	try {
+    var chain = {};
+    var client = null;
+    try {
 // [Step 1]
-		client = new HFC();
-		chain = client.newChain(options.channel_id);
-	}
-	catch (e) {
-		//it might error about 1 chain per network, but that's not a problem just continue
-	}
+        client = new HFC();
+        chain = client.newChain(options.channel_id);
+    }
+    catch (e) {
+        //it might error about 1 chain per network, but that's not a problem just continue
+    }
 
-	if (!options.uuid) {
-		logger.error('cannot enroll with undefined uuid');
-		if (cb) cb({ error: 'cannot enroll with undefined uuid' });
-		return;
-	}
+    if (!options.uuid) {
+        logger.error('cannot enroll with undefined uuid');
+        if (cb) cb({ error: 'cannot enroll with undefined uuid' });
+        return;
+    }
 
-	logger.info('[fcw] Going to enroll for mspId ', options);
+    logger.info('[fcw] Going to enroll for mspId ', options);
 
 // [Step 2]
-	// Make eCert kvs (Key Value Store)
-	HFC.newDefaultKeyValueStore({
-		path: path.join(os.homedir(), '.hfc-key-store/' + options.uuid) //store eCert in the kvs directory
-	}).then(function (store) {
-		client.setStateStore(store);
+    // Make eCert kvs (Key Value Store)
+    HFC.newDefaultKeyValueStore({
+        path: path.join(os.homedir(), '.hfc-key-store/' + options.uuid) //store eCert in the kvs directory
+    }).then(function (store) {
+        client.setStateStore(store);
 
 // [Step 3]
-		return getSubmitter(client, options);							//do most of the work here
-	}).then(function (submitter) {
+        return getSubmitter(client, options);                           //do most of the work here
+    }).then(function (submitter) {
 
 // [Step 4]
-		chain.addOrderer(new Orderer(options.orderer_url));
+        chain.addOrderer(new Orderer(options.orderer_url));
 
 // [Step 5]
-		try {
-			for (var i in options.peer_urls) {
-				chain.addPeer(new Peer(options.peer_urls[i]));
-				logger.debug('added peer', options.peer_urls[i]);
-			}
-		}
-		catch (e) {
-			//might error if peer already exists, but we don't care
-		}
-		try {
-			chain.setPrimaryPeer(new Peer(options.peer_urls[0]));
-			logger.debug('added primary peer', options.peer_urls[0]);
-		}
-		catch (e) {
-			//might error b/c bugs, don't care
-		}
+        try {
+            for (var i in options.peer_urls) {
+                chain.addPeer(new Peer(options.peer_urls[i]));
+                logger.debug('added peer', options.peer_urls[i]);
+            }
+        }
+        catch (e) {
+            //might error if peer already exists, but we don't care
+        }
+        try {
+            chain.setPrimaryPeer(new Peer(options.peer_urls[0]));
+            logger.debug('added primary peer', options.peer_urls[0]);
+        }
+        catch (e) {
+            //might error b/c bugs, don't care
+        }
 
 // [Step 6]
-		// --- Success --- //
-		logger.debug('[fcw] Successfully got enrollment ' + options.uuid);
-		if (cb) cb(null, { chain: chain, submitter: submitter });
-		return;
+        // --- Success --- //
+        logger.debug('[fcw] Successfully got enrollment ' + options.uuid);
+        if (cb) cb(null, { chain: chain, submitter: submitter });
+        return;
 
-	}).catch(
+    }).catch(
 
-		// --- Failure --- //
-		function (err) {
-			logger.error('[fcw] Failed to get enrollment ' + options.uuid, err.stack ? err.stack : err);
-			var formatted = common.format_error_msg(err);
-			if (cb) cb(formatted);
-			return;
-		}
-	);
+        // --- Failure --- //
+        function (err) {
+            logger.error('[fcw] Failed to get enrollment ' + options.uuid, err.stack ? err.stack : err);
+            var formatted = common.format_error_msg(err);
+            if (cb) cb(formatted);
+            return;
+        }
+    );
 };
 ```
 
@@ -302,7 +298,6 @@ enrollment.enroll = function (options, cb) {
 1. Next we set the Peer URLs. These are also not needed yet, but we are going to setup our SDK chain object fully.
 1. At this point the SDK is fully configured and ready to interact with the blockchain.
 
-
 # Marbles Deeper Dive
 Hopefully you have successfully traded a marble or two between users. 
 Let’s look at how transfering a marble is done by starting at the chaincode.
@@ -310,73 +305,73 @@ Let’s look at how transfering a marble is done by starting at the chaincode.
 __/chaincode/marbles.go__
 
 ```go
-	type Marble struct {
-		ObjectType string        `json:"docType"`
-		Name       string        `json:"name"`     //the fieldtags are needed to keep case from bouncing around
-		Color      string        `json:"color"`
-		Size       int           `json:"size"`
-		Owner      OwnerRelation `json:"owner"`
-	}
+    type Marble struct {
+        ObjectType string        `json:"docType"`
+        Name       string        `json:"name"`     //the fieldtags are needed to keep case from bouncing around
+        Color      string        `json:"color"`
+        Size       int           `json:"size"`
+        Owner      OwnerRelation `json:"owner"`
+    }
 ```
 
 __/chaincode/write_ledger.go__
 
 ```go
-	// ============================================================================================================================
-	// Set Owner on Marble
-	// ============================================================================================================================
-	func set_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-		var err error
-		fmt.Println("starting set_owner")
+    // ============================================================================================================================
+    // Set Owner on Marble
+    // ============================================================================================================================
+    func set_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+        var err error
+        fmt.Println("starting set_owner")
 
-		//todo! dsh - get the "company that authed the transfer" from the certificate instead of an argument
-		//should be possible since we can now add attributes to tx cert during
-		//as is this is broken (security wise), but it's much easier to demo...
+        //todo! dsh - get the "company that authed the transfer" from the certificate instead of an argument
+        //should be possible since we can now add attributes to tx cert during
+        //as is this is broken (security wise), but it's much easier to demo...
 
-		//   0   ,     1  ,        2                 3
-		// marble, to user,       to company,  company that auth the transfer
-		// "name",   "bob", "united_marbles", "united_mables" 
-		if len(args) < 4 {
-			return shim.Error("Incorrect number of arguments. Expecting 4")
-		}
+        //   0   ,     1  ,        2                 3
+        // marble, to user,       to company,  company that auth the transfer
+        // "name",   "bob", "united_marbles", "united_mables" 
+        if len(args) < 4 {
+            return shim.Error("Incorrect number of arguments. Expecting 4")
+        }
 
-		// input sanitation
-		err = sanitize_arguments(args)
-		if err != nil {
-			return shim.Error(err.Error())
-		}
+        // input sanitation
+        err = sanitize_arguments(args)
+        if err != nil {
+            return shim.Error(err.Error())
+        }
 
-		var marble_id = args[0]
-		var new_user = strings.ToLower(args[1])
-		var new_company = args[2]
-		var authed_by_company = args[3]
-		fmt.Println(marble_id + "->" + new_user + " - " + new_company + "|" + authed_by_company)
+        var marble_id = args[0]
+        var new_user = strings.ToLower(args[1])
+        var new_company = args[2]
+        var authed_by_company = args[3]
+        fmt.Println(marble_id + "->" + new_user + " - " + new_company + "|" + authed_by_company)
 
-		// get marble's current state 
-		marbleAsBytes, err := stub.GetState(marble_id)
-		if err != nil {
-			return shim.Error("Failed to get marble")
-		}
-		res := Marble{}
-		json.Unmarshal(marbleAsBytes, &res)          //un stringify it aka JSON.parse()
+        // get marble's current state 
+        marbleAsBytes, err := stub.GetState(marble_id)
+        if err != nil {
+            return shim.Error("Failed to get marble")
+        }
+        res := Marble{}
+        json.Unmarshal(marbleAsBytes, &res)          //un stringify it aka JSON.parse()
 
-		//check authorizing company
-		if res.Owner.Company != authed_by_company{
-			return shim.Error("The company '" + authed_by_company + "' cannot authorize transfers for '" + res.Owner.Company + "'.")
-		}
+        //check authorizing company
+        if res.Owner.Company != authed_by_company{
+            return shim.Error("The company '" + authed_by_company + "' cannot authorize transfers for '" + res.Owner.Company + "'.")
+        }
 
-		//transfer the marble
-		res.Owner.Username = new_user                 //change the owner
-		res.Owner.Company = new_company               //change the owner
-		jsonAsBytes, _ := json.Marshal(res)
-		err = stub.PutState(args[0], jsonAsBytes)    //rewrite the marble with id as key
-		if err != nil {
-			return shim.Error(err.Error())
-		}
+        //transfer the marble
+        res.Owner.Username = new_user                 //change the owner
+        res.Owner.Company = new_company               //change the owner
+        jsonAsBytes, _ := json.Marshal(res)
+        err = stub.PutState(args[0], jsonAsBytes)    //rewrite the marble with id as key
+        if err != nil {
+            return shim.Error(err.Error())
+        }
 
-		fmt.Println("- end set owner")
-		return shim.Success(nil)
-	}
+        fmt.Println("- end set owner")
+        return shim.Success(nil)
+    }
 ```
 
 This `set_owner()` function will change the owner of a particular marble. 
@@ -392,91 +387,91 @@ Let’s take 1 step up and look at how this chaincode was called from our node.j
 __/utils/websocket_server_side.js__
 
 ```js
-	//process web socket messages
-	ws_server.process_msg = function (ws, data) {
-		var options = {
-			peer_urls: [helper.getPeersUrl(0)],
-			ws: ws,
-			endorsed_hook: endorse_hook,
-			ordered_hook: orderer_hook
-		};
-		if (marbles_lib === null) {
-			logger.error('marbles lib is null...');				//can't run in this state
-			return;
-		}
+    //process web socket messages
+    ws_server.process_msg = function (ws, data) {
+        var options = {
+            peer_urls: [helper.getPeersUrl(0)],
+            ws: ws,
+            endorsed_hook: endorse_hook,
+            ordered_hook: orderer_hook
+        };
+        if (marbles_lib === null) {
+            logger.error('marbles lib is null...');             //can't run in this state
+            return;
+        }
 
-		// create a new marble
-		if (data.type == 'create') {
-			logger.info('[ws] create marbles req');
-			options.args = {
-				marble_id: data.name,
-				color: data.color,
-				size: data.size,
-				marble_owner: data.username,
-				owners_company: data.company,
-				auth_company: process.env.marble_company,
-			};
+        // create a new marble
+        if (data.type == 'create') {
+            logger.info('[ws] create marbles req');
+            options.args = {
+                marble_id: data.name,
+                color: data.color,
+                size: data.size,
+                marble_owner: data.username,
+                owners_company: data.company,
+                auth_company: process.env.marble_company,
+            };
 
-			marbles_lib.create_a_marble(options, function (err, resp) {
-				if (err != null) send_err(err, data);
-				else options.ws.send(JSON.stringify({ msg: 'tx_step', state: 'finished' }));
-			});
-		}
+            marbles_lib.create_a_marble(options, function (err, resp) {
+                if (err != null) send_err(err, data);
+                else options.ws.send(JSON.stringify({ msg: 'tx_step', state: 'finished' }));
+            });
+        }
 
-		// transfer a marble
-		else if (data.type == 'transfer_marble') {
-			logger.info('[ws] transfering req');
-			options.args = {
-				marble_id: data.name,
-				marble_owner: data.username,
-				owners_company: data.company,
-				auth_company: process.env.marble_company
-			};
+        // transfer a marble
+        else if (data.type == 'transfer_marble') {
+            logger.info('[ws] transfering req');
+            options.args = {
+                marble_id: data.name,
+                marble_owner: data.username,
+                owners_company: data.company,
+                auth_company: process.env.marble_company
+            };
 
-			marbles_lib.set_marble_owner(options, function (err, resp) {
-				if (err != null) send_err(err, data);
-				else options.ws.send(JSON.stringify({ msg: 'tx_step', state: 'finished' }));
-			});
-		}
-		...
+            marbles_lib.set_marble_owner(options, function (err, resp) {
+                if (err != null) send_err(err, data);
+                else options.ws.send(JSON.stringify({ msg: 'tx_step', state: 'finished' }));
+            });
+        }
+        ...
 ```
 
 This snippet of `process_msg()` receives all websocket messages (code found in app.js). 
 It will detect what type of ws (websocket) message was sent. 
-In our case it should detect a `transfer_marble` type. 
+In our case, it should detect a `transfer_marble` type. 
 Looking at that code we can see it will setup an `options` variable and then kick off `marbles_lib.set_marble_owner()`. 
 This is the function that will tell the SDK to build the proposal and process the transfer action. 
 
-Next lets look at that function. 
+Next let’s look at that function. 
 
 __/utils/marbles_cc_lib.js__
 
 ```js
-	//-------------------------------------------------------------------
-	// Set Marble Owner 
-	//-------------------------------------------------------------------
-	marbles_chaincode.set_marble_owner = function (options, cb) {
-		console.log('');
-		logger.info('Setting marble owner...');
+    //-------------------------------------------------------------------
+    // Set Marble Owner 
+    //-------------------------------------------------------------------
+    marbles_chaincode.set_marble_owner = function (options, cb) {
+        console.log('');
+        logger.info('Setting marble owner...');
 
-		var opts = {
-			channel_id: g_options.channel_id,
-			chaincode_id: g_options.chaincode_id,
-			chaincode_version: g_options.chaincode_version,
-			event_url: g_options.event_url,
-			endorsed_hook: options.endorsed_hook,
-			ordered_hook: options.ordered_hook,
-			cc_function: 'set_owner',
-			cc_args: [
-				options.args.marble_id,
-				options.args.marble_owner,
-				options.args.owners_company,
-				options.args.auth_company
-			]
-		};
-		fcw.invoke_chaincode(enrollObj, opts, cb);
-	};
-		...
+        var opts = {
+            channel_id: g_options.channel_id,
+            chaincode_id: g_options.chaincode_id,
+            chaincode_version: g_options.chaincode_version,
+            event_url: g_options.event_url,
+            endorsed_hook: options.endorsed_hook,
+            ordered_hook: options.ordered_hook,
+            cc_function: 'set_owner',
+            cc_args: [
+                options.args.marble_id,
+                options.args.marble_owner,
+                options.args.owners_company,
+                options.args.auth_company
+            ]
+        };
+        fcw.invoke_chaincode(enrollObj, opts, cb);
+    };
+        ...
 ```
 
 The the `set_marble_owner()` function is listed above. 
@@ -484,54 +479,54 @@ The important parts are that it is setting the proposal's invocation function na
 Note that the peer and orderer URLs have already been set when we enrolled the admin. 
 By default the SDK will send this transaction to all peers that have been added with `chain.addPeer`. 
 In our case the SDK will send to only 1 peer, since we have only added the 1 peer. 
-Remeber this peer was added in the `enrollment` section. 
+Remember this peer was added in the `enrollment` section. 
 
 Now let’s look 1 more step up to how we sent this websocket message from the UI.
 
 __/public/js/ui_building.js__
 
 ```js
-	$('.innerMarbleWrap').droppable({drop:
-		function( event, ui ) {
-			var marble_id = $(ui.draggable).attr('id');
+    $('.innerMarbleWrap').droppable({drop:
+        function( event, ui ) {
+            var marble_id = $(ui.draggable).attr('id');
 
-			//  ------------ Delete Marble ------------ //
-			if($(event.target).attr('id') === 'trashbin'){
-				// [removed code for brevity]
-			}
+            //  ------------ Delete Marble ------------ //
+            if($(event.target).attr('id') === 'trashbin'){
+                // [removed code for brevity]
+            }
 
-			//  ------------ Transfer Marble ------------ //
-			else{
-				var dragged_user = $(ui.draggable).attr('username').toLowerCase();
-				var dropped_user = $(event.target).parents('.marblesWrap').attr('username').toLowerCase();
-				var dropped_company = $(event.target).parents('.marblesWrap').attr('company');
+            //  ------------ Transfer Marble ------------ //
+            else{
+                var dragged_user = $(ui.draggable).attr('username').toLowerCase();
+                var dropped_user = $(event.target).parents('.marblesWrap').attr('username').toLowerCase();
+                var dropped_company = $(event.target).parents('.marblesWrap').attr('company');
 
-				console.log('dropped a marble', dragged_user, dropped_user, dropped_company);
-				if(dragged_user != dropped_user){              //only transfer marbles that changed owners
-					$(ui.draggable).addClass('invalid');
-					transfer_marble(marble_id, dropped_user, dropped_company);
-					return true;
-				}
-			}
-		}
-	});
+                console.log('dropped a marble', dragged_user, dropped_user, dropped_company);
+                if(dragged_user != dropped_user){              //only transfer marbles that changed owners
+                    $(ui.draggable).addClass('invalid');
+                    transfer_marble(marble_id, dropped_user, dropped_company);
+                    return true;
+                }
+            }
+        }
+    });
 
-	...
+    ...
 
-	function transfer_marble(marbleName, to_username, to_company){
-		show_tx_step({ state: 'building_proposal' }, function () {
-			var obj = {
-				type: 'transfer_marble',
-				name: marbleName,
-				username: to_username,
-				company: to_company,
-				v: 1
-			};
-			console.log(wsTxt + ' sending transfer marble msg', obj);
-			ws.send(JSON.stringify(obj));
-			refreshHomePanel();
-		});
-	}
+    function transfer_marble(marbleName, to_username, to_company){
+        show_tx_step({ state: 'building_proposal' }, function () {
+            var obj = {
+                type: 'transfer_marble',
+                name: marbleName,
+                username: to_username,
+                company: to_company,
+                v: 1
+            };
+            console.log(wsTxt + ' sending transfer marble msg', obj);
+            ws.send(JSON.stringify(obj));
+            refreshHomePanel();
+        });
+    }
 ```
 
 In the first section referencing `$('.innerMarbleWrap')` you can see we used jQuery and jQuery-UI to implement the drag and drop functionality. 
@@ -543,11 +538,11 @@ If its owner has changed we go off to the `transfer_marble()` function.
 This function creates a JSON message with all the needed data and uses our websocket to send it with `ws.send()`. 
 
 The last piece of the puzzle is how Marbles realize the transfer is complete. 
-Well marbles periodically checks on all the marbles and compares it to the last known state. 
+Well, marbles will periodically check on all the marbles and compares it to the last known state. 
 If there is a difference it will broadcast the new marble state to all connected JS clients. 
 The clients will receive this websocket message and redraw the marbles. 
 
 Now you know the whole flow. 
 The admin moved the marble, JS detected the drag/drop, client sends a websocket message, marbles receives the websocket message, sdk builds/sends a proposal, peer endorses the proposal, sdk sends the proposal for ordering, the orderer orders and sends a block to peer, our peer commits the block, marbles node code gets new marble status periodically, sends marble websocket message to client, and finally the client redraws the marble in its new home.
 
-That’s it! Hope you had fun transfering marbles. 
+That’s it! Hope you had fun transferring marbles. 
