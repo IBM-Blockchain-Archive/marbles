@@ -128,28 +128,21 @@ process.env.app_state = 'starting';
 process.env.app_first_setup = 'yes';
 setupWebSocket();
 
-try {
-	var hash = helper.getMarbleStartUpHash();
-	logger.debug('what is what', hash, helper.getHash());
-	if (hash === helper.getHash()) {
-		console.log('');
-		console.log('');
-		logger.debug('Detected that we have launched successfully before');
-		logger.debug('Welcome back - Initiating start up\n\n');
-		process.env.app_first_setup = 'no';
-		enroll_admin(function (e) {
-			if (e == null) {
-				setup_marbles_lib();
-			}
-		});
-	}
-	else wait_to_init();
+var hash = helper.getMarbleStartUpHash();
+logger.debug('what is what', hash, helper.getHash());
+if (hash === helper.getHash()) {
+	console.log('');
+	console.log('');
+	logger.debug('Detected that we have launched successfully before');
+	logger.debug('Welcome back - Initiating start up\n\n');
+	process.env.app_first_setup = 'no';
+	enroll_admin(function (e) {
+		if (e == null) {
+			setup_marbles_lib();
+		}
+	});
 }
-catch (e) {
-	wait_to_init();
-}
-
-function wait_to_init() {
+else {
 	process.env.app_state = 'start_waiting';
 	process.env.app_first_setup = 'yes';
 	console.log('');
@@ -390,51 +383,52 @@ function setupWebSocket() {
 	wss.on('connection', function connection(ws) {
 		ws.on('message', function incoming(message) {
 			logger.debug('received ws msg:', message);
+			var data = null;
 			try {
-				var data = JSON.parse(message);
-				if (data.type == 'setup') {
-					logger.debug('! [ws] setup message', data);
-
-					//enroll admin
-					if (data.configure === 'enrollment') {
-						helper.write(data);										//write new config data to file
-						enroll_admin(function (e) {
-							if (e == null) {
-								setup_marbles_lib();
-							}
-						});
-					}
-
-					//find deployed chaincode
-					else if (data.configure === 'find_chaincode') {
-						helper.write(data);										//write new config data to file
-						enroll_admin(function (e) {								//re-renroll b/c we may be using new peer/order urls
-							if (e == null) {
-								setup_marbles_lib();
-							}
-						});
-					}
-
-					//register marble owners
-					else if (data.configure === 'register') {
-						create_assets(data.build_marble_owners);
-					}
-				}
-				else {
-					ws_server.process_msg(ws, data);							//pass the websocket msg for processing
-				}
+				data = JSON.parse(message);
 			}
 			catch (e) {
-				logger.debug('ws message error', e.stack);
+				logger.debug('ws message error', message, e.stack);
+			}
+			if (data && data.type == 'setup') {
+				logger.debug('! [ws] setup message', data);
+
+				//enroll admin
+				if (data.configure === 'enrollment') {
+					helper.write(data);										//write new config data to file
+					enroll_admin(function (e) {
+						if (e == null) {
+							setup_marbles_lib();
+						}
+					});
+				}
+
+				//find deployed chaincode
+				else if (data.configure === 'find_chaincode') {
+					helper.write(data);										//write new config data to file
+					enroll_admin(function (e) {								//re-renroll b/c we may be using new peer/order urls
+						if (e == null) {
+							setup_marbles_lib();
+						}
+					});
+				}
+
+				//register marble owners
+				else if (data.configure === 'register') {
+					create_assets(data.build_marble_owners);
+				}
+			}
+			else if (data) {
+				ws_server.process_msg(ws, data);							//pass the websocket msg for processing
 			}
 		});
 
 		ws.on('error', function (e) { logger.debug('ws error', e); });
 		ws.on('close', function () { logger.debug('ws closed'); });
-		ws.send(JSON.stringify(build_state_msg()));								//tell client our app state
+		ws.send(JSON.stringify(build_state_msg()));							//tell client our app state
 	});
 
-	wss.broadcast = function broadcast(data) {									//send to all connections
+	wss.broadcast = function broadcast(data) {								//send to all connections
 		var i = 0;
 		wss.clients.forEach(function each(client) {
 			try {
