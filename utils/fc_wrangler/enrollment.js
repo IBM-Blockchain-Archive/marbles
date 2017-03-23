@@ -46,7 +46,6 @@ module.exports = function (logger) {
 			return;
 		}
 
-		console.log('');
 		logger.info('[fcw] Going to enroll for mspId ', options);
 
 		// Make eCert kvs (Key Value Store)

@@ -379,19 +379,21 @@ function broadcast_state(new_state) {
 // ============================================================================================================================
 function setupWebSocket() {
 	console.log('------------------------------------------ Websocket Up ------------------------------------------');
-	wss = new ws.Server({ server: server });										//start the websocket now
+	wss = new ws.Server({ server: server });								//start the websocket now
 	wss.on('connection', function connection(ws) {
 		ws.on('message', function incoming(message) {
-			logger.debug('received ws msg:', message);
+			console.log(' ');
+			console.log('-------------------------------- Incoming WS Msg --------------------------------');
+			logger.debug('[ws] received ws msg:', message);
 			var data = null;
 			try {
 				data = JSON.parse(message);
 			}
 			catch (e) {
-				logger.debug('ws message error', message, e.stack);
+				logger.debug('[ws] message error', message, e.stack);
 			}
 			if (data && data.type == 'setup') {
-				logger.debug('! [ws] setup message', data);
+				logger.debug('[ws] setup message', data);
 
 				//enroll admin
 				if (data.configure === 'enrollment') {
@@ -423,8 +425,8 @@ function setupWebSocket() {
 			}
 		});
 
-		ws.on('error', function (e) { logger.debug('ws error', e); });
-		ws.on('close', function () { logger.debug('ws closed'); });
+		ws.on('error', function (e) { logger.debug('[ws] error', e); });
+		ws.on('close', function () { logger.debug('[ws] closed'); });
 		ws.send(JSON.stringify(build_state_msg()));							//tell client our app state
 	});
 
@@ -432,11 +434,11 @@ function setupWebSocket() {
 		var i = 0;
 		wss.clients.forEach(function each(client) {
 			try {
-				logger.debug('broadcasting to client', (++i), data.msg);
+				logger.debug('[ws] broadcasting to client', (++i), data.msg);
 				client.send(JSON.stringify(data));
 			}
 			catch (e) {
-				logger.debug('error broadcast ws', e);
+				logger.debug('[ws] error broadcast ws', e);
 			}
 		});
 	};

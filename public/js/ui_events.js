@@ -8,7 +8,7 @@ var known_companies = {};
 var start_up = true;
 var lsKey = 'marbles';
 var fromLS = {};
-var block_ui_delay = 12000; 								//default, gets set in ws block msg
+var block_ui_delay = 15000; 								//default, gets set in ws block msg
 
 // =================================================================================
 // On Load

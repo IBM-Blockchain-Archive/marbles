@@ -9,6 +9,7 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 
 	//check chaincode
 	marbles_chaincode.check_if_already_deployed = function (options, cb) {
+		console.log('');
 		logger.info('Checking for chaincode...');
 
 		var opts = {
@@ -38,6 +39,7 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 
 	//create a marble
 	marbles_chaincode.create_a_marble = function (options, cb) {
+		console.log('');
 		logger.info('Creating a marble...');
 
 		var opts = {
@@ -62,6 +64,7 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 
 	//get list of marbles
 	marbles_chaincode.get_marble_list = function (options, cb) {
+		console.log('');
 		logger.info('Fetching marble index list...');
 
 		var opts = {
@@ -90,6 +93,7 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 
 	//set marble owner
 	marbles_chaincode.set_marble_owner = function (options, cb) {
+		console.log('');
 		logger.info('Setting marble owner...');
 
 		var opts = {
@@ -112,6 +116,7 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 
 	//delete marble
 	marbles_chaincode.delete_marble = function (options, cb) {
+		console.log('');
 		logger.info('Deleting a marble...');
 
 		var opts = {
@@ -132,7 +137,8 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 
 	//register a owner/user
 	marbles_chaincode.register_owner = function (options, cb) {
-		logger.info('Creating a marble owner\n');
+		console.log('');
+		logger.info('Creating a marble owner...');
 
 		var opts = {
 			channel_id: g_options.channel_id,
@@ -150,6 +156,7 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 	//get a owner/user
 	marbles_chaincode.get_owner = function (options, cb) {
 		var full_username = build_owner_name(options.args.marble_owner, options.args.owners_company);
+		console.log('');
 		logger.info('Fetching owner ' + full_username + ' list...');
 
 		var opts = {
@@ -164,6 +171,7 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 
 	//get the owner list
 	marbles_chaincode.get_owner_list = function (options, cb) {
+		console.log('');
 		logger.info('Fetching owner index list...');
 
 		var opts = {
@@ -186,7 +194,7 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 
 	//build full name
 	marbles_chaincode.read_everything = function (options, cb) {
-		console.log('\n');
+		console.log('');
 		logger.info('Fetching EVERYTHING...');
 
 		var opts = {
@@ -201,7 +209,6 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 
 	// get block height
 	marbles_chaincode.channel_stats = function (options, cb) {
-		console.log('\n');
 		logger.info('Fetching block height...');
 		fcw.query_channel(enrollObj, null, cb);
 	};

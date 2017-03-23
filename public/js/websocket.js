@@ -78,7 +78,7 @@ function connect_to_server() {
 			// block
 			else if (msgObj.msg === 'block') {
 				console.log(wsTxt + ' rec', msgObj.msg, ': ledger blockheight', msgObj.block_height);
-				if(msgObj.block_delay) block_ui_delay = msgObj.block_delay * 1.5;			// should be slightly longer than block delay
+				if(msgObj.block_delay) block_ui_delay = msgObj.block_delay * 2;				// should be longer than block delay
 				new_block(msgObj.block_height);												// send to blockchain.js
 			}
 
@@ -149,7 +149,7 @@ function refreshHomePanel() {
 	clearTimeout(pendingTransaction);
 	pendingTransaction = setTimeout(function () {								//need to wait a bit
 		get_everything_or_else();
-	}, block_ui_delay * 1.2);
+	}, block_ui_delay);
 }
 
 //transfer_marble selected ball to user

@@ -46,7 +46,7 @@ module.exports = function (logger) {
 	*/
 	query_peer.query_channel = function (obj, options, cb) {
 		console.log('');
-		logger.debug('[fcw] Querying Channel:');
+		logger.debug('[fcw] Querying Channel Stats:');
 		var chain = obj.chain;
 
 		// send proposal to peer
@@ -93,11 +93,8 @@ module.exports = function (logger) {
 	*/
 		query_peer.query_list_channels = function (obj, options, cb) {
 		console.log('');
-		logger.debug('List Channels:');
+		logger.debug('List Channels:', options);
 		var chain = obj.chain;
-
-		console.log('');
-		logger.debug('using options (channel)', options);
 
 		// send proposal to peer
 		chain.queryChannels(new Peer(options.peer_urls[0])).then(

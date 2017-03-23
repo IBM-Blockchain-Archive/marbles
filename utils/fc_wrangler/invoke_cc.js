@@ -28,7 +28,6 @@ module.exports = function (g_options, logger) {
 		}
 	*/
 	invoke_cc.invoke_chaincode = function (obj, options, cb) {
-		console.log('');
 		logger.debug('[fcw] Invoking Chaincode: ' + options.cc_function + '()');
 		var eventhub;
 		var chain = obj.chain;
