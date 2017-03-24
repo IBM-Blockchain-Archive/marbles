@@ -211,6 +211,18 @@ $(document).on('ready', function () {
 		if (size === '16') $('.createball').animate({ 'height': 150, 'width': 150 }, { duration: 200 });
 		else $('.createball').animate({ 'height': 250, 'width': 250 }, { duration: 200 });
 	});
+
+	//right click opens audit on marble
+	$(document).on('contextmenu', '.ball', function () {
+		var id = $(this).attr('id');
+		console.log('user clicked on marble', id);
+		var obj = {
+			type: 'audit',
+			id: id
+		};
+		ws.send(JSON.stringify(obj));
+		return false;
+	});
 });
 
 //toggle story mode

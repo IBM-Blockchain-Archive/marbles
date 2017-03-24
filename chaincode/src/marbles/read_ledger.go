@@ -20,6 +20,7 @@ under the License.
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 
@@ -109,4 +110,60 @@ func read_marble_index(stub shim.ChaincodeStubInterface) pb.Response {
 		return shim.Error(err.Error())
 	}
 	return shim.Success(arrayAsBytes)
+}
+
+
+// ============================================================================================================================
+// Get history of asset
+// ============================================================================================================================
+func getHistory(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+
+	if len(args) != 1 {
+		return shim.Error("Incorrect number of arguments. Expecting 1")
+	}
+
+	marbleName := args[0]
+
+	fmt.Printf("- start getHistoryForMarble: %s\n", marbleName)
+
+	resultsIterator, err := stub.GetHistoryForKey(marbleName)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	defer resultsIterator.Close()
+
+	// buffer is a JSON array containing historic values for the marble
+	var buffer bytes.Buffer
+	buffer.WriteString("[")
+
+	bArrayMemberAlreadyWritten := false
+	for resultsIterator.HasNext() {
+		txID, historicValue, err := resultsIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		// Add a comma before array members, suppress it for the first array member
+		if bArrayMemberAlreadyWritten == true {
+			buffer.WriteString(",")
+		}
+		buffer.WriteString("{\"TxId\":")
+		buffer.WriteString("\"")
+		buffer.WriteString(txID)
+		buffer.WriteString("\"")
+		buffer.WriteString(", \"Value\":")
+
+		// historicValue is a JSON marble, so we write as-is
+		if historicValue != nil {
+			buffer.WriteString(string(historicValue))
+		} else {
+			buffer.WriteString("null")
+		}
+		buffer.WriteString("}")
+		bArrayMemberAlreadyWritten = true
+	}
+	buffer.WriteString("]")
+
+	fmt.Printf("- getHistoryForMarble returning:\n%s\n", buffer.String())
+
+	return shim.Success(buffer.Bytes())
 }

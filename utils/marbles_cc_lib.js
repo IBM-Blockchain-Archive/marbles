@@ -132,6 +132,23 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 		fcw.invoke_chaincode(enrollObj, opts, cb);
 	};
 
+	//get history for key
+	marbles_chaincode.get_history = function (options, cb) {
+		logger.info('Getting history for...', options.args);
+
+		var opts = {
+			channel_id: g_options.channel_id,
+			chaincode_id: g_options.chaincode_id,
+			chaincode_version: g_options.chaincode_version,
+			event_url: g_options.event_url,
+			endorsed_hook: options.endorsed_hook,
+			ordered_hook: options.ordered_hook,
+			cc_function: 'getHistory',
+			cc_args: [options.args.id]
+		};
+		fcw.query_chaincode(enrollObj, opts, cb);
+	};
+
 
 	// Owners -------------------------------------------------------------------------------
 

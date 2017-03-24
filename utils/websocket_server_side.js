@@ -36,7 +36,7 @@ module.exports = function (g_options, logger) {
 		}
 
 		// create a new marble
-		if (data.type == 'create') {
+		if (data.type === 'create') {
 			logger.info('[ws] create marbles req');
 			options.args = {
 				marble_id: data.name,
@@ -54,7 +54,7 @@ module.exports = function (g_options, logger) {
 		}
 
 		// transfer a marble
-		else if (data.type == 'transfer_marble') {
+		else if (data.type === 'transfer_marble') {
 			logger.info('[ws] transfering req');
 			options.args = {
 				marble_id: data.name,
@@ -70,7 +70,7 @@ module.exports = function (g_options, logger) {
 		}
 
 		// delete marble
-		else if (data.type == 'delete_marble') {
+		else if (data.type === 'delete_marble') {
 			logger.info('[ws] delete marble req');
 			options.args = {
 				marble_id: data.name,
@@ -84,9 +84,21 @@ module.exports = function (g_options, logger) {
 		}
 
 		// get all owners, marbles, & companies
-		else if (data.type == 'read_everything') {
+		else if (data.type === 'read_everything') {
 			logger.info('[ws] read everything req');
 			ws_server.check_for_updates(ws);
+		}
+
+		// get history of marble
+		else if (data.type === 'audit') {
+			logger.info('[ws] audit history');
+			options.args = {
+				id: data.id,
+			};
+			marbles_lib.get_history(options, function (err, resp) {
+				if (err != null) send_err(err, resp);
+				else options.ws.send(JSON.stringify({ msg: 'history', data: resp }));
+			});
 		}
 
 
