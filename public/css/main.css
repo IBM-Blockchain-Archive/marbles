@@ -47,7 +47,7 @@ table {
   border-spacing: 0; }
 
 html {
-  min-height: 100%;
+  height: 100%;
   position: relative;
   min-width: 350px; }
 
@@ -551,16 +551,6 @@ strong {
   font-size: 12px;
   font-weight: bold;
   color: #646B73; }
-
-#viewBCWrap {
-  color: #fff;
-  padding: 22px;
-  background: #222832;
-  font-size: 12px;
-  cursor: pointer;
-  width: 180px;
-  text-align: center;
-  margin-left: 25px; }
 
 #footerWrap {
   height: 235px;
@@ -1073,6 +1063,114 @@ strong {
   animation-name: bounce;
   animation-duration: 2s;
   animation-iteration-count: infinite; }
+
+#auditWrap {
+  position: absolute;
+  bottom: 60px;
+  border-top: #646B73 solid 1px;
+  width: 100%;
+  border: 1px #fff solid;
+  border-left: 0;
+  border-right: 0;
+  background: #646B73;
+  color: #fff; }
+
+#auditLegend {
+  color: #E5EBEF;
+  padding: 0 0 10px 0;
+  bottom: 13px;
+  font-size: 18px; }
+
+#auditContentWrap {
+  display: none;
+  padding: 10px;
+  max-height: 210px;
+  min-height: 145px;
+  overflow-x: hidden;
+  overflow-y: auto; }
+
+#marbleIdWrap {
+  font-size: 12px;
+  margin-bottom: 15px; }
+
+#auditHandle {
+  width: 50px;
+  background: #fff;
+  position: absolute;
+  left: 48.5%;
+  top: -16px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  color: #000;
+  text-align: center;
+  cursor: pointer; }
+
+.txHistoryWrap {
+  display: inline-block;
+  vertical-align: bottom;
+  width: calc(99% - 175px);
+  margin-left: 175px; }
+
+.leftTxWrap {
+  width: 175px;
+  display: inline-block;
+  vertical-align: top;
+  text-align: center;
+  position: fixed; }
+
+.biggerLeft {
+  margin-bottom: 50px; }
+
+.txDetails {
+  position: relative;
+  vertical-align: bottom;
+  font-size: 14px;
+  display: inline-block;
+  margin-left: 20px;
+  padding-right: 20px;
+  border-right: 2px #fff solid;
+  height: 96px;
+  left: 100%;
+  margin-top: 5px; }
+
+.marbleLegend {
+  width: 85px;
+  display: inline-block;
+  font-weight: 700; }
+
+.marbleName {
+  display: inline-block;
+  margin-left: 10px; }
+
+.txId, .marbleName {
+  background: #343D48;
+  font-size: 12px;
+  font-family: monospace;
+  padding: 3px 10px; }
+
+.txCount {
+  text-align: center;
+  margin-bottom: 10px; }
+
+#marbleIdWrap {
+  font-weight: 700; }
+
+.auditMarble {
+  line-height: 75px;
+  font-size: 30px;
+  text-align: center;
+  margin: 0;
+  padding: 0; }
+
+.auditMarble:hover {
+  border-color: transparent;
+  cursor: default; }
+
+.auditHint {
+  font-size: 20px;
+  font-weight: 100;
+  color: #a1a7ad;
+  margin-top: 55px; }
 
 #blockWrap {
   position: relative;

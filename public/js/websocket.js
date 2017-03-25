@@ -1,6 +1,6 @@
 /* global new_block, $, document, WebSocket, escapeHtml, ws:true, start_up:true, known_companies:true, autoCloseNoticePanel:true */
 /* global show_start_up_step, build_notification, build_user_panels, build_company_panel, populate_users_marbles, show_tx_step*/
-/* global getRandomInt, block_ui_delay:true*/
+/* global getRandomInt, block_ui_delay:true, build_a_tx*/
 /* exported transfer_marble, record_company, connect_to_server, refreshHomePanel*/
 
 var getEverythingWatchdog = null;
@@ -16,7 +16,7 @@ function connect_to_server() {
 
 	function connect() {
 		var wsUri = null;
-		if(document.location.protocol === 'https:') {
+		if (document.location.protocol === 'https:') {
 			wsTxt = '[wss]';
 			wsUri = 'wss://' + document.location.hostname + ':' + document.location.port;
 		} else {
@@ -78,7 +78,7 @@ function connect_to_server() {
 			// block
 			else if (msgObj.msg === 'block') {
 				console.log(wsTxt + ' rec', msgObj.msg, ': ledger blockheight', msgObj.block_height);
-				if(msgObj.block_delay) block_ui_delay = msgObj.block_delay * 2;				// should be longer than block delay
+				if (msgObj.block_delay) block_ui_delay = msgObj.block_delay * 2;				// should be longer than block delay
 				new_block(msgObj.block_height);												// send to blockchain.js
 			}
 
@@ -125,6 +125,29 @@ function connect_to_server() {
 			else if (msgObj.msg === 'tx_step') {
 				console.log(wsTxt + ' rec', msgObj.msg, msgObj);
 				show_tx_step(msgObj);
+			}
+
+			//tx history
+			else if (msgObj.msg === 'history') {
+				console.log(wsTxt + ' rec', msgObj.msg, msgObj);
+				$('.txHistoryWrap').html('');					//clear
+				fixCss();
+				var built = 0;
+				/*var showMax = 12;
+				for (var x in msgObj.data.parsed) {
+					if(msgObj.data.parsed.length > showMax) {
+						var firstValid = msgObj.data.parsed.length - showMax;
+						if(x < firstValid) {
+							continue;
+						}
+					}
+					built++;
+					slowBuildtx(msgObj.data.parsed[x], x, built);
+				}*/
+				for (var x=msgObj.data.parsed.length-1; x >= 0; x--) {
+					built++;
+					slowBuildtx(msgObj.data.parsed[x], x, built);
+				}
 			}
 
 			//unknown
@@ -248,4 +271,22 @@ function clear_trash() {
 	setTimeout(function () {
 		$('#trashbin .ball').remove();
 	}, 500);
+}
+
+// delay build each transaction
+function slowBuildtx(data, txNumber, built){
+	setTimeout(function () {
+		var html = build_a_tx(data, txNumber);
+		$('.txHistoryWrap').append(html);
+		$('.txDetails:last').animate({ opacity: 1, left: 0 }, 600, function () {
+			//after animate
+		});
+		fixCss();
+	}, (built * 300));
+}
+
+function fixCss() {
+	var height = $('#auditContentWrap').height();
+	if(height >= 150) $('.leftTxWrap').css('margin-top', '35px');
+	else $('.leftTxWrap').css('margin-top', 0);
 }

@@ -1,5 +1,5 @@
 /* global $, window, document */
-/* global randStr, toTitleCase, connect_to_server, refreshHomePanel, closeNoticePanel, openNoticePanel, show_tx_step*/
+/* global randStr, toTitleCase, connect_to_server, refreshHomePanel, closeNoticePanel, openNoticePanel, show_tx_step, marbles*/
 /* exported record_company, autoCloseNoticePanel, start_up, block_ui_delay*/
 var ws = {};
 var bgcolors = ['whitebg', 'blackbg', 'redbg', 'greenbg', 'bluebg', 'purplebg', 'pinkbg', 'orangebg', 'yellowbg'];
@@ -214,14 +214,42 @@ $(document).on('ready', function () {
 
 	//right click opens audit on marble
 	$(document).on('contextmenu', '.ball', function () {
-		var id = $(this).attr('id');
-		console.log('user clicked on marble', id);
-		var obj = {
-			type: 'audit',
-			id: id
-		};
-		ws.send(JSON.stringify(obj));
+		auditMarble(this, true);
 		return false;
+	});
+
+	//left click audits marble
+	$(document).on('click', '.ball', function () {
+		auditMarble(this, false);
+	});
+
+	function auditMarble(that, open){
+		var id = $(that).attr('id');
+		console.log('user clicked on marble', id);
+		if(open || $('#auditContentWrap').is(':visible')) {
+			$('#auditContentWrap').fadeIn();
+			$('#marbleId').html(id);
+			var color = marbles[id].color;
+			for (var i in bgcolors) $('.auditMarble').removeClass(bgcolors[i]);		//reset
+			$('.auditMarble').addClass(color.toLowerCase() + 'bg');
+
+			var obj = {
+				type: 'audit',
+				id: id
+			};
+			ws.send(JSON.stringify(obj));
+		}
+	}
+
+	$('#auditHandle').click(function(){
+		if ($('#auditContentWrap').is(':visible')) {
+			$('#auditContentWrap').fadeOut(300);
+			$('#auditHandle').children().removeClass('fa-angle-down').addClass('fa-angle-up');
+		}
+		else {
+			$('#auditContentWrap').fadeIn(300);
+			$('#auditHandle').children().removeClass('fa-angle-up').addClass('fa-angle-down');
+		}
 	});
 });
 

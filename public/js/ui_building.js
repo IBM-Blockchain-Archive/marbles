@@ -1,6 +1,9 @@
 /* global bag, $, ws*/
 /* global escapeHtml, toTitleCase, formatDate, known_companies, transfer_marble, record_company, show_tx_step, refreshHomePanel*/
 /* exported build_marble, record_company, build_user_panels, build_company_panel, build_notification, populate_users_marbles*/
+/* exported build_a_tx, marbles */
+
+var marbles = {};
 
 // =================================================================================
 //	UI Building
@@ -10,6 +13,8 @@ function build_marble(marble) {
 	var html = '';
 	var colorClass = '';
 	var size = 'largeMarble';
+
+	marbles[marble.name] = marble;
 
 	marble.name = escapeHtml(marble.name);
 	marble.color = escapeHtml(marble.color);
@@ -114,6 +119,22 @@ function build_user_panels(data) {
 				});
 			}
 
+			//  ------------ Audit Marble ------------ //
+			else if ($(event.target).attr('id') === 'auditContentWrap') {
+				console.log('audit marble', marble_id);
+				return false;
+				/*show_tx_step({ state: 'building_proposal' }, function () {
+					var obj = {
+						type: 'delete_marble',
+						name: marble_id,
+						v: 1
+					};
+					ws.send(JSON.stringify(obj));
+					$(ui.draggable).addClass('invalid bounce');
+					refreshHomePanel();
+				});*/
+			}
+
 			//  ------------ Transfer Marble ------------ //
 			else {
 				var dragged_user = $(ui.draggable).attr('username').toLowerCase();
@@ -182,5 +203,28 @@ function build_notification(error, msg) {
 	html += '<span>' + escapeHtml(msg) + '</span>';
 	html += '<span class="fa fa-close closeNotification"></span>';
 	html += '</div>';
+	return html;
+}
+
+
+//build a tx history div
+function build_a_tx(data, pos) {
+	var html = '';
+	
+	html += '<div class="txDetails">';
+	html +=		'<div class="txCount">TX ' + (Number(pos) + 1) + '</div>';
+	html +=		'<p>';
+	html +=			'<div class="marbleLegend">Transaction: </div>';
+	html +=			'<div class="marbleName txId">' + data.TxId.substring(0, 14) + '...</div>';
+	html +=		'</p>';
+	html +=		'<p>';
+	html +=			'<div class="marbleLegend">Owner: </div>';
+	html +=			'<div class="marbleName">' + data.Value.owner.username + '</div>';
+	html +=		'</p>';
+	html +=		'<p>';
+	html +=			'<div class="marbleLegend">Company: </div>';
+	html +=			'<div class="marbleName">' + data.Value.owner.company  + '</div>';
+	html +=		'</p>';
+	html +=	'</div>';
 	return html;
 }
