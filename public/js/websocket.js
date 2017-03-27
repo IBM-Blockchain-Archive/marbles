@@ -141,15 +141,6 @@ function connect_to_server() {
 				var built = 0;
 				var x = 0;
 				var count = $('.txDetails').length;
-				//var reset = false;
-
-				/*console.log('! debug', msgObj.data.parsed[0].Value.name, auditingMarble.name);
-				if(!auditingMarble || msgObj.data.parsed[0].Value.name !=  auditingMarble.name) {//different marble than before!
-					console.log('its a differnt marble');
-					reset = true;
-				} else {
-					console.log('its the same marble');
-				}*/
 
 				if (count <= 0) {									//if no tx shown yet, append to back
 					$('.txHistoryWrap').html('');					//clear
@@ -160,7 +151,7 @@ function connect_to_server() {
 					}
 
 				} else {											//if we already showing tx, prepend to front
-					console.log('\nskipping tx', count);
+					console.log('skipping tx', count);
 					for (x=msgObj.data.parsed.length-1; x >= count; x--) {
 						var html = build_a_tx(msgObj.data.parsed[x], x);
 						$('.txHistoryWrap').prepend(html);

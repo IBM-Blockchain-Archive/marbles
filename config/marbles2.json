@@ -1,6 +1,7 @@
 {
 	"cred_filename": "blockchain_creds2.json",
 	"use_events": false,
+	"keep_alive_secs": 120,
 	"company": "eMarbles",
 	"usernames": [
 		"cliff",

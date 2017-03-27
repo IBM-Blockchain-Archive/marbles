@@ -30,8 +30,8 @@ var logger = new (winston.Logger)({
 
 var more_entropy = randStr(32);
 var helper = require(__dirname + '/utils/helper.js')(process.env.creds_filename, logger);
-var ws_server = require('./utils/websocket_server_side.js')({ block_delay: helper.getBlockDelay() }, logger);
 var fcw = require('./utils/fc_wrangler/index.js')({ block_delay: helper.getBlockDelay() }, logger);
+var ws_server = require('./utils/websocket_server_side.js')({ block_delay: helper.getBlockDelay() }, fcw, logger);
 var host = 'localhost';
 var port = helper.getMarblesPort();
 var wss = {};
@@ -155,15 +155,9 @@ else {
 function setup_marbles_lib() {
 	logger.debug('Setup Marbles Lib...');
 
-	var opts = {
-		block_delay: helper.getBlockDelay(),
-		channel_id: helper.getChannelId(),
-		chaincode_id: helper.getChaincodeId(),
-		event_url: (helper.getEventsSetting()) ? helper.getPeerEventUrl(0) : null,
-		chaincode_version: helper.getChaincodeVersion(),
-	};
+	var opts = helper.makeMarblesLibOptions();
 	marbles_lib = require('./utils/marbles_cc_lib.js')(enrollObj, opts, fcw, logger);
-	ws_server.setup(enrollObj, marbles_lib, wss.broadcast, null);
+	ws_server.setup(wss.broadcast);
 
 	logger.debug('Checking if chaincode is already deployed or not');
 	var options = {
@@ -191,18 +185,7 @@ function setup_marbles_lib() {
 
 //enroll an admin with the CA for this peer/channel
 function enroll_admin(cb) {
-	var user = helper.getUser(0);
-	var options = {
-		channel_id: helper.getChannelId(),
-		uuid: 'marbles-' + helper.getNetworkId() + '-' + helper.getChannelId(),
-		ca_url: helper.getCasUrl(0),
-		orderer_url: helper.getOrderersUrl(0),
-		peer_urls: [helper.getPeersUrl(0)],
-		enroll_id: user.enrollId,
-		enroll_secret: user.enrollSecret,
-		msp_id: helper.getPeersMspId(0)
-	};
-	fcw.enroll(options, function (errCode, obj) {
+	fcw.enroll(helper.makeEnrollmentOptions(0), function (errCode, obj) {
 		if (errCode != null) {
 			logger.error('could not enroll');
 			if (cb) cb(errCode);
@@ -251,13 +234,24 @@ function build_marble_options(username, company) {
 	};
 }
 
+// sanitise marble owner names
+function saferNames(usernames){
+	var ret = [];
+	for(var i in usernames) {
+		var name = usernames[i].replace(/\W+/g, '');								//names should not contain many things...
+		if(name !== '') ret.push(name);
+	}
+	return ret;
+}
+
 //this only runs after we deploy
 function create_assets(build_marbles_users) {
+	build_marbles_users	 = saferNames(build_marbles_users);
 	logger.debug('Creating marble owners and marbles');
 
 	if (build_marbles_users && build_marbles_users.length > 0) {
 		async.eachLimit(build_marbles_users, 1, function (username, user_cb) { 	//iter through each one ONLY ONE! [important]
-			logger.debug('debug 3 - on user', username, Date.now());
+			logger.debug('- creating marble owner: ', username, Date.now());
 
 			// --- Create Each User, Serially --- //
 			pessimistic_create_owner(0, username, function () {
@@ -272,7 +266,6 @@ function create_assets(build_marbles_users) {
 				async.eachLimit(build_marbles_users, 2, function (username, marble_cb) { //iter through each one 
 
 					// --- Create 2 Marbles Serially --- //
-					logger.debug('debug 4 - on user', username, Date.now());
 					create_marbles(username, marble_cb);
 
 				}, function (err) {													//marble owner creation finished

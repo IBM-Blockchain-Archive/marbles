@@ -4,22 +4,44 @@
 //var async = require('async');
 var path = require('path');
 
-module.exports = function (g_options, logger) {
+module.exports = function (g_options, fcw, logger) {
 	var helper = require(path.join(__dirname, './helper.js'))(process.env.creds_filename, logger);
 	var ws_server = {};
-	var chain = null;
 	var broadcast = null;
 	var known_everything = {};
 	var marbles_lib = null;
 	var known_height = 0;
 	var checkPerodically = null;
+	var enrollInterval = null;
 
-	// setup this module
-	ws_server.setup = function (l_chain, l_marbles_lib, l_broadcast, logger) {
-		chain = l_chain;
-		marbles_lib = l_marbles_lib;
+	//--------------------------------------------------------
+	// Setup WS Module
+	//--------------------------------------------------------
+	ws_server.setup = function (l_broadcast) {
 		broadcast = l_broadcast;
-		logger = l_marbles_lib;
+
+		// ---- Enroll Admin ----- //
+		var enroll_options = helper.makeEnrollmentOptions(0);
+		fcw.enroll(enroll_options, function (errCode, enrollObj) {
+			if (errCode != null) {
+				logger.error('could not enroll');
+			} else {
+
+				// ---- Pass Chain Obj to Marbles Lib ----- //
+				var opts = helper.makeMarblesLibOptions();
+				marbles_lib = require(path.join(__dirname, './marbles_cc_lib.js'))(enrollObj, opts, fcw, logger);
+
+				// --- Repeat --- //
+				clearInterval(enrollInterval);
+				enrollInterval = setInterval(function () {					//to avoid REQUEST_TIMEOUT errors we periodically re-enroll
+					fcw.enroll(enroll_options, function (err, enrollObj2) { //think of it as a keep alive, but... not 
+						if (err == null) {
+							marbles_lib = require(path.join(__dirname, './marbles_cc_lib.js'))(enrollObj2, opts, fcw, logger);
+						}
+					});														//this seems to be safe 3/27/2017
+				}, helper.getKeepAliveMs());								//timeout happens at 5 minutes, so this interval should be faster than that
+			}
+		});
 	};
 
 	// process web socket messages
@@ -91,7 +113,7 @@ module.exports = function (g_options, logger) {
 
 		// get history of marble
 		else if (data.type === 'audit') {
-			if(data.marble_id) {
+			if (data.marble_id) {
 				logger.info('[ws] audit history');
 				options.args = {
 					id: data.marble_id,

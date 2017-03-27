@@ -147,7 +147,7 @@ module.exports = function (config_filename, logger) {
 	// get the chaincode id on network
 	helper.getBlockDelay = function () {
 		var ret = getBlockchainField('block_delay');
-		if(!ret || isNaN(ret)) ret = 10000;
+		if (!ret || isNaN(ret)) ret = 10000;
 		return ret;
 	};
 
@@ -178,7 +178,39 @@ module.exports = function (config_filename, logger) {
 		}
 		return false;
 	};
-	
+
+	// get the re-enrollment period in seconds
+	helper.getKeepAliveMs = function () {
+		var sec = getMarblesField('keep_alive_secs');
+		if(!sec) sec = 30;									//default to 30 seconds
+		return (sec * 1000);
+	};
+
+	// build the marbles lib module options
+	helper.makeMarblesLibOptions = function () {
+		return {
+			block_delay: helper.getBlockDelay(),
+			channel_id: helper.getChannelId(),
+			chaincode_id: helper.getChaincodeId(),
+			event_url: (helper.getEventsSetting()) ? helper.getPeerEventUrl(0) : null,
+			chaincode_version: helper.getChaincodeVersion(),
+		};
+	};
+
+	// build the enrollment options
+	helper.makeEnrollmentOptions = function (userIndex) {
+		var user = helper.getUser(userIndex);
+		return {
+			channel_id: helper.getChannelId(),
+			uuid: 'marbles-' + helper.getNetworkId() + '-' + helper.getChannelId(),
+			ca_url: helper.getCasUrl(0),
+			orderer_url: helper.getOrderersUrl(0),
+			peer_urls: [helper.getPeersUrl(0)],
+			enroll_id: user.enrollId,
+			enroll_secret: user.enrollSecret,
+			msp_id: helper.getPeersMspId(0)
+		};
+	};
 
 	// safely retrieve marbles fields
 	function getMarblesField(marbles_field) {

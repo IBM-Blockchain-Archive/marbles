@@ -230,15 +230,13 @@ $(document).on('ready', function () {
 		$('.auditingMarble').removeClass('auditingMarble');
 		$(that).addClass('auditingMarble');
 
-		//console.log('! debug', marbles[marble_id].name, auditingMarble);
 		if(!auditingMarble || marbles[marble_id].name !=  auditingMarble.name) {//different marble than before!
-			//console.log('its a differnt marble');
 			$('.txHistoryWrap').html('');					//clear
 			fixCss();
 		}
 
 		auditingMarble = marbles[marble_id];
-		console.log('user clicked on marble', marble_id);
+		console.log('\nuser clicked on marble', marble_id);
 		if (open || $('#auditContentWrap').is(':visible')) {
 			$('#auditContentWrap').fadeIn();
 			$('#marbleId').html(marble_id);

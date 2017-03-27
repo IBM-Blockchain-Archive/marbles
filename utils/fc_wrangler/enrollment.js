@@ -86,6 +86,7 @@ module.exports = function (logger) {
 			function (err) {
 				logger.error('[fcw] Failed to get enrollment ' + options.uuid, err.stack ? err.stack : err);
 				var formatted = common.format_error_msg(err);
+
 				if (cb) cb(formatted);
 				return;
 			}
