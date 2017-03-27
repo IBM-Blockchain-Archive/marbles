@@ -1,6 +1,6 @@
 {
     "cred_filename": "blockchain_creds1.json",
-    "use_events": false,
+    "use_events": true,
     "keep_alive_secs": 120,
     "company": "United Marbles",
     "usernames": [
