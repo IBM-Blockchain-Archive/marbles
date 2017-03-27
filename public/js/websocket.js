@@ -298,7 +298,7 @@ function slowBuildtx(data, txNumber, built){
 			//after animate
 		});
 		fixCss();
-	}, (built * 300)));
+	}, (built * 150)));
 }
 
 function fixCss() {
