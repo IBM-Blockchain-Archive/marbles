@@ -91,14 +91,16 @@ module.exports = function (g_options, logger) {
 
 		// get history of marble
 		else if (data.type === 'audit') {
-			logger.info('[ws] audit history');
-			options.args = {
-				id: data.id,
-			};
-			marbles_lib.get_history(options, function (err, resp) {
-				if (err != null) send_err(err, resp);
-				else options.ws.send(JSON.stringify({ msg: 'history', data: resp }));
-			});
+			if(data.marble_id) {
+				logger.info('[ws] audit history');
+				options.args = {
+					id: data.marble_id,
+				};
+				marbles_lib.get_history(options, function (err, resp) {
+					if (err != null) send_err(err, resp);
+					else options.ws.send(JSON.stringify({ msg: 'history', data: resp }));
+				});
+			}
 		}
 
 

@@ -1,5 +1,6 @@
 /* global $, window, document */
 /* global randStr, toTitleCase, connect_to_server, refreshHomePanel, closeNoticePanel, openNoticePanel, show_tx_step, marbles*/
+/* global fixCss */
 /* exported record_company, autoCloseNoticePanel, start_up, block_ui_delay*/
 var ws = {};
 var bgcolors = ['whitebg', 'blackbg', 'redbg', 'greenbg', 'bluebg', 'purplebg', 'pinkbg', 'orangebg', 'yellowbg'];
@@ -9,6 +10,7 @@ var start_up = true;
 var lsKey = 'marbles';
 var fromLS = {};
 var block_ui_delay = 15000; 								//default, gets set in ws block msg
+var auditingMarble = null;
 
 // =================================================================================
 // On Load
@@ -223,25 +225,34 @@ $(document).on('ready', function () {
 		auditMarble(this, false);
 	});
 
-	function auditMarble(that, open){
-		var id = $(that).attr('id');
-		console.log('user clicked on marble', id);
-		if(open || $('#auditContentWrap').is(':visible')) {
+	function auditMarble(that, open) {
+		var marble_id = $(that).attr('id');
+
+		//console.log('! debug', marbles[marble_id].name, auditingMarble);
+		if(!auditingMarble || marbles[marble_id].name !=  auditingMarble.name) {//different marble than before!
+			//console.log('its a differnt marble');
+			$('.txHistoryWrap').html('');					//clear
+			fixCss();
+		}
+
+		auditingMarble = marbles[marble_id];
+		console.log('user clicked on marble', marble_id);
+		if (open || $('#auditContentWrap').is(':visible')) {
 			$('#auditContentWrap').fadeIn();
-			$('#marbleId').html(id);
-			var color = marbles[id].color;
+			$('#marbleId').html(marble_id);
+			var color = marbles[marble_id].color;
 			for (var i in bgcolors) $('.auditMarble').removeClass(bgcolors[i]);		//reset
 			$('.auditMarble').addClass(color.toLowerCase() + 'bg');
 
-			var obj = {
+			var obj2 = {
 				type: 'audit',
-				id: id
+				marble_id: marble_id
 			};
-			ws.send(JSON.stringify(obj));
+			ws.send(JSON.stringify(obj2));
 		}
 	}
 
-	$('#auditHandle').click(function(){
+	$('#auditHandle').click(function () {
 		if ($('#auditContentWrap').is(':visible')) {
 			$('#auditContentWrap').fadeOut(300);
 			$('#auditHandle').children().removeClass('fa-angle-down').addClass('fa-angle-up');

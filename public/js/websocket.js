@@ -1,7 +1,7 @@
 /* global new_block, $, document, WebSocket, escapeHtml, ws:true, start_up:true, known_companies:true, autoCloseNoticePanel:true */
 /* global show_start_up_step, build_notification, build_user_panels, build_company_panel, populate_users_marbles, show_tx_step*/
-/* global getRandomInt, block_ui_delay:true, build_a_tx*/
-/* exported transfer_marble, record_company, connect_to_server, refreshHomePanel*/
+/* global getRandomInt, block_ui_delay:true, build_a_tx, auditingMarble*/
+/* exported transfer_marble, record_company, connect_to_server, refreshHomePanel, fixCss*/
 
 var getEverythingWatchdog = null;
 var wsTxt = '[ws]';
@@ -79,7 +79,15 @@ function connect_to_server() {
 			else if (msgObj.msg === 'block') {
 				console.log(wsTxt + ' rec', msgObj.msg, ': ledger blockheight', msgObj.block_height);
 				if (msgObj.block_delay) block_ui_delay = msgObj.block_delay * 2;				// should be longer than block delay
-				new_block(msgObj.block_height);												// send to blockchain.js
+				new_block(msgObj.block_height);													// send to blockchain.js
+				
+				if ($('#auditContentWrap').is(':visible')) {
+					var obj = {
+						type: 'audit',
+						marble_id: auditingMarble.name
+					};
+					ws.send(JSON.stringify(obj));
+				}
 			}
 
 			//marble owners
@@ -130,23 +138,37 @@ function connect_to_server() {
 			//tx history
 			else if (msgObj.msg === 'history') {
 				console.log(wsTxt + ' rec', msgObj.msg, msgObj);
-				$('.txHistoryWrap').html('');					//clear
-				fixCss();
 				var built = 0;
-				/*var showMax = 12;
-				for (var x in msgObj.data.parsed) {
-					if(msgObj.data.parsed.length > showMax) {
-						var firstValid = msgObj.data.parsed.length - showMax;
-						if(x < firstValid) {
-							continue;
-						}
-					}
-					built++;
-					slowBuildtx(msgObj.data.parsed[x], x, built);
+				var x = 0;
+				var count = $('.txDetails').length;
+				//var reset = false;
+
+				/*console.log('! debug', msgObj.data.parsed[0].Value.name, auditingMarble.name);
+				if(!auditingMarble || msgObj.data.parsed[0].Value.name !=  auditingMarble.name) {//different marble than before!
+					console.log('its a differnt marble');
+					reset = true;
+				} else {
+					console.log('its the same marble');
 				}*/
-				for (var x=msgObj.data.parsed.length-1; x >= 0; x--) {
-					built++;
-					slowBuildtx(msgObj.data.parsed[x], x, built);
+
+				if (count <= 0) {									//if no tx shown yet, append to back
+					$('.txHistoryWrap').html('');					//clear
+					fixCss();
+					for (x=msgObj.data.parsed.length-1; x >= 0; x--) {
+						built++;
+						slowBuildtx(msgObj.data.parsed[x], x, built);
+					}
+
+				} else {											//if we already showing tx, prepend to front
+					console.log('\nskipping tx', count);
+					for (x=msgObj.data.parsed.length-1; x >= count; x--) {
+						var html = build_a_tx(msgObj.data.parsed[x], x);
+						$('.txHistoryWrap').prepend(html);
+						$('.txDetails:first').animate({ opacity: 1, left: 0 }, 600, function () {
+							//after animate
+						});
+						fixCss();
+					}
 				}
 			}
 
