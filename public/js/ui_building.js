@@ -1,5 +1,5 @@
 /* global bag, $, ws*/
-/* global escapeHtml, toTitleCase, formatDate, known_companies, transfer_marble, record_company, show_tx_step, refreshHomePanel*/
+/* global escapeHtml, toTitleCase, formatDate, known_companies, transfer_marble, record_company, show_tx_step, refreshHomePanel, auditingMarble*/
 /* exported build_marble, record_company, build_user_panels, build_company_panel, build_notification, populate_users_marbles*/
 /* exported build_a_tx, marbles */
 
@@ -13,6 +13,7 @@ function build_marble(marble) {
 	var html = '';
 	var colorClass = '';
 	var size = 'largeMarble';
+	var auditing = '';
 
 	marbles[marble.name] = marble;
 
@@ -26,7 +27,9 @@ function build_marble(marble) {
 	if (marble.size == 16) size = 'smallMarble';
 	if (marble.color) colorClass = marble.color.toLowerCase() + 'bg';
 
-	html += '<span id="' + marble.name + '" class="ball ' + size + ' ' + colorClass + ' title="' + marble.name + '"';
+	if(auditingMarble && marble.name ===  auditingMarble.name) auditing = 'auditingMarble';
+
+	html += '<span id="' + marble.name + '" class="ball ' + size + ' ' + colorClass + ' ' + auditing + ' title="' + marble.name + '"';
 	html += ' username="' + marble.owner.username + '" company="' + marble.owner.company + '"></span>';
 
 	$('.marblesWrap[full_owner="' + full_owner + '"]').find('.innerMarbleWrap').prepend(html);
@@ -210,7 +213,13 @@ function build_notification(error, msg) {
 //build a tx history div
 function build_a_tx(data, pos) {
 	var html = '';
-	
+	var username = '-';
+	var company = '-';
+	if(data &&  data.Value && data.Value.owner) {
+		username = data.Value.owner.username;
+		company = data.Value.owner.company;
+	}
+
 	html += '<div class="txDetails">';
 	html +=		'<div class="txCount">TX ' + (Number(pos) + 1) + '</div>';
 	html +=		'<p>';
@@ -219,11 +228,11 @@ function build_a_tx(data, pos) {
 	html +=		'</p>';
 	html +=		'<p>';
 	html +=			'<div class="marbleLegend">Owner: </div>';
-	html +=			'<div class="marbleName">' + data.Value.owner.username + '</div>';
+	html +=			'<div class="marbleName">' + username + '</div>';
 	html +=		'</p>';
 	html +=		'<p>';
 	html +=			'<div class="marbleLegend">Company: </div>';
-	html +=			'<div class="marbleName">' + data.Value.owner.company  + '</div>';
+	html +=			'<div class="marbleName">' + company  + '</div>';
 	html +=		'</p>';
 	html +=	'</div>';
 	return html;

@@ -1128,7 +1128,6 @@ strong {
   display: inline-block;
   margin-left: 20px;
   padding-right: 20px;
-  border-right: 2px #fff solid;
   height: 96px;
   left: 100%;
   margin-top: 5px; }
@@ -1171,6 +1170,9 @@ strong {
   font-weight: 100;
   color: #a1a7ad;
   margin-top: 55px; }
+
+.auditingMarble {
+  border-color: #2EB9D6; }
 
 #blockWrap {
   position: relative;

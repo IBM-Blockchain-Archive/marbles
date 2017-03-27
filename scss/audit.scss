@@ -67,7 +67,7 @@ $left_width: 175px;
 	display: inline-block;
 	margin-left: 20px;
 	padding-right: 20px;
-	border-right: 2px #fff solid;
+	//border-right: 2px #fff solid;
 	height: 96px;
 	left: 100%;
 	margin-top: 5px;
@@ -114,4 +114,8 @@ $left_width: 175px;
 	font-weight: 100;
 	color: #a1a7ad;
 	margin-top: 55px;
+}
+
+.auditingMarble{
+	border-color: $hi_color2;
 }

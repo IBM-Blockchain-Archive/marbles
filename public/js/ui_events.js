@@ -227,6 +227,8 @@ $(document).on('ready', function () {
 
 	function auditMarble(that, open) {
 		var marble_id = $(that).attr('id');
+		$('.auditingMarble').removeClass('auditingMarble');
+		$(that).addClass('auditingMarble');
 
 		//console.log('! debug', marbles[marble_id].name, auditingMarble);
 		if(!auditingMarble || marbles[marble_id].name !=  auditingMarble.name) {//different marble than before!
@@ -256,6 +258,11 @@ $(document).on('ready', function () {
 		if ($('#auditContentWrap').is(':visible')) {
 			$('#auditContentWrap').fadeOut(300);
 			$('#auditHandle').children().removeClass('fa-angle-down').addClass('fa-angle-up');
+
+			$('.auditingMarble').removeClass('auditingMarble');		//reset
+			$('.txHistoryWrap').html('');							//clear
+			fixCss();
+			auditingMarble = null;
 		}
 		else {
 			$('#auditContentWrap').fadeIn(300);
