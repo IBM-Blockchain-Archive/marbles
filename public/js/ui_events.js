@@ -228,20 +228,21 @@ $(document).on('ready', function () {
 	function auditMarble(that, open) {
 		var marble_id = $(that).attr('id');
 		$('.auditingMarble').removeClass('auditingMarble');
-		$(that).addClass('auditingMarble');
 
 		if(!auditingMarble || marbles[marble_id].name !=  auditingMarble.name) {//different marble than before!
-			$('.txHistoryWrap').html('');					//clear
+			$('.txHistoryWrap').html('');//clear
 			fixCss();
 		}
 
 		auditingMarble = marbles[marble_id];
 		console.log('\nuser clicked on marble', marble_id);
+
 		if (open || $('#auditContentWrap').is(':visible')) {
+			$(that).addClass('auditingMarble');
 			$('#auditContentWrap').fadeIn();
 			$('#marbleId').html(marble_id);
 			var color = marbles[marble_id].color;
-			for (var i in bgcolors) $('.auditMarble').removeClass(bgcolors[i]);		//reset
+			for (var i in bgcolors) $('.auditMarble').removeClass(bgcolors[i]);	//reset
 			$('.auditMarble').addClass(color.toLowerCase() + 'bg');
 
 			var obj2 = {
@@ -257,8 +258,9 @@ $(document).on('ready', function () {
 			$('#auditContentWrap').fadeOut(300);
 			$('#auditHandle').children().removeClass('fa-angle-down').addClass('fa-angle-up');
 
-			$('.auditingMarble').removeClass('auditingMarble');		//reset
-			$('.txHistoryWrap').html('');							//clear
+			$('.auditingMarble').removeClass('auditingMarble');												//reset
+			$('.txHistoryWrap').html('<div class="auditHint">Click a Marble to Audit Its Transactions</div>');//clear
+			$('#marbleId').html('-');
 			fixCss();
 			auditingMarble = null;
 		}
