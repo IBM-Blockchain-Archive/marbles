@@ -132,16 +132,15 @@ if (hash === helper.getHash()) {
 	logger.debug('Detected that we have launched successfully before');
 	logger.debug('Welcome back - Initiating start up\n\n');
 	process.env.app_first_setup = 'no';
-	enroll_admin(function (e) {
+	enroll_admin(1, function (e) {
 		if (e == null) {
 			setup_marbles_lib();
 		}
 	});
 }
 else {
-	var temp = helper.makeEnrollmentOptions(0);
 	try {
-		rmdir(path.join(os.homedir(), '.hfc-key-store/', temp.uuid));						//delete old kvs folder
+		rmdir(makeKVSpath());							//delete old kvs folder
 	} catch (e) {
 		logger.error('could not delete old kvs', e);
 	}
@@ -151,6 +150,7 @@ else {
 	console.log('');
 	logger.debug('Detected that we have NOT launched successfully yet');
 	logger.debug('Open your browser to http://' + host + ':' + port + ' and login as "admin" to initiate startup\n\n');
+	// we wait here for the user to go the browser, then setup_marbles_lib() will be called from WS msg
 }
 // -------------------------------------------------------------------
 
@@ -186,11 +186,24 @@ function setup_marbles_lib() {
 }
 
 //enroll an admin with the CA for this peer/channel
-function enroll_admin(cb) {
+function enroll_admin(attempt, cb) {
 	fcw.enroll(helper.makeEnrollmentOptions(0), function (errCode, obj) {
 		if (errCode != null) {
-			logger.error('could not enroll');
-			if (cb) cb(errCode);
+			logger.error('could not enroll...');
+
+			// --- Try Again ---  //
+			if (attempt >= 2) {
+				if (cb) cb(errCode);
+			} else {
+				try {
+					logger.warn('removing older kvs and trying to enroll again');
+					rmdir(makeKVSpath());				//delete old kvs folder
+					logger.warn('removed older kvs');
+					enroll_admin(++attempt, cb);
+				} catch (e) {
+					logger.error('could not delete old kvs', e);
+				}
+			}
 		} else {
 			enrollObj = obj;
 			if (cb) cb(null);
@@ -383,6 +396,12 @@ function rmdir(dir_path) {
 	}
 }
 
+// make the path to the kvs we use
+function makeKVSpath() {
+	var temp = helper.makeEnrollmentOptions(0);
+	return path.join(os.homedir(), '.hfc-key-store/', temp.uuid);
+}
+
 // ============================================================================================================================
 // 												WebSocket Communication Madness
 // ============================================================================================================================
@@ -407,7 +426,7 @@ function setupWebSocket() {
 				//enroll admin
 				if (data.configure === 'enrollment') {
 					helper.write(data);										//write new config data to file
-					enroll_admin(function (e) {
+					enroll_admin(1, function (e) {
 						if (e == null) {
 							setup_marbles_lib();
 						}
@@ -417,7 +436,7 @@ function setupWebSocket() {
 				//find deployed chaincode
 				else if (data.configure === 'find_chaincode') {
 					helper.write(data);										//write new config data to file
-					enroll_admin(function (e) {								//re-renroll b/c we may be using new peer/order urls
+					enroll_admin(1, function (e) {							//re-renroll b/c we may be using new peer/order urls
 						if (e == null) {
 							setup_marbles_lib();
 						}
