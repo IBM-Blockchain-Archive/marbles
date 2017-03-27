@@ -1215,7 +1215,10 @@ strong {
   position: relative;
   left: -26px;
   bottom: 13px;
-  font-size: 18px; }
+  font-size: 18px;
+  background: #222832;
+  z-index: 9;
+  width: 66px; }
 
 .tooltip {
   position: relative;

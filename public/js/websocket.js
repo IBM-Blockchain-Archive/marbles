@@ -1,11 +1,12 @@
 /* global new_block, $, document, WebSocket, escapeHtml, ws:true, start_up:true, known_companies:true, autoCloseNoticePanel:true */
 /* global show_start_up_step, build_notification, build_user_panels, build_company_panel, populate_users_marbles, show_tx_step*/
 /* global getRandomInt, block_ui_delay:true, build_a_tx, auditingMarble*/
-/* exported transfer_marble, record_company, connect_to_server, refreshHomePanel, fixCss*/
+/* exported transfer_marble, record_company, connect_to_server, refreshHomePanel, fixCss, pendingTxDrawing*/
 
 var getEverythingWatchdog = null;
 var wsTxt = '[ws]';
 var pendingTransaction = null;
+var pendingTxDrawing = [];
 
 // =================================================================================
 // Socket Stuff
@@ -141,6 +142,8 @@ function connect_to_server() {
 				var built = 0;
 				var x = 0;
 				var count = $('.txDetails').length;
+
+				for(x in pendingTxDrawing) clearTimeout(pendingTxDrawing[x]);
 
 				if (count <= 0) {									//if no tx shown yet, append to back
 					$('.txHistoryWrap').html('');					//clear
@@ -288,14 +291,14 @@ function clear_trash() {
 
 // delay build each transaction
 function slowBuildtx(data, txNumber, built){
-	setTimeout(function () {
+	pendingTxDrawing.push(setTimeout(function () {
 		var html = build_a_tx(data, txNumber);
 		$('.txHistoryWrap').append(html);
 		$('.txDetails:last').animate({ opacity: 1, left: 0 }, 600, function () {
 			//after animate
 		});
 		fixCss();
-	}, (built * 300));
+	}, (built * 300)));
 }
 
 function fixCss() {

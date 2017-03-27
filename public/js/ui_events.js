@@ -1,6 +1,6 @@
 /* global $, window, document */
 /* global randStr, toTitleCase, connect_to_server, refreshHomePanel, closeNoticePanel, openNoticePanel, show_tx_step, marbles*/
-/* global fixCss */
+/* global fixCss, pendingTxDrawing:true */
 /* exported record_company, autoCloseNoticePanel, start_up, block_ui_delay*/
 var ws = {};
 var bgcolors = ['whitebg', 'blackbg', 'redbg', 'greenbg', 'bluebg', 'purplebg', 'pinkbg', 'orangebg', 'yellowbg'];
@@ -230,7 +230,8 @@ $(document).on('ready', function () {
 		$('.auditingMarble').removeClass('auditingMarble');
 
 		if(!auditingMarble || marbles[marble_id].name !=  auditingMarble.name) {//different marble than before!
-			$('.txHistoryWrap').html('');//clear
+			for(var x in pendingTxDrawing) clearTimeout(pendingTxDrawing[x]);
+			$('.txHistoryWrap').html('');										//clear
 			fixCss();
 		}
 

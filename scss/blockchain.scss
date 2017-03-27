@@ -44,6 +44,9 @@ $block_size: 32px;
 	left: -26px;
 	bottom: 13px;
 	font-size: 18px;
+	background: $acc_color1;
+	z-index: 9;
+	width: 66px;
 }
 
 .tooltip {

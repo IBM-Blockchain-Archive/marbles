@@ -67,7 +67,9 @@ function build_block(id) {										//build and append the block html
 
 function move_on_down() {										//move the blocks left
 	if (uiBlocksCount > 10) {
-		$('.block:first').animate({ opacity: 0 }, 800, function () { $('.block:first').remove(); });
+		$('.block:first').animate({ opacity: 0 }, 800, function () { 
+			$('.block:first').remove(); 
+		});
 		$('.block').animate({ left: '-=' + block_left_px }, 800, function () { });
 		uiBlocksCount--;
 
