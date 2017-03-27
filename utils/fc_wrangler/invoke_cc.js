@@ -71,43 +71,50 @@ module.exports = function (g_options, logger) {
 				// Call optional order hook
 				if (options.ordered_hook) options.ordered_hook(null, request.txId.toString());
 
-
-				// ------- Use Event for Tx Confirmation ------- //
+				// ------- [A] Use Event for Tx Confirmation ------- // option A
 				if (options.event_url) {
+					try {
+						// Watchdog for no block event
+						var watchdog = setTimeout(() => {
+							logger.error('[fcw] Failed to receive block event within the timeout period');
 
-					// Watchdog for no block event
-					var watchdog = setTimeout(() => {
-						logger.error('[fcw] Failed to receive block event within the timeout period');
+							if (cb && !cbCalled) {
+								cbCalled = true;
+								return cb(null);						//timeout pass it back
+							}
+							else return;
+						}, g_options.block_delay + 2000);
 
+						// Wait for tx committed event
+						eventhub.registerTxEvent(request.txId.toString(), (tx, code) => {
+							logger.info('[fcw] The chaincode transaction has been committed, success:', code);
+							clearTimeout(watchdog);
+
+							if (code !== 'VALID') {
+								if (cb && !cbCalled) {
+									cbCalled = true;
+									return cb(code);					//pass error back
+								}
+								else return;
+							} else {
+								if (cb && !cbCalled) {
+									cbCalled = true;
+									return cb(null);					//all good, pass it back
+								}
+								else return;
+							}
+						});
+					} catch (e) {
+						logger.error('[fcw] Illusive event error: ', e);//not sure why this happens, seems rare 3/27/2017
 						if (cb && !cbCalled) {
 							cbCalled = true;
-							return cb(null);					//timeout pass it back
+							return cb(e);								//all terrible, pass it back
 						}
 						else return;
-					}, g_options.block_delay + 2000);
+					}
 
-					// Wait for tx committed event
-					eventhub.registerTxEvent(request.txId.toString(), (tx, code) => {
-						logger.info('[fcw] The chaincode transaction has been committed, success:', code);
-						clearTimeout(watchdog);
-
-						if (code !== 'VALID') {
-							if (cb && !cbCalled) {
-								cbCalled = true;
-								return cb(code);				//pass error back
-							}
-							else return;
-						} else {
-							if (cb && !cbCalled) {
-								cbCalled = true;
-								return cb(null);				//all good, pass it back
-							}
-							else return;
-						}
-					});
+				// ------- [B] Wait xxxx ms for Block  ------- // option B
 				} else {
-
-					// ------- Wait xxxx ms for Block  ------- //
 					setTimeout(function () {
 						if (cb) return cb(null);
 						else return;
@@ -115,7 +122,7 @@ module.exports = function (g_options, logger) {
 				}
 			}
 
-			// No good
+			// ordering failed, No good
 			else {
 				if (options.ordered_hook) options.ordered_hook('failed');
 				logger.error('[fcw] Failed to order the transaction. Error code: ', response);
