@@ -256,17 +256,19 @@ $(document).on('ready', function () {
 
 	$('#auditHandle').click(function () {
 		if ($('#auditContentWrap').is(':visible')) {
-			$('#auditContentWrap').fadeOut(300);
-			$('#auditHandle').children().removeClass('fa-angle-down').addClass('fa-angle-up');
-
+			$('#auditContentWrap').slideUp(500);
 			$('.auditingMarble').removeClass('auditingMarble');												//reset
-			$('.txHistoryWrap').html('<div class="auditHint">Click a Marble to Audit Its Transactions</div>');//clear
+			for(var x in pendingTxDrawing) clearTimeout(pendingTxDrawing[x]);
+			setTimeout(function(){
+				$('.txHistoryWrap').html('<div class="auditHint">Click a Marble to Audit Its Transactions</div>');//clear
+			}, 750);
 			$('#marbleId').html('-');
 			fixCss();
 			auditingMarble = null;
 		}
 		else {
-			$('#auditContentWrap').fadeIn(300);
+			//$('#auditContentWrap').fadeIn(300);
+			$('#auditContentWrap').slideDown();
 			$('#auditHandle').children().removeClass('fa-angle-up').addClass('fa-angle-down');
 		}
 	});
