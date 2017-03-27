@@ -17,6 +17,8 @@ var http = require('http');
 var app = express();
 var cors = require('cors');
 var async = require('async');
+var fs = require('fs');
+var os = require('os');
 var ws = require('ws');											//websocket module 
 var winston = require('winston');								//logginer module
 
@@ -27,7 +29,6 @@ var logger = new (winston.Logger)({
 		new (winston.transports.Console)({ colorize: true }),
 	]
 });
-
 var more_entropy = randStr(32);
 var helper = require(__dirname + '/utils/helper.js')(process.env.creds_filename, logger);
 var fcw = require('./utils/fc_wrangler/index.js')({ block_delay: helper.getBlockDelay() }, logger);
@@ -35,6 +36,8 @@ var ws_server = require('./utils/websocket_server_side.js')({ block_delay: helpe
 var host = 'localhost';
 var port = helper.getMarblesPort();
 var wss = {};
+var enrollObj = null;
+var marbles_lib = null;
 process.env.marble_company = helper.getCompanyName();
 
 // ------------- Bluemix Detection ------------- //
@@ -115,12 +118,6 @@ else logger.debug('Running using Developer settings');
 // 														Work Area
 // ============================================================================================================================
 
-// ==================================
-// Set up the blockchain sdk
-// ==================================
-var enrollObj = null;
-var marbles_lib = null;
-
 // -------------------------------------------------------------------
 // Life Starts Here!
 // -------------------------------------------------------------------
@@ -129,7 +126,6 @@ process.env.app_first_setup = 'yes';
 setupWebSocket();
 
 var hash = helper.getMarbleStartUpHash();
-logger.debug('what is what', hash, helper.getHash());
 if (hash === helper.getHash()) {
 	console.log('');
 	console.log('');
@@ -143,6 +139,13 @@ if (hash === helper.getHash()) {
 	});
 }
 else {
+	var temp = helper.makeEnrollmentOptions(0);
+	try {
+		rmdir(path.join(os.homedir(), '.hfc-key-store/', temp.uuid));						//delete old kvs folder
+	} catch (e) {
+		logger.error('could not delete old kvs', e);
+	}
+
 	process.env.app_state = 'start_waiting';
 	process.env.app_first_setup = 'yes';
 	console.log('');
@@ -172,7 +175,6 @@ function setup_marbles_lib() {
 			broadcast_state('no_chaincode');
 		}
 		else {													//else we already deployed
-
 			console.log('\n------------------------------------------ Chaincode Found ------------------------------------------\n');
 			broadcast_state('found_chaincode');
 
@@ -235,18 +237,18 @@ function build_marble_options(username, company) {
 }
 
 // sanitise marble owner names
-function saferNames(usernames){
+function saferNames(usernames) {
 	var ret = [];
-	for(var i in usernames) {
+	for (var i in usernames) {
 		var name = usernames[i].replace(/\W+/g, '');								//names should not contain many things...
-		if(name !== '') ret.push(name);
+		if (name !== '') ret.push(name);
 	}
 	return ret;
 }
 
 //this only runs after we deploy
 function create_assets(build_marbles_users) {
-	build_marbles_users	 = saferNames(build_marbles_users);
+	build_marbles_users = saferNames(build_marbles_users);
 	logger.debug('Creating marble owners and marbles');
 
 	if (build_marbles_users && build_marbles_users.length > 0) {
@@ -292,7 +294,6 @@ function pessimistic_create_owner(attempt, username, cb) {
 			owners_company: process.env.marble_company
 		}
 	};
-
 	marbles_lib.register_owner(options, function (e) {
 
 		// --- Does the user exist yet? --- //
@@ -366,6 +367,21 @@ function broadcast_state(new_state) {
 	wss.broadcast(build_state_msg());											//tell client our app state
 }
 
+// remove any kvs from last run
+function rmdir(dir_path) {
+	if (fs.existsSync(dir_path)) {
+		fs.readdirSync(dir_path).forEach(function (entry) {
+			var entry_path = path.join(dir_path, entry);
+			if (fs.lstatSync(entry_path).isDirectory()) {
+				rmdir(entry_path);
+			}
+			else {
+				fs.unlinkSync(entry_path);
+			}
+		});
+		fs.rmdirSync(dir_path);
+	}
+}
 
 // ============================================================================================================================
 // 												WebSocket Communication Madness
