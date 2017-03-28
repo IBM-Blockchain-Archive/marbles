@@ -1,38 +1,37 @@
 {
-    "credentials": {
-        "network_id": "test",
-        "network_name": "Marbles Tutorial",
-        "orderers": [
-            {
-                "discovery": "grpc://varadvm2.rtp.raleigh.ibm.com:7050",
-                "msp_id": "Org1MSP"
-            }
-        ],
-        "cas": [
-            {
-                "api": "http://varadvm2.rtp.raleigh.ibm.com:7054",
-                "msp_id": "Org1MSP",
-                "users": [
-                    {
-                        "enrollId": "admin",
-                        "enrollSecret": "adminpw"
-                    }
-                ]
-            }
-        ],
-        "peers": [
-            {
-                "name": "fabric-peer-1a",
-                "discovery": "grpc://varadvm2.rtp.raleigh.ibm.com:7051",
-                "events": "grpc://varadvm2.rtp.raleigh.ibm.com:7053",
-                "msp_id": "Org1MSP"
-            }
-        ],
-        "app": {
-            "channel_id": "mychannel",
-            "chaincode_id": "marbles",
-            "chaincode_version": "v0",
+	"credentials": {
+		"network_id": "FakeNetworkId",
+		"orderers": [
+			{
+				"discovery": "grpc://localhost:7050",
+				"msp_id": "Org1MSP"
+			}
+		],
+		"cas": [
+			{
+				"api": "http://localhost:8054",
+				"msp_id": "Org1MSP",
+				"users": [
+					{
+						"enrollId": "admin2",
+						"enrollSecret": "adminpw2"
+					}
+				]
+			}
+		],
+		"peers": [
+			{
+				"name": "fabric-peer-2a",
+				"discovery": "grpc://localhost:8051",
+				"events": "grpc://localhost:8053",
+				"msp_id": "Org1MSP"
+			}
+		],
+		"app": {
+			"channel_id": "mychannel",
+			"chaincode_id": "marbles",
+			"chaincode_version": "v0",
 			"block_delay": 1000
-        }
-    }
+		}
+	}
 }

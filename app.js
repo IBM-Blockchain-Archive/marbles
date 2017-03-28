@@ -105,6 +105,24 @@ console.log('------------------------------------------ Server Up - ' + host + '
 if (process.env.PRODUCTION) logger.debug('Running using Production settings');
 else logger.debug('Running using Developer settings');
 
+if(helper.getNetworkId() === 'FakeNetworkId') {
+	console.log('\n\n');
+	logger.warn('----------------------------------------------------------------------');
+	logger.warn('----------------------------- Hey Buddy! -----------------------------');
+	logger.warn('------------------------ It looks like you did -----------------------');
+	logger.error('------------------------------- not  --------------------------------');
+	logger.warn('------------------------- follow my instructions ---------------------');
+	logger.warn('----------------------------------------------------------------------');
+	logger.warn('Your network config JSON has a network ID of "FakeNetworkID"...');
+	logger.warn('You likely have other settings that are wrong too!');
+	logger.warn('----------------------------------------------------------------------');
+	logger.error('Fix this file: ' + helper.getNetworkCredFileName());
+	logger.warn('It must have credentials/hostnames/ports/channels/etc for YOUR network');
+	logger.warn('How/where would I get that info? Using the Bluemix service? Then look at these instructions(near the end): ');
+	logger.warn('  https://github.com/IBM-Blockchain/marbles/blob/v3.0/docs/install_chaincode.md');
+	logger.warn('----------------------------------------------------------------------');
+	console.log('\n\n');
+}
 
 // ============================================================================================================================
 // 														Warning

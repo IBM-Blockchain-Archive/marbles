@@ -31,6 +31,11 @@ module.exports = function (config_filename, logger) {
 		return helper.creds.credentials.network_id;
 	};
 
+	// get cred file name
+	helper.getNetworkCredFileName = function () {
+		return helper.config.cred_filename;
+	};
+
 	// get a peer's grpc url
 	helper.getPeersUrl = function (index) {
 		if (index === undefined || index == null) {
