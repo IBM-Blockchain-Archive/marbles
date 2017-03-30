@@ -129,10 +129,10 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) 
 	var err error
 	fmt.Println("starting init_marble")
 
-	//   0       1       2     3      4                  5
-	// "asdf", "blue", "35", "bob", "united marbles", "united marbles"
-	if len(args) != 6 {
-		return shim.Error("Incorrect number of arguments. Expecting 6")
+	//   0   ,  1  ,   2  ,         3       ,       4
+	// "blue", "35", "bob", "united marbles", "united marbles"
+	if len(args) != 5 {
+		return shim.Error("Incorrect number of arguments. Expecting 5")
 	}
 
 	//input sanitation
@@ -141,12 +141,12 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) 
 		return shim.Error(err.Error())
 	}
 
-	name := args[0]
-	color := strings.ToLower(args[1])
-	username := strings.ToLower(args[3])
-	company := args[4]
-	authed_by_company := args[5]
-	size, err := strconv.Atoi(args[2])
+	id := "m" + strconv.FormatInt(makeTimestamp(), 10);     //int64, base
+	color := strings.ToLower(args[0])
+	username := strings.ToLower(args[2])
+	company := args[3]
+	authed_by_company := args[4]
+	size, err := strconv.Atoi(args[1])
 	if err != nil {
 		return shim.Error("3rd argument must be a numeric string")
 	}
@@ -157,16 +157,16 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) 
 	}
 
 	//check if marble already exists
-	marble, err := get_marble(stub, name)
+	marble, err := get_marble(stub, id)
 	if err == nil {
-		fmt.Println("This marble already exists - " + name)
+		fmt.Println("This marble already exists - " + id)
 		fmt.Println(marble)
-		return shim.Error("This marble already exists - " + name) //all stop a marble by this name exists
+		return shim.Error("This marble already exists - " + id)  //all stop a marble by this id exists
 	}
 
 	//build the marble json string manually
-	str := `{"docType":"marble",  "name": "` + name + `", "color": "` + color + `", "size": ` + strconv.Itoa(size) + `, "owner": {"username": "` + username + `", "company": "` + company + `"}}`
-	err = stub.PutState(name, []byte(str))                        //store marble with id as key
+	str := `{"docType":"marble",  "name": "` + id + `", "color": "` + color + `", "size": ` + strconv.Itoa(size) + `, "owner": {"username": "` + username + `", "company": "` + company + `"}}`
+	err = stub.PutState(id, []byte(str))                         //store marble with id as key
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -180,10 +180,10 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) 
 
 	//append
 	var fullOwner = build_full_owner(username, company);
-	owner.Marbles = append(owner.Marbles, name)                   //add marble name to index list
+	owner.Marbles = append(owner.Marbles, id)                     //add marble id to index list
 	fmt.Println("! marble index - ", owner.Marbles)
 	jsonAsBytes, _ := json.Marshal(owner)
-	err = stub.PutState(fullOwner, jsonAsBytes)                   //store name of marble
+	err = stub.PutState(fullOwner, jsonAsBytes)                   //store id of marble
 
 	fmt.Println("- end init_marble")
 	return shim.Success(nil)

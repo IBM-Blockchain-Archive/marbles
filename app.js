@@ -258,7 +258,6 @@ function build_marble_options(username, company) {
 	var color_index = simple_hash(more_entropy + company) % colors.length;		//build a psudeo random index to pick a color
 	var size_index = getRandomInt(0, sizes.length);								//build a random size for this marble
 	return {
-		marble_id: randStr(24),
 		color: colors[color_index],
 		size: sizes[size_index],
 		marble_owner: username,

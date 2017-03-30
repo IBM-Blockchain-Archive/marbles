@@ -1,5 +1,5 @@
 /* global $, window, document */
-/* global randStr, toTitleCase, connect_to_server, refreshHomePanel, closeNoticePanel, openNoticePanel, show_tx_step, marbles*/
+/* global toTitleCase, connect_to_server, refreshHomePanel, closeNoticePanel, openNoticePanel, show_tx_step, marbles*/
 /* global fixCss, pendingTxDrawing:true */
 /* exported record_company, autoCloseNoticePanel, start_up, block_ui_delay*/
 var ws = {};
@@ -30,27 +30,25 @@ $(document).on('ready', function () {
 		console.log('creating marble');
 		var obj = {
 			type: 'create',
-			name: 'r' + randStr(23),
 			color: $('.colorSelected').attr('color'),
 			size: $('select[name="size"]').val(),
 			username: $('select[name="user"]').val(),
 			company: $('input[name="company"]').val(),
 			v: 1
 		};
-		if (obj.username && obj.name && obj.color) {
-			console.log('creating marble, sending', obj);
-			$('#createPanel').fadeOut();
-			$('#tint').fadeOut();
+		console.log('creating marble, sending', obj);
+		$('#createPanel').fadeOut();
+		$('#tint').fadeOut();
 
-			show_tx_step({ state: 'building_proposal' }, function () {
-				ws.send(JSON.stringify(obj));
+		show_tx_step({ state: 'building_proposal' }, function () {
+			ws.send(JSON.stringify(obj));
 
-				refreshHomePanel();
-				$('.colorValue').html('Color');											//reset
-				for (var i in bgcolors) $('.createball').removeClass(bgcolors[i]);		//reset
-				$('.createball').css('border', '2px dashed #fff');						//reset
-			});
-		}
+			refreshHomePanel();
+			$('.colorValue').html('Color');											//reset
+			for (var i in bgcolors) $('.createball').removeClass(bgcolors[i]);		//reset
+			$('.createball').css('border', '2px dashed #fff');						//reset
+		});
+		
 		return false;
 	});
 

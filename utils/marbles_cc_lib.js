@@ -51,7 +51,6 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 			ordered_hook: options.ordered_hook,
 			cc_function: 'init_marble',
 			cc_args: [
-				options.args.marble_id,
 				options.args.color,
 				options.args.size,
 				options.args.marble_owner,

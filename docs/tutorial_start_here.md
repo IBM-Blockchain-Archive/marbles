@@ -404,7 +404,6 @@ __/utils/websocket_server_side.js__
         if (data.type == 'create') {
             logger.info('[ws] create marbles req');
             options.args = {
-                marble_id: data.name,
                 color: data.color,
                 size: data.size,
                 marble_owner: data.username,
