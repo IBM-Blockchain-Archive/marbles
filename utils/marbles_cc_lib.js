@@ -148,6 +148,23 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 		fcw.query_chaincode(enrollObj, opts, cb);
 	};
 
+	//get multiple marbles/owners by start and stop ids
+	marbles_chaincode.get_multiple_keys = function (options, cb) {
+		logger.info('Getting marbles between ids', options.args);
+
+		var opts = {
+			channel_id: g_options.channel_id,
+			chaincode_id: g_options.chaincode_id,
+			chaincode_version: g_options.chaincode_version,
+			event_url: g_options.event_url,
+			endorsed_hook: options.endorsed_hook,
+			ordered_hook: options.ordered_hook,
+			cc_function: 'getMarblesByRange',
+			cc_args: [options.args.start_id, options.args.stop_id]
+		};
+		fcw.query_chaincode(enrollObj, opts, cb);
+	};
+
 
 	// Owners -------------------------------------------------------------------------------
 
@@ -217,7 +234,7 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 			channel_id: g_options.channel_id,
 			chaincode_version: g_options.chaincode_version,
 			chaincode_id: g_options.chaincode_id,
-			cc_function: 'read_everything',
+			cc_function: 'read_everything2',
 			cc_args: ['']
 		};
 		fcw.query_chaincode(enrollObj, opts, cb);
@@ -236,6 +253,19 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 	function build_owner_name(username, company) {
 		return username.toLowerCase() + '.' + company;
 	}
+
+
+	console.log('\n\n running test');
+	var obj = {
+		args: {
+			start_id: 'm0',
+			stop_id: 'm' + Date.now()
+		}
+	};
+	marbles_chaincode.get_multiple_keys(obj, function(err, resp){
+		console.log('dsh test', err, JSON.stringify(resp));
+	});
+
 
 	return marbles_chaincode;
 };

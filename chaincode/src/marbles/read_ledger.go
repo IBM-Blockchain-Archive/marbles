@@ -117,7 +117,6 @@ func read_marble_index(stub shim.ChaincodeStubInterface) pb.Response {
 // Get history of asset
 // ============================================================================================================================
 func getHistory(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-
 	if len(args) != 1 {
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
@@ -166,4 +165,115 @@ func getHistory(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	fmt.Printf("- getHistoryForMarble returning:\n%s\n", buffer.String())
 
 	return shim.Success(buffer.Bytes())
+}
+
+// ============================================================================================================================
+// Get history of asset - performs a range query based on the start and end keys provided.
+// ============================================================================================================================
+func getMarblesByRange(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	if len(args) < 2 {
+		return shim.Error("Incorrect number of arguments. Expecting 2")
+	}
+
+	startKey := args[0]
+	endKey := args[1]
+
+	resultsIterator, err := stub.GetStateByRange(startKey, endKey)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	defer resultsIterator.Close()
+
+	// buffer is a JSON array containing QueryResults
+	var buffer bytes.Buffer
+	buffer.WriteString("[")
+
+	bArrayMemberAlreadyWritten := false
+	for resultsIterator.HasNext() {
+		queryResultKey, queryResultValue, err := resultsIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		// Add a comma before array members, suppress it for the first array member
+		if bArrayMemberAlreadyWritten == true {
+			buffer.WriteString(",")
+		}
+		buffer.WriteString("{\"Key\":")
+		buffer.WriteString("\"")
+		buffer.WriteString(queryResultKey)
+		buffer.WriteString("\"")
+
+		buffer.WriteString(", \"Record\":")
+		// Record is a JSON object, so we write as-is
+		buffer.WriteString(string(queryResultValue))
+		buffer.WriteString("}")
+		bArrayMemberAlreadyWritten = true
+	}
+	buffer.WriteString("]")
+
+	fmt.Printf("- getMarblesByRange queryResult:\n%s\n", buffer.String())
+
+	return shim.Success(buffer.Bytes())
+}
+
+// ============================================================================================================================
+// Get everything we need (owners + marbles + companies)
+// ============================================================================================================================
+func read_everything2(stub shim.ChaincodeStubInterface) pb.Response {
+	type Everything struct {
+		OwnersIndex  []string    `json:"owners_index"`
+		Marbles      []Marble    `json:"marbles"`
+	}
+	var everything Everything
+
+	resultsIterator, err := stub.GetStateByRange("m0", "m9999999999999")
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	defer resultsIterator.Close()
+
+	for resultsIterator.HasNext() {
+		queryKeyAsStr, queryValAsBytes, err := resultsIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+
+		fmt.Println("on marble id - ", queryKeyAsStr)
+
+		var marble Marble
+		json.Unmarshal(queryValAsBytes, &marble)                  //un stringify it aka JSON.parse()
+		everything.Marbles = append(everything.Marbles, marble)   //add this marble to the list
+	}
+	fmt.Println("marble array - ", everything.Marbles)
+
+	//get owner index
+	owners_index, err := get_complete_owner_index(stub)
+	if err != nil{
+		return shim.Error(err.Error())
+	}
+	everything.OwnersIndex = owners_index.Owners
+
+	//get marble index
+	/*completedMarbleIndex, err := get_complete_marble_index(stub)
+	if err != nil{
+		return shim.Error(err.Error())
+	}
+
+	//get all marbles
+	for i:= range completedMarbleIndex{                           //iter through all the marbles
+		var marble Marble
+		marble, err = get_marble(stub, completedMarbleIndex[i])
+		if err != nil {
+			fmt.Println("Could not find marble from index - " + completedMarbleIndex[i])
+			continue
+		}
+		
+		//append to array
+		everything.Marbles = append(everything.Marbles, marble)   //add this marble to the list
+	}
+	fmt.Println("marble index - ", everything.Marbles)*/
+
+	//change to array of bytes
+	everythingAsBytes, _ := json.Marshal(everything)
+	return shim.Success(everythingAsBytes)
 }

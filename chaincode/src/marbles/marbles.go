@@ -141,8 +141,12 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 		return read_marble_index(stub)
 	}else if function == "read_everything"{   //read everything, (owners + marbles + companies)
 		return read_everything(stub)
-	}else if function == "getHistory"{        //read history
+	}else if function == "getHistory"{        //read history of a marble (audit)
 		return getHistory(stub, args)
+	}else if function == "getMarblesByRange"{ //read a bunch of marbles by start and stop id
+		return getMarblesByRange(stub, args)
+	}else if function == "read_everything2"{   //
+		return read_everything2(stub)
 	}
 
 	// error out
