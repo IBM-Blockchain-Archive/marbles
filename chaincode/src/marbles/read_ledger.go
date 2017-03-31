@@ -86,7 +86,7 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 	var everything Everything
 
 	// ---- Get All Marbles ---- //
-	resultsIterator, err := stub.GetStateByRange("m0", "m9999999999999")
+	resultsIterator, err := stub.GetStateByRange("m0", "m99999999999999999999999")
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -113,7 +113,7 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 	everything.OwnersIndex = owners_index.Owners*/
 
 	// ---- Get All Owners ---- //
-	ownersIterator, err := stub.GetStateByRange("o0", "o9999999999999")
+	ownersIterator, err := stub.GetStateByRange("o0", "o99999999999999999999999")
 	if err != nil {
 		return shim.Error(err.Error())
 	}

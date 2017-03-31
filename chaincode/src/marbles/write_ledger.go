@@ -129,11 +129,11 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) 
 	var err error
 	fmt.Println("starting init_marble")
 
-	//    0  ,   1 ,       2     ,       3
-	//  color, size,     owner id, 
-	// "blue", "35", "<owner id>", "united marbles"
-	if len(args) != 4 {
-		return shim.Error("Incorrect number of arguments. Expecting 4")
+	//      0      ,    1  ,  2  ,      3      ,       4
+	//     id      ,  color, size,    owner id ,    company
+	// "m999999999", "blue", "35", "<owner id>", "united marbles"
+	if len(args) != 5 {
+		return shim.Error("Incorrect number of arguments. Expecting 5")
 	}
 
 	//input sanitation
@@ -142,15 +142,13 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) 
 		return shim.Error(err.Error())
 	}
 
-	id := "m" + strconv.FormatInt(makeTimestamp(), 10);     //int64, base
-	color := strings.ToLower(args[0])
-	owner_id := strings.ToLower(args[2])
-	//username := strings.ToLower(args[2])
-	//company := args[3]
-	authed_by_company := args[3]
-	size, err := strconv.Atoi(args[1])
+	id := args[0]
+	color := strings.ToLower(args[1])
+	owner_id := args[3]
+	authed_by_company := args[4]
+	size, err := strconv.Atoi(args[2])
 	if err != nil {
-		return shim.Error("2nd argument must be a numeric string")
+		return shim.Error("3rd argument must be a numeric string")
 	}
 
 	//check if new owner exists
@@ -189,15 +187,6 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) 
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-
-	/*
-	//append
-	var fullOwner = build_full_owner(username, company);
-	owner.Marbles = append(owner.Marbles, id)                     //add marble id to index list
-	fmt.Println("! marble index - ", owner.Marbles)
-	jsonAsBytes, _ := json.Marshal(owner)
-	err = stub.PutState(fullOwner, jsonAsBytes)                   //store id of marble
-	*/
 
 	fmt.Println("- end init_marble")
 	return shim.Success(nil)
@@ -268,12 +257,12 @@ func init_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	var err error
 	fmt.Println("starting init_owner")
 
-	//     0          1
-	// ex: "bob", "united marbles"
-	if len(args) != 2 {
-		return shim.Error("Incorrect number of arguments. Expecting 2")
+	//           0            1        2
+	// "o9999999999999999", bob", "united marbles"
+	if len(args) != 3 {
+		return shim.Error("Incorrect number of arguments. Expecting 3")
 	}
-
+	
 	//input sanitation
 	err = sanitize_arguments(args)
 	if err != nil {
@@ -281,26 +270,25 @@ func init_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	}
 	
 	var owner Owner
-	json.Unmarshal([]byte(args[0]), &owner)                          //un stringify input, aka JSON.parse()
+	json.Unmarshal([]byte(args[0]), &owner)                           //un stringify input, aka JSON.parse()
 	owner.ObjectType = "marble_owner"
-	owner.Id = "o" + strconv.FormatInt(makeTimestamp(), 10);         //int64, base
-	owner.Username = strings.ToLower(args[0])
-	owner.Company = args[1]
-	owner.Timestamp = makeTimestamp()
+	owner.Id =  args[0]
+	owner.Username = strings.ToLower(args[1])
+	owner.Company = args[2]
 	fmt.Println(owner)
 
 	//var fullOwner = build_full_owner(owner.Username, owner.Company); //concat owners name and the company name
 
 	//store user
 	ownerAsBytes, _ := json.Marshal(owner)
-	err = stub.PutState(owner.Id, ownerAsBytes)                     //store owner by its Id
+	err = stub.PutState(owner.Id, ownerAsBytes)                       //store owner by its Id
 	if err != nil {
 		fmt.Println("Could not store user")
 		return shim.Error(err.Error())
 	}
 
 	//read existing owner index
-	ownersIndex, err := get_complete_owner_index(stub)
+	/*ownersIndex, err := get_complete_owner_index(stub)
 	if err != nil {
 		fmt.Println("Failed to get owner index")
 		return shim.Error("Failed to get owner index")
@@ -311,7 +299,8 @@ func init_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	fmt.Println("! owner index - ", ownersIndex.Owners)
 	jsonAsBytes, _ := json.Marshal(ownersIndex)
 	err = stub.PutState(ownerIndexStr, jsonAsBytes)                //store updated owner index
-
+	*/
+	
 	fmt.Println("- end init_owner marble")
 	return shim.Success(nil)
 }

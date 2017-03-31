@@ -261,8 +261,6 @@ function build_marble_options(id, username, company) {
 		color: colors[color_index],
 		size: sizes[size_index],
 		owner_id: id,
-		//marble_owner: username,
-		//owners_company: company,
 		auth_company: process.env.marble_company
 	};
 }

@@ -20,11 +20,9 @@ under the License.
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"strconv"
-	"time"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	pb "github.com/hyperledger/fabric/protos/peer"
@@ -41,25 +39,25 @@ type SimpleChaincode struct {
 // ----- Marbles ----- //
 type Marble struct {
 	ObjectType string        `json:"docType"`
-	Name       string        `json:"name"`     //the fieldtags are needed to keep case from bouncing around
+	Name       string        `json:"name"`    //the fieldtags are needed to keep case from bouncing around
 	Color      string        `json:"color"`
 	Size       int           `json:"size"`
 	Owner      OwnerRelation `json:"owner"`
 }
 
 // ----- Owners ----- //
-var ownerIndexStr = "_ownerindex"             //name for the key/value that will store a list of all known owners
+var ownerIndexStr = "_ownerindex"               //name for the key/value that will store a list of all known owners
 type Owner struct {
 	ObjectType string `json:"docType"`
 	Id         string `json:"id"`
 	Username   string `json:"username"`
 	Company    string `json:"company"`
-	Timestamp  int64  `json:"timestamp"`      //utc timestamp of registration
 }
+/*
 type OwnersIndex struct {
 	ObjectType string   `json:"docType"`
 	Owners    []string  `json:"owners"`
-}
+}*/
 type OwnerRelation struct {
 	Id         string `json:"id"`
 	Username   string `json:"username"`
@@ -102,13 +100,13 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 		return shim.Error(err.Error())
 	}
 
-	var owner OwnersIndex
+	/*var owner OwnersIndex
 	owner.ObjectType = "OwnerIndex"
 	jsonAsBytes, _ := json.Marshal(owner)         //owner is empty, this clears the owner index
 	err = stub.PutState(ownerIndexStr, jsonAsBytes)
 	if err != nil {
 		return shim.Error(err.Error())
-	}
+	}*/
 
 	fmt.Println(" - ready for action")
 	return shim.Success(nil)
@@ -138,8 +136,6 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 		return read(stub, args)
 	}else if function == "init_owner"{        //create a new marble owner
 		return init_owner(stub, args)
-	//}else if function == "read_marble_index"{ //read marble/owner mapping
-	//	return read_marble_index(stub)
 	}else if function == "read_everything"{   //read everything, (owners + marbles + companies)
 		return read_everything(stub)
 	}else if function == "getHistory"{        //read history of a marble (audit)
@@ -160,15 +156,6 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) pb.Response {
 	return shim.Error("Unknown supported call - Query()")
 }
-
-
-// ========================================================
-// Make Timestamp - create a timestamp in ms
-// ========================================================
-func makeTimestamp() int64 {
-	return time.Now().UnixNano() / (int64(time.Millisecond) / int64(time.Nanosecond))
-}
-
 
 // ========================================================
 // Input Sanitation - dumb input checking, look for empty strings

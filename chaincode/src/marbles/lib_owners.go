@@ -71,6 +71,7 @@ func get_owner_full(stub shim.ChaincodeStubInterface, fullOwner string) (Owner, 
 }
 */
 
+/*
 // ============================================================================================================================
 // Get Array of All Owner Assets
 // ============================================================================================================================
@@ -83,3 +84,4 @@ func get_complete_owner_index(stub shim.ChaincodeStubInterface) (OwnersIndex, er
 	json.Unmarshal(ownerIndexAsBytes, &ownersIndex)           //un stringify it aka JSON.parse()
 	return ownersIndex, nil
 }
+*/

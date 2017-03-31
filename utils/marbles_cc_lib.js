@@ -51,11 +51,10 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 			ordered_hook: options.ordered_hook,
 			cc_function: 'init_marble',
 			cc_args: [
+				'm' + leftPad(Date.now() + randStr(5), 19),
 				options.args.color,
 				options.args.size,
 				options.args.owner_id,
-				//options.args.marble_owner,
-				//options.args.owners_company,
 				options.args.auth_company
 			]
 		};
@@ -183,7 +182,11 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 			endorsed_hook: options.endorsed_hook,
 			ordered_hook: options.ordered_hook,
 			cc_function: 'init_owner',
-			cc_args: [options.args.marble_owner, options.args.owners_company]
+			cc_args: [
+				'o' + leftPad(Date.now() + randStr(5), 19),
+				options.args.marble_owner, 
+				options.args.owners_company
+			]
 		};
 		fcw.invoke_chaincode(enrollObj, opts, cb);
 	};
@@ -268,6 +271,19 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 		console.log('dsh test', err, JSON.stringify(resp));
 	});
 
+	// random string of x length
+	function randStr(length) {
+		var text = '';
+		var possible = 'abcdefghijkmnpqrstuvwxyz0123456789ABCDEFGHJKMNPQRSTUVWXYZ';
+		for (var i = 0; i < length; i++) text += possible.charAt(Math.floor(Math.random() * possible.length));
+		return text;
+	}
+
+	// left pad string with "0"s
+	function leftPad(str, length) {
+		for (var i = str.length; i < length; i++) str = '0' + String(str);
+		return str;
+	}
 
 	return marbles_chaincode;
 };
