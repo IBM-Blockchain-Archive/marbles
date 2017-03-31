@@ -234,7 +234,7 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 			channel_id: g_options.channel_id,
 			chaincode_version: g_options.chaincode_version,
 			chaincode_id: g_options.chaincode_id,
-			cc_function: 'read_everything2',
+			cc_function: 'read_everything',
 			cc_args: ['']
 		};
 		fcw.query_chaincode(enrollObj, opts, cb);

@@ -137,16 +137,14 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 		return read(stub, args)
 	}else if function == "init_owner"{        //create a new marble owner
 		return init_owner(stub, args)
-	}else if function == "read_marble_index"{ //read marble/owner mapping
-		return read_marble_index(stub)
+	//}else if function == "read_marble_index"{ //read marble/owner mapping
+	//	return read_marble_index(stub)
 	}else if function == "read_everything"{   //read everything, (owners + marbles + companies)
 		return read_everything(stub)
 	}else if function == "getHistory"{        //read history of a marble (audit)
 		return getHistory(stub, args)
 	}else if function == "getMarblesByRange"{ //read a bunch of marbles by start and stop id
 		return getMarblesByRange(stub, args)
-	}else if function == "read_everything2"{   //
-		return read_everything2(stub)
 	}
 
 	// error out

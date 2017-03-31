@@ -21,7 +21,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"errors"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
@@ -45,6 +44,7 @@ func get_marble(stub shim.ChaincodeStubInterface, name string) (Marble, error) {
 	return marble, nil
 }
 
+/*
 // ============================================================================================================================
 // Get Array of All Marble Names
 // ============================================================================================================================
@@ -73,4 +73,4 @@ func get_complete_marble_index(stub shim.ChaincodeStubInterface) ([]string, erro
 	}
 
 	return completedMarbleIndex, nil
-}
+}*/
