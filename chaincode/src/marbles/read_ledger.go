@@ -30,6 +30,15 @@ import (
 
 // ============================================================================================================================
 // Read - read a generic variable from ledger
+//
+// Shows Off GetState() - reading a key/value from the ledger
+//
+// Inputs - Array of strings
+//    0
+//   key
+//  "abc"
+// 
+// Returns - string
 // ============================================================================================================================
 func read(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	var name, jsonResp string
@@ -59,6 +68,9 @@ func read(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 
 // ============================================================================================================================
 // Get everything we need (owners + marbles + companies)
+//
+// Inputs - none
+//
 // Returns:
 // {
 //	"owners": [{
@@ -86,7 +98,7 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 	var everything Everything
 
 	// ---- Get All Marbles ---- //
-	resultsIterator, err := stub.GetStateByRange("m0", "m99999999999999999999999")
+	resultsIterator, err := stub.GetStateByRange("m0", "m9999999999999999999")
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -106,7 +118,7 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 	fmt.Println("marble array - ", everything.Marbles)
 
 	// ---- Get All Owners ---- //
-	ownersIterator, err := stub.GetStateByRange("o0", "o99999999999999999999999")
+	ownersIterator, err := stub.GetStateByRange("o0", "o9999999999999999999")
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -132,6 +144,13 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 
 // ============================================================================================================================
 // Get history of asset
+//
+// Shows Off GetHistoryForKey() - reading complete history of a key/value
+//
+// Inputs - Array of strings
+//           0
+//          id
+//  "m01490985296352SjAyM"
 // ============================================================================================================================
 func getHistory(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	if len(args) != 1 {
@@ -186,9 +205,16 @@ func getHistory(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 
 // ============================================================================================================================
 // Get history of asset - performs a range query based on the start and end keys provided.
+//
+// Shows Off GetStateByRange() - reading a multiple key/values from the ledger
+//
+// Inputs - Array of strings
+//       0     ,    1
+//   startKey  ,  endKey
+//  "marbles1" , "marbles5"
 // ============================================================================================================================
 func getMarblesByRange(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	if len(args) < 2 {
+	if len(args) != 2 {
 		return shim.Error("Incorrect number of arguments. Expecting 2")
 	}
 

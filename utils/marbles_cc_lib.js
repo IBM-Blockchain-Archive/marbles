@@ -259,18 +259,6 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 		return username.toLowerCase() + '.' + company;
 	}
 
-
-	console.log('\n\n running test');
-	var obj = {
-		args: {
-			start_id: 'm0',
-			stop_id: 'm' + Date.now()
-		}
-	};
-	marbles_chaincode.get_multiple_keys(obj, function(err, resp){
-		console.log('dsh test', err, JSON.stringify(resp));
-	});
-
 	// random string of x length
 	function randStr(length) {
 		var text = '';

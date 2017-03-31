@@ -112,23 +112,23 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	// Handle different functions
 	if function == "init" {                   //initialize the chaincode state, used as reset
 		return t.Init(stub)
-	} else if function == "delete_marble" {   //deletes a marble from state
-		return delete_marble(stub, args)
+	} else if function == "read" {            //generic read ledger
+		return read(stub, args)
 	} else if function == "write" {           //generic writes to ledger
 		return write(stub, args)
+	} else if function == "delete_marble" {   //deletes a marble from state
+		return delete_marble(stub, args)
 	} else if function == "init_marble" {     //create a new marble
 		return init_marble(stub, args)
 	} else if function == "set_owner" {       //change owner of a marble
 		return set_owner(stub, args)
-	} else if function == "read" {            //generic read ledger
-		return read(stub, args)
-	}else if function == "init_owner"{        //create a new marble owner
+	} else if function == "init_owner"{        //create a new marble owner
 		return init_owner(stub, args)
-	}else if function == "read_everything"{   //read everything, (owners + marbles + companies)
+	} else if function == "read_everything"{   //read everything, (owners + marbles + companies)
 		return read_everything(stub)
-	}else if function == "getHistory"{        //read history of a marble (audit)
+	} else if function == "getHistory"{        //read history of a marble (audit)
 		return getHistory(stub, args)
-	}else if function == "getMarblesByRange"{ //read a bunch of marbles by start and stop id
+	} else if function == "getMarblesByRange"{ //read a bunch of marbles by start and stop id
 		return getMarblesByRange(stub, args)
 	}
 
