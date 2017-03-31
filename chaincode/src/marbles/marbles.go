@@ -53,11 +53,7 @@ type Owner struct {
 	Username   string `json:"username"`
 	Company    string `json:"company"`
 }
-/*
-type OwnersIndex struct {
-	ObjectType string   `json:"docType"`
-	Owners    []string  `json:"owners"`
-}*/
+
 type OwnerRelation struct {
 	Id         string `json:"id"`
 	Username   string `json:"username"`
@@ -99,14 +95,6 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-
-	/*var owner OwnersIndex
-	owner.ObjectType = "OwnerIndex"
-	jsonAsBytes, _ := json.Marshal(owner)         //owner is empty, this clears the owner index
-	err = stub.PutState(ownerIndexStr, jsonAsBytes)
-	if err != nil {
-		return shim.Error(err.Error())
-	}*/
 
 	fmt.Println(" - ready for action")
 	return shim.Success(nil)

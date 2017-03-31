@@ -105,13 +105,6 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 	}
 	fmt.Println("marble array - ", everything.Marbles)
 
-	//get owner index
-	/*owners_index, err := get_complete_owner_index(stub)
-	if err != nil{
-		return shim.Error(err.Error())
-	}
-	everything.OwnersIndex = owners_index.Owners*/
-
 	// ---- Get All Owners ---- //
 	ownersIterator, err := stub.GetStateByRange("o0", "o99999999999999999999999")
 	if err != nil {
@@ -136,20 +129,6 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 	everythingAsBytes, _ := json.Marshal(everything)
 	return shim.Success(everythingAsBytes)
 }
-
-/*
-// ============================================================================================================================
-// Get complete marble index
-// ============================================================================================================================
-func read_marble_index(stub shim.ChaincodeStubInterface) pb.Response {
-	tmp, err := get_complete_marble_index(stub)
-	arrayAsBytes, err := json.Marshal(tmp)
-	if err != nil {
-		return shim.Error(err.Error())
-	}
-	return shim.Success(arrayAsBytes)
-}
-*/
 
 // ============================================================================================================================
 // Get history of asset

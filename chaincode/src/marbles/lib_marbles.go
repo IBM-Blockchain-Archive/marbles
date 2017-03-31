@@ -43,34 +43,3 @@ func get_marble(stub shim.ChaincodeStubInterface, name string) (Marble, error) {
 
 	return marble, nil
 }
-
-/*
-// ============================================================================================================================
-// Get Array of All Marble Names
-// ============================================================================================================================
-func get_complete_marble_index(stub shim.ChaincodeStubInterface) ([]string, error) {
-	var completedMarbleIndex []string
-	var ownersIndex OwnersIndex
-
-	//read owner index
-	ownersIndex, err := get_complete_owner_index(stub)
-	if err != nil {
-		fmt.Println("Failed to get owner index")
-		return nil, errors.New("Failed to get owner index")
-	}
-
-	for i:= range ownersIndex.Owners{                                      //iter through all the owners
-		var owner Owner
-		owner, err = get_owner_full(stub, ownersIndex.Owners[i])
-		if err != nil {
-			fmt.Println("Could not find owner from index - " + ownersIndex.Owners[i])
-			return nil, err
-		}
-		
-		//append to array
-		completedMarbleIndex = append(completedMarbleIndex, owner.Marbles...) //add this owner's marble list to complete list
-		//fmt.Println("marble index so far - ", completedMarbleIndex)
-	}
-
-	return completedMarbleIndex, nil
-}*/

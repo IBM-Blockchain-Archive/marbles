@@ -262,22 +262,27 @@ func init_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	if len(args) != 3 {
 		return shim.Error("Incorrect number of arguments. Expecting 3")
 	}
-	
+
 	//input sanitation
 	err = sanitize_arguments(args)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	
+
 	var owner Owner
-	json.Unmarshal([]byte(args[0]), &owner)                           //un stringify input, aka JSON.parse()
+	//json.Unmarshal([]byte(args[0]), &owner)                           //un stringify input, aka JSON.parse()
 	owner.ObjectType = "marble_owner"
 	owner.Id =  args[0]
 	owner.Username = strings.ToLower(args[1])
 	owner.Company = args[2]
 	fmt.Println(owner)
 
-	//var fullOwner = build_full_owner(owner.Username, owner.Company); //concat owners name and the company name
+	//check if user already exists
+	_, err = get_owner(stub, owner.Id)
+	if err == nil {
+		fmt.Println("This owner already exists - " + owner.Id)
+		return shim.Error("This owner already exists - " + owner.Id)
+	}
 
 	//store user
 	ownerAsBytes, _ := json.Marshal(owner)
@@ -287,20 +292,6 @@ func init_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 		return shim.Error(err.Error())
 	}
 
-	//read existing owner index
-	/*ownersIndex, err := get_complete_owner_index(stub)
-	if err != nil {
-		fmt.Println("Failed to get owner index")
-		return shim.Error("Failed to get owner index")
-	}
-
-	//append to list
-	ownersIndex.Owners = append(ownersIndex.Owners, owner.Id)     //add owner to index list
-	fmt.Println("! owner index - ", ownersIndex.Owners)
-	jsonAsBytes, _ := json.Marshal(ownersIndex)
-	err = stub.PutState(ownerIndexStr, jsonAsBytes)                //store updated owner index
-	*/
-	
 	fmt.Println("- end init_owner marble")
 	return shim.Success(nil)
 }

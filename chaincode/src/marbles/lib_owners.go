@@ -26,16 +26,6 @@ import (
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
-/*
-// ============================================================================================================================
-// Build Full Owner Key - concat owner's name and owner's company
-// ============================================================================================================================
-func build_full_owner(username string, company string) (string) {
-	return username + "." + company;                          //do not change case here!
-}
-*/
-
-
 // ============================================================================================================================
 // Get Owner - get the owner asset from ledger
 // ============================================================================================================================
@@ -53,35 +43,3 @@ func get_owner(stub shim.ChaincodeStubInterface, id string) (Owner, error) {
 	
 	return owner, nil
 }
-
-/*
-func get_owner_full(stub shim.ChaincodeStubInterface, fullOwner string) (Owner, error) {
-	var owner Owner
-	ownerAsBytes, err := stub.GetState(fullOwner)              //this should always succeed, even if it doesn't exist
-	if err != nil {
-		return owner, errors.New("Failed to get owner - " + fullOwner)
-	}
-	json.Unmarshal(ownerAsBytes, &owner)                       //un stringify it aka JSON.parse()
-
-	if len(owner.Username) == 0 {                              //test if owner is actually here or just nil
-		return owner, errors.New("Owner does not exist - " + fullOwner + ", " + owner.Username + "." + owner.Company)
-	}
-
-	return owner, nil
-}
-*/
-
-/*
-// ============================================================================================================================
-// Get Array of All Owner Assets
-// ============================================================================================================================
-func get_complete_owner_index(stub shim.ChaincodeStubInterface) (OwnersIndex, error) {
-	var ownersIndex OwnersIndex
-	ownerIndexAsBytes, err := stub.GetState(ownerIndexStr)    //this should always succeed, even if it doesn't exist
-	if err != nil {
-		return ownersIndex, errors.New("Failed to get owner index")
-	}
-	json.Unmarshal(ownerIndexAsBytes, &ownersIndex)           //un stringify it aka JSON.parse()
-	return ownersIndex, nil
-}
-*/
