@@ -79,7 +79,7 @@ module.exports = function (g_options, fcw, logger) {
 		else if (data.type === 'transfer_marble') {
 			logger.info('[ws] transfering req');
 			options.args = {
-				marble_id: data.name,
+				marble_id: data.id,
 				marble_owner: data.username,
 				owners_company: data.company,
 				owner_id: data.owner_id,
@@ -96,7 +96,7 @@ module.exports = function (g_options, fcw, logger) {
 		else if (data.type === 'delete_marble') {
 			logger.info('[ws] delete marble req');
 			options.args = {
-				marble_id: data.name,
+				marble_id: data.id,
 				auth_company: process.env.marble_company
 			};
 

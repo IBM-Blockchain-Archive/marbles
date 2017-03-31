@@ -29,16 +29,16 @@ import (
 // ============================================================================================================================
 // Get Marble
 // ============================================================================================================================
-func get_marble(stub shim.ChaincodeStubInterface, name string) (Marble, error) {
+func get_marble(stub shim.ChaincodeStubInterface, id string) (Marble, error) {
 	var marble Marble
-	marbleAsBytes, err := stub.GetState(name)
+	marbleAsBytes, err := stub.GetState(id)
 	if err != nil {
-		return marble, errors.New("Failed to find marble - " + name)
+		return marble, errors.New("Failed to find marble - " + id)
 	}
 	json.Unmarshal(marbleAsBytes, &marble)                   //un stringify it aka JSON.parse()
 
-	if marble.Name != name {                                 //test if marble is actually here or just nil
-		return marble, errors.New("Marble does not exist - " + name)
+	if marble.Id != id {                                     //test if marble is actually here or just nil
+		return marble, errors.New("Marble does not exist - " + id)
 	}
 
 	return marble, nil

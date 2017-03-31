@@ -230,7 +230,7 @@ $(document).on('ready', function () {
 		var marble_id = $(that).attr('id');
 		$('.auditingMarble').removeClass('auditingMarble');
 
-		if(!auditingMarble || marbles[marble_id].name !=  auditingMarble.name) {//different marble than before!
+		if(!auditingMarble || marbles[marble_id].id != auditingMarble.id) {//different marble than before!
 			for(var x in pendingTxDrawing) clearTimeout(pendingTxDrawing[x]);
 			$('.txHistoryWrap').html('');										//clear
 			fixCss();

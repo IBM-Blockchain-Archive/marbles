@@ -15,22 +15,22 @@ function build_marble(marble) {
 	var size = 'largeMarble';
 	var auditing = '';
 
-	marbles[marble.name] = marble;
+	marbles[marble.id] = marble;
 
-	marble.name = escapeHtml(marble.name);
+	marble.id = escapeHtml(marble.id);
 	marble.color = escapeHtml(marble.color);
 	marble.owner.id = escapeHtml(marble.owner.id);
 	marble.owner.username = escapeHtml(marble.owner.username);
 	marble.owner.company = escapeHtml(marble.owner.company);
 	var full_owner = escapeHtml(marble.owner.username.toLowerCase() + '.' + marble.owner.company);
 
-	console.log('[ui] building marble: ', marble.color, full_owner, marble.name.substring(0, 4) + '...');
+	console.log('[ui] building marble: ', marble.color, full_owner, marble.id.substring(0, 4) + '...');
 	if (marble.size == 16) size = 'smallMarble';
 	if (marble.color) colorClass = marble.color.toLowerCase() + 'bg';
 
-	if(auditingMarble && marble.name ===  auditingMarble.name) auditing = 'auditingMarble';
+	if(auditingMarble && marble.id ===  auditingMarble.id) auditing = 'auditingMarble';
 
-	html += '<span id="' + marble.name + '" class="ball ' + size + ' ' + colorClass + ' ' + auditing + ' title="' + marble.name + '"';
+	html += '<span id="' + marble.id + '" class="ball ' + size + ' ' + colorClass + ' ' + auditing + ' title="' + marble.id + '"';
 	html += ' username="' + marble.owner.username + '" company="' + marble.owner.company + '" owner_id="' + marble.owner.id + '"></span>';
 
 	$('.marblesWrap[owner_id="' + marble.owner.id + '"]').find('.innerMarbleWrap').prepend(html);
@@ -112,29 +112,13 @@ function build_user_panels(data) {
 				show_tx_step({ state: 'building_proposal' }, function () {
 					var obj = {
 						type: 'delete_marble',
-						name: marble_id,
+						id: marble_id,
 						v: 1
 					};
 					ws.send(JSON.stringify(obj));
 					$(ui.draggable).addClass('invalid bounce');
 					refreshHomePanel();
 				});
-			}
-
-			//  ------------ Audit Marble ------------ //
-			else if ($(event.target).attr('id') === 'auditContentWrap') {
-				console.log('audit marble', marble_id);
-				return false;
-				/*show_tx_step({ state: 'building_proposal' }, function () {
-					var obj = {
-						type: 'delete_marble',
-						name: marble_id,
-						v: 1
-					};
-					ws.send(JSON.stringify(obj));
-					$(ui.draggable).addClass('invalid bounce');
-					refreshHomePanel();
-				});*/
 			}
 
 			//  ------------ Transfer Marble ------------ //

@@ -41,12 +41,12 @@ import (
 // Returns - string
 // ============================================================================================================================
 func read(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	var name, jsonResp string
+	var key, jsonResp string
 	var err error
 	fmt.Println("starting read")
 
 	if len(args) != 1 {
-		return shim.Error("Incorrect number of arguments. Expecting name of the var to query")
+		return shim.Error("Incorrect number of arguments. Expecting key of the var to query")
 	}
 
 	// input sanitation
@@ -55,10 +55,10 @@ func read(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 		return shim.Error(err.Error())
 	}
 
-	name = args[0]
-	valAsbytes, err := stub.GetState(name)           //get the var from ledger
+	key = args[0]
+	valAsbytes, err := stub.GetState(key)           //get the var from ledger
 	if err != nil {
-		jsonResp = "{\"Error\":\"Failed to get state for " + name + "\"}"
+		jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
 		return shim.Error(jsonResp)
 	}
 
@@ -79,9 +79,9 @@ func read(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 //			"username": "alice"
 //	}],
 //	"marbles": [{
+//		"id": "m1490898165086",
 //		"color": "white",
 //		"docType" :"marble",
-//		"name": "m1490898165086",
 //		"owner": {
 //			"company": "United Marbles"
 //			"username": "alice"

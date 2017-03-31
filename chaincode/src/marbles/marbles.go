@@ -39,14 +39,13 @@ type SimpleChaincode struct {
 // ----- Marbles ----- //
 type Marble struct {
 	ObjectType string        `json:"docType"`
-	Name       string        `json:"name"`    //the fieldtags are needed to keep case from bouncing around
+	Id       string          `json:"id"`    //the fieldtags are needed to keep case from bouncing around
 	Color      string        `json:"color"`
 	Size       int           `json:"size"`
 	Owner      OwnerRelation `json:"owner"`
 }
 
 // ----- Owners ----- //
-var ownerIndexStr = "_ownerindex"               //name for the key/value that will store a list of all known owners
 type Owner struct {
 	ObjectType string `json:"docType"`
 	Id         string `json:"id"`

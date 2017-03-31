@@ -169,7 +169,7 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) 
 	//build the marble json string manually
 	str := `{
 		"docType":"marble", 
-		"name": "` + id + `", 
+		"id": "` + id + `", 
 		"color": "` + color + `", 
 		"size": ` + strconv.Itoa(size) + `, 
 		"owner": {
@@ -243,9 +243,9 @@ func init_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 // Shows off GetState() and PutState()
 //
 // Inputs - Array of Strings
-//   0   ,     1  ,        2                 3                4
-// marble, to user,      to company ,  to owner id  , company that auth the transfer
-// "name",   "bob", "united_marbles", "o99999999999", united_mables" 
+//   0    ,     1  ,        2        ,         3     ,           4
+// marble2, to user,      to company ,  to owner id  , company that auth the transfer
+// "id"   ,   "bob", "united_marbles", "o99999999999", united_mables" 
 // ============================================================================================================================
 func set_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	var err error
