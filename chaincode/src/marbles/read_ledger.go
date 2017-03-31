@@ -153,54 +153,50 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 //  "m01490985296352SjAyM"
 // ============================================================================================================================
 func getHistory(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	type AuditHistory struct {
+		TxId    string   `json:"txId"`
+		Value   Marble   `json:"value"`
+	}
+	var history []AuditHistory;
+	var marble Marble
+
 	if len(args) != 1 {
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
 
-	marbleName := args[0]
+	marbleId := args[0]
+	fmt.Printf("- start getHistoryForMarble: %s\n", marbleId)
 
-	fmt.Printf("- start getHistoryForMarble: %s\n", marbleName)
-
-	resultsIterator, err := stub.GetHistoryForKey(marbleName)
+	// Get History
+	resultsIterator, err := stub.GetHistoryForKey(marbleId)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
 	defer resultsIterator.Close()
 
-	// buffer is a JSON array containing historic values for the marble
-	var buffer bytes.Buffer
-	buffer.WriteString("[")
-
-	bArrayMemberAlreadyWritten := false
 	for resultsIterator.HasNext() {
 		txID, historicValue, err := resultsIterator.Next()
 		if err != nil {
 			return shim.Error(err.Error())
 		}
-		// Add a comma before array members, suppress it for the first array member
-		if bArrayMemberAlreadyWritten == true {
-			buffer.WriteString(",")
-		}
-		buffer.WriteString("{\"TxId\":")
-		buffer.WriteString("\"")
-		buffer.WriteString(txID)
-		buffer.WriteString("\"")
-		buffer.WriteString(", \"Value\":")
 
-		// historicValue is a JSON marble, so we write as-is
-		if historicValue != nil {
-			buffer.WriteString(string(historicValue))
+		var tx AuditHistory
+		tx.TxId = txID                             //copy transaction id over
+		json.Unmarshal(historicValue, &marble)     //un stringify it aka JSON.parse()
+		if historicValue == nil {                  //marble has been deleted
+			var emptyMarble Marble
+			tx.Value = emptyMarble                 //copy marble over
 		} else {
-			buffer.WriteString("null")
+			json.Unmarshal(historicValue, &marble) //un stringify it aka JSON.parse()
+			tx.Value = marble                      //copy marble over
 		}
-		buffer.WriteString("}")
-		bArrayMemberAlreadyWritten = true
+		history = append(history, tx)              //add this tx to the list
 	}
-	buffer.WriteString("]")
+	fmt.Printf("- getHistoryForMarble returning:\n%s", history)
 
-	fmt.Printf("- getHistoryForMarble returning:\n%s\n", buffer.String())
-
-	return shim.Success(buffer.Bytes())
+	//change to array of bytes
+	historyAsBytes, _ := json.Marshal(history)
+	return shim.Success(historyAsBytes)
 }
 
 // ============================================================================================================================

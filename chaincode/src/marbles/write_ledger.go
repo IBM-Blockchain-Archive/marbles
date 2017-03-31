@@ -116,7 +116,7 @@ func delete_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response
 // ============================================================================================================================
 // Init Marble - create a new marble, store into chaincode state
 //
-// Shows off building a key's JSON value manually 
+// Shows off building a key's JSON value manually
 //
 // Inputs - Array of strings
 //      0      ,    1  ,  2  ,      3          ,       4
@@ -153,7 +153,7 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) 
 		return shim.Error(err.Error())
 	}
 
-	//check authorizing company
+	//check authorizing company (see note in set_owner() about how this is quirky)
 	if owner.Company != authed_by_company{
 		return shim.Error("The company '" + authed_by_company + "' cannot authorize creation for '" + owner.Company + "'.")
 	}
@@ -193,8 +193,8 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) 
 // Shows off building key's value from GoLang Structure
 //
 // Inputs - Array of Strings
-//           0        ,     1   ,   2
-//      owner id      , username, company
+//           0     ,     1   ,   2
+//      owner id   , username, company
 // "o9999999999999",     bob", "united marbles"
 // ============================================================================================================================
 func init_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
@@ -251,9 +251,10 @@ func set_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	var err error
 	fmt.Println("starting set_owner")
 
-	//todo! dsh - get the "company that authed the transfer" from the certificate instead of an argument
-	//should be possible since we can now add attributes to tx cert during
-	//as is this is broken (security wise), but it's much easier to demo...
+	// this is quirky
+	// todo - get the "company that authed the transfer" from the certificate instead of an argument
+	// should be possible since we can now add attributes to enrollment cert
+	// as is this is a bit broken (security wise), but it's much much easier to demo... holding off for demos sake
 
 	if len(args) != 3 {
 		return shim.Error("Incorrect number of arguments. Expecting 3")

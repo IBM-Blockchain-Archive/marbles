@@ -192,16 +192,16 @@ function build_a_tx(data, pos) {
 	var html = '';
 	var username = '-';
 	var company = '-';
-	if(data &&  data.Value && data.Value.owner) {
-		username = data.Value.owner.username;
-		company = data.Value.owner.company;
+	if(data &&  data.value && data.value.owner && data.value.owner.username) {
+		username = data.value.owner.username;
+		company = data.value.owner.company;
 	}
 
 	html += '<div class="txDetails">';
 	html +=		'<div class="txCount">TX ' + (Number(pos) + 1) + '</div>';
 	html +=		'<p>';
 	html +=			'<div class="marbleLegend">Transaction: </div>';
-	html +=			'<div class="marbleName txId">' + data.TxId.substring(0, 14) + '...</div>';
+	html +=			'<div class="marbleName txId">' + data.txId.substring(0, 14) + '...</div>';
 	html +=		'</p>';
 	html +=		'<p>';
 	html +=			'<div class="marbleLegend">Owner: </div>';
