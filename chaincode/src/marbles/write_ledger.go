@@ -33,12 +33,12 @@ import (
 // Write - genric write variable into ledger
 // ============================================================================================================================
 func write(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	var name, value string                           // Entities
+	var key, value string                           // Entities
 	var err error
 	fmt.Println("starting write")
 
 	if len(args) != 2 {
-		return shim.Error("Incorrect number of arguments. Expecting 2. name of the variable and value to set")
+		return shim.Error("Incorrect number of arguments. Expecting 2. key of the variable and value to set")
 	}
 
 	// input sanitation
@@ -47,9 +47,9 @@ func write(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 		return shim.Error(err.Error())
 	}
 
-	name = args[0]                                   //rename for funsies
+	key = args[0]                                   //rename for funsies
 	value = args[1]
-	err = stub.PutState(name, []byte(value))         //write the variable into the ledger
+	err = stub.PutState(key, []byte(value))         //write the variable into the ledger
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -74,13 +74,13 @@ func delete_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response
 		return shim.Error(err.Error())
 	}
 
-	name := args[0]
+	id := args[0]
 	authed_by_company := args[1]
 
 	//get the marble
-	marble, err := get_marble(stub, name)
+	marble, err := get_marble(stub, id)
 	if err != nil{
-		fmt.Println("Failed to find marble by name " + name)
+		fmt.Println("Failed to find marble by id " + id)
 		return shim.Error(err.Error())
 	}
 
@@ -90,13 +90,13 @@ func delete_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response
 	}
 
 	//remove the marble
-	err = stub.DelState(name)                                                 //remove the key from chaincode state
+	err = stub.DelState(id)                                                 //remove the key from chaincode state
 	if err != nil {
 		return shim.Error("Failed to delete state")
 	}
 
 	//get the marble index from owner
-	owner, err := get_owner(stub, marble.Owner.Username, marble.Owner.Company)
+	/*owner, err := get_owner(stub, marble.Owner.Username, marble.Owner.Company)
 	if err != nil {
 		fmt.Println("Failed to find owner - " + marble.Owner.Username + " " + marble.Owner.Company)
 		return shim.Error(err.Error())
@@ -116,7 +116,7 @@ func delete_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response
 	}
 	var fullOwner = build_full_owner(marble.Owner.Username, marble.Owner.Company);
 	jsonAsBytes, _ := json.Marshal(owner)                                     //save new index
-	err = stub.PutState(fullOwner, jsonAsBytes)
+	err = stub.PutState(fullOwner, jsonAsBytes)*/
 
 	fmt.Println("- end delete_marble")
 	return shim.Success(nil)
@@ -156,7 +156,14 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) 
 		return shim.Error("The company '" + authed_by_company + "' cannot authorize creation for '" + company + "'.")
 	}
 
-	//check if marble already exists
+	//check if new owner exists
+	_, err = get_owner(stub, username, company)
+	if err != nil {
+		fmt.Println("Failed to find owner - " + username + " " + company)
+		return shim.Error(err.Error())
+	}
+
+	//check if marble id already exists
 	marble, err := get_marble(stub, id)
 	if err == nil {
 		fmt.Println("This marble already exists - " + id)
@@ -171,19 +178,14 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) 
 		return shim.Error(err.Error())
 	}
 
-	//get the marble index from owner
-	owner, err := get_owner(stub, username, company)
-	if err != nil {
-		fmt.Println("Failed to find owner - " + username + " " + company)
-		return shim.Error(err.Error())
-	}
-
+	/*
 	//append
 	var fullOwner = build_full_owner(username, company);
 	owner.Marbles = append(owner.Marbles, id)                     //add marble id to index list
 	fmt.Println("! marble index - ", owner.Marbles)
 	jsonAsBytes, _ := json.Marshal(owner)
 	err = stub.PutState(fullOwner, jsonAsBytes)                   //store id of marble
+	*/
 
 	fmt.Println("- end init_marble")
 	return shim.Success(nil)
