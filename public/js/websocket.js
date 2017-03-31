@@ -56,14 +56,13 @@ function connect_to_server() {
 				clearTimeout(pendingTransaction);
 				$('#appStartingText').hide();
 				clear_trash();
-				build_user_panels(msgObj.everything.owners_index);
+				build_user_panels(msgObj.everything.owners);
 				for (var i in msgObj.everything.marbles) {
 					populate_users_marbles(msgObj.everything.marbles[i]);
 				}
 
 				start_up = false;
 				$('.marblesWrap').each(function () {
-					//console.log('checking', $(this).attr('full_owner'), $(this).find('.innerMarbleWrap').find('.ball').length);
 					if ($(this).find('.innerMarbleWrap').find('.ball').length === 0) {
 						$(this).find('.noMarblesMsg').show();
 					}
@@ -115,7 +114,7 @@ function connect_to_server() {
 				start_up = false;
 
 				$('.marblesWrap').each(function () {
-					console.log('checking', $(this).attr('full_owner'), $(this).find('.innerMarbleWrap').find('.ball').length);
+					console.log('checking', $(this).attr('owner_id'), $(this).find('.innerMarbleWrap').find('.ball').length);
 					if ($(this).find('.innerMarbleWrap').find('.ball').length === 0) {
 						$(this).find('.noMarblesMsg').show();
 					}
@@ -192,13 +191,14 @@ function refreshHomePanel() {
 }
 
 //transfer_marble selected ball to user
-function transfer_marble(marbleName, to_username, to_company) {
+function transfer_marble(marbleName, to_username, to_company, to_owner_id) {
 	show_tx_step({ state: 'building_proposal' }, function () {
 		var obj = {
 			type: 'transfer_marble',
 			name: marbleName,
 			username: to_username,
 			company: to_company,
+			owner_id: to_owner_id,
 			v: 1
 		};
 		console.log(wsTxt + ' sending transfer marble msg', obj);

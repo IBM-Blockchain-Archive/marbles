@@ -129,10 +129,11 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) 
 	var err error
 	fmt.Println("starting init_marble")
 
-	//   0   ,  1  ,   2  ,         3       ,       4
-	// "blue", "35", "bob", "united marbles", "united marbles"
-	if len(args) != 5 {
-		return shim.Error("Incorrect number of arguments. Expecting 5")
+	//    0  ,   1 ,       2     ,       3
+	//  color, size,     owner id, 
+	// "blue", "35", "<owner id>", "united marbles"
+	if len(args) != 4 {
+		return shim.Error("Incorrect number of arguments. Expecting 4")
 	}
 
 	//input sanitation
@@ -143,24 +144,25 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) 
 
 	id := "m" + strconv.FormatInt(makeTimestamp(), 10);     //int64, base
 	color := strings.ToLower(args[0])
-	username := strings.ToLower(args[2])
-	company := args[3]
-	authed_by_company := args[4]
+	owner_id := strings.ToLower(args[2])
+	//username := strings.ToLower(args[2])
+	//company := args[3]
+	authed_by_company := args[3]
 	size, err := strconv.Atoi(args[1])
 	if err != nil {
-		return shim.Error("3rd argument must be a numeric string")
-	}
-
-	//check authorizing company
-	if company != authed_by_company{
-		return shim.Error("The company '" + authed_by_company + "' cannot authorize creation for '" + company + "'.")
+		return shim.Error("2nd argument must be a numeric string")
 	}
 
 	//check if new owner exists
-	_, err = get_owner(stub, username, company)
+	owner, err := get_owner(stub, owner_id)
 	if err != nil {
-		fmt.Println("Failed to find owner - " + username + " " + company)
+		fmt.Println("Failed to find owner - " + owner_id)
 		return shim.Error(err.Error())
+	}
+
+	//check authorizing company
+	if owner.Company != authed_by_company{
+		return shim.Error("The company '" + authed_by_company + "' cannot authorize creation for '" + owner.Company + "'.")
 	}
 
 	//check if marble id already exists
@@ -172,7 +174,17 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) 
 	}
 
 	//build the marble json string manually
-	str := `{"docType":"marble",  "name": "` + id + `", "color": "` + color + `", "size": ` + strconv.Itoa(size) + `, "owner": {"username": "` + username + `", "company": "` + company + `"}}`
+	str := `{
+		"docType":"marble", 
+		"name": "` + id + `", 
+		"color": "` + color + `", 
+		"size": ` + strconv.Itoa(size) + `, 
+		"owner": {
+			"id": "` + owner_id + `", 
+			"username": "` + owner.Username + `", 
+			"company": "` + owner.Company + `"
+		}
+	}`
 	err = stub.PutState(id, []byte(str))                         //store marble with id as key
 	if err != nil {
 		return shim.Error(err.Error())
@@ -202,11 +214,11 @@ func set_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	//should be possible since we can now add attributes to tx cert during
 	//as is this is broken (security wise), but it's much easier to demo...
 
-	//   0   ,     1  ,        2                 3
-	// marble, to user,       to company,  company that auth the transfer
-	// "name",   "bob", "united_marbles", "united_mables" 
-	if len(args) < 4 {
-		return shim.Error("Incorrect number of arguments. Expecting 4")
+	//   0   ,     1  ,        2                 3                4
+	// marble, to user,      to company ,  to owner id  , company that auth the transfer
+	// "name",   "bob", "united_marbles", "o99999999999", united_mables" 
+	if len(args) != 5 {
+		return shim.Error("Incorrect number of arguments. Expecting 5")
 	}
 
 	// input sanitation
@@ -218,7 +230,8 @@ func set_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	var marble_id = args[0]
 	var new_user = strings.ToLower(args[1])
 	var new_company = args[2]
-	var authed_by_company = args[3]
+	var new_owner_id = args[3]
+	var authed_by_company = args[4]
 	fmt.Println(marble_id + "->" + new_user + " - " + new_company + "|" + authed_by_company)
 
 	// get marble's current state 
@@ -235,6 +248,7 @@ func set_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	}
 
 	//transfer the marble
+	res.Owner.Id = new_owner_id                   //change the owner
 	res.Owner.Username = new_user                 //change the owner
 	res.Owner.Company = new_company               //change the owner
 	jsonAsBytes, _ := json.Marshal(res)
@@ -269,23 +283,17 @@ func init_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	var owner Owner
 	json.Unmarshal([]byte(args[0]), &owner)                          //un stringify input, aka JSON.parse()
 	owner.ObjectType = "marble_owner"
+	owner.Id = "o" + strconv.FormatInt(makeTimestamp(), 10);         //int64, base
 	owner.Username = strings.ToLower(args[0])
 	owner.Company = args[1]
 	owner.Timestamp = makeTimestamp()
 	fmt.Println(owner)
 
-	var fullOwner = build_full_owner(owner.Username, owner.Company); //concat owners name and the company name
-
-	//check if user already exists
-	_, err = get_owner(stub, owner.Username, owner.Company)
-	if err == nil {
-		fmt.Println("This owner already exists - " + owner.Username + " " + owner.Company)
-		return shim.Error("This owner already exists - " + owner.Username + " " + owner.Company)
-	}
+	//var fullOwner = build_full_owner(owner.Username, owner.Company); //concat owners name and the company name
 
 	//store user
 	ownerAsBytes, _ := json.Marshal(owner)
-	err = stub.PutState(fullOwner, ownerAsBytes)                   //store owner with concated name as key
+	err = stub.PutState(owner.Id, ownerAsBytes)                     //store owner by its Id
 	if err != nil {
 		fmt.Println("Could not store user")
 		return shim.Error(err.Error())
@@ -299,7 +307,7 @@ func init_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	}
 
 	//append to list
-	ownersIndex.Owners = append(ownersIndex.Owners, fullOwner)     //add owner to index list
+	ownersIndex.Owners = append(ownersIndex.Owners, owner.Id)     //add owner to index list
 	fmt.Println("! owner index - ", ownersIndex.Owners)
 	jsonAsBytes, _ := json.Marshal(ownersIndex)
 	err = stub.PutState(ownerIndexStr, jsonAsBytes)                //store updated owner index

@@ -34,6 +34,7 @@ $(document).on('ready', function () {
 			size: $('select[name="size"]').val(),
 			username: $('select[name="user"]').val(),
 			company: $('input[name="company"]').val(),
+			owner_id: $('input[name="owner_id"]').val(),
 			v: 1
 		};
 		console.log('creating marble, sending', obj);
@@ -103,15 +104,15 @@ $(document).on('ready', function () {
 
 			//figure out if the user matches the search
 			$('.marblesWrap').each(function () {												//iter on each marble user wrap
-				var full_owner = $(this).attr('full_owner');
+				var username = $(this).attr('username');
 				var company = $(this).attr('company');
-				if (full_owner) {
-					full_owner = full_owner.toLowerCase();
+				if (username && company) {
+					var full = (username + company).toLowerCase();
 					var show = false;
 
 					for (var x in parts) {													//iter on each search term
 						if (parts[x].trim() === '') continue;
-						if (full_owner.indexOf(parts[x].trim()) >= 0 || $(this).hasClass('marblesFixed')) {
+						if (full.indexOf(parts[x].trim()) >= 0 || $(this).hasClass('marblesFixed')) {
 							count++;
 							show = true;
 							known_companies[company].visible++;								//this user is visible
@@ -158,8 +159,10 @@ $(document).on('ready', function () {
 		$('#createPanel').fadeIn();
 		var company = $(this).parents('.innerMarbleWrap').parents('.marblesWrap').attr('company');
 		var username = $(this).parents('.innerMarbleWrap').parents('.marblesWrap').attr('username');
+		var owner_id = $(this).parents('.innerMarbleWrap').parents('.marblesWrap').attr('owner_id');
 		$('select[name="user"]').html('<option value="' + username + '">' + toTitleCase(username) + '</option>');
 		$('input[name="company"]').val(company);
+		$('input[name="owner_id"]').val(owner_id);
 	});
 
 	//close create marble panel

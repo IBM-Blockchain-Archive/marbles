@@ -61,7 +61,8 @@ func read(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 // Get everything we need (owners + marbles + companies)
 // Returns:
 // {
-//	"owners_index": [{
+//	"owners": [{
+//			"id": "o99999999",
 //			"company": "United Marbles"
 //			"username": "alice"
 //	}],
@@ -79,17 +80,18 @@ func read(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 // ============================================================================================================================
 func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 	type Everything struct {
-		OwnersIndex  []string    `json:"owners_index"`
-		Marbles      []Marble    `json:"marbles"`
+		Owners   []Owner   `json:"owners"`
+		Marbles  []Marble  `json:"marbles"`
 	}
 	var everything Everything
 
+	// ---- Get All Marbles ---- //
 	resultsIterator, err := stub.GetStateByRange("m0", "m9999999999999")
 	if err != nil {
 		return shim.Error(err.Error())
 	}
 	defer resultsIterator.Close()
-
+	
 	for resultsIterator.HasNext() {
 		queryKeyAsStr, queryValAsBytes, err := resultsIterator.Next()
 		if err != nil {
@@ -97,7 +99,6 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 		}
 
 		fmt.Println("on marble id - ", queryKeyAsStr)
-
 		var marble Marble
 		json.Unmarshal(queryValAsBytes, &marble)                  //un stringify it aka JSON.parse()
 		everything.Marbles = append(everything.Marbles, marble)   //add this marble to the list
@@ -105,11 +106,31 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 	fmt.Println("marble array - ", everything.Marbles)
 
 	//get owner index
-	owners_index, err := get_complete_owner_index(stub)
+	/*owners_index, err := get_complete_owner_index(stub)
 	if err != nil{
 		return shim.Error(err.Error())
 	}
-	everything.OwnersIndex = owners_index.Owners
+	everything.OwnersIndex = owners_index.Owners*/
+
+	// ---- Get All Owners ---- //
+	ownersIterator, err := stub.GetStateByRange("o0", "o9999999999999")
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	defer ownersIterator.Close()
+
+	for ownersIterator.HasNext() {
+		queryKeyAsStr, queryValAsBytes, err := ownersIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		
+		fmt.Println("on owner id - ", queryKeyAsStr)
+		var owner Owner
+		json.Unmarshal(queryValAsBytes, &owner)                  //un stringify it aka JSON.parse()
+		everything.Owners = append(everything.Owners, owner)     //add this marble to the list
+	}
+	fmt.Println("owner array - ", everything.Owners)
 
 	//change to array of bytes
 	everythingAsBytes, _ := json.Marshal(everything)

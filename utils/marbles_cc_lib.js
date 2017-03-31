@@ -53,8 +53,9 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 			cc_args: [
 				options.args.color,
 				options.args.size,
-				options.args.marble_owner,
-				options.args.owners_company,
+				options.args.owner_id,
+				//options.args.marble_owner,
+				//options.args.owners_company,
 				options.args.auth_company
 			]
 		};
@@ -107,6 +108,7 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 				options.args.marble_id,
 				options.args.marble_owner,
 				options.args.owners_company,
+				options.args.owner_id,
 				options.args.auth_company
 			]
 		};

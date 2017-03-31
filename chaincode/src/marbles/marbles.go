@@ -51,16 +51,17 @@ type Marble struct {
 var ownerIndexStr = "_ownerindex"             //name for the key/value that will store a list of all known owners
 type Owner struct {
 	ObjectType string `json:"docType"`
+	Id         string `json:"id"`
 	Username   string `json:"username"`
 	Company    string `json:"company"`
 	Timestamp  int64  `json:"timestamp"`      //utc timestamp of registration
-	Marbles  []string `json:"marbles"`        //list of marbles names
 }
 type OwnersIndex struct {
 	ObjectType string   `json:"docType"`
 	Owners    []string  `json:"owners"`
 }
 type OwnerRelation struct {
+	Id         string `json:"id"`
 	Username   string `json:"username"`
 	Company    string `json:"company"`
 }

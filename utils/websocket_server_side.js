@@ -65,6 +65,7 @@ module.exports = function (g_options, fcw, logger) {
 				size: data.size,
 				marble_owner: data.username,
 				owners_company: data.company,
+				owner_id: data.owner_id,
 				auth_company: process.env.marble_company,
 			};
 
@@ -81,6 +82,7 @@ module.exports = function (g_options, fcw, logger) {
 				marble_id: data.name,
 				marble_owner: data.username,
 				owners_company: data.company,
+				owner_id: data.owner_id,
 				auth_company: process.env.marble_company
 			};
 
@@ -227,13 +229,13 @@ module.exports = function (g_options, fcw, logger) {
 			}
 			else {
 				var data = resp.parsed;
-				if (data && data.owners_index && data.marbles) {
+				if (data && data.owners && data.marbles) {
 					console.log('');
-					logger.debug('[checking] number of owners:', data.owners_index.length);
+					logger.debug('[checking] number of owners:', data.owners.length);
 					logger.debug('[checking] number of marbles:', data.marbles.length);
 				}
 
-				data.owners_index = organize_usernames(data.owners_index);
+				data.owners = organize_usernames(data.owners);
 				data.marbles = organize_marbles(data.marbles);
 				var knownAsString = JSON.stringify(known_everything);			//stringify for easy comparison (order should stay the same)
 				var latestListAsString = JSON.stringify(data);
@@ -260,10 +262,10 @@ module.exports = function (g_options, fcw, logger) {
 		var ownerList = [];
 		var myUsers = [];
 		for (var i in data) {						//lets reformat it a bit, only need 1 peer's response
-			var pos = data[i].indexOf('.');
 			var temp = {
-				username: data[i].substring(0, pos),
-				company: data[i].substring(pos + 1)
+				id: data[i].id,
+				username: data[i].username,
+				company: data[i].company
 			};
 			if (temp.company === process.env.marble_company) {
 				myUsers.push(temp);					//these are my companies users
@@ -284,6 +286,7 @@ module.exports = function (g_options, fcw, logger) {
 		for (var i in allMarbles) {
 			if (!ret[allMarbles[i].owner.username]) {
 				ret[allMarbles[i].owner.username] = {
+					owner_id: allMarbles[i].owner.id,
 					username: allMarbles[i].owner.username,
 					company: allMarbles[i].owner.company,
 					marbles: []

@@ -499,11 +499,12 @@ __/public/js/ui_building.js__
                 var dragged_user = $(ui.draggable).attr('username').toLowerCase();
                 var dropped_user = $(event.target).parents('.marblesWrap').attr('username').toLowerCase();
                 var dropped_company = $(event.target).parents('.marblesWrap').attr('company');
+                var dropped_owner_id = $(event.target).parents('.marblesWrap').attr('owner_id');
 
                 console.log('dropped a marble', dragged_user, dropped_user, dropped_company);
                 if(dragged_user != dropped_user){              //only transfer marbles that changed owners
                     $(ui.draggable).addClass('invalid');
-                    transfer_marble(marble_id, dropped_user, dropped_company);
+                    transfer_marble(marble_id, dropped_user, dropped_company, dropped_owner_id);
                     return true;
                 }
             }

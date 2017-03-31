@@ -26,21 +26,35 @@ import (
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
+/*
 // ============================================================================================================================
 // Build Full Owner Key - concat owner's name and owner's company
 // ============================================================================================================================
 func build_full_owner(username string, company string) (string) {
 	return username + "." + company;                          //do not change case here!
 }
+*/
+
 
 // ============================================================================================================================
 // Get Owner - get the owner asset from ledger
 // ============================================================================================================================
-func get_owner(stub shim.ChaincodeStubInterface, username string, company string) (Owner, error) {
-	var fullOwner = build_full_owner(username, company);       //concat owners name and the company name
-	return get_owner_full(stub, fullOwner)
+func get_owner(stub shim.ChaincodeStubInterface, id string) (Owner, error) {
+	var owner Owner
+	ownerAsBytes, err := stub.GetState(id)              //this should always succeed, even if it doesn't exist
+	if err != nil {
+		return owner, errors.New("Failed to get owner - " + id)
+	}
+	json.Unmarshal(ownerAsBytes, &owner)                       //un stringify it aka JSON.parse()
+
+	if len(owner.Username) == 0 {                              //test if owner is actually here or just nil
+		return owner, errors.New("Owner does not exist - " + id + ", " + owner.Username + "." + owner.Company)
+	}
+	
+	return owner, nil
 }
 
+/*
 func get_owner_full(stub shim.ChaincodeStubInterface, fullOwner string) (Owner, error) {
 	var owner Owner
 	ownerAsBytes, err := stub.GetState(fullOwner)              //this should always succeed, even if it doesn't exist
@@ -55,6 +69,7 @@ func get_owner_full(stub shim.ChaincodeStubInterface, fullOwner string) (Owner, 
 
 	return owner, nil
 }
+*/
 
 // ============================================================================================================================
 // Get Array of All Owner Assets

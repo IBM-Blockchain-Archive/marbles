@@ -252,7 +252,7 @@ function simple_hash(a_string) {
 }
 
 //create random marble arguments (it is not important for it to be random, just more fun)
-function build_marble_options(username, company) {
+function build_marble_options(id, username, company) {
 	var colors = ['white', 'green', 'blue', 'purple', 'red', 'pink', 'orange', 'black', 'yellow'];
 	var sizes = ['35', '16'];
 	var color_index = simple_hash(more_entropy + company) % colors.length;		//build a psudeo random index to pick a color
@@ -260,8 +260,9 @@ function build_marble_options(username, company) {
 	return {
 		color: colors[color_index],
 		size: sizes[size_index],
-		marble_owner: username,
-		owners_company: company,
+		owner_id: id,
+		//marble_owner: username,
+		//owners_company: company,
 		auth_company: process.env.marble_company
 	};
 }
@@ -271,7 +272,7 @@ function saferNames(usernames) {
 	var ret = [];
 	for (var i in usernames) {
 		var name = usernames[i].replace(/\W+/g, '');								//names should not contain many things...
-		if (name !== '') ret.push(name);
+		if (name !== '') ret.push(name.toLowerCase());
 	}
 	return ret;
 }
@@ -283,7 +284,7 @@ function create_assets(build_marbles_users) {
 
 	if (build_marbles_users && build_marbles_users.length > 0) {
 		async.eachLimit(build_marbles_users, 1, function (username, user_cb) { 	//iter through each one ONLY ONE! [important]
-			logger.debug('- creating marble owner: ', username, Date.now());
+			logger.debug('- creating marble owner: ', username);
 
 			// --- Create Each User, Serially --- //
 			pessimistic_create_owner(0, username, function () {
@@ -294,17 +295,44 @@ function create_assets(build_marbles_users) {
 			logger.debug('- finished creating owners, now for marbles');
 			if (err == null) {
 
-				// --- Create Marbles, 2 Users at a Time --- //
-				async.eachLimit(build_marbles_users, 2, function (username, marble_cb) { //iter through each one 
+				marbles_lib.read_everything(null, function(err, resp){
+					console.log('\n\neverything!', resp);
+					var everything = resp.parsed;
 
-					// --- Create 2 Marbles Serially --- //
-					create_marbles(username, marble_cb);
+					console.log('?', build_marbles_users);
+					console.log('\n\neverything pos 0', everything.owners[0]);
 
-				}, function (err) {													//marble owner creation finished
-					logger.debug('- finished creating assets, waiting for peer catch up');
-					if (err == null) {
-						all_done();													//delay for peer catch up
+					var temp = [];
+					for(var i in build_marbles_users) {
+						for(var x in everything.owners){
+
+							console.log('testing', build_marbles_users[i], everything.owners[x].username);
+							if(build_marbles_users[i] === everything.owners[x].username){
+								console.log('match');
+								temp.push({
+									username: build_marbles_users[i],
+									id: everything.owners[x].id
+								});
+								break;
+							}
+						}
 					}
+
+					console.log('\n!?', temp);
+			
+					// --- Create Marbles, 2 Users at a Time --- //
+					async.eachLimit(temp, 2, function (owner_obj, marble_cb) { //iter through each one 
+
+						// --- Create 2 Marbles Serially --- //
+						create_marbles(owner_obj.id, owner_obj.username, marble_cb);
+
+					}, function (err) {													//marble owner creation finished
+						logger.debug('- finished creating assets, waiting for peer catch up');
+						if (err == null) {
+							all_done();													//delay for peer catch up
+						}
+					});
+
 				});
 			}
 		});
@@ -333,9 +361,10 @@ function pessimistic_create_owner(attempt, username, cb) {
 			cb(null);
 		}
 		else {
+			cb(null);
 
 			// -- Try again -- //
-			if (attempt < 4) {
+			/*if (attempt < 4) {
 				setTimeout(function () {								//delay for peer catch up
 					logger.debug('owner existance is not yet confirmed, trying again', attempt, username, Date.now());
 					return pessimistic_create_owner(++attempt, username, cb);
@@ -347,15 +376,15 @@ function pessimistic_create_owner(attempt, username, cb) {
 				logger.debug('giving up on creating the user', attempt, username, Date.now());
 				if (cb) return cb(e);
 				else return;
-			}
+			}*/
 		}
 	});
 }
 
 //create some marbles
-function create_marbles(username, cb) {
+function create_marbles(owner_id, username, cb) {
 	async.eachLimit([1, 2], 1, function (block_height, marble_cb) {	//create two marbles for every user
-		var randOptions = build_marble_options(username, process.env.marble_company);
+		var randOptions = build_marble_options(owner_id, username, process.env.marble_company);
 		console.log('');
 		logger.debug('[startup] going to create marble:', randOptions);
 		var options = {
