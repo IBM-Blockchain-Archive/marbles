@@ -119,9 +119,9 @@ func delete_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response
 // Shows off building a key's JSON value manually 
 //
 // Inputs - Array of strings
-//      0      ,    1  ,  2  ,      3      ,       4
-//     id      ,  color, size,    owner id ,    company
-// "m999999999", "blue", "35", "<owner id>", "united marbles"
+//      0      ,    1  ,  2  ,      3          ,       4
+//     id      ,  color, size,     owner id    ,  authing company
+// "m999999999", "blue", "35", "o9999999999999", "united marbles"
 // ============================================================================================================================
 func init_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) {
 	var err error
@@ -195,7 +195,7 @@ func init_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) 
 // Inputs - Array of Strings
 //           0        ,     1   ,   2
 //      owner id      , username, company
-// "o9999999999999999",     bob", "united marbles"
+// "o9999999999999",     bob", "united marbles"
 // ============================================================================================================================
 func init_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	var err error
@@ -243,9 +243,9 @@ func init_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 // Shows off GetState() and PutState()
 //
 // Inputs - Array of Strings
-//   0    ,     1  ,        2        ,         3     ,           4
-// marble2, to user,      to company ,  to owner id  , company that auth the transfer
-// "id"   ,   "bob", "united_marbles", "o99999999999", united_mables" 
+//       0     ,        1      ,        2
+//  marble id  ,  to owner id  , company that auth the transfer
+// "m999999999", "o99999999999", united_mables" 
 // ============================================================================================================================
 func set_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	var err error
@@ -255,8 +255,8 @@ func set_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	//should be possible since we can now add attributes to tx cert during
 	//as is this is broken (security wise), but it's much easier to demo...
 
-	if len(args) != 5 {
-		return shim.Error("Incorrect number of arguments. Expecting 5")
+	if len(args) != 3 {
+		return shim.Error("Incorrect number of arguments. Expecting 3")
 	}
 
 	// input sanitation
@@ -266,29 +266,33 @@ func set_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	}
 
 	var marble_id = args[0]
-	var new_user = strings.ToLower(args[1])
-	var new_company = args[2]
-	var new_owner_id = args[3]
-	var authed_by_company = args[4]
-	fmt.Println(marble_id + "->" + new_user + " - " + new_company + "|" + authed_by_company)
+	var new_owner_id = args[1]
+	var authed_by_company = args[2]
+	fmt.Println(marble_id + "->" + new_owner_id + " - |" + authed_by_company)
 
-	// get marble's current state 
+	// check if user already exists
+	owner, err := get_owner(stub, new_owner_id)
+	if err != nil {
+		return shim.Error("This owner does not exist - " + new_owner_id)
+	}
+
+	// get marble's current state
 	marbleAsBytes, err := stub.GetState(marble_id)
 	if err != nil {
 		return shim.Error("Failed to get marble")
 	}
 	res := Marble{}
-	json.Unmarshal(marbleAsBytes, &res)          //un stringify it aka JSON.parse()
+	json.Unmarshal(marbleAsBytes, &res)           //un stringify it aka JSON.parse()
 
-	//check authorizing company
+	// check authorizing company
 	if res.Owner.Company != authed_by_company{
 		return shim.Error("The company '" + authed_by_company + "' cannot authorize transfers for '" + res.Owner.Company + "'.")
 	}
 
-	//transfer the marble
+	// transfer the marble
 	res.Owner.Id = new_owner_id                   //change the owner
-	res.Owner.Username = new_user                 //change the owner
-	res.Owner.Company = new_company               //change the owner
+	res.Owner.Username = owner.Username           //change the owner
+	res.Owner.Company = owner.Company             //change the owner
 	jsonAsBytes, _ := json.Marshal(res)
 	err = stub.PutState(args[0], jsonAsBytes)     //rewrite the marble with id as key
 	if err != nil {

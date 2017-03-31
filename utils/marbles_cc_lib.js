@@ -105,8 +105,6 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 			cc_function: 'set_owner',
 			cc_args: [
 				options.args.marble_id,
-				options.args.marble_owner,
-				options.args.owners_company,
 				options.args.owner_id,
 				options.args.auth_company
 			]

@@ -123,15 +123,13 @@ function build_user_panels(data) {
 
 			//  ------------ Transfer Marble ------------ //
 			else {
-				var dragged_user = $(ui.draggable).attr('username').toLowerCase();
-				var dropped_user = $(event.target).parents('.marblesWrap').attr('username').toLowerCase();
-				var dropped_company = $(event.target).parents('.marblesWrap').attr('company');
+				var dragged_owner_id = $(ui.draggable).attr('owner_id');
 				var dropped_owner_id = $(event.target).parents('.marblesWrap').attr('owner_id');
 
-				console.log('dropped a marble', dragged_user, dropped_user, dropped_company);
-				if (dragged_user != dropped_user) {										//only transfer marbles that changed owners
+				console.log('dropped a marble', dragged_owner_id, dropped_owner_id);
+				if (dragged_owner_id != dropped_owner_id) {										//only transfer marbles that changed owners
 					$(ui.draggable).addClass('invalid bounce');
-					transfer_marble(marble_id, dropped_user, dropped_company, dropped_owner_id);
+					transfer_marble(marble_id, dropped_owner_id);
 					return true;
 				}
 			}

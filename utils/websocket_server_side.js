@@ -80,8 +80,6 @@ module.exports = function (g_options, fcw, logger) {
 			logger.info('[ws] transfering req');
 			options.args = {
 				marble_id: data.id,
-				marble_owner: data.username,
-				owners_company: data.company,
 				owner_id: data.owner_id,
 				auth_company: process.env.marble_company
 			};

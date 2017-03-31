@@ -191,13 +191,11 @@ function refreshHomePanel() {
 }
 
 //transfer_marble selected ball to user
-function transfer_marble(marbleId, to_username, to_company, to_owner_id) {
+function transfer_marble(marbleId, to_owner_id) {
 	show_tx_step({ state: 'building_proposal' }, function () {
 		var obj = {
 			type: 'transfer_marble',
 			id: marbleId,
-			username: to_username,
-			company: to_company,
 			owner_id: to_owner_id,
 			v: 1
 		};
