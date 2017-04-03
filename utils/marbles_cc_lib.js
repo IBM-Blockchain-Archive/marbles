@@ -58,7 +58,13 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 				options.args.auth_company
 			]
 		};
-		fcw.invoke_chaincode(enrollObj, opts, cb);
+		fcw.invoke_chaincode(enrollObj, opts, function (err, resp) {
+			if (cb) {
+				if(!resp) resp = {};
+				resp.id = opts.cc_args[0];			//pass marble id back
+				cb(err, resp);
+			}
+		});
 	};
 
 	//get list of marbles
@@ -182,11 +188,17 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 			cc_function: 'init_owner',
 			cc_args: [
 				'o' + leftPad(Date.now() + randStr(5), 19),
-				options.args.marble_owner, 
+				options.args.marble_owner,
 				options.args.owners_company
 			]
 		};
-		fcw.invoke_chaincode(enrollObj, opts, cb);
+		fcw.invoke_chaincode(enrollObj, opts, function (err, resp) {
+			if (cb) {
+				if(!resp) resp = {};
+				resp.id = opts.cc_args[0];				//pass owner id back
+				cb(err, resp);
+			}
+		});
 	};
 
 	//get a owner/user
