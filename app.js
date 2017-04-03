@@ -179,7 +179,9 @@ function setup_marbles_lib() {
 
 			// --- Check Chaincode Compatibility  --- //
 			marbles_lib.check_version(options, function (err, resp) {
-				if (!helper.errorWithVersions(resp)) {
+				if (helper.errorWithVersions(resp)) {
+					broadcast_state('no_chaincode');
+				} else {
 					broadcast_state('found_chaincode');
 					var user_base = null;
 					if (process.env.app_first_setup === 'yes') user_base = helper.getMarbleUsernames();

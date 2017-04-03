@@ -359,8 +359,6 @@ module.exports = function (config_filename, logger) {
 			logger.warn('Install and instantiate v' + version[0] + '.x.x' + ' chaincode on channel ' + helper.getChannelId());
 			logger.warn('----------------------------------------------------------------------');
 			console.log('\n\n');
-			console.log('killing self');
-			process.exit();									//we die here
 			return true;
 		}
 		return false;

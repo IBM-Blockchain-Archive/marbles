@@ -30,7 +30,8 @@ function get_credential_data() {
 		ca: helper.getCasUrl(0),
 		peer: helper.getPeersUrl(0),
 		chaincode_id: helper.getChaincodeId(),
-		marble_owners: helper.getMarbleUsernames()
+		chaincode_version: helper.getChaincodeVersion(),
+		marble_owners: helper.getMarbleUsernames(),
 	};
 	for (var i in ret) {
 		if (ret[i] == null) ret[i] = '';			//set to blank if not found
