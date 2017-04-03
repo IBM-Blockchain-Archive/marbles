@@ -152,7 +152,7 @@ module.exports = function (config_filename, logger) {
 
 	// get tls certificate for peers/cas/orderer
 	helper.getCertificate = function () {
-		return helper.creds.credentials.tls_certificate;
+		return helper.creds.credentials.tls_certificate;		//can be null
 	};
 
 	// get the chaincode id on network
@@ -220,6 +220,7 @@ module.exports = function (config_filename, logger) {
 			chaincode_id: helper.getChaincodeId(),
 			event_url: (helper.getEventsSetting()) ? helper.getPeerEventUrl(0) : null,
 			chaincode_version: helper.getChaincodeVersion(),
+			pem: helper.getCertificate()
 		};
 	};
 

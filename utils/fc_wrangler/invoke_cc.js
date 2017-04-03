@@ -20,11 +20,12 @@ module.exports = function (g_options, logger) {
 					channel_id: "channel id",
 					chaincode_id: "chaincode id",
 					chaincode_version: "v0",
-					event_url: "peers event url",
-					endorsed_hook: function(error, res){},
-					ordered_hook: function(error, res){},
+					event_url: "peers event url",			<optional>
+					endorsed_hook: function(error, res){},	<optional>
+					ordered_hook: function(error, res){},	<optional>
 					cc_function: "function_name",
 					cc_args: ["argument 1"],
+					pem: 'complete tls certificate'			<optional>
 		}
 	*/
 	invoke_cc.invoke_chaincode = function (obj, options, cb) {
@@ -50,7 +51,9 @@ module.exports = function (g_options, logger) {
 		if (options.event_url) {
 			logger.debug('[fcw] listening to event url', options.event_url);
 			eventhub = new EventHub();
-			eventhub.setPeerAddr(options.event_url);
+			eventhub.setPeerAddr(options.event_url, {
+				pem: options.pem
+			});
 			eventhub.connect();
 		} else {
 			logger.debug('[fcw] will not use tx event');
@@ -113,7 +116,7 @@ module.exports = function (g_options, logger) {
 						else return;
 					}
 
-				// ------- [B] Wait xxxx ms for Block  ------- // option B
+					// ------- [B] Wait xxxx ms for Block  ------- // option B
 				} else {
 					setTimeout(function () {
 						if (cb) return cb(null);

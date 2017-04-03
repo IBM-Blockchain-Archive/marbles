@@ -26,7 +26,7 @@ module.exports = function (logger) {
 			enroll_id: 'enrollId',
 			enroll_secret: 'enrollSecret',
 			msp_id: 'string',
-			pem: 'complete tls certificate'
+			pem: 'complete tls certificate'		<optional>
 		}
 	*/
 
@@ -63,9 +63,9 @@ module.exports = function (logger) {
 
 			try {
 				for (var i in options.peer_urls) {
-					chain.addPeer(new Peer(options.peer_urls[i]), {
+					chain.addPeer(new Peer(options.peer_urls[i], {
 						pem: options.pem
-					});
+					}));
 					logger.debug('added peer', options.peer_urls[i]);
 				}
 			}
@@ -73,7 +73,9 @@ module.exports = function (logger) {
 				//might error if peer already exists, but we don't care
 			}
 			try {
-				chain.setPrimaryPeer(new Peer(options.peer_urls[0]));
+				chain.setPrimaryPeer(new Peer(options.peer_urls[0], {
+					pem: options.pem
+				}));
 				logger.debug('added primary peer', options.peer_urls[0]);
 			}
 			catch (e) {
