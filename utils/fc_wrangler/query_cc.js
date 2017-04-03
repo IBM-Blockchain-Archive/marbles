@@ -92,18 +92,22 @@ module.exports = function (logger) {
 			}
 
 			try {
-				if (as_string === '') {
+				if (as_string === '') {							//if its empty, thats okay... well its not great 
 					as_obj = '';
+				} else {
+					as_obj = JSON.parse(as_string);				//if we can parse it, its great
 				}
-				else {
-					as_obj = JSON.parse(as_string);
-				}
-				//logger.debug('[fcw] Peer ' + i, 'payload as self:', as_obj, 'type', typeof as_obj);
 				logger.debug('[fcw] Peer ' + i, 'type', typeof as_obj);
 				if (ret.parsed === null) ret.parsed = as_obj;	//store the first one here
 			}
 			catch (e) {
-				logger.warn('[fcw] warning - could not json parse query response');
+				if (as_string.indexOf('Error: failed to obtain') >= 0) {
+					logger.error('[fcw] query resp looks like an error', typeof as_string, as_string);
+					ret.parsed = null;
+				} else {
+					logger.warn('[fcw] warning - query resp is not json, might be okay.', typeof as_string, as_string);
+					ret.parsed = as_string;
+				}
 			}
 		}
 		return ret;

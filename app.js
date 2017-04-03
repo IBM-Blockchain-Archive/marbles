@@ -105,25 +105,6 @@ console.log('------------------------------------------ Server Up - ' + host + '
 if (process.env.PRODUCTION) logger.debug('Running using Production settings');
 else logger.debug('Running using Developer settings');
 
-if (helper.getNetworkId() === 'FakeNetworkId') {
-	console.log('\n\n');
-	logger.warn('----------------------------------------------------------------------');
-	logger.warn('----------------------------- Hey Buddy! -----------------------------');
-	logger.warn('------------------------ It looks like you did -----------------------');
-	logger.error('------------------------------- not  --------------------------------');
-	logger.warn('------------------------- follow my instructions ---------------------');
-	logger.warn('----------------------------------------------------------------------');
-	logger.warn('Your network config JSON has a network ID of "FakeNetworkID"...');
-	logger.warn('You likely have other settings that are wrong too!');
-	logger.warn('----------------------------------------------------------------------');
-	logger.error('Fix this file: ' + helper.getNetworkCredFileName());
-	logger.warn('It must have credentials/hostnames/ports/channels/etc for YOUR network');
-	logger.warn('How/where would I get that info? Using the Bluemix service? Then look at these instructions(near the end): ');
-	logger.warn('  https://github.com/IBM-Blockchain/marbles/blob/v3.0/docs/install_chaincode.md');
-	logger.warn('----------------------------------------------------------------------');
-	console.log('\n\n');
-}
-
 // ============================================================================================================================
 // 														Warning
 // ============================================================================================================================
@@ -141,6 +122,7 @@ if (helper.getNetworkId() === 'FakeNetworkId') {
 // ------------------------------------------------------------------------------------------------------------------------------
 process.env.app_state = 'starting';
 process.env.app_first_setup = 'yes';
+helper.checkConfig();
 setupWebSocket();
 
 var hash = helper.getMarbleStartUpHash();
@@ -193,12 +175,17 @@ function setup_marbles_lib() {
 			broadcast_state('no_chaincode');
 		}
 		else {													//else we already deployed
-			console.log('\n------------------------------------------ Chaincode Found ------------------------------------------\n');
-			broadcast_state('found_chaincode');
+			console.log('\n----------------------------- Chaincode Found on Channel ' + helper.getChannelId() + ' -----------------------------\n');
 
-			var user_base = null;
-			if (process.env.app_first_setup === 'yes') user_base = helper.getMarbleUsernames();
-			create_assets(user_base); 							//builds marbles, then starts webapp
+			// --- Check Chaincode Compatibility  --- //
+			marbles_lib.check_version(options, function (err, resp) {
+				if (!helper.errorWithVersions(resp)) {
+					broadcast_state('found_chaincode');
+					var user_base = null;
+					if (process.env.app_first_setup === 'yes') user_base = helper.getMarbleUsernames();
+					create_assets(user_base); 					//builds marbles, then starts webapp
+				}
+			});
 		}
 	});
 }
@@ -273,7 +260,7 @@ function create_assets(build_marbles_users) {
 
 			// --- Create Each User --- //
 			create_owners(0, username, function (errCode, resp) {
-				owners.push({id: resp.id, username: username});
+				owners.push({ id: resp.id, username: username });
 				owner_cb();
 			});
 
@@ -283,8 +270,8 @@ function create_assets(build_marbles_users) {
 
 				var marbles = [];
 				var marblesEach = 3;											//number of marbles each owner gets
-				for(var i in owners){
-					for(var x=0; x < marblesEach; x++){
+				for (var i in owners) {
+					for (var x = 0; x < marblesEach; x++) {
 						marbles.push(owners[i]);
 					}
 				}

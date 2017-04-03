@@ -88,6 +88,12 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 		return shim.Error("Expecting a numeric string argument to Init()")
 	}
 
+	// store compaitible marbles application version
+	err = stub.PutState("marbles_ui", []byte("4.0.0"))
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
 	// this is a very simple dumb test.  let's write to the ledger and error on any errors
 	err = stub.PutState("selftest", []byte(strconv.Itoa(Aval))) //making a test var "selftest", its handy to read this right away to test the network
 	if err != nil {

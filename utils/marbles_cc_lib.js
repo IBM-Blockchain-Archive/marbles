@@ -7,7 +7,7 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 
 	// Chaincode -------------------------------------------------------------------------------
 
-	//check chaincode
+	//check if chaincode exists
 	marbles_chaincode.check_if_already_deployed = function (options, cb) {
 		console.log('');
 		logger.info('Checking for chaincode...');
@@ -17,7 +17,34 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 			chaincode_id: g_options.chaincode_id,
 			chaincode_version: g_options.chaincode_version,
 			cc_function: 'read',
-			cc_args: ['abc']
+			cc_args: ['selftest']
+		};
+		fcw.query_chaincode(enrollObj, opts, function (err, resp) {
+			if (err != null) {
+				if (cb) return cb(err, resp);
+			}
+			else {
+				if (resp.parsed == null || isNaN(resp.parsed)) {	 //if nothing is here, no chaincode
+					if (cb) return cb({ error: 'chaincode not found' }, resp);
+				}
+				else {
+					if (cb) return cb(null, resp);
+				}
+			}
+		});
+	};
+
+	//check chaincode version
+	marbles_chaincode.check_version = function (options, cb) {
+		console.log('');
+		logger.info('Checking chaincode and ui compatibility...');
+
+		var opts = {
+			channel_id: g_options.channel_id,
+			chaincode_id: g_options.chaincode_id,
+			chaincode_version: g_options.chaincode_version,
+			cc_function: 'read',
+			cc_args: ['marbles_ui']
 		};
 		fcw.query_chaincode(enrollObj, opts, function (err, resp) {
 			if (err != null) {
