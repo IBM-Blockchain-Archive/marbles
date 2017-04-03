@@ -149,6 +149,11 @@ module.exports = function (config_filename, logger) {
 		}
 	};
 
+	// get tls certificate for peers/cas/orderer
+	helper.getCertificate = function () {
+		return helper.creds.credentials.tls_certificate;
+	};
+
 	// get the chaincode id on network
 	helper.getChaincodeId = function () {
 		return getBlockchainField('chaincode_id');
@@ -202,7 +207,7 @@ module.exports = function (config_filename, logger) {
 	// get the re-enrollment period in seconds
 	helper.getKeepAliveMs = function () {
 		var sec = getMarblesField('keep_alive_secs');
-		if(!sec) sec = 30;									//default to 30 seconds
+		if (!sec) sec = 30;									//default to 30 seconds
 		return (sec * 1000);
 	};
 
@@ -228,7 +233,8 @@ module.exports = function (config_filename, logger) {
 			peer_urls: [helper.getPeersUrl(0)],
 			enroll_id: user.enrollId,
 			enroll_secret: user.enrollSecret,
-			msp_id: helper.getPeersMspId(0)
+			msp_id: helper.getPeersMspId(0),
+			pem: helper.getCertificate()
 		};
 	};
 

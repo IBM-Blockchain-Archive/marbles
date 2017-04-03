@@ -25,7 +25,8 @@ module.exports = function (logger) {
 			orderer_url: 'grpc://urlhere:port',
 			enroll_id: 'enrollId',
 			enroll_secret: 'enrollSecret',
-			msp_id: 'string'
+			msp_id: 'string',
+			pem: 'complete tls certificate'
 		}
 	*/
 
@@ -56,11 +57,15 @@ module.exports = function (logger) {
 			return getSubmitter(client, options);							//do most of the work here
 		}).then(function (submitter) {
 
-			chain.addOrderer(new Orderer(options.orderer_url));
+			chain.addOrderer(new Orderer(options.orderer_url, {
+				pem: options.pem
+			}));
 
 			try {
 				for (var i in options.peer_urls) {
-					chain.addPeer(new Peer(options.peer_urls[i]));
+					chain.addPeer(new Peer(options.peer_urls[i]), {
+						pem: options.pem
+					});
 					logger.debug('added peer', options.peer_urls[i]);
 				}
 			}
@@ -103,8 +108,12 @@ module.exports = function (logger) {
 			} else {
 
 				// Need to enroll it with CA server
-				var ca_client = new CaService(options.ca_url);
-				logger.debug('id', options.enroll_id, 'secret', options.enroll_secret);					//dsh todo remove this
+				var tlsOptions = {
+					trustedRoots: [options.pem],
+					verify: false
+				};
+				var ca_client = new CaService(options.ca_url, tlsOptions);
+				logger.debug('id', options.enroll_id, 'secret', options.enroll_secret);
 				logger.debug('msp_id', options.msp_id);
 				return ca_client.enroll({
 					enrollmentID: options.enroll_id,
