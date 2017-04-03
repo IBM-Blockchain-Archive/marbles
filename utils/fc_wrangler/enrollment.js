@@ -47,7 +47,17 @@ module.exports = function (logger) {
 			return;
 		}
 
-		logger.info('[fcw] Going to enroll for mspId ', options);
+		var debug = {												// this is just for console printing, no PEM here
+			peer_urls: options.peer_urls,
+			channel_id: options.channel_id,
+			uuid: options.uuid,
+			ca_url: options.ca_url,
+			orderer_url: options.orderer_url,
+			enroll_id: options.enroll_id,
+			enroll_secret: options.enroll_secret,
+			msp_id: options.msp_id
+		};
+		logger.info('[fcw] Going to enroll for mspId ', debug);
 
 		// Make eCert kvs (Key Value Store)
 		HFC.newDefaultKeyValueStore({

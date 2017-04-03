@@ -33,7 +33,15 @@ module.exports = function (logger) {
 			txId: chain.buildTransactionID(nonce, obj.submitter),
 			nonce: nonce,
 		};
-		logger.debug('[fcw] Sending query req', request);
+		var debug = {												// this is just for console printing, no NONCE here
+			chainId: options.channel_id,
+			chaincodeId: options.chaincode_id,
+			chaincodeVersion: options.chaincode_version,
+			fcn: options.cc_function,
+			args: options.cc_args,
+			txId: chain.buildTransactionID(nonce, obj.submitter),
+		};
+		logger.debug('[fcw] Sending query req', debug);
 
 		chain.queryByChaincode(request
 			//nothing
