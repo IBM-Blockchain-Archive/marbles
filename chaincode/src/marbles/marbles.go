@@ -89,7 +89,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 	}
 
 	// store compaitible marbles application version
-	err = stub.PutState("marbles_ui", []byte("4.0.0"))
+	err = stub.PutState("marbles_ui", []byte("3.5.0"))
 	if err != nil {
 		return shim.Error(err.Error())
 	}
