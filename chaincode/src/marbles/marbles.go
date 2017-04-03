@@ -20,7 +20,6 @@ under the License.
 package main
 
 import (
-	"errors"
 	"fmt"
 	"strconv"
 
@@ -33,21 +32,21 @@ type SimpleChaincode struct {
 }
 
 // ============================================================================================================================
-// Asset Definitions
+// Asset Definitions - The ledger will store marbles and owners
 // ============================================================================================================================
 
 // ----- Marbles ----- //
 type Marble struct {
-	ObjectType string        `json:"docType"`
-	Id       string          `json:"id"`    //the fieldtags are needed to keep case from bouncing around
+	ObjectType string        `json:"docType"` //field for couchdb
+	Id       string          `json:"id"`      //the fieldtags are needed to keep case from bouncing around
 	Color      string        `json:"color"`
-	Size       int           `json:"size"`
+	Size       int           `json:"size"`    //size in mm of marble
 	Owner      OwnerRelation `json:"owner"`
 }
 
 // ----- Owners ----- //
 type Owner struct {
-	ObjectType string `json:"docType"`
+	ObjectType string `json:"docType"`     //field for couchdb
 	Id         string `json:"id"`
 	Username   string `json:"username"`
 	Company    string `json:"company"`
@@ -55,8 +54,8 @@ type Owner struct {
 
 type OwnerRelation struct {
 	Id         string `json:"id"`
-	Username   string `json:"username"`
-	Company    string `json:"company"`
+	Username   string `json:"username"`    //this is mostly cosmetic/handy, the real relation is by Id not Username
+	Company    string `json:"company"`     //this is mostly cosmetic/handy, the real relation is by Id not Company
 }
 
 // ============================================================================================================================
@@ -71,7 +70,7 @@ func main() {
 
 
 // ============================================================================================================================
-// Init - reset all the things
+// Init - initialize the chaincode - marbles don’t need anything initlization, so let's run a dead simple test instead
 // ============================================================================================================================
 func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 	fmt.Println("Marbles Is Starting Up")
@@ -83,19 +82,19 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
 
-	// Initialize the chaincode
+	// convert numeric string to integer
 	Aval, err = strconv.Atoi(args[0])
 	if err != nil {
-		return shim.Error("Expecting integer value for asset holding")
+		return shim.Error("Expecting a numeric string argument to Init()")
 	}
 
-	// Write the state to the ledger
-	err = stub.PutState("abc", []byte(strconv.Itoa(Aval))) //making a test var "abc", I find it handy to read/write to it right away to test the network
+	// this is a very simple dumb test.  let's write to the ledger and error on any errors
+	err = stub.PutState("selftest", []byte(strconv.Itoa(Aval))) //making a test var "selftest", its handy to read this right away to test the network
 	if err != nil {
-		return shim.Error(err.Error())
+		return shim.Error(err.Error())                          //self-test fail
 	}
 
-	fmt.Println(" - ready for action")
+	fmt.Println(" - ready for action")                          //self-test pass
 	return shim.Success(nil)
 }
 
@@ -109,17 +108,17 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	fmt.Println("starting invoke, for - " + function)
 
 	// Handle different functions
-	if function == "init" {                   //initialize the chaincode state, used as reset
+	if function == "init" {                    //initialize the chaincode state, used as reset
 		return t.Init(stub)
-	} else if function == "read" {            //generic read ledger
+	} else if function == "read" {             //generic read ledger
 		return read(stub, args)
-	} else if function == "write" {           //generic writes to ledger
+	} else if function == "write" {            //generic writes to ledger
 		return write(stub, args)
-	} else if function == "delete_marble" {   //deletes a marble from state
+	} else if function == "delete_marble" {    //deletes a marble from state
 		return delete_marble(stub, args)
-	} else if function == "init_marble" {     //create a new marble
+	} else if function == "init_marble" {      //create a new marble
 		return init_marble(stub, args)
-	} else if function == "set_owner" {       //change owner of a marble
+	} else if function == "set_owner" {        //change owner of a marble
 		return set_owner(stub, args)
 	} else if function == "init_owner"{        //create a new marble owner
 		return init_owner(stub, args)
@@ -142,19 +141,4 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 // ============================================================================================================================
 func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) pb.Response {
 	return shim.Error("Unknown supported call - Query()")
-}
-
-// ========================================================
-// Input Sanitation - dumb input checking, look for empty strings
-// ========================================================
-func sanitize_arguments(strs []string) error{
-	for i, val:= range strs {
-		if len(val) <= 0 {
-			return errors.New("Argument " + strconv.Itoa(i) + " must be a non-empty string")
-		}
-		if len(val) > 32 {
-			return errors.New("Argument " + strconv.Itoa(i) + " must be <= 32 characters")
-		}
-	}
-	return nil
 }

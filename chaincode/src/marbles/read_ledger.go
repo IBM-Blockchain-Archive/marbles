@@ -34,8 +34,8 @@ import (
 // Shows Off GetState() - reading a key/value from the ledger
 //
 // Inputs - Array of strings
-//    0
-//   key
+//  0
+//  key
 //  "abc"
 // 
 // Returns - string
@@ -138,7 +138,7 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 	fmt.Println("owner array - ", everything.Owners)
 
 	//change to array of bytes
-	everythingAsBytes, _ := json.Marshal(everything)
+	everythingAsBytes, _ := json.Marshal(everything)             //convert to array of bytes
 	return shim.Success(everythingAsBytes)
 }
 
@@ -148,8 +148,8 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 // Shows Off GetHistoryForKey() - reading complete history of a key/value
 //
 // Inputs - Array of strings
-//           0
-//          id
+//  0
+//  id
 //  "m01490985296352SjAyM"
 // ============================================================================================================================
 func getHistory(stub shim.ChaincodeStubInterface, args []string) pb.Response {
@@ -185,7 +185,7 @@ func getHistory(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 		json.Unmarshal(historicValue, &marble)     //un stringify it aka JSON.parse()
 		if historicValue == nil {                  //marble has been deleted
 			var emptyMarble Marble
-			tx.Value = emptyMarble                 //copy marble over
+			tx.Value = emptyMarble                 //copy nil marble
 		} else {
 			json.Unmarshal(historicValue, &marble) //un stringify it aka JSON.parse()
 			tx.Value = marble                      //copy marble over
@@ -195,7 +195,7 @@ func getHistory(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	fmt.Printf("- getHistoryForMarble returning:\n%s", history)
 
 	//change to array of bytes
-	historyAsBytes, _ := json.Marshal(history)
+	historyAsBytes, _ := json.Marshal(history)     //convert to array of bytes
 	return shim.Success(historyAsBytes)
 }
 

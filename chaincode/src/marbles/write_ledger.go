@@ -226,8 +226,8 @@ func init_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	}
 
 	//store user
-	ownerAsBytes, _ := json.Marshal(owner)
-	err = stub.PutState(owner.Id, ownerAsBytes)                       //store owner by its Id
+	ownerAsBytes, _ := json.Marshal(owner)                         //convert to array of bytes
+	err = stub.PutState(owner.Id, ownerAsBytes)                    //store owner by its Id
 	if err != nil {
 		fmt.Println("Could not store user")
 		return shim.Error(err.Error())
@@ -253,8 +253,8 @@ func set_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 
 	// this is quirky
 	// todo - get the "company that authed the transfer" from the certificate instead of an argument
-	// should be possible since we can now add attributes to enrollment cert
-	// as is this is a bit broken (security wise), but it's much much easier to demo... holding off for demos sake
+	// should be possible since we can now add attributes to the enrollment cert
+	// as is.. this is a bit broken (security wise), but it's much much easier to demo! holding off for demos sake
 
 	if len(args) != 3 {
 		return shim.Error("Incorrect number of arguments. Expecting 3")
@@ -292,9 +292,9 @@ func set_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 
 	// transfer the marble
 	res.Owner.Id = new_owner_id                   //change the owner
-	res.Owner.Username = owner.Username           //change the owner
-	res.Owner.Company = owner.Company             //change the owner
-	jsonAsBytes, _ := json.Marshal(res)
+	res.Owner.Username = owner.Username
+	res.Owner.Company = owner.Company
+	jsonAsBytes, _ := json.Marshal(res)           //convert to array of bytes
 	err = stub.PutState(args[0], jsonAsBytes)     //rewrite the marble with id as key
 	if err != nil {
 		return shim.Error(err.Error())
