@@ -13,20 +13,15 @@ module.exports.setup = function(sdk, cc){
 module.exports.process_msg = function(ws, data){
 	if(data.v === 1){																						//only look at messages for part 1
 		if(data.type == 'create'){
+			
 			console.log('its a create!');
-			if(data.name && data.color && data.size && data.user){
-				chaincode.invoke.init_marble([data.name, data.color, data.size, data.user], cb_invoked);	//create a new marble
+			if(data.name && data.sex && data.keyword){
+				console.log(chaincode.invoke.create_user([data.name, data.keyword, data.sex], cb_invoked) );	//create a new marble
 			}
 		}
 		else if(data.type == 'get'){
-			console.log('get marbles msg');
+			console.log('get user msg');
 			chaincode.query.read(['_marbleindex'], cb_got_index);
-		}
-		else if(data.type == 'transfer'){
-			console.log('transfering msg');
-			if(data.name && data.user){
-				chaincode.invoke.set_user([data.name, data.user]);
-			}
 		}
 		else if(data.type == 'remove'){
 			console.log('removing msg');
@@ -42,7 +37,7 @@ module.exports.process_msg = function(ws, data){
 
 	//got the marble index, lets get each marble
 	function cb_got_index(e, index){
-		if(e != null) console.log('[ws error] did not get marble index:', e);
+		if(e != null) console.log('[ws error] did not get user index:', e);
 		else{
 			try{
 				var json = JSON.parse(index);

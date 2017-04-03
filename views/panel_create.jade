@@ -1,5 +1,5 @@
 #createPanel(hidden).panel
-	h1 Create Marble
+	h1 Create New User
 	hr
 	
 	#innerWrap
@@ -7,27 +7,24 @@
 		
 		form(action="/create" method="POST")#createform
 			legend 
-				input(type="text" name="name" placeholder="Name Your Marble")
-				span.hint &nbsp;&nbsp;RANDOM OR CUSTOM STRING
-			
-			br
-			legend
-				include ./template/color_options.jade
+				input(type="text" name="name" placeholder="Name the User")
+				span.hint &nbsp;&nbsp; Please input the name
 				
 			br
 			legend 
-				select(name="size")
-					option(value="35" disabled="disabled" selected="selected") Size
-					option(value="35") Large
-					option(value="16") Small
+				input(type="text" name="keyword" placeholder="input the keyword")
+				span.hint &nbsp;&nbsp; Please input your keyword
+				
 			br
 			legend 
-				select(name="user")
-					option(value="#{bag.setup.USER1}" disabled="disabled" selected="selected") User
-					option(value="#{bag.setup.USER1}") #{bag.setup.USER1.substring(0,1).toUpperCase() + bag.setup.USER1.substring(1)}
-					option(value="#{bag.setup.USER2}") #{bag.setup.USER2.substring(0,1).toUpperCase() + bag.setup.USER2.substring(1)}
+				select(name="sex")
+					option(value="man" disabled="disabled" selected="selected") sex
+					option(value="man") man
+					option(value="woman") woman
+		
 			button(type="button")#submit
 				span.fa.fa-check &nbsp;&nbsp;
 				span CREATE
+			
 			
 			
