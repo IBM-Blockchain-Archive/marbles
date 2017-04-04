@@ -152,7 +152,17 @@ module.exports = function (config_filename, logger) {
 
 	// get tls certificate for peers/cas/orderer
 	helper.getCertificate = function () {
-		return helper.creds.credentials.tls_certificate;		//can be null
+		if(helper.creds.credentials.tls_certificate && helper.creds.credentials.tls_certificate.indexOf('-BEGIN CERTIFICATE-') === -1) {
+			var path2cert = path.join(__dirname, '../config/' + helper.creds.credentials.tls_certificate);	// looks like cert field is a path to a file
+			return fs.readFileSync(path2cert, 'utf8') + '\r\n'; //read from file, LOOKING IN config FOLDER
+		} else {
+			return helper.creds.credentials.tls_certificate;	//can be null if network is not using TLS
+		}
+	};
+
+	// get tls certificate's common name for peers/cas/orderer
+	helper.getCommonName = function () {
+		return helper.creds.credentials.common_name;			//can be null if cert matches hostname
 	};
 
 	// get the chaincode id on network
@@ -220,7 +230,8 @@ module.exports = function (config_filename, logger) {
 			chaincode_id: helper.getChaincodeId(),
 			event_url: (helper.getEventsSetting()) ? helper.getPeerEventUrl(0) : null,
 			chaincode_version: helper.getChaincodeVersion(),
-			pem: helper.getCertificate()
+			pem: helper.getCertificate(),
+			common_name: helper.getCommonName(),
 		};
 	};
 
@@ -236,7 +247,8 @@ module.exports = function (config_filename, logger) {
 			enroll_id: user.enrollId,
 			enroll_secret: user.enrollSecret,
 			msp_id: helper.getPeersMspId(0),
-			pem: helper.getCertificate()
+			pem: helper.getCertificate(),
+			common_name: helper.getCommonName(),
 		};
 	};
 

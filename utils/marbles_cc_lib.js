@@ -84,7 +84,8 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 				options.args.owner_id,
 				options.args.auth_company
 			],
-			pem: g_options.pem
+			pem: g_options.pem,
+			common_name: g_options.common_name
 		};
 		fcw.invoke_chaincode(enrollObj, opts, function (err, resp) {
 			if (cb) {
@@ -142,7 +143,8 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 				options.args.owner_id,
 				options.args.auth_company
 			],
-			pem: g_options.pem
+			pem: g_options.pem,
+			common_name: g_options.common_name
 		};
 		fcw.invoke_chaincode(enrollObj, opts, cb);
 	};
@@ -161,7 +163,8 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 			ordered_hook: options.ordered_hook,
 			cc_function: 'delete_marble',
 			cc_args: [options.args.marble_id, options.args.auth_company],
-			pem: g_options.pem
+			pem: g_options.pem,
+			common_name: g_options.common_name
 		};
 		fcw.invoke_chaincode(enrollObj, opts, cb);
 	};
@@ -221,7 +224,8 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 				options.args.marble_owner,
 				options.args.owners_company
 			],
-			pem: g_options.pem
+			pem: g_options.pem,
+			common_name: g_options.common_name
 		};
 		fcw.invoke_chaincode(enrollObj, opts, function (err, resp) {
 			if (cb) {

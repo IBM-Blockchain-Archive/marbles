@@ -52,7 +52,8 @@ module.exports = function (g_options, logger) {
 			logger.debug('[fcw] listening to event url', options.event_url);
 			eventhub = new EventHub();
 			eventhub.setPeerAddr(options.event_url, {
-				pem: options.pem
+				pem: options.pem,
+				'ssl-target-name-override': options.common_name		//can be null if cert matches hostname
 			});
 			eventhub.connect();
 		} else {

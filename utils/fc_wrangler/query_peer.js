@@ -91,7 +91,8 @@ module.exports = function (logger) {
 
 		options: {
 			peer_urls: ['array of peer grpc urls'],
-			pem: 'complete tls certificate'
+			pem: 'complete tls certificate',					<optional>
+			common_name: 'common name used in pem certificate' 	<optional>
 		}
 	*/
 	query_peer.query_list_channels = function (obj, options, cb) {
@@ -101,7 +102,8 @@ module.exports = function (logger) {
 
 		// send proposal to peer
 		chain.queryChannels(new Peer(options.peer_urls[0], {
-			pem: options.pem
+			pem: options.pem,
+			'ssl-target-name-override': options.common_name		//can be null if cert matches hostname
 		})).then(
 			function (chain_resp) {
 				chain_resp.channels = _.sortBy(chain_resp.channels, [channel => channel.channel_id]);
@@ -216,7 +218,8 @@ module.exports = function (logger) {
 	/*
 		options: {
 					peer_urls: [array of peer urls],
-					pem: 'complete tls certificate'
+					pem: 'complete tls certificate',					<optional>
+					common_name: 'common name used in pem certificate' 	<optional>
 		}
 	*/
 	query_peer.query_installed_cc = function (obj, options, cb) {
@@ -226,7 +229,8 @@ module.exports = function (logger) {
 
 		// send proposal to peer
 		chain.queryInstalledChaincodes(new Peer(options.peer_urls[0], {
-			pem: options.pem
+			pem: options.pem,
+			'ssl-target-name-override': options.common_name		//can be null if cert matches hostname
 		})).then(
 			function (resp) {
 				if (cb) return cb(null, resp);
