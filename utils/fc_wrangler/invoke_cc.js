@@ -91,13 +91,13 @@ module.exports = function (g_options, logger) {
 
 						// Wait for tx committed event
 						eventhub.registerTxEvent(request.txId.toString(), (tx, code) => {
-							logger.info('[fcw] The chaincode transaction has been committed, success:', code);
+							logger.info('[fcw] The chaincode transaction has been committed, success?:', code);
 							clearTimeout(watchdog);
 
 							if (code !== 'VALID') {
 								if (cb && !cbCalled) {
 									cbCalled = true;
-									return cb(code);					//pass error back
+									return cb(common.format_error_msg('Commit code: ' + code));//pass error back
 								}
 								else return;
 							} else {

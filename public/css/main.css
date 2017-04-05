@@ -233,7 +233,8 @@ strong {
   font-weight: 600; }
 
 #rightEverything {
-  transition: width 3s; }
+  transition: width 3s;
+  min-width: 765px; }
 
 .rightEverythingOpened {
   width: calc(100% - $auditSize);

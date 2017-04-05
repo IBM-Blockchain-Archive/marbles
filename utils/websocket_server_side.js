@@ -181,12 +181,12 @@ module.exports = function (g_options, fcw, logger) {
 		marbles_lib.channel_stats(null, function (err, resp) {
 			var newBlock = false;
 			if (err != null) {
-				var obj = {
+				var eobj = {
 					msg: 'error',
 					e: err,
 				};
-				if (ws_client) ws_client.send(JSON.stringify(obj)); 								//send to a client
-				else broadcast(obj);																//send to all clients
+				if (ws_client) ws_client.send(JSON.stringify(eobj)); 								//send to a client
+				else broadcast(eobj);																//send to all clients
 			} else {
 				if (resp && resp.height && resp.height.low) {
 					if (resp.height.low > known_height || ws_client) {

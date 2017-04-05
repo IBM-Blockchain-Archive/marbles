@@ -102,8 +102,9 @@ function connect_to_server() {
 			else if (msgObj.msg === 'tx_error') {
 				console.log(wsTxt + ' rec', msgObj.msg, msgObj);
 				if (msgObj.e) {
-					addshow_notification(build_notification(true, escapeHtml(msgObj.e.parsed)), true);
-					$('#txStoryErrorTxt').html(msgObj.e.parsed);
+					var err_msg = (msgObj.e.parsed) ? msgObj.e.parsed : msgObj.e;
+					addshow_notification(build_notification(true, escapeHtml(err_msg)), true);
+					$('#txStoryErrorTxt').html(err_msg);
 					$('#txStoryErrorWrap').show();
 				}
 			}

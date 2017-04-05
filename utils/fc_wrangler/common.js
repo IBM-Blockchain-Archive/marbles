@@ -16,19 +16,16 @@ module.exports = function (logger) {
 		};
 		var pos;
 		try {
-			temp.parsed = error_message[0].toString();
+			if (typeof error_message === 'object') {
+				temp.parsed = error_message[0].toString();
+			} else {
+				temp.parsed = error_message.toString();
+			}
 			pos = temp.parsed.lastIndexOf(':');
 			if (pos >= 0) temp.parsed = temp.parsed.substring(pos + 2);
 		}
 		catch (e) {
-			try {
-				temp.parsed = error_message.toString();
-				pos = temp.parsed.lastIndexOf(':');
-				if (pos >= 0) temp.parsed = temp.parsed.substring(pos + 2);
-			}
-			catch (e) {
-				logger.error('[fcw] could not format error');
-			}
+			logger.error('[fcw] could not format error');
 		}
 		temp.parsed = 'Blockchain network error - ' + temp.parsed;
 		return temp;
@@ -41,7 +38,7 @@ module.exports = function (logger) {
 		var ret = [];
 
 		for (var i in urls) {
-			ret.push({peer_url: urls[i]});			//dumb needs to be an obj
+			ret.push({ peer_url: urls[i] });		//dumb needs to be an obj
 		}
 
 		if (ret.length === 0) {						//while we are here, lets see if its decent
@@ -55,7 +52,7 @@ module.exports = function (logger) {
 	//-----------------------------------------------------------------
 	// Check Proposal Response
 	//-----------------------------------------------------------------
-	common.check_proposal_res = function(results, endorsed_hook){
+	common.check_proposal_res = function (results, endorsed_hook) {
 		var proposalResponses = results[0];
 		var proposal = results[1];
 		var header = results[2];

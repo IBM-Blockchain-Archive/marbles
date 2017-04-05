@@ -4,6 +4,7 @@
 
 module.exports = function (logger) {
 	var HFC = require('fabric-client');
+	//HFC.setLogger({info: function(){}, debug: function(){}, warn: function(){}, error: function(){}});	//doesn't work
 	var path = require('path');
 	var common = require(path.join(__dirname, './common.js'))(logger);
 	var enrollment = {};
