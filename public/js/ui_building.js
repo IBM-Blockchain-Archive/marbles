@@ -192,9 +192,11 @@ function build_a_tx(data, pos) {
 	var html = '';
 	var username = '-';
 	var company = '-';
+	var id = '-';
 	if(data &&  data.value && data.value.owner && data.value.owner.username) {
 		username = data.value.owner.username;
 		company = data.value.owner.company;
+		id = data.value.owner.id;
 	}
 
 	html += '<div class="txDetails">';
@@ -210,6 +212,10 @@ function build_a_tx(data, pos) {
 	html +=		'<p>';
 	html +=			'<div class="marbleLegend">Company: </div>';
 	html +=			'<div class="marbleName">' + company  + '</div>';
+	html +=		'</p>';
+	html +=		'<p>';
+	html +=			'<div class="marbleLegend">Ower Id: </div>';
+	html +=			'<div class="marbleName">' + id  + '</div>';
 	html +=		'</p>';
 	html +=	'</div>';
 	return html;
