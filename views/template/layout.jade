@@ -37,16 +37,20 @@ html
 		block custom_header
 		
 		body
-			#tint
-			
-			#navPanel
-				block navpanel
-			
-			#mainPanel
-				block content
+			#rightEverything
+				#tint
 				
-			br
-			br
-			br
-			#footerPanel
-				block footer
+				#navPanel
+					block navpanel
+				
+				#mainPanel
+					block content
+					
+				br
+				br
+				br
+				#footerPanel
+					block footer
+
+			#leftEverything
+				include ../panel_audit.jade

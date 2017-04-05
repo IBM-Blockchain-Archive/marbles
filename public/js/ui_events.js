@@ -233,7 +233,7 @@ $(document).on('ready', function () {
 		if(!auditingMarble || marbles[marble_id].id != auditingMarble.id) {//different marble than before!
 			for(var x in pendingTxDrawing) clearTimeout(pendingTxDrawing[x]);
 			$('.txHistoryWrap').html('');										//clear
-			fixCss();
+			//fixCss();
 		}
 
 		auditingMarble = marbles[marble_id];
@@ -247,6 +247,10 @@ $(document).on('ready', function () {
 			for (var i in bgcolors) $('.auditMarble').removeClass(bgcolors[i]);	//reset
 			$('.auditMarble').addClass(color.toLowerCase() + 'bg');
 
+			$('#rightEverything').addClass('rightEverythingOpened');
+			$('#leftEverything').fadeIn();
+
+
 			var obj2 = {
 				type: 'audit',
 				marble_id: marble_id
@@ -255,7 +259,7 @@ $(document).on('ready', function () {
 		}
 	}
 
-	$('#auditHandle').click(function () {
+	$('#auditClose').click(function () {
 		if ($('#auditContentWrap').is(':visible')) {
 			$('#auditContentWrap').slideUp(500);
 			$('.auditingMarble').removeClass('auditingMarble');												//reset
@@ -264,14 +268,19 @@ $(document).on('ready', function () {
 				$('.txHistoryWrap').html('<div class="auditHint">Click a Marble to Audit Its Transactions</div>');//clear
 			}, 750);
 			$('#marbleId').html('-');
-			fixCss();
+			//fixCss();
 			auditingMarble = null;
+
+			setTimeout(function(){
+				$('#rightEverything').removeClass('rightEverythingOpened');
+			}, 500);
+			$('#leftEverything').fadeOut();
 		}
-		else {
+		/*else {
 			//$('#auditContentWrap').fadeIn(300);
 			$('#auditContentWrap').slideDown();
 			$('#auditHandle').children().removeClass('fa-angle-up').addClass('fa-angle-down');
-		}
+		}*/
 	});
 });
 

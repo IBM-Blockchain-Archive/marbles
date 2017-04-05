@@ -146,7 +146,7 @@ function connect_to_server() {
 
 				if (count <= 0) {									//if no tx shown yet, append to back
 					$('.txHistoryWrap').html('');					//clear
-					fixCss();
+					//fixCss();
 					for (x=msgObj.data.parsed.length-1; x >= 0; x--) {
 						built++;
 						slowBuildtx(msgObj.data.parsed[x], x, built);
@@ -160,7 +160,7 @@ function connect_to_server() {
 						$('.txDetails:first').animate({ opacity: 1, left: 0 }, 600, function () {
 							//after animate
 						});
-						fixCss();
+						//fixCss();
 					}
 				}
 			}
@@ -303,7 +303,7 @@ function slowBuildtx(data, txNumber, built){
 		$('.txDetails:last').animate({ opacity: 1, left: 0 }, 600, function () {
 			//after animate
 		});
-		fixCss();
+		//fixCss();
 	}, (built * 150)));
 }
 

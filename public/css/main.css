@@ -232,6 +232,21 @@ label {
 strong {
   font-weight: 600; }
 
+#rightEverything {
+  transition: width 3s; }
+
+.rightEverythingOpened {
+  width: calc(100% - $auditSize);
+  left: 333px;
+  position: absolute; }
+
+#leftEverything {
+  display: none;
+  width: 333px;
+  left: 0%;
+  position: fixed;
+  height: 100%; }
+
 /*Main Layout*/
 #navPanel {
   height: 60px;
@@ -1066,28 +1081,27 @@ strong {
 
 #auditWrap {
   position: absolute;
-  bottom: 60px;
   border-top: #646B73 solid 1px;
   width: 100%;
   border: 1px #fff solid;
   border-left: 0;
   border-right: 0;
   background: #646B73;
-  color: #fff; }
+  color: #fff;
+  height: 100%; }
 
 #auditLegend {
   color: #E5EBEF;
-  padding: 0 0 10px 0;
+  padding: 10px 0 15px 0;
   bottom: 13px;
   font-size: 18px; }
 
 #auditContentWrap {
   display: none;
   padding: 10px;
-  max-height: 210px;
-  min-height: 145px;
   overflow-x: hidden;
-  overflow-y: auto; }
+  overflow-y: auto;
+  height: 100%; }
 
 #marbleIdWrap {
   font-size: 12px;
@@ -1108,15 +1122,13 @@ strong {
 .txHistoryWrap {
   display: inline-block;
   vertical-align: bottom;
-  width: calc(99% - 175px);
-  margin-left: 175px; }
+  margin-top: 35px; }
 
 .leftTxWrap {
-  width: 175px;
+  width: 100%;
   display: inline-block;
   vertical-align: top;
-  text-align: center;
-  position: fixed; }
+  text-align: center; }
 
 .biggerLeft {
   margin-bottom: 50px; }
@@ -1154,6 +1166,9 @@ strong {
 #marbleIdWrap {
   font-weight: 700; }
 
+#marbleId {
+  margin-top: 10px; }
+
 .auditMarble {
   line-height: 75px;
   font-size: 30px;
@@ -1175,6 +1190,18 @@ strong {
 
 .auditingMarble {
   border-color: #2EB9D6; }
+
+#auditClose {
+  position: absolute;
+  top: 10px;
+  right: 25px;
+  cursor: pointer; }
+
+#auditClose:hover {
+  color: #2EB9D6; }
+
+.auditMarble:hover {
+  border-color: transparent; }
 
 #blockWrap {
   position: relative;

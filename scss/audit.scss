@@ -2,7 +2,7 @@
 $left_width: 175px;
 #auditWrap {
 	position: absolute;
-	bottom: 60px;
+	//bottom: 60px;
 	border-top: $acc_color2 solid 1px;
 	width: 100%;
 	border: 1px $main_color solid;
@@ -10,20 +10,22 @@ $left_width: 175px;
 	border-right: 0;
 	background: $acc_color2;
 	color: $main_color;
+	height: 100%;
 }
 #auditLegend{
 	color: $acc_color3;
-	padding: 0 0 10px 0;
+	padding: 10px 0 15px 0;
 	bottom: 13px;
 	font-size: 18px;
 }
 #auditContentWrap{
 	display: none;
 	padding: 10px;
-	max-height: 210px;
-	min-height: 145px;
+	//max-height: 210px;
+	//min-height: 145px;
 	overflow-x: hidden;
 	overflow-y: auto;
+	height: 100%;
 }
 #marbleIdWrap{
 	font-size: 12px;
@@ -45,15 +47,16 @@ $left_width: 175px;
 .txHistoryWrap{
 	display: inline-block;
 	vertical-align: bottom;
-	width: calc(99% - 175px);
-	margin-left: $left_width;
+	//width: calc(99% - 175px);
+	//margin-left: $left_width;
+	margin-top: 35px;
 } 
 .leftTxWrap{
-	width: $left_width;
+	width: 100%;
 	display: inline-block;
 	vertical-align: top;
 	text-align: center;
-	position: fixed;
+	//position: fixed;
 }
 
 .biggerLeft{
@@ -96,6 +99,10 @@ $left_width: 175px;
 	font-weight: 700;
 }
 
+#marbleId{
+	margin-top: 10px;
+}
+
 .auditMarble{
 	line-height: 75px;
 	font-size: 30px;
@@ -119,4 +126,18 @@ $left_width: 175px;
 
 .auditingMarble{
 	border-color: $hi_color2;
+}
+
+#auditClose{
+	position: absolute;
+	top: 10px;
+	right: 25px;
+	cursor: pointer;
+}
+#auditClose:hover{
+	color: $hi_color2;
+}
+
+.auditMarble:hover{
+	border-color: transparent;
 }
