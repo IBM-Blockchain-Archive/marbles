@@ -2,27 +2,19 @@
 $left_width: 175px;
 #auditWrap {
 	position: absolute;
-	//bottom: 60px;
-	border-top: $acc_color2 solid 1px;
 	width: 100%;
-	border: 1px $main_color solid;
-	border-left: 0;
-	border-right: 0;
 	background: $acc_color2;
 	color: $main_color;
 	height: 100%;
 }
 #auditLegend{
 	color: $acc_color3;
-	padding: 10px 0 15px 0;
+	padding: 20px 0 15px 0;
 	bottom: 13px;
 	font-size: 18px;
 }
 #auditContentWrap{
 	display: none;
-	padding: 10px;
-	//max-height: 210px;
-	//min-height: 145px;
 	overflow-x: hidden;
 	overflow-y: auto;
 	height: 100%;
@@ -31,24 +23,10 @@ $left_width: 175px;
 	font-size: 12px;
 	margin-bottom: 15px;
 }
-#auditHandle{
-	width: 50px;
-	background: #fff;
-	position: absolute;
-	left: 48.5%;
-	top: -16px;
-	border-top-left-radius: 3px;
-	border-top-right-radius: 3px;
-	color: #000;
-	text-align: center;
-	cursor: pointer;
-}
 
 .txHistoryWrap{
 	display: inline-block;
 	vertical-align: bottom;
-	//width: calc(99% - 175px);
-	//margin-left: $left_width;
 	margin-top: 35px;
 } 
 .leftTxWrap{
@@ -56,7 +34,6 @@ $left_width: 175px;
 	display: inline-block;
 	vertical-align: top;
 	text-align: center;
-	//position: fixed;
 }
 
 .biggerLeft{
@@ -68,8 +45,7 @@ $left_width: 175px;
 	vertical-align: bottom;
 	font-size: 14px;
 	display: inline-block;
-	margin-left: 20px;
-	padding-right: 20px;
+	margin-left: 30px;
 	left: 100%;
 	margin-top: 5px;
 	margin-bottom: 10px;
@@ -92,7 +68,6 @@ $left_width: 175px;
 .txCount{
 	text-align: center;
 	margin-bottom: 10px;
-	//font-weight: 700;
 }
 
 #marbleIdWrap{
@@ -121,7 +96,6 @@ $left_width: 175px;
 	color: #a1a7ad;
 	margin-top: 55px;
 	text-align: center;
-	margin-left: -150px;
 }
 
 .auditingMarble{
@@ -140,4 +114,23 @@ $left_width: 175px;
 
 .auditMarble:hover{
 	border-color: transparent;
+}
+
+#auditButton{
+	position: fixed;
+	left: -22px;
+	background: $acc_color2;
+	color: $main_color;
+	transform: rotate(90deg);
+	padding: 5px 20px;
+	top:50%;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	width: 30px;
+	text-align: center;
+	cursor: pointer;
+	transition: all .25s linear;
+}
+#auditButton:hover{
+	color: $acc_color1-5;
 }

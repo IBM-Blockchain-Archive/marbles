@@ -1,7 +1,7 @@
 /* global new_block, $, document, WebSocket, escapeHtml, ws:true, start_up:true, known_companies:true, autoCloseNoticePanel:true */
 /* global show_start_up_step, build_notification, build_user_panels, build_company_panel, populate_users_marbles, show_tx_step*/
 /* global getRandomInt, block_ui_delay:true, build_a_tx, auditingMarble*/
-/* exported transfer_marble, record_company, connect_to_server, refreshHomePanel, fixCss, pendingTxDrawing*/
+/* exported transfer_marble, record_company, connect_to_server, refreshHomePanel, pendingTxDrawing*/
 
 var getEverythingWatchdog = null;
 var wsTxt = '[ws]';
@@ -146,7 +146,6 @@ function connect_to_server() {
 
 				if (count <= 0) {									//if no tx shown yet, append to back
 					$('.txHistoryWrap').html('');					//clear
-					//fixCss();
 					for (x=msgObj.data.parsed.length-1; x >= 0; x--) {
 						built++;
 						slowBuildtx(msgObj.data.parsed[x], x, built);
@@ -160,7 +159,6 @@ function connect_to_server() {
 						$('.txDetails:first').animate({ opacity: 1, left: 0 }, 600, function () {
 							//after animate
 						});
-						//fixCss();
 					}
 				}
 			}
@@ -303,12 +301,5 @@ function slowBuildtx(data, txNumber, built){
 		$('.txDetails:last').animate({ opacity: 1, left: 0 }, 600, function () {
 			//after animate
 		});
-		//fixCss();
 	}, (built * 150)));
-}
-
-function fixCss() {
-	var height = $('#auditContentWrap').height();
-	if(height >= 150) $('.leftTxWrap').css('margin-top', '35px');
-	else $('.leftTxWrap').css('margin-top', 0);
 }
