@@ -165,6 +165,14 @@ function connect_to_server() {
 				}
 			}
 
+			//general error
+			else if (msgObj.msg === 'error') {
+				console.log(wsTxt + ' rec', msgObj.msg, msgObj);
+				if (msgObj.e) {
+					addshow_notification(build_notification(true, escapeHtml(msgObj.e.parsed)), true);
+				}
+			}
+
 			//unknown
 			else console.log(wsTxt + ' rec', msgObj.msg, msgObj);
 		}

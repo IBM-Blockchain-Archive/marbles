@@ -14,17 +14,23 @@ module.exports = function (logger) {
 			parsed: 'could not format error',
 			raw: error_message
 		};
+		var pos;
 		try {
-			temp.parsed = error_message.toString();
 			temp.parsed = error_message[0].toString();
-			var pos = temp.parsed.lastIndexOf(':');
-			if (pos >= 0) {
-				temp.parsed = temp.parsed.substring(pos + 2);
-			}
+			pos = temp.parsed.lastIndexOf(':');
+			if (pos >= 0) temp.parsed = temp.parsed.substring(pos + 2);
 		}
 		catch (e) {
-			logger.error('[fcw] could not format error');
+			try {
+				temp.parsed = error_message.toString();
+				pos = temp.parsed.lastIndexOf(':');
+				if (pos >= 0) temp.parsed = temp.parsed.substring(pos + 2);
+			}
+			catch (e) {
+				logger.error('[fcw] could not format error');
+			}
 		}
+		temp.parsed = 'Blockchain network error - ' + temp.parsed;
 		return temp;
 	};
 

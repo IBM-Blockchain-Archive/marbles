@@ -180,7 +180,14 @@ module.exports = function (g_options, fcw, logger) {
 	ws_server.check_for_updates = function (ws_client) {
 		marbles_lib.channel_stats(null, function (err, resp) {
 			var newBlock = false;
-			if (err == null) {
+			if (err != null) {
+				var obj = {
+					msg: 'error',
+					e: err,
+				};
+				if (ws_client) ws_client.send(JSON.stringify(obj)); 								//send to a client
+				else broadcast(obj);																//send to all clients
+			} else {
 				if (resp && resp.height && resp.height.low) {
 					if (resp.height.low > known_height || ws_client) {
 						if (!ws_client) {
@@ -223,6 +230,12 @@ module.exports = function (g_options, fcw, logger) {
 			if (err != null) {
 				console.log('');
 				logger.debug('[checking] could not get everything:', err);
+				var obj = {
+					msg: 'error',
+					e: err,
+				};
+				if (ws_client) ws_client.send(JSON.stringify(obj)); 								//send to a client
+				else broadcast(obj);																//send to all clients
 				if (cb) cb();
 			}
 			else {

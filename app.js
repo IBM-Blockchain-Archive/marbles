@@ -102,9 +102,9 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 process.env.NODE_ENV = 'production';
 server.timeout = 240000;																							// Ta-da.
 console.log('------------------------------------------ Server Up - ' + host + ':' + port + ' ------------------------------------------');
-if (process.env.PRODUCTION) logger.debug('Running using Production settings');
-else logger.debug('Running using Developer settings');
-
+process.on('uncaughtException', function (err) {
+	logger.error('Caught exception: ', err.stack);			//don't ever give up
+});
 // ============================================================================================================================
 // 														Warning
 // ============================================================================================================================
@@ -455,7 +455,7 @@ function setupWebSocket() {
 		var i = 0;
 		wss.clients.forEach(function each(client) {
 			try {
-				logger.debug('[ws] broadcasting to client', (++i), data.msg);
+				logger.debug('[ws] broadcasting to clients. ', (++i), data.msg);
 				client.send(JSON.stringify(data));
 			}
 			catch (e) {
