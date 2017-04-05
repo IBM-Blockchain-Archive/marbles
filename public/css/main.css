@@ -1182,7 +1182,7 @@ strong {
   color: #2EB9D6; }
 
 .auditMarble:hover {
-  border-color: transparent; }
+  border-color: transparent !important; }
 
 #auditButton {
   position: fixed;
