@@ -1,4 +1,4 @@
-#Use Local Hyperledger Network:
+# Use Local Hyperledger Network:
 
 ### Creating a Local Hyperledger Fabric Network
 Use the published fabric docker images and docker-compose script to get a local network quickly.
@@ -19,6 +19,6 @@ This is done by editing the creds file.
 
 1. Follow the [config instructions](./config_file.md). Then come back here. 
 
-Once you have edited `blockchain_creds1.json` you are ready to run Marbles. 
+Once you have edited `blockchain_creds1.json` you are ready to install/instantiate Marbles. 
 
-1. Continue where you left off in [tutorial 1](./tutorial_start_here.md#hostmarbles). 
+1. Continue where you left off in [tutorial 1](./tutorial_start_here.md#installchaincode). 
