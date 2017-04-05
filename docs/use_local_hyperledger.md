@@ -11,8 +11,8 @@ So if you followed the instructions then your orderer will be batching new block
 This is a litttttle long for our application, and may give you unexpected behavior. 
 Basicaly if you move a marble the trade will take 10 seconds to settle. 
 The **UI may redraw the marble back in its original position**, and then jump to a correct position after some time. 
-This is *normal* and is because of a the long batch time. 
-If you use the Bluemix service, the batch time is only 1 second. 
+This is a known issue and is because of a the long batch time. 
+If you use the Bluemix service, the batch time is only 1 second and you will not see this odd behavior. 
 
 Next we need to **pass the location of our peer to our marbles application**. 
 This is done by editing the creds file. 
