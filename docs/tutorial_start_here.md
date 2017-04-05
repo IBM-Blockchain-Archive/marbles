@@ -111,11 +111,9 @@ Now we need a blockchain network.
 
 - **Option 1:** Create a network with the Bluemix IBM Blockchain Service - [instructions](./use_bluemix_hyperledger.md)
 
-<strike>
-- **Option 2:** Use a locally hosted Hyperledger Network - instructions
-</strike>
+- **Option 2:** Use a locally hosted Hyperledger Network - [instructions](./use_local_hyperleder.md)
 
-*^ instructions coming soon*
+**Update:** *local instructions are a work in progress*
 
 <a name="installchaincode"></a>
 
