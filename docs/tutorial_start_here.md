@@ -130,7 +130,7 @@ Choose the **only** option that is relevant for your setup:
 - **Option 2:** Install chaincode with the SDK locally
 </strike>
 
-*^ instructions coming soon*
+**Update:** *instructions coming soon*
 
 <a name="hostmarbles"></a>
 

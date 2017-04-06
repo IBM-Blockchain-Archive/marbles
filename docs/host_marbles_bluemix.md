@@ -58,4 +58,4 @@
 		
 		---------------------------------------- Websocket Up ------------------------------------------
 
-1. Marbles is running! Now [Continue tutorial 1](./tutorial_start_here.md#use).
+1. Marbles is running! Now [continue the tutorial](./tutorial_start_here.md#use).
