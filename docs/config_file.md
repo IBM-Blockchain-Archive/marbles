@@ -4,7 +4,7 @@ Configuration of marbles happens with two files.
 These files can be found in the folder `<marbles directory>/config`. 
 You must edit them from their default state. 
 
-### Config File:
+### 1. Config File:
 
 - This is the file that has settings for the marble company you are pretending to be.
 	- Such as the name of your marbles company, list of marble owners, port for the app, etc.. 
@@ -45,7 +45,7 @@ There is already an example file in the config folder you can use.
 - last_start_hash - You do not need to modify/create this field. Its created internally when marbles successfully starts up. It is a hash of the network credentials file. It is used to detect when you are trying to re-run marbles with a new network and we should go through the  initial startup again.
 
 
-### Creds File Example:
+### 2. Creds File:
 
 - This file has settings for your blockchain network. 
 - This can be found in `<marbles>/config/blockchain_creds1.json`. 

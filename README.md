@@ -45,7 +45,7 @@ Start the tutorials below to have your own marbles blockchain demo!
 
 ## Tutorial / Documentation
 - Looking for chaincode documentation?
-	- Check out the [learn chaincode](https://github.com/IBM-Blockchain/learn-chaincode) repo
+	- Check out the [What is Chaincode](http://hyperledger-fabric.readthedocs.io/en/latest/chaincode.html) doc
 - [Tutorial for Marbles](/docs/tutorial_start_here.md)
 	- covers how to set it up and how to use it
 
