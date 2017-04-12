@@ -19,7 +19,7 @@
 1. [Setup your enviroment](./env_setup.md) 
 1. Read the [What is Chaincode](http://hyperledger-fabric.readthedocs.io/en/latest/chaincode.html) doc 
 1. Install [Node.js](https://nodejs.org/en/download/) v6.2.0 - v6.10.0 (Node v7+ is **not** supported) 
-1. **You should be comfortable with node.js** Marbles is a very simple blockchain app but it’s a complex node app 
+1. **You should be comfortable with node.js.** Marbles is a very simple blockchain app, but it’s a complex node app 
 
 ### Application Background
 Hold on to your hats everyone, this application is going to demonstrate transferring marbles between many marble owners leveraging Hyperledger Fabric.
@@ -82,7 +82,7 @@ Decide if you want to use the deploy to Bluemix button.
 
 ### 0. Setup Local Environment
 
-Follow these environment setup [instructions](https://github.com/IBM-Blockchain/learn-chaincode/blob/v2.0/docs/setup.md) to install **Git, Go** and **Node.js**.
+Follow these environment setup [instructions](./env_setup.md) to install **Git, Go** and **Node.js**.
     - When you have finished come back to this tutorial. Start the next section "Download Marbles" below.
 
 ### 1. Download Marbles
