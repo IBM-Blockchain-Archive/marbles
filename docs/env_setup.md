@@ -2,7 +2,7 @@
 
 The following is a list of dependencies and recommended tools that you should install in order to develop chaincode.
 
-## Git
+## 1. Git
 
 - [Git](https://git-scm.com/downloads)
 - [Git Desktop](https://desktop.github.com/) (for those uncomfortable with git's CLI)
@@ -22,7 +22,7 @@ git version 2.11.1.windows.1
 Once you have git installed, go create an account for yourself on [GitHub](https://github.com/). 
 The IBM Blockchain service on Bluemix currently requires that chaincode be in a GitHub repository in order to be deployed through the REST API.
 
-## Go
+## 2. GoLang
 
 - [Go download page](https://golang.org/dl)
 - [Go installation instructions](https://golang.org/doc/install)
@@ -31,10 +31,6 @@ The IBM Blockchain service on Bluemix currently requires that chaincode be in a 
 The Go installation installs a set of Go CLI tools which are very useful when writing chaincode. 
 For example, the `go build` command allows you to check that your chaincode actually compiles before you attempt to deploy it to a network. 
 At time of writing, this chaincode is known to build successfully with version 1.7.5. 
-
-### Instructions
-
-Follow the installation instructions linked above. 
 
 ### Verify Go Installation
 You can verify that Go is installed properly by running the following commands. Of course, the output of `go version` may change depending on your operating system.
@@ -53,14 +49,14 @@ The installation instructions linked above will take you through the setup of th
 
 Next verify you can build GoLang code with the [hello world](https://golang.org/doc/install#testing) example.
 
-## Hyperledger Fabric Releases
+## 3. Hyperledger Fabric
 
 - [v1.0.0-preview Hyperledger fabric](https://github.com/hyperledger/fabric/tree/v1.0.0-preview)
 - [master branch of the Hyperledger fabric](https://gerrit.hyperledger.org/r/gitweb?p=fabric.git;a=summary)
 
 Any piece of chaincode that you write will need to import the chaincode shim from Hyperledger fabric in order to be able to read and write data to/from the ledger. In order to compile chaincode locally, which you will be doing a lot, you will need to have the fabric code present in your `GOPATH`. Follow the instructions below.
 
-### Fabric Clone Instructions
+### Instructions
 
 A few different releases of the fabric are linked above. The release you clone needs to match the Hyperledger network you are using. 
 If you are using the Bluemix Blockchain Service, clone the `v1.0.0-preview` branch. 
@@ -88,7 +84,7 @@ $ go build .v
 
 It should return with no errors/warnings. 
 
-## Node.js
+## 4. Node.js
 
 Download the latest Node.js LTS version.
 
@@ -108,7 +104,7 @@ $ npm -v
 3.10.10
 ```
 
-## IDE Suggestions
+## 5. IDE Suggestions
 
 ### Visual Studio Code
 
