@@ -65,7 +65,6 @@ You will need to make sure that the fabric release you choose is stored under `$
 The instructions below should take you through the process of properly installing the v0.5 release on your `GOPATH`. 
 
 ```
-
 # Create the parent directories on your GOPATH
 mkdir -p $GOPATH/src/github.com/hyperledger
 cd $GOPATH/src/github.com/hyperledger
@@ -79,7 +78,7 @@ git clone -b v1.0.0-preview https://github.com/hyperledger-archives/fabric.git
 Open a command prompt/terminal and browse to this directory `$GOPATH/src/github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02`
 
 ```
-$ go build .v
+$ go build .
 ```
 
 It should return with no errors/warnings. 
@@ -110,7 +109,7 @@ $ npm -v
 
 - [Download links](https://code.visualstudio.com/#alt-downloads)
 
-Visual Studio Code is a free IDE that supports both Node.js and Go through plugins.
+Visual Studio Code is a free IDE that supports all the languages in Marbles such as JS/CSS/HTML/GoLang.
 
 ### Atom
 
