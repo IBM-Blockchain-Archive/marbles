@@ -60,10 +60,8 @@ app.use(cors());
 //---------------------
 // Cache Busting Hash
 //---------------------
-var bust_js = require('./busters_js.json');
-var bust_css = require('./busters_css.json');
-process.env.cachebust_js = bust_js['public/js/singlejshash'];			//i'm just making 1 hash against all js for easier jade implementation
-process.env.cachebust_css = bust_css['public/css/singlecsshash'];		//i'm just making 1 hash against all css for easier jade implementation
+process.env.cachebust_js = Date.now();			//i'm just making 1 hash against all js for easier jade implementation
+process.env.cachebust_css = Date.now();			//i'm just making 1 hash against all css for easier jade implementation
 logger.debug('cache busting hash js', process.env.cachebust_js, 'css', process.env.cachebust_css);
 
 // ============================================================================================================================
