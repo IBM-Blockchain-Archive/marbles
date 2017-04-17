@@ -355,7 +355,7 @@ function all_done() {
 
 	logger.debug('hash is', helper.getHash());
 	helper.write({ hash: helper.getHash() });							//write state file so we know we started before
-	ws_server.check_for_updates(null);								//call the periodic task to get the state of everything
+	ws_server.check_for_updates(null);									//call the periodic task to get the state of everything
 }
 
 //message to client to communicate where we are in the start up

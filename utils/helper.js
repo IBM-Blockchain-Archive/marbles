@@ -1,5 +1,4 @@
 var fs = require('fs');
-var url = require('url');
 var path = require('path');
 var crypto = require('crypto');
 
@@ -22,8 +21,9 @@ module.exports = function (config_filename, logger) {
 
 	// hash of credential json file
 	helper.getHash = function () {
+		var creds_file = JSON.parse(fs.readFileSync(creds_path, 'utf8'));
 		var shasum = crypto.createHash('sha1');
-		shasum.update(JSON.stringify(helper.creds));
+		shasum.update(JSON.stringify(creds_file));
 		return shasum.digest('hex').toString();
 	};
 
@@ -108,6 +108,15 @@ module.exports = function (config_filename, logger) {
 		}
 	};
 
+	// get a CA's tls options
+	helper.getCATLScert = function (index) {
+		if (index === undefined || index == null) {
+			throw new Error('CAs index not passed');
+		} else {
+			return getTLScertObj('cas', index);
+		}
+	};
+
 	// get an orderer's grpc url
 	helper.getOrderersUrl = function (index) {
 		if (index === undefined || index == null) {
@@ -118,6 +127,15 @@ module.exports = function (config_filename, logger) {
 			} else {
 				throw new Error('Orderers index out of bounds. Total CA = ' + helper.creds.credentials.orderers.length);
 			}
+		}
+	};
+
+	// get a orderer's tls options
+	helper.getOrdererTLScert = function (index) {
+		if (index === undefined || index == null) {
+			throw new Error('Orderers index not passed');
+		} else {
+			return getTLScertObj('orderers', index);
 		}
 	};
 
@@ -145,25 +163,49 @@ module.exports = function (config_filename, logger) {
 			if (index < helper.creds.credentials.peers.length) {
 				return helper.creds.credentials.peers[index].events;
 			}
-			logger.warn('no events url found in creds json: ' + creds_path);
+			logger.warn('no events url found for peer in creds json: ' + creds_path);
 			return null;
 		}
 	};
 
-	// get tls certificate for peers/cas/orderer
-	helper.getCertificate = function () {
-		if(helper.creds.credentials.tls_certificate && helper.creds.credentials.tls_certificate.indexOf('-BEGIN CERTIFICATE-') === -1) {
-			var path2cert = path.join(__dirname, '../config/' + helper.creds.credentials.tls_certificate);	// looks like cert field is a path to a file
-			return fs.readFileSync(path2cert, 'utf8') + '\r\n'; //read from file, LOOKING IN config FOLDER
+	// get a peer's tls options
+	helper.getPeerTLScert = function (index) {
+		if (index === undefined || index == null) {
+			throw new Error('Peers index not passed');
 		} else {
-			return helper.creds.credentials.tls_certificate;	//can be null if network is not using TLS
+			return getTLScertObj('peers', index);
 		}
 	};
 
-	// get tls certificate's common name for peers/cas/orderer
-	helper.getCommonName = function () {
-		return helper.creds.credentials.common_name;			//can be null if cert matches hostname
-	};
+	// get a node's tls pem obj
+	function getTLScertObj(node, index) {
+		if (index < helper.creds.credentials[node].length) {
+			var certObj = pickCertObj(helper.creds.credentials[node][index].tls_certificate);
+			certObj.pem = loadCert(certObj.pem);
+			return certObj;
+		}
+		logger.warn('no tls cert found for ' + node + ' in creds json: ' + creds_path);
+		return null;
+	}
+
+	// pick which tls cert obj to load
+	function pickCertObj(cert_name) {
+		if (cert_name && helper.creds.credentials.tls_certificates && helper.creds.credentials.tls_certificates[cert_name]) {
+			return helper.creds.credentials.tls_certificates[cert_name];
+		}
+		logger.warn('no tls cert or path found in creds json: ' + creds_path);
+		return null;
+	}
+
+	// load cert from file path OR just pass cert back
+	function loadCert(value) {
+		if (value.indexOf('-BEGIN CERTIFICATE-') === -1) {				// looks like cert field is a path to a file
+			var path2cert = path.join(__dirname, '../config/' + value);
+			return fs.readFileSync(path2cert, 'utf8') + '\r\n'; 		//read from file, LOOKING IN config FOLDER
+		} else {
+			return value;												//can be null if network is not using TLS
+		}
+	}
 
 	// get the chaincode id on network
 	helper.getChaincodeId = function () {
@@ -230,8 +272,9 @@ module.exports = function (config_filename, logger) {
 			chaincode_id: helper.getChaincodeId(),
 			event_url: (helper.getEventsSetting()) ? helper.getPeerEventUrl(0) : null,
 			chaincode_version: helper.getChaincodeVersion(),
-			pem: helper.getCertificate(),
-			common_name: helper.getCommonName(),
+			ca_tls_opts: helper.getCATLScert(0),
+			orderer_tls_opts: helper.getOrdererTLScert(0),
+			peer_tls_opts: helper.getPeerTLScert(0),
 		};
 	};
 
@@ -247,8 +290,9 @@ module.exports = function (config_filename, logger) {
 			enroll_id: user.enrollId,
 			enroll_secret: user.enrollSecret,
 			msp_id: helper.getPeersMspId(0),
-			pem: helper.getCertificate(),
-			common_name: helper.getCommonName(),
+			ca_tls_opts: helper.getCATLScert(0),
+			orderer_tls_opts: helper.getOrdererTLScert(0),
+			peer_tls_opts: helper.getPeerTLScert(0),
 		};
 	};
 
@@ -290,22 +334,15 @@ module.exports = function (config_filename, logger) {
 	helper.write = function (obj) {
 		var config_file = JSON.parse(fs.readFileSync(config_path, 'utf8'));
 		var creds_file = JSON.parse(fs.readFileSync(creds_path, 'utf8'));
-		var parsed = '';
 
 		if (obj.ordererUrl) {
-			parsed = url.parse(obj.ordererUrl, true);
-			creds_file.credentials.orderers[0].host = parsed.hostname;
-			creds_file.credentials.orderers[0].port = Number(parsed.port);
+			creds_file.credentials.orderers[0].discovery = obj.ordererUrl;
 		}
 		if (obj.peerUrl) {
-			parsed = url.parse(obj.peerUrl, true);
-			creds_file.credentials.peers[0].grpc_host = parsed.hostname;
-			creds_file.credentials.peers[0].grpc_port = Number(parsed.port);
+			creds_file.credentials.peers[0].discovery = obj.peerUrl;
 		}
 		if (obj.caUrl) {
-			parsed = url.parse(obj.caUrl, true);
-			creds_file.credentials.cas[0].host = parsed.hostname;
-			creds_file.credentials.cas[0].port = Number(parsed.port);
+			creds_file.credentials.cas[0].api = obj.caUrl;
 		}
 		if (obj.chaincodeId) {
 			creds_file.credentials.app.chaincode_id = obj.chaincodeId;

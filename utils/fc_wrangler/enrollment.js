@@ -27,8 +27,18 @@ module.exports = function (logger) {
 			enroll_id: 'enrollId',
 			enroll_secret: 'enrollSecret',
 			msp_id: 'string',
-			pem: 'complete tls certificate'						<optional>
-			common_name: 'common name used in pem certificate' 	<optional>
+			ca_tls_opts: {
+				pem: 'complete tls certificate',					<optional>
+				common_name: 'common name used in pem certificate' 	<optional>
+			},
+			orderer_tls_opts: {
+				pem: 'complete tls certificate',					<optional>
+				common_name: 'common name used in pem certificate' 	<optional>
+			},
+			peer_tls_opts: {
+				pem: 'complete tls certificate',					<optional>
+				common_name: 'common name used in pem certificate' 	<optional>
+			}
 		}
 	*/
 
@@ -70,15 +80,15 @@ module.exports = function (logger) {
 		}).then(function (submitter) {
 
 			chain.addOrderer(new Orderer(options.orderer_url, {
-				pem: options.pem,
-				'ssl-target-name-override': options.common_name				//can be null if cert matches hostname
+				pem: options.orderer_tls_opts.pem,
+				'ssl-target-name-override': options.orderer_tls_opts.common_name			//can be null if cert matches hostname
 			}));
 
 			try {
 				for (var i in options.peer_urls) {
 					chain.addPeer(new Peer(options.peer_urls[i], {
-						pem: options.pem,
-						'ssl-target-name-override': options.common_name		//can be null if cert matches hostname
+						pem: options.peer_tls_opts.pem,
+						'ssl-target-name-override': options.peer_tls_opts.common_name	//can be null if cert matches hostname
 					}));
 					logger.debug('added peer', options.peer_urls[i]);
 				}
@@ -88,8 +98,8 @@ module.exports = function (logger) {
 			}
 			try {
 				chain.setPrimaryPeer(new Peer(options.peer_urls[0], {
-					pem: options.pem,
-					'ssl-target-name-override': options.common_name			//can be null if cert matches hostname
+					pem: options.peer_tls_opts.pem,
+					'ssl-target-name-override': options.peer_tls_opts.common_name		//can be null if cert matches hostname
 				}));
 				logger.debug('added primary peer', options.peer_urls[0]);
 			}
@@ -126,7 +136,7 @@ module.exports = function (logger) {
 
 				// Need to enroll it with CA server
 				var tlsOptions = {
-					trustedRoots: [options.pem],
+					trustedRoots: [options.ca_tls_opts.pem],
 					verify: false
 				};
 				var ca_client = new CaService(options.ca_url, tlsOptions);

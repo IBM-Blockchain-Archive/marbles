@@ -61,7 +61,8 @@ There is already an example file in the config folder you can use.
         "orderers": [
             {
                 "discovery": "grpc://localhost:7050",
-                "msp_id": "Org1MSP"
+                "msp_id": "Org1MSP",
+                "tls_certificate": "cert_1"
             }
         ],
         "cas": [
@@ -73,14 +74,16 @@ There is already an example file in the config folder you can use.
                         "enrollId": "admin",
                         "enrollSecret": "adminpw"
                     }
-                ]
+                ],
+                "tls_certificate": "cert_1"
             }
         ],
         "peers": [
             {
                 "discovery": "grpc://localhost:7051",
                 "events": "grpc://localhost:7053",
-                "msp_id": "Org1MSP"
+                "msp_id": "Org1MSP",
+                "tls_certificate": "cert_1"
             }
         ],
         "app": {
@@ -89,8 +92,12 @@ There is already an example file in the config folder you can use.
             "chaincode_version": "v0",
             "block_delay": 1000
         },
-		"tls_common_name": null,
-		"tls_certificate": "-----BEGIN CERTIFICATE----- <removed> -----END CERTIFICATE-----\r\n"
+        "tls_certificates": {
+            "cert_1": {
+                "common_name": null,
+                "pem": "-----BEGIN CERTIFICATE----- <removed> -----END CERTIFICATE-----\r\n"
+            }
+        }
     }
 }
 ```
@@ -116,8 +123,9 @@ There is already an example file in the config folder you can use.
 	- chaincode_id - Name of the chaincode installed.
 	- chaincode_version - Version of the chaincode installed.
 	- block_delay - Time in ms for a block to be created by the orderer. This is a setting in the orderer's yaml.
-- tls_common_name - Only needed when using self signed certs. It will override the common name.
-- tls_certificate - Can be either the complete PEM file that has line breaks encoded as `\r\n` **OR** a relative file path to a PEM file inside the `config` folder.
+- tls_certificates - TLS certificate options.
+	- common_name - Only needed when using self signed certs. It will override the common name.
+	- pem - Can be either the complete PEM file that has line breaks encoded as `\n` **OR** a relative file path to a PEM file inside the `config` folder.
 
 Once you have edited `blockchain_creds1.json` you are ready to install/instantiate Marbles. 
 

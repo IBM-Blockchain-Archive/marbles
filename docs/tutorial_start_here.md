@@ -249,16 +249,16 @@ enrollment.enroll = function (options, cb) {
 
 // [Step 4]
         chain.addOrderer(new Orderer(options.orderer_url, {
-          pem: options.pem,
-          'ssl-target-name-override': options.common_name  //can be null if cert matches hostname
+          pem: options.orderer_tls_opts.pem,
+          'ssl-target-name-override': options.orderer_tls_opts.common_name  //can be null if cert matches hostname
         }));
 
 // [Step 5]
         try {
             for (var i in options.peer_urls) {
                 chain.addPeer(new Peer(options.peer_urls[i], {
-                    pem: options.pem,
-                    'ssl-target-name-override': options.common_name
+                    pem: options.peer_tls_opts.pem,
+                    'ssl-target-name-override': options.peer_tls_opts.common_name
                 }));
                 logger.debug('added peer', options.peer_urls[i]);
             }
@@ -268,8 +268,8 @@ enrollment.enroll = function (options, cb) {
         }
         try {
             chain.setPrimaryPeer(new Peer(options.peer_urls[0], {
-                 pem: options.pem,
-                 'ssl-target-name-override': options.common_name
+                 pem: options.peer_tls_opts.pem,
+                 'ssl-target-name-override': options.peer_tls_opts.common_name
             }));
             logger.debug('added primary peer', options.peer_urls[0]);
         }
@@ -473,8 +473,7 @@ __/utils/marbles_cc_lib.js__
                 options.args.owner_id,
                 options.args.auth_company
             ],
-            pem: g_options.pem,
-            common_name: g_options.common_name
+            peer_tls_opts: g_options.peer_tls_opts,
         };
         fcw.invoke_chaincode(enrollObj, opts, cb);
     };
