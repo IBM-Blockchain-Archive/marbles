@@ -1,10 +1,3 @@
--////////////////////////////////////////////////// Functions //////////////////////////////////////////////////
--//Print Object Out Formatted
-mixin debug(variable)
-	br
-	br
-	pre #{JSON.stringify(variable, null, "\t")}
-
 -////////////////////////////////////////////////// HTML //////////////////////////////////////////////////
 -//Begin HTML
 doctype html
@@ -27,7 +20,7 @@ html
 		script(src='/js/blockchain.js?v=#{bag.jshash}')
 		script(src='/js/ui_building.js?v=#{bag.jshash}')
 		script(type='text/javascript').
-			var bag = !{JSON.stringify(bag)};						//throw jade json over to JS
+			var bag = !{JSON.stringify(bag)};						//throw json over to JS
 			console.log('bag', bag);
 			$(document).ready(function(){
 				$(".colorInput").click(function(){	//do not remove! no idea why but this helps safari open the color picker
@@ -53,4 +46,4 @@ html
 					block footer
 
 			#leftEverything
-				include ../panel_audit.jade
+				include ../panel_audit.pug

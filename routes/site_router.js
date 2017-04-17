@@ -9,7 +9,7 @@
 var express = require('express');
 var router = express.Router();
 
-//anything in here gets passed to JADE template engine
+//anything in here gets passed to Pug template engine
 function build_bag(req) {
 	return {
 		e: process.error,							//send any setup errors

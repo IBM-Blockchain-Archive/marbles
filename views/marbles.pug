@@ -1,8 +1,8 @@
-extends ./template/layout.jade
+extends ./template/layout.pug
 	
 	
-// --------------- Header -------------- //
 block custom_header
+	// --------------- Header -------------- //
 	script(src='/js/ui_events.js?v=#{bag.jshash}')
 	script(src='/js/websocket.js?v=#{bag.jshash}')
 	script(src='/js/startup.js?v=#{bag.jshash}')
@@ -13,13 +13,13 @@ block custom_header
 		});
 		
 		
-// --------------- Navigation Bar  -------------- //
 block navpanel
-	include ./template/nav.jade
+	// --------------- Navigation Bar  -------------- //
+	include ./template/nav.pug
 	
 	
-// --------------- Main Stuff  -------------- //
 block content
+	// --------------- Main Stuff  -------------- //
 	#notificationsWrap
 		#noticeScrollWrap
 			#emptyNotifications.hint No Notifications
@@ -32,19 +32,19 @@ block content
 	#contentPanel
 		
 		// --------------- Home Panel
-		include ./panel_home.jade
+		include ./panel_home.pug
 		
 		// --------------- Create Panel
-		include ./panel_create.jade
+		include ./panel_create.pug
 
 		// --------------- Start Up Walk Through Panel
-		include ./panel_startup.jade
+		include ./panel_startup.pug
 
 		// --------------- Walk Transaction Panel
-		include ./panel_tx_story.jade
+		include ./panel_tx_story.pug
 
 		// --------------- Settings Panel
-		include ./panel_settings.jade
+		include ./panel_settings.pug
 		
 block footer
-	include ./template/blockchain.jade
+	include ./template/blockchain.pug

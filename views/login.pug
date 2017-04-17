@@ -1,21 +1,21 @@
-extends ./template/layout.jade
+extends ./template/layout.pug
 	
 	
-// --------------- Header -------------- //
 block custom_header
+	// --------------- Header -------------- //
 	script(type='text/javascript').
 		$(document).ready(function(){
 
 		});
 		
 		
-// --------------- Navigation Bar  -------------- //
 block navpanel
-	include ./template/nav.jade
+	// --------------- Navigation Bar  -------------- //
+	include ./template/nav.pug
 	
 	
-// --------------- Main Stuff  -------------- //
 block content
+	// --------------- Main Stuff  -------------- //
 	#notificationWrap
 	
 	#contentPanel
@@ -74,16 +74,3 @@ block content
 			hr
 			input(type="text" placeholder="username" value="admin" name="username")
 			button(type="submit") Login
-
-
-		//#test(style="position: relative;")
-			#marbleWrap
-				div.ball#proposeMarbleStable.hideBorders
-				div.ball#marbleBorderTop
-				div.ball#marbleBorderBottom
-				div.ball#marbleBorderLeft
-				div.ball#marbleBorderRight
-			#dummy
-		
-//block footer
-	include ./template/blockchain.jade

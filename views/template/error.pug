@@ -1,21 +1,21 @@
-extends ./layout.jade
+extends ./layout.pug
 	
 	
-// --------------- Header -------------- //
 block custom_header
+	// --------------- Header -------------- //
 	script(type='text/javascript').
 		$(document).ready(function(){
 			
 		});
 		
 		
-// --------------- Navigation Bar  -------------- //
 block navpanel
+	// --------------- Navigation Bar  -------------- //
 	#logo Marbles P?
 	
 	
-// --------------- Main Stuff  -------------- //
 block content
+	// --------------- Main Stuff  -------------- //
 	#contentPanel
 		
 		h1 Error: #{bag.error.status}

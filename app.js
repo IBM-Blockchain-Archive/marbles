@@ -48,8 +48,7 @@ if (process.env.VCAP_APPLICATION) {
 
 // --- Pathing and Module Setup --- //
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-app.engine('.html', require('jade').__express);
+app.set('view engine', 'pug');
 app.use(compression());
 app.use(cookieParser());
 app.use(serve_static(path.join(__dirname, 'public')));
@@ -60,8 +59,8 @@ app.use(cors());
 //---------------------
 // Cache Busting Hash
 //---------------------
-process.env.cachebust_js = Date.now();			//i'm just making 1 hash against all js for easier jade implementation
-process.env.cachebust_css = Date.now();			//i'm just making 1 hash against all css for easier jade implementation
+process.env.cachebust_js = Date.now();			//i'm just making 1 hash against all js for easier pug implementation
+process.env.cachebust_css = Date.now();			//i'm just making 1 hash against all css for easier pug implementation
 logger.debug('cache busting hash js', process.env.cachebust_js, 'css', process.env.cachebust_css);
 
 // ============================================================================================================================
