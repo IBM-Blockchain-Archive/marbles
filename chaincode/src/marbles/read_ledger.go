@@ -105,11 +105,12 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 	defer resultsIterator.Close()
 	
 	for resultsIterator.HasNext() {
-		queryKeyAsStr, queryValAsBytes, err := resultsIterator.Next()
+                aKeyValue, err := resultsIterator.Next()
 		if err != nil {
 			return shim.Error(err.Error())
 		}
-
+                queryKeyAsStr := aKeyValue.Key
+                queryValAsBytes := aKeyValue.Value
 		fmt.Println("on marble id - ", queryKeyAsStr)
 		var marble Marble
 		json.Unmarshal(queryValAsBytes, &marble)                  //un stringify it aka JSON.parse()
@@ -125,11 +126,12 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 	defer ownersIterator.Close()
 
 	for ownersIterator.HasNext() {
-		queryKeyAsStr, queryValAsBytes, err := ownersIterator.Next()
+                aKeyValue, err := ownersIterator.Next()
 		if err != nil {
 			return shim.Error(err.Error())
 		}
-		
+		queryKeyAsStr := aKeyValue.Key
+                queryValAsBytes := aKeyValue.Value
 		fmt.Println("on owner id - ", queryKeyAsStr)
 		var owner Owner
 		json.Unmarshal(queryValAsBytes, &owner)                  //un stringify it aka JSON.parse()
@@ -175,19 +177,19 @@ func getHistory(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	defer resultsIterator.Close()
 
 	for resultsIterator.HasNext() {
-		txID, historicValue, err := resultsIterator.Next()
+                historyData, err := resultsIterator.Next()
 		if err != nil {
 			return shim.Error(err.Error())
 		}
 
 		var tx AuditHistory
-		tx.TxId = txID                             //copy transaction id over
-		json.Unmarshal(historicValue, &marble)     //un stringify it aka JSON.parse()
-		if historicValue == nil {                  //marble has been deleted
+		tx.TxId = historyData.TxID                             //copy transaction id over
+		json.Unmarshal(historyData.Value, &marble)     //un stringify it aka JSON.parse()
+		if historyData.Value == nil {                  //marble has been deleted
 			var emptyMarble Marble
 			tx.Value = emptyMarble                 //copy nil marble
 		} else {
-			json.Unmarshal(historicValue, &marble) //un stringify it aka JSON.parse()
+			json.Unmarshal(historyData.Value, &marble) //un stringify it aka JSON.parse()
 			tx.Value = marble                      //copy marble over
 		}
 		history = append(history, tx)              //add this tx to the list
@@ -229,10 +231,13 @@ func getMarblesByRange(stub shim.ChaincodeStubInterface, args []string) pb.Respo
 
 	bArrayMemberAlreadyWritten := false
 	for resultsIterator.HasNext() {
-		queryResultKey, queryResultValue, err := resultsIterator.Next()
+		aKeyValue, err := resultsIterator.Next()
 		if err != nil {
 			return shim.Error(err.Error())
 		}
+                queryResultKey := aKeyValue.Key
+                queryResultValue := aKeyValue.Value
+
 		// Add a comma before array members, suppress it for the first array member
 		if bArrayMemberAlreadyWritten == true {
 			buffer.WriteString(",")
