@@ -71,7 +71,7 @@ cd $GOPATH/src/github.com/hyperledger
 
 # Clone the appropriate release codebase into $GOPATH/src/github.com/hyperledger/fabric
 # Note that the v1.0.0-pre release is a branch of the repository.  It is defined after the -b argument
-git clone -b v1.0.0-preview https://github.com/hyperledger-archives/fabric.git
+git clone -b v1.0.0-preview https://github.com/hyperledger/fabric.git
 ```
 
 ### Verify Fabric Installation
