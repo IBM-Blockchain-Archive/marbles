@@ -91,7 +91,7 @@ Let’s do this with Git by cloning this repository.
 You will need to do this step even if you plan on hosting marbles in Bluemix.
 
 - Open a command prompt/terminal and browse to your desired working directory
-- Run the following commands:
+- Run the following command:
 
 ```
 git clone -b v3.0 http://gopkg.in/ibm-blockchain/marbles.v3
