@@ -98,6 +98,7 @@ git clone http://gopkg.in/ibm-blockchain/marbles.v3
 ```
 
 - This will clone the v3.0 branch to your local system. 
+  - Since we are using `gopkg.in` you will see your branch as `master`, but thats intentional.  `gopkg.in` created the master branch from our `v3.0` branch. We are jumping through these hoops to achive versioning for GoLang (which only likes `master` branches).
 
 <a name="getnetwork"></a>
 
