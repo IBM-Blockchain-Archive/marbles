@@ -34,7 +34,7 @@ import (
 type SimpleChaincode struct {
 }
 
-var marbleIndexStr = "_marbleindex"				//name for the key/value that will store a list of all known marbles
+var marbleIndexStr = "_chickenindex"				//name for the key/value that will store a list of all known marbles
 var openTradesStr = "_opentrades"				//name for the key/value that will store all open trades
 
 type Marble struct{
@@ -95,7 +95,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	
 	var empty []string
 	jsonAsBytes, _ := json.Marshal(empty)								//marshal an emtpy array of strings to clear the index
-	err = stub.PutState(marbleIndexStr, jsonAsBytes)
+	err = stub.PutState(chickenIndexStr, jsonAsBytes)
 	if err != nil {
 		return nil, err
 	}
@@ -133,8 +133,8 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return res, err
 	} else if function == "write" {											//writes a value to the chaincode state
 		return t.Write(stub, args)
-	} else if function == "init_marble" {									//create a new marble
-		return t.init_marble(stub, args)
+	} else if function == "init_chicken" {									//create a new marble
+		return t.init_chicken(stub, args)
 	} else if function == "set_user" {										//change owner of a marble
 		res, err := t.set_user(stub, args)
 		cleanTrades(stub)													//lets make sure all open trades are still valid
@@ -204,27 +204,27 @@ func (t *SimpleChaincode) Delete(stub shim.ChaincodeStubInterface, args []string
 	}
 
 	//get the marble index
-	marblesAsBytes, err := stub.GetState(marbleIndexStr)
+	chickenAsBytes, err := stub.GetState(chickenIndexStr)
 	if err != nil {
-		return nil, errors.New("Failed to get marble index")
+		return nil, errors.New("Failed to get chicken index")
 	}
-	var marbleIndex []string
-	json.Unmarshal(marblesAsBytes, &marbleIndex)								//un stringify it aka JSON.parse()
+	var chickenIndex []string
+	json.Unmarshal(chickenAsBytes, &chickenIndex)								//un stringify it aka JSON.parse()
 	
 	//remove marble from index
-	for i,val := range marbleIndex{
+	for i,val := range chickenIndex{
 		fmt.Println(strconv.Itoa(i) + " - looking at " + val + " for " + name)
 		if val == name{															//find the correct marble
-			fmt.Println("found marble")
-			marbleIndex = append(marbleIndex[:i], marbleIndex[i+1:]...)			//remove it
-			for x:= range marbleIndex{											//debug prints...
-				fmt.Println(string(x) + " - " + marbleIndex[x])
+			fmt.Println("found chicken")
+			chickenIndex = append(chickenIndex[:i], chickenIndex[i+1:]...)			//remove it
+			for x:= range chickenIndex{											//debug prints...
+				fmt.Println(string(x) + " - " + chickenIndex[x])
 			}
 			break
 		}
 	}
-	jsonAsBytes, _ := json.Marshal(marbleIndex)									//save new index
-	err = stub.PutState(marbleIndexStr, jsonAsBytes)
+	jsonAsBytes, _ := json.Marshal(chickenIndex)									//save new index
+	err = stub.PutState(chickenIndexStr, jsonAsBytes)
 	return nil, nil
 }
 
