@@ -12,7 +12,7 @@
 # # peer2 belongs to Org 2
 # # peer3 belongs to Org 3
 # # cli to perform operations on network
-# Once the chaincode has been instantiated, then we should see additional container one/chaincode-version
+# Once the chaincode has been instantiated, then we should see additional container. one new cc container per chaincode-version
 #
 version: '2'
 
