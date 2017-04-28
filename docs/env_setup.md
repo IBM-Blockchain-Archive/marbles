@@ -7,8 +7,8 @@ The following is a list of dependencies and recommended tools that you should in
 - [Git](https://git-scm.com/downloads)
 - [Git Desktop](https://desktop.github.com/) (for those uncomfortable with git's CLI)
 
-Git is a great version control tool to familiarize yourself with, both for chaincode development and software development in general. 
-Also, git bash, which is installed with git on Windows, is an excellent alternative to the the Windows command prompt. 
+Git is a great version control tool to familiarize yourself with, both for chaincode development and software development in general.
+Also, git bash, which is installed with git on Windows, is an excellent alternative to the the Windows command prompt.
 
 ### Verify Git Installation
 
@@ -19,7 +19,7 @@ $ git --version
 git version 2.11.1.windows.1
 ```
 
-Once you have git installed, go create an account for yourself on [GitHub](https://github.com/). 
+Once you have git installed, go create an account for yourself on [GitHub](https://github.com/).
 The IBM Blockchain service on Bluemix currently requires that chaincode be in a GitHub repository in order to be deployed through the REST API.
 
 ## 2. GoLang
@@ -28,9 +28,9 @@ The IBM Blockchain service on Bluemix currently requires that chaincode be in a 
 - [Go installation instructions](https://golang.org/doc/install)
 - [Go documentation and tutorials](https://golang.org/doc/)
 
-The Go installation installs a set of Go CLI tools which are very useful when writing chaincode. 
-For example, the `go build` command allows you to check that your chaincode actually compiles before you attempt to deploy it to a network. 
-At time of writing, this chaincode is known to build successfully with version 1.7.5. 
+The Go installation installs a set of Go CLI tools which are very useful when writing chaincode.
+For example, the `go build` command allows you to check that your chaincode actually compiles before you attempt to deploy it to a network.
+At time of writing, this chaincode is known to build successfully with version 1.7.5.
 
 ### Verify Go Installation
 You can verify that Go is installed properly by running the following commands. Of course, the output of `go version` may change depending on your operating system.
@@ -43,9 +43,9 @@ $ echo $GOPATH
 C:\gopath
 ```
 
-Your `GOPATH` does not need to match the one above. 
-It only matters that you have this variable set to a valid directory on your filesystem. 
-The installation instructions linked above will take you through the setup of this environment variable. 
+Your `GOPATH` does not need to match the one above.
+It only matters that you have this variable set to a valid directory on your filesystem.
+The installation instructions linked above will take you through the setup of this environment variable.
 
 Next verify you can build GoLang code with the [hello world](https://golang.org/doc/install#testing) example.
 
@@ -58,11 +58,15 @@ Any piece of chaincode that you write will need to import the chaincode shim fro
 
 ### Instructions
 
-A few different releases of the fabric are linked above. The release you clone needs to match the Hyperledger network you are using. 
-If you are using the Bluemix Blockchain Service, clone the `v1.0.0-preview` branch. 
+A few different releases of the fabric are linked above. The release you clone needs to match the Hyperledger network you are using.
 
-You will need to make sure that the fabric release you choose is stored under `$GOPATH/src/hyperledger/fabric`. 
-The instructions below should take you through the process of properly installing the v0.5 release on your `GOPATH`. 
+For example, if you are using the Bluemix Blockchain Service:
+
+Check the commit level of the Hyperledger Fabric being currently used in your network, it can be found in the Release Notes section of the network
+![](/doc_images/marbles-env.PNG)
+
+You will need to make sure that the fabric release you choose is stored under `$GOPATH/src/github.com/hyperledger/fabric`.
+The instructions below should take you through the process of properly installing the v1.0 release on your `GOPATH`.
 
 ```
 # Create the parent directories on your GOPATH
@@ -70,9 +74,16 @@ mkdir -p $GOPATH/src/github.com/hyperledger
 cd $GOPATH/src/github.com/hyperledger
 
 # Clone the appropriate release codebase into $GOPATH/src/github.com/hyperledger/fabric
-# Note that the v1.0.0-pre release is a branch of the repository.  It is defined after the -b argument
-git clone -b v1.0.0-preview https://github.com/hyperledger/fabric.git
+# This starts at the master branch
+git clone https://github.com/hyperledger/fabric.git
+
+# Match this version to the commit level of your network (1st 7 characters will work)
+git checkout 14055d7
+
+# Confirm the level using git branch, should the commit level matching your network
+git branch
 ```
+![](/doc_images/git-branch-out.PNG)
 
 ### Verify Fabric Installation
 Open a command prompt/terminal and browse to this directory `$GOPATH/src/github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02`
@@ -81,7 +92,7 @@ Open a command prompt/terminal and browse to this directory `$GOPATH/src/github.
 $ go build .
 ```
 
-It should return with no errors/warnings. 
+It should return with no errors/warnings.
 
 ## 4. Node.js
 
