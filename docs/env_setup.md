@@ -63,7 +63,7 @@ A few different releases of the fabric are linked above. The release you clone n
 For example, if you are using the Bluemix Blockchain Service:
 
 Check the commit level of the Hyperledger Fabric being currently used in your network, it can be found in the Release Notes section of the network
-![](/doc-images/marbles-env.PNG)
+![](/doc_images/marbles-env.PNG)
 
 You will need to make sure that the fabric release you choose is stored under `$GOPATH/src/github.com/hyperledger/fabric`.
 The instructions below should take you through the process of properly installing the v1.0 release on your `GOPATH`.
@@ -83,7 +83,7 @@ git checkout 14055d7
 # Confirm the level using git branch, should the commit level matching your network
 git branch
 ```
-![](/doc-images/git-branch-out.PNG)
+![](/doc_images/git-branch-out.PNG)
 
 ### Verify Fabric Installation
 Open a command prompt/terminal and browse to this directory `$GOPATH/src/github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02`
