@@ -59,13 +59,13 @@ Any piece of chaincode that you write will need to import the chaincode shim fro
 ### Instructions
 
 A few different releases of the fabric are linked above. The release you clone needs to match the Hyperledger network you are using.
-
-For example, if you are using the Bluemix Blockchain Service:
-
-Check the commit level of the Hyperledger Fabric being currently used in your network, it can be found in the Release Notes section of the network
+For example, if you are using the Bluemix Blockchain Service then check the commit level of the Hyperledger Fabric being used by your network. It can be found in the Release Notes section of the network's UI.
 ![](/doc_images/marbles-env.PNG)
 
-You will need to make sure that the fabric release you choose is stored under `$GOPATH/src/github.com/hyperledger/fabric`.
+**Update 5/1/2017**
+If you are on Windows please use this commit instead: `0616a9ddc02cc541409c9d77c8b7e97523a8b96e`. Windows needs a Fabric fix that disables pkcs11 that was not avaible until April 1st, 2017 (no joking). Other OSes should be able to use the same version in their release note.
+
+Make sure that the fabric release you choose is stored under `$GOPATH/src/github.com/hyperledger/fabric`.
 The instructions below should take you through the process of properly installing the v1.0 release on your `GOPATH`.
 
 ```
