@@ -78,9 +78,10 @@ cd $GOPATH/src/github.com/hyperledger
 git clone https://github.com/hyperledger/fabric.git
 
 # Match this version to the commit level of your network (1st 7 characters will work)
+cd fabric
 git checkout 14055d7
 
-# Confirm the level using git branch, should the commit level matching your network
+# Confirm the level using git branch, should show the commit level matching your network
 git branch
 ```
 ![](/doc_images/git-branch-out.PNG)
@@ -89,7 +90,7 @@ git branch
 Open a command prompt/terminal and browse to this directory `$GOPATH/src/github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02`
 
 ```
-$ go build .
+$ go build -tags nopkcs11 .
 ```
 
 It should return with no errors/warnings.
