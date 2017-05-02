@@ -17,7 +17,7 @@
 
 - Fill out the chaincode name as "marbles"
 - Fill out the chaincode version as "v0"
-- Select the "Choose Files" button and select **all 5** files found in `<marbles directory>/chaincode/src/marbles`
+- Select the "Choose Files" button and select **all** the files found in `<marbles directory>/chaincode/src/marbles`
     - Alternatively you can zip up the 5 .go files and submit a single zip file
 - Click "Submit"
 
