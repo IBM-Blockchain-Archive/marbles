@@ -128,6 +128,7 @@ if (hash === helper.getHash()) {
 	console.log('');
 	logger.debug('Detected that we have launched successfully before');
 	logger.debug('Welcome back - Initiating start up\n\n');
+	process.env.app_state = 'start_waiting';
 	process.env.app_first_setup = 'no';
 	enroll_admin(1, function (e) {
 		if (e == null) {

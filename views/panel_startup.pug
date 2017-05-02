@@ -89,13 +89,13 @@
 			p Edit the details below to try again.
 		br
 		.stepInputLegend CA
-		input(type="text" placeholder="CA ex: 192.168.99.100:8888" name="caUrl" value="#{bag.creds.ca}").longer
+		input(type="text" placeholder="CA ex: 192.168.99.100:8888" name="caUrl" value=bag.creds.ca).longer
 		br
 		.stepInputLegend Enroll ID 
-		input(type="text" placeholder="Enroll Id" name="enrollId" value="#{bag.creds.admin_id}").longer
+		input(type="text" placeholder="Enroll Id" name="enrollId" value=bag.creds.admin_id).longer
 		br
 		.stepInputLegend Enroll Secret 
-		input(type="text" placeholder="Enroll Secret" name="enrollSecret" value="#{bag.creds.admin_secret}").longer
+		input(type="text" placeholder="Enroll Secret" name="enrollSecret" value=bag.creds.admin_secret).longer
 		br
 		br
 		button(type="button")#enrollAdmin Retry
@@ -117,16 +117,16 @@
 
 		br
 		.stepInputLegend Orderer 
-		input(type="text" placeholder="Orderer ex: 192.168.99.100:5151" name="ordererUrl" value="#{bag.creds.orderer}").longer
+		input(type="text" placeholder="Orderer ex: 192.168.99.100:5151" name="ordererUrl" value=bag.creds.orderer).longer
 		br
 		.stepInputLegend Peer 
-		input(type="text" placeholder="Peer ex: 192.168.99.100:7051" name="peerUrl" value="#{bag.creds.peer}").longer
+		input(type="text" placeholder="Peer ex: 192.168.99.100:7051" name="peerUrl" value=bag.creds.peer).longer
 		br
 		.stepInputLegend Chaincode ID 
-		input(type="text" placeholder="Chaincode ID" name="chaincodeId" value="#{bag.creds.chaincode_id}").longer
+		input(type="text" placeholder="Chaincode ID" name="chaincodeId" value=bag.creds.chaincode_id).longer
 		br
 		.stepInputLegend Chaincode Version 
-		input(type="text" placeholder="Chaincode Version" name="chaincodeVersion" value="#{bag.creds.chaincode_version}").longer
+		input(type="text" placeholder="Chaincode Version" name="chaincodeVersion" value=bag.creds.chaincode_version).longer
 		br
 		button(type="button")#retryDeploy Retry
 
@@ -140,11 +140,11 @@
 			p These are the identies that can own marbles.
 		br
 		.stepInputLegend Company 
-		input(type="text" value="#{bag.marble_company}" disabled="disabled").longer
+		input(type="text" value=bag.marble_company disabled="disabled").longer
 		br
 
 		.stepInputLegend Owners 
-		input(type="text" placeholder="bob, bill, amy" name="marbleOwners" value="#{bag.creds.marble_owners}").longer
+		input(type="text" placeholder="bob, bill, amy" name="marbleOwners" value=bag.creds.marble_owners).longer
 		br
 		br
 		button(type="button")#registerOwners Register

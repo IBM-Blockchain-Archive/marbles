@@ -3,10 +3,10 @@ extends ./template/layout.pug
 	
 block custom_header
 	// --------------- Header -------------- //
-	script(src='/js/ui_events.js?v=#{bag.jshash}')
-	script(src='/js/websocket.js?v=#{bag.jshash}')
-	script(src='/js/startup.js?v=#{bag.jshash}')
-	script(src='/js/tx_story.js?v=#{bag.jshash}')
+	script(src='/js/ui_events.js?v=' + bag.jshash)
+	script(src='/js/websocket.js?v=' + bag.jshash)
+	script(src='/js/startup.js?v=' + bag.jshash)
+	script(src='/js/tx_story.js?v=' + bag.jshash)
 	script(type='text/javascript').
 		$(document).ready(function(){
 			
