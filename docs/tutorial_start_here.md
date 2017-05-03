@@ -18,7 +18,7 @@
 # Prereq:
 1. [Setup your enviroment](./env_setup.md) 
 1. Read the [What is Chaincode](http://hyperledger-fabric.readthedocs.io/en/latest/chaincode.html) doc 
-1. Install [Node.js](https://nodejs.org/en/download/) v6.2.0 - v6.10.0 (Node v7+ is **not** supported) 
+1. Install [Node.js](https://nodejs.org/en/download/) v6.2 - v6.10 (Node v7+ is **not** supported) 
 1. **You should be comfortable with node.js.** Marbles is a very simple blockchain app, but it’s a complex node app 
 
 ### Application Background

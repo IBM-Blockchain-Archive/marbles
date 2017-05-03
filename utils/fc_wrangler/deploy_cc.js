@@ -5,6 +5,7 @@ var path = require('path');
 
 module.exports = function (logger) {
 	var common = require(path.join(__dirname, './common.js'))(logger);
+	var Peer = require('fabric-client/lib/Peer.js');
 	//var EventHub = require('fabric-client/lib/EventHub.js');
 	var utils = require('fabric-client/lib/utils.js');
 	var deploy_cc = {};
@@ -14,19 +15,36 @@ module.exports = function (logger) {
 	//-------------------------------------------------------------------
 	/*
 		options: {
+					peer_urls: [array of peer urls],
 					path_2_chaincode: "path to chaincode from proj root",
 					chaincode_id: "chaincode id",
 					chaincode_version: "v0",
 					endorsed_hook: function(error, res){},
-					ordered_hook: function(error, res){}
+					ordered_hook: function(error, res){},
+					peer_tls_opts: {
+						pem: 'complete tls certificate',					<optional>
+						common_name: 'common name used in pem certificate' 	<optional>
+					}
 		}
 	*/
 	deploy_cc.install_chaincode = function (obj, options, cb) {
 		logger.debug('[fcw] Installing Chaincode');
 		var chain = obj.chain;
 
+		try {
+			for (var i in options.peer_urls) {
+				chain.addPeer(new Peer(options.peer_urls[i], {
+					pem: options.peer_tls_opts.pem,
+					'ssl-target-name-override': options.peer_tls_opts.common_name	//can be null if cert matches hostname
+				}));
+			}
+		}
+		catch (e) {
+			//might error if peer already exists, but we don't care
+		}
+
 		// fix GOPATH - does not need to be real!
-		process.env.GOPATH = path.join(__dirname, '../');
+		process.env.GOPATH = path.join(__dirname, '../../chaincode');
 		var nonce = utils.getNonce();
 
 		// send proposal to endorser
@@ -55,7 +73,7 @@ module.exports = function (logger) {
 				if (cb) return cb(formatted, null);
 				else return;
 			}
-		);
+			);
 	};
 
 
@@ -64,6 +82,7 @@ module.exports = function (logger) {
 	//-------------------------------------------------------------------
 	/*
 		options: {
+					peer_urls: [array of peer urls],
 					path_2_chaincode: "path to chaincode from proj root",
 					channel_id: "channel id",
 					chaincode_id: "chaincode id",
@@ -71,13 +90,31 @@ module.exports = function (logger) {
 					endorsed_hook: function(error, res){},
 					ordered_hook: function(error, res){},
 					cc_args: ["argument 1"],
-					deploy_wait: 30000
+					deploy_wait: 30000,
+					peer_tls_opts: {
+						pem: 'complete tls certificate',					<optional>
+						common_name: 'common name used in pem certificate' 	<optional>
+					}
 		}
 	*/
 	deploy_cc.instantiate_chaincode = function (obj, options, cb) {
 		logger.debug('[fcw] Instantiating Chaincode', options);
 		var chain = obj.chain;
 		//var eventhub;
+
+		try {
+			for (var i in options.peer_urls) {
+				chain.addPeer(new Peer(options.peer_urls[i], {
+					pem: options.peer_tls_opts.pem,
+					'ssl-target-name-override': options.peer_tls_opts.common_name	//can be null if cert matches hostname
+				}));
+			}
+		}
+		catch (e) {
+			//might error if peer already exists, but we don't care
+		}
+
+		//chain.addOrderer(new Orderer(options.orderer_url));
 
 		// fix GOPATH - does not need to be real!
 		process.env.GOPATH = path.join(__dirname, '../');
@@ -101,7 +138,7 @@ module.exports = function (logger) {
 		//eventhub.setPeerAddr(options.event_url);
 		//eventhub.connect();
 
-		chain.initialize().then(()=>{
+		chain.initialize().then(() => {
 			chain.sendInstantiateProposal(request
 				//nothing
 			).then(
@@ -140,7 +177,7 @@ module.exports = function (logger) {
 							else return;
 						});*/
 
-						setTimeout(function(){
+						setTimeout(function () {
 							if (cb) return cb(null);
 							else return;
 						}, 5000);
@@ -160,7 +197,7 @@ module.exports = function (logger) {
 					if (cb) return cb(formatted, null);
 					else return;
 				}
-			);			
+				);
 		});
 	};
 

@@ -169,7 +169,7 @@ module.exports = function (config_filename, logger) {
 	};
 
 	// get a peer's tls options
-	helper.getPeerTLScert = function (index) {
+	helper.getPeerTLScertOpts = function (index) {
 		if (index === undefined || index == null) {
 			throw new Error('Peers index not passed');
 		} else {
@@ -180,9 +180,11 @@ module.exports = function (config_filename, logger) {
 	// get a node's tls pem obj
 	function getTLScertObj(node, index) {
 		if (index < helper.creds.credentials[node].length) {
-			var certObj = pickCertObj(helper.creds.credentials[node][index].tls_certificate);
-			certObj.pem = loadCert(certObj.pem);
-			return certObj;
+			var obj = pickCertObj(helper.creds.credentials[node][index].tls_certificate);
+			return {
+				common_name: obj.common_name,
+				pem: loadCert(obj.pem)
+			};
 		}
 		logger.warn('no tls cert found for ' + node + ' in creds json: ' + creds_path);
 		return null;
@@ -274,26 +276,30 @@ module.exports = function (config_filename, logger) {
 			chaincode_version: helper.getChaincodeVersion(),
 			ca_tls_opts: helper.getCATLScert(0),
 			orderer_tls_opts: helper.getOrdererTLScert(0),
-			peer_tls_opts: helper.getPeerTLScert(0),
+			peer_tls_opts: helper.getPeerTLScertOpts(0),
 		};
 	};
 
 	// build the enrollment options
 	helper.makeEnrollmentOptions = function (userIndex) {
-		var user = helper.getUser(userIndex);
-		return {
-			channel_id: helper.getChannelId(),
-			uuid: 'marbles-' + helper.getNetworkId() + '-' + helper.getChannelId() + '-' + helper.getPeersName(0),
-			ca_url: helper.getCasUrl(0),
-			orderer_url: helper.getOrderersUrl(0),
-			peer_urls: [helper.getPeersUrl(0)],
-			enroll_id: user.enrollId,
-			enroll_secret: user.enrollSecret,
-			msp_id: helper.getPeersMspId(0),
-			ca_tls_opts: helper.getCATLScert(0),
-			orderer_tls_opts: helper.getOrdererTLScert(0),
-			peer_tls_opts: helper.getPeerTLScert(0),
-		};
+		if (userIndex === undefined || userIndex == null) {
+			throw new Error('User index not passed');
+		} else {
+			var user = helper.getUser(userIndex);
+			return {
+				channel_id: helper.getChannelId(),
+				uuid: 'marbles-' + helper.getNetworkId() + '-' + helper.getChannelId() + '-' + helper.getPeersName(0),
+				ca_url: helper.getCasUrl(0),
+				orderer_url: helper.getOrderersUrl(0),
+				peer_urls: [helper.getPeersUrl(0)],
+				enroll_id: user.enrollId,
+				enroll_secret: user.enrollSecret,
+				msp_id: helper.getPeersMspId(0),
+				ca_tls_opts: helper.getCATLScert(0),
+				orderer_tls_opts: helper.getOrdererTLScert(0),
+				peer_tls_opts: helper.getPeerTLScertOpts(0),
+			};
+		}
 	};
 
 	// safely retrieve marbles fields
