@@ -44,7 +44,12 @@ type Marble struct{
 	User string `json:"user"`
 	//test
 }
-
+type Customer struct{
+	CardID	string	`json: "cardID"`
+	Name 		string	`json: "name"`
+	Lastname 	string `json: "lastname"`
+	Job 		string	`json: "job"`
+}
 type Description struct{
 	Color string `json:"color"`
 	Size int `json:"size"`
@@ -258,6 +263,12 @@ func (t *SimpleChaincode) init_marble(stub shim.ChaincodeStubInterface, args []s
 
 	//   0       1       2     3
 	// "asdf", "blue", "35", "bob"
+	/*
+	CardID	string	`json: "cardID"`
+	Name 		string	`json: "name"`
+	Lastname 	string `json: "lastname"`
+	Job 		string	`json: "job"`
+*/
 	if len(args) != 4 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 4")
 	}
@@ -276,30 +287,35 @@ func (t *SimpleChaincode) init_marble(stub shim.ChaincodeStubInterface, args []s
 	if len(args[3]) <= 0 {
 		return nil, errors.New("4th argument must be a non-empty string")
 	}
-	name := args[0]
+	/*name := args[0]
 	color := strings.ToLower(args[1])
 	user := strings.ToLower(args[3])
 	size, err := strconv.Atoi(args[2])
+	*/
+	cardID 	:= args[0]
+	name		:= args[1]
+	lastname:= args[2]
+	job			:= args[3]
 	if err != nil {
 		return nil, errors.New("3rd argument must be a numeric string")
 	}
 
 	//check if marble already exists
-	marbleAsBytes, err := stub.GetState(name)
+	marbleAsBytes, err := stub.GetState(cardID)
 	if err != nil {
 		return nil, errors.New("Failed to get marble name")
 	}
 	res := Marble{}
 	json.Unmarshal(marbleAsBytes, &res)
-	if res.Name == name{
+	if res.CardID == cardID{
 		fmt.Println("This marble arleady exists: " + name)
 		fmt.Println(res);
 		return nil, errors.New("This marble arleady exists")				//all stop a marble by this name exists
 	}
 
 	//build the marble json string manually
-	str := `{"name": "` + name + `", "color": "` + color + `", "size": ` + strconv.Itoa(size) + `, "user": "` + user + `"}`
-	err = stub.PutState(name, []byte(str))									//store marble with id as key
+	str := `{"name": "` + name + `", "lastname": "` + lastname + `", "job": ` + job + `, "cardID": "` + cardID + `"}`
+	err = stub.PutState(cardID, []byte(str))									//store marble with id as key
 	if err != nil {
 		return nil, err
 	}
