@@ -216,7 +216,7 @@ func (t *SimpleChaincode) read_by_brk(stub shim.ChaincodeStubInterface, args []s
 	return "valAsbytes", nil													//send it onward
 
 }*/
-func (t *SimpleChaincode) read_by_customer(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func (t *SimpleChaincode) read_by_customer(stub shim.ChaincodeStubInterface, args []string) (/*[]byte*/string, error) {
 	var card_id, jsonResp string
 	var err error
 
@@ -231,7 +231,25 @@ func (t *SimpleChaincode) read_by_customer(stub shim.ChaincodeStubInterface, arg
 		return nil, errors.New(jsonResp)
 	}
 
-	return valAsbytes, nil													//send it onward
+///
+//check if marble already exists
+customerAsBytes, err := stub.GetState(card_id)
+
+if err != nil {
+	return nil, errors.New("Failed to get marble name")
+}
+//res := Marble{}
+res := Customer{}
+json.Unmarshal(customerAsBytes, &res)
+if res.CardID == cardID{
+	var str := res.CardID + res.Name
+	return str, nil
+	//return nil, errors.New("This marble arleady exists")				//all stop a marble by this name exists
+}
+
+///
+return "Not found" , nil
+	//return valAsbytes, nil													//send it onward
 	//return "555", nil
 }
 // ============================================================================================================================
