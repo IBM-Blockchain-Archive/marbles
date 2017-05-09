@@ -165,11 +165,11 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 	fmt.Println("query is running " + function)
 
 	// Handle different functions
-	if function == "read_by_agent" {
+	/*if function == "read_by_agent" {
 		return t.read_by_agent(stub, args)
 	} else if function == "read_by_brk" {													//read a variable
 		return t.read_by_brk(stub, args)
-	} else if function == "read_by_customer" {
+	} else*/ if function == "read_by_customer" {
 		return t.read_by_customer(stub, args)
 	}
 	fmt.Println("query did not find func: " + function)						//error
@@ -180,7 +180,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 // ============================================================================================================================
 // Read - read a variable from chaincode state
 // ============================================================================================================================
-func (t *SimpleChaincode) read_by_agent(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+/*func (t *SimpleChaincode) read_by_agent(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var card_id, jsonResp string
 	var err error
 
@@ -215,7 +215,7 @@ func (t *SimpleChaincode) read_by_brk(stub shim.ChaincodeStubInterface, args []s
 
 	return "valAsbytes", nil													//send it onward
 
-}
+}*/
 func (t *SimpleChaincode) read_by_customer(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var card_id, jsonResp string
 	var err error
