@@ -322,7 +322,7 @@ customerAsByte, err := stub.GetState(cardID)
 	}
 
 	//get the marble index
-	customerAsByte, err := stub.GetState(customerIndexStr)
+	customerAsBytes, err := stub.GetState(customerIndexStr)
 	if err != nil {
 		return nil, errors.New("Failed to get marble index")
 	}
@@ -377,7 +377,7 @@ func (t *SimpleChaincode) set_user(stub shim.ChaincodeStubInterface, args []stri
 func (t *SimpleChaincode) open_trade(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var err error
 	var will_size int
-	var trade_away Description
+	//var trade_away Description
 
 	//	0        1      2     3      4      5       6
 	//["bob", "blue", "16", "red", "16"] *"blue", "35*
@@ -515,7 +515,8 @@ func (t *SimpleChaincode) perform_trade(stub shim.ChaincodeStubInterface, args [
 // ============================================================================================================================
 // findMarble4Trade - look for a matching marble that this user owns and return it
 // ============================================================================================================================
-func findMarble4Trade(stub shim.ChaincodeStubInterface, user string, color string, size int )(m Marble, err error){
+//func findMarble4Trade(stub shim.ChaincodeStubInterface, user string, color string, size int )(m Marble, err error){
+func findMarble4Trade(stub shim.ChaincodeStubInterface, user string, color string, size int )(m int, err error){
 	/*var fail Marble;
 	fmt.Println("- start find marble 4 trade")
 	fmt.Println("looking for " + user + ", " + color + ", " + strconv.Itoa(size));
