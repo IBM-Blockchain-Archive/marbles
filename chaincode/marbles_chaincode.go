@@ -37,12 +37,12 @@ var customerIndexStr = "_customerindex"
 //var marbleIndexStr = "_marbleindex"				//name for the key/value that will store a list of all known marbles
 var openTradesStr = "_opentrades"				//name for the key/value that will store all open trades
 
-/*type Marble struct{
+type Marble struct{
 	Name string `json:"name"`					//the fieldtags are needed to keep case from bouncing around
 	Color string `json:"color"`
 	Size int `json:"size"`
 	User string `json:"user"`
-}*/
+}
 type Customer struct{
 	CardID	string	`json: "cardID"`
 	Name 		string	`json: "name"`
@@ -300,7 +300,7 @@ func (t *SimpleChaincode) init_marble(stub shim.ChaincodeStubInterface, args []s
 	}
 
 	//check if marble already exists
-customerAsByte, err := stub.GetState(cardID)
+customerAsBytes, err := stub.GetState(cardID)
 	//marbleAsBytes, err := stub.GetState(cardID)
 	if err != nil {
 		return nil, errors.New("Failed to get marble name")
@@ -515,8 +515,8 @@ func (t *SimpleChaincode) perform_trade(stub shim.ChaincodeStubInterface, args [
 // ============================================================================================================================
 // findMarble4Trade - look for a matching marble that this user owns and return it
 // ============================================================================================================================
-//func findMarble4Trade(stub shim.ChaincodeStubInterface, user string, color string, size int )(m Marble, err error){
-func findMarble4Trade(stub shim.ChaincodeStubInterface, user string, color string, size int )(m int, err error){
+func findMarble4Trade(stub shim.ChaincodeStubInterface, user string, color string, size int )(m Marble, err error){
+
 	/*var fail Marble;
 	fmt.Println("- start find marble 4 trade")
 	fmt.Println("looking for " + user + ", " + color + ", " + strconv.Itoa(size));
