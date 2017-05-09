@@ -221,14 +221,14 @@ func (t *SimpleChaincode) read_by_customer(stub shim.ChaincodeStubInterface, arg
 	var err error
 
 	if len(args) != 1 {
-		return nil, errors.New("Incorrect number of arguments. Expecting name of the var to query")
+		return "nil", errors.New("Incorrect number of arguments. Expecting name of the var to query")
 	}
 
 	card_id = args[0]
 	valAsbytes, err := stub.GetState(card_id)									//get the var from chaincode state
 	if err != nil {
 		jsonResp = "{\"Error\":\"Failed to get state for " + card_id + "\"}"
-		return nil, errors.New(jsonResp)
+		return "nil", errors.New(jsonResp)
 	}
 
 ///
@@ -236,7 +236,7 @@ func (t *SimpleChaincode) read_by_customer(stub shim.ChaincodeStubInterface, arg
 customerAsBytes, err := stub.GetState(card_id)
 
 if err != nil {
-	return nil, errors.New("Failed to get marble name")
+	return "nil", errors.New("Failed to get marble name")
 }
 //res := Marble{}
 res := Customer{}
