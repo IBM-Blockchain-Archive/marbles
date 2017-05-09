@@ -94,7 +94,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	}
 
 	// Write the state to the ledger
-	err = stub.PutState("kyc", []byte(strconv.Itoa(Aval)))				//making a test var "abc", I find it handy to read/write to it right away to test the network
+	err = stub.PutState("abc", []byte(strconv.Itoa(Aval)))				//making a test var "abc", I find it handy to read/write to it right away to test the network
 	if err != nil {
 		return nil, err
 	}
@@ -301,14 +301,14 @@ func (t *SimpleChaincode) init_marble(stub shim.ChaincodeStubInterface, args []s
 	}
 
 	//check if marble already exists
-	marbleAsBytes, err := stub.GetState(cardID)
+	customerAsBytes, err := stub.GetState(cardID)
 	if err != nil {
 		return nil, errors.New("Failed to get marble name")
 	}
-	res := Marble{}
-	json.Unmarshal(marbleAsBytes, &res)
+	res := Customer{}
+	json.Unmarshal(customerAsBytes, &res)
 	if res.CardID == cardID{
-		fmt.Println("This marble arleady exists: " + name)
+		fmt.Println("This marble arleady exists: " + cardID)
 		fmt.Println(res);
 		return nil, errors.New("This marble arleady exists")				//all stop a marble by this name exists
 	}
@@ -321,18 +321,18 @@ func (t *SimpleChaincode) init_marble(stub shim.ChaincodeStubInterface, args []s
 	}
 
 	//get the marble index
-	marblesAsBytes, err := stub.GetState(marbleIndexStr)
+	customerAsBytes, err := stub.GetState(customerIndexStr)
 	if err != nil {
 		return nil, errors.New("Failed to get marble index")
 	}
-	var marbleIndex []string
-	json.Unmarshal(marblesAsBytes, &marbleIndex)							//un stringify it aka JSON.parse()
+	var customerIndex []string
+	json.Unmarshal(customerAsBytes, &customerIndex)							//un stringify it aka JSON.parse()
 
 	//append
-	marbleIndex = append(marbleIndex, name)									//add marble name to index list
-	fmt.Println("! marble index: ", marbleIndex)
-	jsonAsBytes, _ := json.Marshal(marbleIndex)
-	err = stub.PutState(marbleIndexStr, jsonAsBytes)						//store name of marble
+	customerIndex = append(customerIndex, name)									//add marble name to index list
+	fmt.Println("! marble index: ", customerIndex)
+	jsonAsBytes, _ := json.Marshal(customerIndex)
+	err = stub.PutState(customerIndexStr, jsonAsBytes)						//store name of marble
 
 	fmt.Println("- end init marble")
 	return nil, nil
