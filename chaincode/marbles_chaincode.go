@@ -216,7 +216,7 @@ func (t *SimpleChaincode) read_by_brk(stub shim.ChaincodeStubInterface, args []s
 	return "valAsbytes", nil													//send it onward
 
 }*/
-func (t *SimpleChaincode) read_by_customer(stub shim.ChaincodeStubInterface, args []string) (/*[]byte*/string, error) {
+func (t *SimpleChaincode) read_by_customer(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var card_id, jsonResp string
 	var err error
 
@@ -242,7 +242,7 @@ if err != nil {
 res := Customer{}
 json.Unmarshal(customerAsBytes, &res)
 if res.CardID == cardID{
-	str := res.CardID + res.Name
+	str := res.CardID 
 	return str, nil
 	//return nil, errors.New("This marble arleady exists")				//all stop a marble by this name exists
 }
