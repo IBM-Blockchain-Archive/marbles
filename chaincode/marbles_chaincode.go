@@ -249,7 +249,7 @@ if res.CardID == card_id{
 }
 
 ///
-return ([]byte(str)) , nil
+return ([]byte(str + card_id + "=" + res.CardID )) , nil
 	//return valAsbytes, nil													//send it onward
 	//return "555", nil
 }
