@@ -225,7 +225,7 @@ func (t *SimpleChaincode) read_by_customer(stub shim.ChaincodeStubInterface, arg
 	}
 
 	card_id = args[0]
-	valAsbytes, err := stub.GetState(card_id)									//get the var from chaincode state
+	//valAsbytes, err := stub.GetState(card_id)									//get the var from chaincode state
 	if err != nil {
 		jsonResp = "{\"Error\":\"Failed to get state for " + card_id + "\"}"
 		return nil, errors.New(jsonResp)
