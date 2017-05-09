@@ -165,11 +165,11 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 	fmt.Println("query is running " + function)
 
 	// Handle different functions
-	if function == "read_by_agent"{
+	if function == "read_by_agent" {
 		return t.read_by_agent(stub, args)
-	}else if function == "read_by_brk" {													//read a variable
+	} else if function == "read_by_brk" {													//read a variable
 		return t.read_by_brk(stub, args)
-	}else function == "read_by_customer"{
+	} else function == "read_by_customer" {
 		return t.read_by_customer(stub, args)
 	}
 	fmt.Println("query did not find func: " + function)						//error
