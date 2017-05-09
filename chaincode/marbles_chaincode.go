@@ -241,14 +241,14 @@ if err != nil {
 //res := Marble{}
 res := Customer{}
 json.Unmarshal(customerAsBytes, &res)
-if res.CardID == cardID{
+if res.CardID == card_id{
 	str := res.CardID
 	return ([]byte(str)), nil
 	//return nil, errors.New("This marble arleady exists")				//all stop a marble by this name exists
 }
 
 ///
-return "Not found" , nil
+return ([]byte("Not found")) , nil
 	//return valAsbytes, nil													//send it onward
 	//return "555", nil
 }
