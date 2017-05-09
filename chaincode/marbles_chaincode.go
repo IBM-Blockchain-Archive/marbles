@@ -355,13 +355,8 @@ func (t *SimpleChaincode) init_marble(stub shim.ChaincodeStubInterface, args []s
 	}
 
 	//build the marble json string manually
-	//str := `{"name": "` + name + `", "lastname": "` + lastname + `", "job": ` + job + `, "cardID": "` + cardID + `"}`
-	str := `{"name": "` + name + `", "job": ` + job + `, "cardID": "` + cardID + `"}`
-<<<<<<< HEAD
-
-=======
-
->>>>>>> origin/v2.0
+	str := `{"name": "` + name + `", "lastname": "` + lastname + `", "job": ` + job + `, "cardID0000": "` + cardID + `"}`
+	//str := `{"name": "` + name + `", "job": ` + job + `, "cardID": "` + cardID + `"}`
 	err = stub.PutState(cardID, []byte(str))									//store marble with id as key
 	if err != nil {
 		return nil, err
