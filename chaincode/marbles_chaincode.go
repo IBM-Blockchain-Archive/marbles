@@ -375,8 +375,8 @@ func (t *SimpleChaincode) set_user(stub shim.ChaincodeStubInterface, args []stri
 // Open Trade - create an open trade for a marble you want with marbles you have
 // ============================================================================================================================
 func (t *SimpleChaincode) open_trade(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	var err error
-	var will_size int
+	//var err error
+	//var will_size int
 	//var trade_away Description
 
 	//	0        1      2     3      4      5       6
@@ -445,7 +445,7 @@ func (t *SimpleChaincode) open_trade(stub shim.ChaincodeStubInterface, args []st
 // Perform Trade - close an open trade and move ownership
 // ============================================================================================================================
 func (t *SimpleChaincode) perform_trade(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	var err error
+	//var err error
 
 	//	0		1					2					3				4					5
 	//[data.id, data.closer.user, data.closer.name, data.opener.user, data.opener.color, data.opener.size]
