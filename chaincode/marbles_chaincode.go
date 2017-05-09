@@ -242,7 +242,7 @@ if err != nil {
 res := Customer{}
 json.Unmarshal(customerAsBytes, &res)
 if res.CardID == cardID{
-	var str := res.CardID + res.Name
+	str := res.CardID + res.Name
 	return str, nil
 	//return nil, errors.New("This marble arleady exists")				//all stop a marble by this name exists
 }
