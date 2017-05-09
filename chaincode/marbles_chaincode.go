@@ -322,12 +322,12 @@ customerAsBytes, err := stub.GetState(cardID)
 	}
 
 	//get the marble index
-	customerAsBytes, err := stub.GetState(customerIndexStr)
+	customerAsByte, err := stub.GetState(customerIndexStr)
 	if err != nil {
 		return nil, errors.New("Failed to get marble index")
 	}
 	var customerIndex []string
-	json.Unmarshal(customerAsBytes, &customerIndex)							//un stringify it aka JSON.parse()
+	json.Unmarshal(customerAsByte, &customerIndex)							//un stringify it aka JSON.parse()
 
 	//append
 	customerIndex = append(customerIndex, cardID)									//add marble name to index list
@@ -517,8 +517,8 @@ func (t *SimpleChaincode) perform_trade(stub shim.ChaincodeStubInterface, args [
 // ============================================================================================================================
 func findMarble4Trade(stub shim.ChaincodeStubInterface, user string, color string, size int )(m Marble, err error){
 
-	/*var fail Marble;
-	fmt.Println("- start find marble 4 trade")
+	var fail Marble;
+	/*fmt.Println("- start find marble 4 trade")
 	fmt.Println("looking for " + user + ", " + color + ", " + strconv.Itoa(size));
 
 	//get the marble index
