@@ -195,7 +195,7 @@ func (t *SimpleChaincode) read_by_agent(stub shim.ChaincodeStubInterface, args [
 		return nil, errors.New(jsonResp)
 	}
 
-	return "555", nil													//send it onward
+	return "valAsbytes", nil													//send it onward
 
 }
 func (t *SimpleChaincode) read_by_brk(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
