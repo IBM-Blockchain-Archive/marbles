@@ -161,7 +161,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 // ============================================================================================================================
 // - Our entry point for Queries
 // ============================================================================================================================
-func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) (string, error) {
+func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("query is running " + function)
 
 	// Handle different functions
@@ -174,7 +174,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 	}
 	fmt.Println("query did not find func: " + function)						//error
 
-	return "nil", errors.New("Received unknown function query")
+	return nil, errors.New("Received unknown function query")
 }
 
 // ============================================================================================================================
@@ -216,19 +216,19 @@ func (t *SimpleChaincode) read_by_brk(stub shim.ChaincodeStubInterface, args []s
 	return "valAsbytes", nil													//send it onward
 
 }*/
-func (t *SimpleChaincode) read_by_customer(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+func (t *SimpleChaincode) read_by_customer(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var card_id, jsonResp string
 	var err error
 
 	if len(args) != 1 {
-		return "nil", errors.New("Incorrect number of arguments. Expecting name of the var to query")
+		return nil, errors.New("Incorrect number of arguments. Expecting name of the var to query")
 	}
 
 	card_id = args[0]
 	valAsbytes, err := stub.GetState(card_id)									//get the var from chaincode state
 	if err != nil {
 		jsonResp = "{\"Error\":\"Failed to get state for " + card_id + "\"}"
-		return "nil", errors.New(jsonResp)
+		return nil, errors.New(jsonResp)
 	}
 
 ///
@@ -236,14 +236,14 @@ func (t *SimpleChaincode) read_by_customer(stub shim.ChaincodeStubInterface, arg
 customerAsBytes, err := stub.GetState(card_id)
 
 if err != nil {
-	return "nil", errors.New("Failed to get marble name")
+	return nil, errors.New("Failed to get marble name")
 }
 //res := Marble{}
 res := Customer{}
 json.Unmarshal(customerAsBytes, &res)
 if res.CardID == cardID{
 	str := res.CardID
-	return str, nil
+	return ([]byte(str)), nil
 	//return nil, errors.New("This marble arleady exists")				//all stop a marble by this name exists
 }
 
