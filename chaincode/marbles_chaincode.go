@@ -25,7 +25,7 @@ import (
 	"strconv"
 	"encoding/json"
 	"time"
-	"strings"
+	//"strings"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
