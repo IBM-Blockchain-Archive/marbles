@@ -180,7 +180,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 // ============================================================================================================================
 // Read - read a variable from chaincode state
 // ============================================================================================================================
-func (t *SimpleChaincode) read_by_customer(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func (t *SimpleChaincode) read_by_agent(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var card_id, jsonResp string
 	var err error
 
@@ -196,9 +196,44 @@ func (t *SimpleChaincode) read_by_customer(stub shim.ChaincodeStubInterface, arg
 	}
 
 	//return "valAsbytes", nil													//send it onward
-	return "555", nil			
+	return "555", nil
 }
+func (t *SimpleChaincode) read_by_brk(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	var card_id, jsonResp string
+	var err error
 
+	if len(args) != 1 {
+		return nil, errors.New("Incorrect number of arguments. Expecting name of the var to query")
+	}
+
+	card_id = args[0]
+	valAsbytes, err := stub.GetState(card_id)									//get the var from chaincode state
+	if err != nil {
+		jsonResp = "{\"Error\":\"Failed to get state for " + card_id + "\"}"
+		return nil, errors.New(jsonResp)
+	}
+
+	return "valAsbytes", nil													//send it onward
+	//return "555", nil
+}
+func (t *SimpleChaincode) read_by_customer(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	var card_id, jsonResp string
+	var err error
+
+	if len(args) != 1 {
+		return nil, errors.New("Incorrect number of arguments. Expecting name of the var to query")
+	}
+
+	card_id = args[0]
+	valAsbytes, err := stub.GetState(card_id)									//get the var from chaincode state
+	if err != nil {
+		jsonResp = "{\"Error\":\"Failed to get state for " + card_id + "\"}"
+		return nil, errors.New(jsonResp)
+	}
+
+	return "valAsbytes", nil													//send it onward
+	//return "555", nil
+}
 // ============================================================================================================================
 // Delete - remove a key/value pair from state
 // ============================================================================================================================
@@ -305,7 +340,7 @@ func (t *SimpleChaincode) init_marble(stub shim.ChaincodeStubInterface, args []s
 	}
 
 	//check if marble already exists
-customerAsBytes, err := stub.GetState(cardID)
+  customerAsBytes, err := stub.GetState(cardID)
 	//marbleAsBytes, err := stub.GetState(cardID)
 	if err != nil {
 		return nil, errors.New("Failed to get marble name")
@@ -320,7 +355,9 @@ customerAsBytes, err := stub.GetState(cardID)
 	}
 
 	//build the marble json string manually
-	str := `{"name": "` + name + `", "lastname": "` + lastname + `", "job": ` + job + `, "cardID": "` + cardID + `"}`
+	//str := `{"name": "` + name + `", "lastname": "` + lastname + `", "job": ` + job + `, "cardID": "` + cardID + `"}`
+	str := `{"name": "` + name + `", "job": ` + job + `, "cardID": "` + cardID + `"}`
+
 	err = stub.PutState(cardID, []byte(str))									//store marble with id as key
 	if err != nil {
 		return nil, err
