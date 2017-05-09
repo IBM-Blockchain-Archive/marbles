@@ -159,7 +159,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 }
 
 // ============================================================================================================================
-// Query - Our entry point for Queries
+// - Our entry point for Queries
 // ============================================================================================================================
 func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("query is running " + function)
@@ -195,8 +195,8 @@ func (t *SimpleChaincode) read_by_customer(stub shim.ChaincodeStubInterface, arg
 		return nil, errors.New(jsonResp)
 	}
 
-	//return "valAsbytes", nil													//send it onward
-	return "555", nil			
+	return "valAsbytes", nil													//send it onward
+	//return "555", nil			
 }
 
 // ============================================================================================================================
@@ -320,7 +320,9 @@ customerAsBytes, err := stub.GetState(cardID)
 	}
 
 	//build the marble json string manually
-	str := `{"name": "` + name + `", "lastname": "` + lastname + `", "job": ` + job + `, "cardID": "` + cardID + `"}`
+	//str := `{"name": "` + name + `", "lastname": "` + lastname + `", "job": ` + job + `, "cardID": "` + cardID + `"}`
+	str := `{"name": "` + name + `", "job": ` + job + `, "cardID": "` + cardID + `"}`
+	
 	err = stub.PutState(cardID, []byte(str))									//store marble with id as key
 	if err != nil {
 		return nil, err
