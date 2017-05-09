@@ -231,7 +231,7 @@ func (t *SimpleChaincode) read_by_customer(stub shim.ChaincodeStubInterface, arg
 		return nil, errors.New(jsonResp)
 	}
 
-	return "valAsbytes", nil													//send it onward
+	return valAsbytes, nil													//send it onward
 	//return "555", nil
 }
 // ============================================================================================================================
