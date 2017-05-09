@@ -195,9 +195,8 @@ func (t *SimpleChaincode) read_by_agent(stub shim.ChaincodeStubInterface, args [
 		return nil, errors.New(jsonResp)
 	}
 
-<<<<<<< HEAD
-	//return "valAsbytes", nil													//send it onward
-	return "555", nil
+	return "555", nil													//send it onward
+
 }
 func (t *SimpleChaincode) read_by_brk(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var card_id, jsonResp string
@@ -215,11 +214,7 @@ func (t *SimpleChaincode) read_by_brk(stub shim.ChaincodeStubInterface, args []s
 	}
 
 	return "valAsbytes", nil													//send it onward
-	//return "555", nil
-=======
-	return "valAsbytes", nil													//send it onward
-	//return "555", nil			
->>>>>>> origin/v2.0
+
 }
 func (t *SimpleChaincode) read_by_customer(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var card_id, jsonResp string
@@ -365,7 +360,7 @@ func (t *SimpleChaincode) init_marble(stub shim.ChaincodeStubInterface, args []s
 <<<<<<< HEAD
 
 =======
-	
+
 >>>>>>> origin/v2.0
 	err = stub.PutState(cardID, []byte(str))									//store marble with id as key
 	if err != nil {
