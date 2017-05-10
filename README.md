@@ -65,7 +65,7 @@ Looking for chaincode documentation? Check out the [What is Chaincode](http://hy
 6. [Run the Marbles App](#6-run-the-marbles-app)
 
 
-# 1. Clone the repos and download the Docker images
+# 1. Clone the repo and download the Docker images
 
 Determine a location on your local machine where you want to place the Marbles and SDK libraries.  Next, clone this github repo into the folder:
 
@@ -293,7 +293,7 @@ docker logs -f orderer0
 
 
 # Additional resources
-Following is a list of additional blockchain resources:
+
 * [Tutorial for Marbles](/docs/tutorial_start_here.md)
 * [What is Chaincode](http://hyperledger-fabric.readthedocs.io/en/latest/chaincode.html)
 * [Fundamentals of IBM Blockchain](https://www.ibm.com/blockchain/what-is-blockchain.html)
