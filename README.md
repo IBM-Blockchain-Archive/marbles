@@ -57,7 +57,7 @@ Looking for chaincode documentation? Check out the [What is Chaincode](http://hy
 
 ## Steps
 
-1. [Clone the repo and download the Docker images](#1-clone-the-repose-and-download-the-docker-images)
+1. [Clone the repo and download the Docker images](#1-clone-the-repo-and-download-the-docker-images)
 2. [Set up the Fabric Node SDK](#2-set-up-the-fabric-node-sdk)
 3. [Edit the configuration](#3-edit-the-configuration)
 4. [Start your network](#4-start-your-network)
@@ -65,7 +65,7 @@ Looking for chaincode documentation? Check out the [What is Chaincode](http://hy
 6. [Run the Marbles App](#6-run-the-marbles-app)
 
 
-# 1. Clone the repos and download the docker images
+# 1. Clone the repos and download the Docker images
 
 Determine a location on your local machine where you want to place the Marbles and SDK libraries.  Next, clone this github repo into the folder:
 
@@ -145,13 +145,13 @@ Now hop back to your workspace directory:
 cd ..
 ```
 
-From your workspace, move the docker-compose-marblesv3.yaml to the test/fixtures folder in the fabric-sdk-node directory:
+From your workspace, move the `docker-compose-marblesv3.yaml` to the `test/fixtures` folder in the `fabric-sdk-node` directory:
 
 ```bash
 mv docker-compose-networksetup.yaml fabric-sdk-node/test/fixtures
 ```
 
-Still from your workspace, empty the example chaincode source from the fabric-sdk-node directory:
+Still from your workspace, empty the example chaincode source from the `fabric-sdk-node` directory:
 
 ```bash
 rm -rf fabric-sdk-node/test/fixtures/src/github.com/example_cc/*
@@ -165,7 +165,7 @@ cp todo-list-fabric-server/chaincode/* fabric-sdk-node/test/fixtures/src/github.
 
 # 3. Edit the configuration
 
-Update the `config.json` and `instantiate-chaincode.js` files in the fabric-sdk-node directory:
+Update the `config.json` and `instantiate-chaincode.js` files in the `fabric-sdk-node` directory:
 
 ```bash
 cd fabric-sdk-node/test/integration/e2e
@@ -178,23 +178,23 @@ Use an editor to open `instantiate-chaincode.js` and replace line 147 with:
 args: ['100'],
 ```
 
-In the fabric-sdk-node directory, edit the package.json file. Add grpc dependency `"grpc": "1.1.2"` to package.json under `dependencies`.
+Navigate up to the `fabric-sdk-node` directory:  
 ```bash
 cd ../../../
 ```
+Edit the `package.json` file. Add grpc dependency `"grpc": "1.1.2"` under "dependencies".
+
 
 Navigate to the marbles repo and edit the credentials file:
 ```bash
-cd ../../../../marbles/config/
+cd ../marbles/config/
 ```
 
-Use an editor to open blockchain_creds1.json. Replace the “network_id” field with a name of your choice. Change “chaincode_id” field to end2end. Change the “chaincode_version” field to v1.
+Use an editor to open `blockchain_creds1.json`. Replace the “network_id” field with a name of your choice. Change “chaincode_id” field to `end2end`. Change the "chaincode_version" field to `v1`.
 
 Make sure to save all of your changes before continuing.
 
 # 4. Start your network
-
-`docker-compose-marblesv3.yaml` contains the configuration to setup the network.
 
 Navigate to the test/fixtures folder in the fabric-sdk-node directory and run the docker-compose file:
 
@@ -203,7 +203,7 @@ cd ../../fabric-sdk-node/test/fixtures
 docker-compose -f docker-compose-marblesv3.yaml up -d
 ```
 
-Once complete, issue a docker ps command to view your currently running containers. You should see the following:
+Once complete, issue a `docker ps` command to view your currently running containers. You should see the following:
 ```bash
 CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS                       PORTS                                            NAMES
 e61cf829f171        hyperledger/fabric-peer      "peer node start -..."   3 minutes ago       Up 2 minutes           0.0.0.0:7056->7051/tcp, 0.0.0.0:7058->7053/tcp   peer1
@@ -267,7 +267,7 @@ Spin up the todo list containers:
 node test/integration/e2e/instantiate-chaincode.js
 ```
 
-# 6. Run the Marbles app
+# 6. Run the Marbles App
 
 Navigate to the marbles directory and install node modules:
 ```bash
