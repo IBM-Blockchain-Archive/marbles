@@ -149,7 +149,7 @@ cd ..
 From your workspace, move the `docker-compose-marblesv3.yaml` to the `test/fixtures` folder in the `fabric-sdk-node` directory:
 
 ```bash
-mv docker-compose-networksetup.yaml fabric-sdk-node/test/fixtures
+mv docker-compose-marblesv3.yaml fabric-sdk-node/test/fixtures
 ```
 
 Still from your workspace, empty the example chaincode source from the `fabric-sdk-node` directory:
