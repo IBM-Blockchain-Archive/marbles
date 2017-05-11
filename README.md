@@ -160,7 +160,7 @@ rm -rf fabric-sdk-node/test/fixtures/src/github.com/example_cc/*
 
 Now copy the todo list chaincode to the same folder:
 ```bash
-cp todo-list-fabric-server/chaincode/* fabric-sdk-node/test/fixtures/src/github.com/example_cc/
+cp marbles/chaincode/src/marbles/* fabric-sdk-node/test/fixtures/src/github.com/example_cc/
 ```
 > **Note:** If you want to run your own code on hyperledger fabric V1, just copy the chaincode code in fabric-sdk-node/test/fixtures/src/github.com/example_cc directory.
 
