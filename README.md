@@ -183,7 +183,7 @@ Navigate up to the `fabric-sdk-node` directory:
 ```bash
 cd ../../../
 ```
-Edit the `package.json` file. Add grpc dependency `"grpc": "1.1.2"` under "dependencies".
+Edit the `package.json` file. Add grpc dependency `"grpc": "1.1.2"` under "devDependencies".
 
 
 Navigate to the marbles repo and edit the credentials file:
@@ -224,7 +224,12 @@ Go back to the root of the `fabric-sdk-node` directory.
 
 Install node modules in your SDK repo.
 ```bash
+cd ../..
 npm install
+```
+The npm install command will put the node_modules into your SDK repo. This will take a minute or two. Next, install gulp:
+
+```bash
 npm install -g gulp
 # if you get a "permission denied" error, then try with sudo
 sudo npm install -g gulp
