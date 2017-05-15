@@ -213,7 +213,7 @@ This file list the hostname (or ip) and port of various components of our blockc
 The `helper` functions will retreive IPs and ports from the configuration file.
 
 ### Configure SDK:
-First action is to enroll the admin:
+First action is to enroll the admin.  Look at the following code snippet on enrollment.  There are comments/instructions below the code.
 
 ```js
 //enroll admin
@@ -297,13 +297,13 @@ enrollment.enroll = function (options, cb) {
 };
 ```
 
-1. The first thing the code does is create an instance of our SDK.
-1. Next we create a key value store to store the enrollment certifcates with `newDefaultKeyValueStore`
-1. Next we enroll our admin. This is when we authenticate to the CA with our enroll ID and enroll secret. The CA will issue enrollment certificates which the SDK will store in the key value store. Since we are using the default key value store, it will be stored in our local file system. 
-1. After successful enrollment we set the orderer URL.  The orderer is not needed yet, but will be when we try to invoke chaincode. 
+Step 1. The first thing the code does is create an instance of our SDK.
+Step 2. Next we create a key value store to store the enrollment certifcates with `newDefaultKeyValueStore`
+Step 3. Next we enroll our admin. This is when we authenticate to the CA with our enroll ID and enroll secret. The CA will issue enrollment certificates which the SDK will store in the key value store. Since we are using the default key value store, it will be stored in our local file system. 
+Step 4. After successful enrollment we set the orderer URL.  The orderer is not needed yet, but will be when we try to invoke chaincode. 
     - The bussiness with `ssl-target-name-override` is only needed if you have self signed certificates. Set this field equal to the `common name` you used to create the PEM file.
-1. Next we set the Peer URLs. These are also not needed yet, but we are going to setup our SDK chain object fully.
-1. At this point the SDK is fully configured and ready to interact with the blockchain.
+Step 5. Next we set the Peer URLs. These are also not needed yet, but we are going to setup our SDK chain object fully.
+Step 6. At this point the SDK is fully configured and ready to interact with the blockchain.
 
 # Marbles Deeper Dive
 Hopefully you have successfully traded a marble or two between users. 
