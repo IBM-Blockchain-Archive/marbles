@@ -300,7 +300,7 @@ docker logs -f orderer0
 * [Fundamentals of IBM Blockchain](https://www.ibm.com/blockchain/what-is-blockchain.html)
 * [Hyperledger Fabric Documentation](http://fabric-rtd.readthedocs.io/en/latest/getting_started.html)
 * [Hyperledger Fabric code on GitHub](https://github.com/hyperledger/fabric)
-* [Hyperledger Fabric Composer](https://hyperledger.github.io/composer/)
+* [Todo List Network using Hyperledger Composer](https://github.com/sanjay-saxena/todolist-network-hlfv1)
 
 
 # Troubleshooting
