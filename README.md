@@ -153,7 +153,7 @@ Still from your workspace, empty the example chaincode source from the `fabric-s
 rm -rf fabric-sdk-node/test/fixtures/src/github.com/example_cc/*
 ```
 
-Now copy the todo list chaincode to the same folder:
+Now copy the marbles chaincode to the same folder:
 ```bash
 cp marbles/chaincode/src/marbles/* fabric-sdk-node/test/fixtures/src/github.com/example_cc/
 ```
@@ -234,16 +234,17 @@ Finally, build the fabric-ca client:
 gulp ca
 ```
 
-Remove the key value stores and hfc artifacts that may have cached during previous runs:
+## Create, Join, Install, Instantiate
+
+A Hyperledger Fabric channel is a private “subnet” of communication between two or more specific network members, for the purpose of conducting private and confidential transactions. A channel is defined by members (organizations), anchor peers per member, the shared ledger, chaincode application(s) and the ordering service node(s). Each transaction on the network is executed on a channel, where each party must be authenticated and authorized to transact on that channel. Each peer that joins a channel, has its own identity given by a membership services provider (MSP), which authenticates each peer to its channel peers and services.
+
+Before starting let’s remove the key value stores and hfc artifacts that may have cached during previous runs:
 ```bash
 rm -rf /tmp/hfc-*
 rm -rf ~/.hfc-key-store
 ```
 
-
 ### Create channel
-
-A Hyperledger Fabric channel is a private “subnet” of communication between two or more specific network members, for the purpose of conducting private and confidential transactions. A channel is defined by members (organizations), anchor peers per member, the shared ledger, chaincode application(s) and the ordering service node(s). Each transaction on the network is executed on a channel, where each party must be authenticated and authorized to transact on that channel. Each peer that joins a channel, has its own identity given by a membership services provider (MSP), which authenticates each peer to its channel peers and services.
 
 Now, leverage the SDK test program to create a channel named `mychannel`. From the `fabric-sdk-node` directory:
 ```bash
@@ -257,13 +258,13 @@ node test/integration/e2e/join-channel.js
 ```
 
 ### Install chaincode
-Install the todo list source code on the peer's filesystems:
+Install the marbles source code on the peer's filesystems:
 ```bash
 node test/integration/e2e/install-chaincode.js
 ```
 
 ### Instantiate chaincode
-Spin up the todo list containers:
+Spin up the marbles containers:
 ```bash
 node test/integration/e2e/instantiate-chaincode.js
 ```
