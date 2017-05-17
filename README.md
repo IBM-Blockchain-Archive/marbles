@@ -1,27 +1,9 @@
 # Marbles Demo
 
-##### Versions and Supported Platforms
-Please note there are multiple version of marbles.
-One for each major Hyperledger Fabric release.
-You must pick a version of marbles that is compatible with your version of Fabric.
-
-- [Marbles - Branch v1.0](https://github.com/ibm-blockchain/marbles/tree/v1.0) **(Deprecated)**
-	- No longer supported by the IBM Blockchain Bluemix service
-	- Works with Hyperledger Fabric `v0.5-developer-preview`
-
-- [Marbles - Branch v2.0](https://github.com/ibm-blockchain/marbles/tree/v2.0)
-	- Works with Hyperledger Fabric `v0.6-developer-preview`
-	- Works with IBM Blockchain Bluemix Service - Plan **Starter** or **HSBN**
-
-- [Marbles - Branch v3.0](https://github.com/ibm-blockchain/marbles/tree/v3.0) **(New)**
-	- Works with Hyperledger Fabric `v1.0` (getting started tutorial coming soon!)
-	- Works with the IBM Blockchain Bluemix Service - Plan **HSBN vNext**
-
-***
-
-__Marbles__
-
-![](/doc_images/marbles.png)
+## About Marbles
+- The underlying network for this application is the [Hyperledger Fabric](https://github.com/hyperledger/fabric/tree/master/docs), a Linux Foundation project.  You may want to review these instructions to understand a bit about the Hyperledger Fabric.
+- **This demo is to aid a developer learn the basics of chaincode and app development with a Hyperledger network.**
+- This is a `very simple` asset transfer demonstration. Multiple users can create and transfer marbles with each other.
 
 ## Application Background
 
@@ -42,7 +24,20 @@ Attributes of a marble:
 
 We are going to create a Web based UI that can set these values and store them in our blockchain.
 
-Follow the steps below to have your own marbles blockchain demo run locally and review the [tutorial](/docs/tutorial_start_here.md) for background, using the application and deeper dives!
+### Application Communication Flow
+
+![](/doc_images/comm_flow.png)
+
+1. The admin will interact with Marbles, our Node.js application, in their browser.
+1. This client side JS code will open a websocket to the backend Node.js application. The client JS will send messages to the backend when the admin interacts with the site.
+1. Reading or writing the ledger is known as a proposal. This proposal is built by Marbles (via the SDK) and then sent to a blockchain peer.
+1. The peer will communicate to its Marbles chaincode container. The chaincode will run/simulate the transaction. If there are no issues it will endorse the transaction and send it back to our Marbles application.
+1. Marbles (via the SDK) will then send the endorsed proposal to the ordering service.  The orderer will package many proposals from the whole network into a block.  Then it will broadcast the new block to peers in the network.
+1. Finally the peer will validate the block and write it to its ledger. The transaction has now taken effect and any subsequent reads will reflect this change.
+
+***
+
+Follow the steps below to have your own marbles blockchain demo run locally and review the [tutorial](/docs/tutorial_start_here.md) for detailed background, using the application and deeper dives!
 
 Looking for chaincode documentation? Check out the [What is Chaincode](http://hyperledger-fabric.readthedocs.io/en/latest/chaincode.html) doc
 
