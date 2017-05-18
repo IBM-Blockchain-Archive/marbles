@@ -63,10 +63,10 @@ Looking for chaincode documentation? Check out the [What is Chaincode](http://hy
 
 # 1. Clone the repo and download the Docker images
 
-Determine a location on your local machine where you want to place the Marbles and SDK libraries.  Next, clone this github repo into the folder:
+Determine a location on your local machine where you want to place the Marbles and SDK libraries.  Next, clone the marbles repo into the folder:
 
 ```bash
-git clone https://github.com/IBM-Blockchain/marbles.git
+git clone http://gopkg.in/ibm-blockchain/marbles.v3
 ```
 
 Download the [cURL](https://curl.haxx.se/download.html) tool if not already installed. Next, from your chosen workspace, execute the following command:
@@ -155,7 +155,7 @@ rm -rf fabric-sdk-node/test/fixtures/src/github.com/example_cc/*
 
 Now copy the marbles chaincode to the same folder:
 ```bash
-cp marbles/chaincode/src/marbles/* fabric-sdk-node/test/fixtures/src/github.com/example_cc/
+cp marbles.v3/chaincode/src/marbles/* fabric-sdk-node/test/fixtures/src/github.com/example_cc/
 ```
 > **Note:** If you want to run your own code on hyperledger fabric V1, just copy the chaincode code in fabric-sdk-node/test/fixtures/src/github.com/example_cc directory.
 
@@ -273,7 +273,7 @@ node test/integration/e2e/instantiate-chaincode.js
 
 Navigate to the marbles directory and install node modules:
 ```bash
-cd ../marbles
+cd ../marbles.v3
 npm install
 ```
 
