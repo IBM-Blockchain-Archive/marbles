@@ -15,14 +15,20 @@
 
 ***
 
-# Application Background
+# Prereq:
+1. [Setup your enviroment](./env_setup.md) 
+1. Read the [What is Chaincode](http://hyperledger-fabric.readthedocs.io/en/latest/chaincode.html) doc 
+1. Install [Node.js](https://nodejs.org/en/download/) v6.2 - v6.10 (Node v7+ is **not** supported) 
+1. **You should be comfortable with node.js.** Marbles is a very simple blockchain app, but it’s a complex node app 
+
+### Application Background
 Hold on to your hats everyone, this application is going to demonstrate transferring marbles between many marble owners leveraging Hyperledger Fabric.
-We are going to do this in Node.js and a bit of GoLang.
-The backend of this application will be the GoLang code running in our blockchain network.
-From here on out the GoLang code will be referred to as 'chaincode' or 'cc'.
-The chaincode itself will create a marble by storing it to the chaincode state.
-The chaincode itself can store data as a string in a key/value pair setup.
-Thus, we will stringify JSON objects to store more complex structures.
+We are going to do this in Node.js and a bit of GoLang. 
+The backend of this application will be the GoLang code running in our blockchain network. 
+From here on out the GoLang code will be referred to as 'chaincode' or 'cc'. 
+The chaincode itself will create a marble by storing it to the chaincode state. 
+The chaincode itself can store data as a string in a key/value pair setup. 
+Thus, we will stringify JSON objects to store more complex structures. 
 
 Attributes of a marble:
 
@@ -30,39 +36,111 @@ Attributes of a marble:
   1. color (string, css color names)
   1. size (int, size in mm)
   1. owner (string)
-
-We are going to create a Web based UI that can set these values and store them in our blockchain.
-The marble gets created in the blockchain storage aka ledger as a key value pair.
-The `key` is the marble id, and the `value` is a JSON string containing the attributes of the marble (listed above).
-Interacting with the cc is done by using the gRPC protocol to a peer on the network.
-The details of the gRPC protocol are taken care of by an SDK called [Hyperledger Fabric Client](https://www.npmjs.com/package/fabric-client) SDK.
-Check the picture below for topology details.
+    
+We are going to create a Web based UI that can set these values and store them in our blockchain. 
+The marble gets created in the blockchain storage aka ledger as a key value pair. 
+The `key` is the marble id, and the `value` is a JSON string containing the attributes of the marble (listed above). 
+Interacting with the cc is done by using the gRPC protocol to a peer on the network. 
+The details of the gRPC protocol are taken care of by an SDK called [Hyperledger Fabric Client](https://www.npmjs.com/package/fabric-client) SDK. 
+Check the picture below for topology details. 
 
 ### Application Communication Flow
 
 ![](/doc_images/comm_flow.png)
 
-1. The admin will interact with Marbles, our Node.js application, in their browser.
+1. The admin will interact with Marbles, our Node.js application, in their browser. 
 1. This client side JS code will open a websocket to the backend Node.js application. The client JS will send messages to the backend when the admin interacts with the site.
-1. Reading or writing the ledger is known as a proposal. This proposal is built by Marbles (via the SDK) and then sent to a blockchain peer.
-1. The peer will communicate to its Marbles chaincode container. The chaincode will run/simulate the transaction. If there are no issues it will endorse the transaction and send it back to our Marbles application.
-1. Marbles (via the SDK) will then send the endorsed proposal to the ordering service.  The orderer will package many proposals from the whole network into a block.  Then it will broadcast the new block to peers in the network.
+1. Reading or writing the ledger is known as a proposal. This proposal is built by Marbles (via the SDK) and then sent to a blockchain peer. 
+1. The peer will communicate to its Marbles chaincode container. The chaincode will run/simulate the transaction. If there are no issues it will endorse the transaction and send it back to our Marbles application. 
+1. Marbles (via the SDK) will then send the endorsed proposal to the ordering service.  The orderer will package many proposals from the whole network into a block.  Then it will broadcast the new block to peers in the network. 
 1. Finally the peer will validate the block and write it to its ledger. The transaction has now taken effect and any subsequent reads will reflect this change.
 
 ### Context Clues
-There are 3 distinct parts/worlds that you need to keep straight.
-They should be thought of as isolated environments that communicate with each other.
-This walk through will jump from one to another as we setup and explain each part.
-It's important to identify which part is which.
+There are 3 distinct parts/worlds that you need to keep straight. 
+They should be thought of as isolated environments that communicate with each other. 
+This walk through will jump from one to another as we setup and explain each part. 
+It's important to identify which part is which. 
 There are certain keywords and context clues to help you identify one from another.
 
 1. The Chaincode Part - This is GoLang code that runs on/with a peer on your blockchain network. Also, called `cc`. All marbles/blockchain interactions ultimately happen here. These files live in `/chaincode`.
 1. The Client Side JS Part - This is JavaScript code running in the user's browser. User interface interaction happens here. These files live in `/public/js.`
-1. The Server Side JS Part - This is JavaScript code running our application's backend. ie `Node.js` code which is the heart of Marbles! Sometimes referred to as our `node` or `server` code. Functions as the glue between the marble admin and our blockchain. These files live in `/utils` and `/routes`.
+1. The Server Side JS Part - This is JavaScript code running our application's backend. ie `Node.js` code which is the heart of Marbles! Sometimes referred to as our `node` or `server` code. Functions as the glue between the marble admin and our blockchain. These files live in `/utils` and `/routes`. 
 
-Remember these 3 parts are isolated from each other.
-They do not share variables nor functions.
-They will communicate via a networking protocol such as gRPC or WebSockets.
+Remember these 3 parts are isolated from each other. 
+They do not share variables nor functions. 
+They will communicate via a networking protocol such as gRPC or WebSockets. 
+
+# Marbles Setup Options:
+Before you continue **make sure** your environment is setup by going through the [Setup your enviroment](./env_setup.md) doc.
+It will set up your environment and teach you what chaincode is and how it's written.
+
+<strike>
+Decide if you want to use the deploy to Bluemix button. 
+</strike> 
+
+**Update:** *this version of marbles is no longer compatible with the deploy to Bluemix buttons*
+
+### 0. Setup Local Environment
+
+Follow these environment setup [instructions](./env_setup.md) to install **Git, Go** and **Node.js**.
+    - When you have finished come back to this tutorial. Start the next section "Download Marbles" below.
+
+### 1. Download Marbles
+We need to download marbles to your local system. 
+Let’s do this with Git by cloning this repository. 
+You will need to do this step even if you plan on hosting marbles in Bluemix.
+
+- Open a command prompt/terminal and browse to your desired working directory
+- Run the following command:
+
+```
+git clone http://gopkg.in/ibm-blockchain/marbles.v3
+```
+
+- This will clone the v3.0 branch to your local system. 
+  Since we are using `gopkg.in` you will see your branch as `master`, but that’s intentional. `gopkg.in` created the master branch from our `v3.0` branch. We are jumping through these hoops to achieve versioning for GoLang (which only likes `master` branches).
+
+<a name="getnetwork"></a>
+
+### 2. Get a Network
+
+Now we need a blockchain network.
+
+**Choose 1 option below:**
+
+- **Option 1:** Create a network with the Bluemix IBM Blockchain Service - [instructions](./use_bluemix_hyperledger.md)
+
+- **Option 2:** Use a locally hosted Hyperledger Network - [instructions](./use_local_hyperledger.md)
+
+**Update:** *local instructions are a work in progress*
+
+<a name="installchaincode"></a>
+
+### 3. Install and Instantiate Chaincode
+
+OK, almost there! Now we need to get our marbles chaincode running. 
+There are two ways to do this. 
+
+Choose the **only** option that is relevant for your setup:
+
+- **Option 1:** Install chaincode with the IBM Blockchain Service - [instructions](./install_chaincode.md)
+
+<strike>
+- **Option 2:** Install chaincode with the SDK locally
+</strike>
+
+**Update:** *instructions coming soon*
+
+<a name="hostmarbles"></a>
+
+### 4. Host Marbles
+
+Last but not least we need marbles running somewhere.
+
+**Choose 1 option below:**
+
+- **Option 1:** Host marbles on Bluemix - [instructions](./host_marbles_bluemix.md)
+- **Option 2:** Host marbles locally - [instructions](./host_marbles_locally.md)
 
 ***
 
@@ -86,20 +164,20 @@ They will communicate via a networking protocol such as gRPC or WebSockets.
 
 ![](/doc_images/use_marbles2.png)
 
-1. Refresh the page to double check that your actions "stuck".
-1. Use the search box to filter on marble owners or marble company names.  This is helpful when there are many companies/owners.
-    - The pin icon will prevent that user from being filtered out by the search box.
-1. Congratulations you have a working marbles application :)!
+1. Refresh the page to double check that your actions "stuck". 
+1. Use the search box to filter on marble owners or marble company names.  This is helpful when there are many companies/owners. 
+    - The pin icon will prevent that user from being filtered out by the search box. 
+1. Congratulations you have a working marbles application :)! 
 
 # Blockchain Background
-Before we talk about how Marbles works let’s discuss the flow and topology of Hyperledger Fabric.
+Before we talk about how Marbles works let’s discuss the flow and topology of Hyperledger Fabric. 
 Lets get some definitions out of the way first.
 
 ### Definitions:
 
 **Peer** - A peer is a member of the blockchain and is running Hyperledger Fabric. From marble's context, the peers are owned and operated by my marble company.
 
-**CA** - The CA (Certificate Authority) is responsible for gatekeeping our blockchain network. It will provide transaction certificates for clients such as our marbles node.js application.
+**CA** - The CA (Certificate Authority) is responsible for gatekeeping our blockchain network. It will provide transaction certificates for clients such as our marbles node.js application. 
 
 **Orderer** - An orderer or ordering service is a member of the blockchain network whose main responsibility is to package transactions into blocks.
 
@@ -113,29 +191,29 @@ Lets get some definitions out of the way first.
 
 **Chaincode** - Chaincode is Hyperledger speak for smart contracts. It defines the assets and all rules about assets.
 
-**Assets** - An asset is an entity that exists in the ledger. It’s a key value pair. In the context of marbles this is a marble, or a marble owner.
+**Assets** - An asset is an entity that exists in the ledger. It’s a key value pair. In the context of marbles this is a marble, or a marble owner. 
 
 Let’s look at the operations involved when creating a new marble.
 
-1. The first thing that happens in marbles is registering our admin `user` with our network's `CA`. If successful, the `CA` will send Marbles enrollment certificates that the SDK will store for us in our local file system.
-1. When the admin creates a new marble from the user interface the SDK will create an invocation transaction.
-1. The create marble transaction gets built as a `proposal` to invoke the chaincode function `init_marble()`.
-1. Marbles (via the SDK) will send this `proposal` to a `peer` for endorsement.
-1. The `peer` will simulate the transaction by running the Go function `init_marble()` and record any changes it attempted to write to the `ledger`.
+1. The first thing that happens in marbles is registering our admin `user` with our network's `CA`. If successful, the `CA` will send Marbles enrollment certificates that the SDK will store for us in our local file system. 
+1. When the admin creates a new marble from the user interface the SDK will create an invocation transaction. 
+1. The create marble transaction gets built as a `proposal` to invoke the chaincode function `init_marble()`. 
+1. Marbles (via the SDK) will send this `proposal` to a `peer` for endorsement. 
+1. The `peer` will simulate the transaction by running the Go function `init_marble()` and record any changes it attempted to write to the `ledger`. 
 1. If the function returns successfully the `peer` will endorse the `proposal` and send it back to Marbles. Errors will also be sent back, but the `proposal` will not be endorsed.
-1. Marbles (via the SDK), will then send the endorsed `proposal` to the `orderer`.
+1. Marbles (via the SDK), will then send the endorsed `proposal` to the `orderer`. 
 1. The `orderer` will organize a sequence of `proposals` from the whole network. It will check the sequence of transactions is valid by looking for transactions that conflict with each other. Any transactions that cannot be added to the block because of conflicts will be marked as errors. The `orderer` will broadcast the new block to the peers of the network.
 1. Our `peer` will receive the new block and validate it by looking at various signatures and hashes. It is then finally committed to the `peer's` `ledger`.
 1. At this point the new marble exists in our ledger and should soon exist in all peer's ledgers.
 
 # SDK Deeper Dive
-Now lets see how we interface with the Fabric Client SDK.
-Most of the configuration options can be found in `/config/blockchain_creds1.json`.
-This file list the hostname (or ip) and port of various components of our blockchain network.
+Now lets see how we interface with the Fabric Client SDK. 
+Most of the configuration options can be found in `/config/blockchain_creds1.json`. 
+This file list the hostname (or ip) and port of various components of our blockchain network. 
 The `helper` functions will retreive IPs and ports from the configuration file.
 
 ### Configure SDK:
-First action is to enroll the admin:
+First action is to enroll the admin.  Look at the following code snippet on enrollment.  There are comments/instructions below the code.
 
 ```js
 //enroll admin
@@ -219,16 +297,21 @@ enrollment.enroll = function (options, cb) {
 };
 ```
 
-1. The first thing the code does is create an instance of our SDK.
-1. Next we create a key value store to store the enrollment certifcates with `newDefaultKeyValueStore`
-1. Next we enroll our admin. This is when we authenticate to the CA with our enroll ID and enroll secret. The CA will issue enrollment certificates which the SDK will store in the key value store. Since we are using the default key value store, it will be stored in our local file system.
-1. After successful enrollment we set the orderer URL.  The orderer is not needed yet, but will be when we try to invoke chaincode.
+Step 1. The first thing the code does is create an instance of our SDK.
+
+Step 2. Next we create a key value store to store the enrollment certifcates with `newDefaultKeyValueStore`
+
+Step 3. Next we enroll our admin. This is when we authenticate to the CA with our enroll ID and enroll secret. The CA will issue enrollment certificates which the SDK will store in the key value store. Since we are using the default key value store, it will be stored in our local file system. 
+
+Step 4. After successful enrollment we set the orderer URL.  The orderer is not needed yet, but will be when we try to invoke chaincode. 
     - The bussiness with `ssl-target-name-override` is only needed if you have self signed certificates. Set this field equal to the `common name` you used to create the PEM file.
-1. Next we set the Peer URLs. These are also not needed yet, but we are going to setup our SDK chain object fully.
-1. At this point the SDK is fully configured and ready to interact with the blockchain.
+    
+Step 5. Next we set the Peer URLs. These are also not needed yet, but we are going to setup our SDK chain object fully.
+
+Step 6. At this point the SDK is fully configured and ready to interact with the blockchain.
 
 # Marbles Deeper Dive
-Hopefully you have successfully traded a marble or two between users.
+Hopefully you have successfully traded a marble or two between users. 
 Let’s look at how transfering a marble is done by starting at the chaincode.
 
 __/chaincode/marbles.go__
@@ -304,15 +387,15 @@ __/chaincode/write_ledger.go__
     }
 ```
 
-This `set_owner()` function will change the owner of a particular marble.
-It takes in an array of strings input argument and returns `nil` if successful.
-Within the array the first index should have the id of the marble which is also the key in the key/value pair.
-We first need to retrieve the current marble struct by using this id.
-This is done with `stub.GetState(marble_id)` and then unmarshal it into a marble structure with `json.Unmarshal(marbleAsBytes, &res)`.
-From there we can index into the structure with `res.Owner.Id` and overwrite the marble's owner with the new owners Id.
-Next we Marshal the structure back up so that we can use `stub.PutState()` to overwrite the marble with its new attributes.
+This `set_owner()` function will change the owner of a particular marble. 
+It takes in an array of strings input argument and returns `nil` if successful. 
+Within the array the first index should have the id of the marble which is also the key in the key/value pair. 
+We first need to retrieve the current marble struct by using this id. 
+This is done with `stub.GetState(marble_id)` and then unmarshal it into a marble structure with `json.Unmarshal(marbleAsBytes, &res)`. 
+From there we can index into the structure with `res.Owner.Id` and overwrite the marble's owner with the new owners Id. 
+Next we Marshal the structure back up so that we can use `stub.PutState()` to overwrite the marble with its new attributes. 
 
-Let’s take 1 step up and look at how this chaincode was called from our node.js app.
+Let’s take 1 step up and look at how this chaincode was called from our node.js app. 
 
 __/utils/websocket_server_side.js__
 
@@ -365,19 +448,19 @@ __/utils/websocket_server_side.js__
         ...
 ```
 
-This snippet of `process_msg()` receives all websocket messages (code found in app.js).
-It will detect what type of ws (websocket) message was sent.
-In our case, it should detect a `transfer_marble` type.
-Looking at that code we can see it will setup an `options` variable and then kick off `marbles_lib.set_marble_owner()`.
-This is the function that will tell the SDK to build the proposal and process the transfer action.
+This snippet of `process_msg()` receives all websocket messages (code found in app.js). 
+It will detect what type of ws (websocket) message was sent. 
+In our case, it should detect a `transfer_marble` type. 
+Looking at that code we can see it will setup an `options` variable and then kick off `marbles_lib.set_marble_owner()`. 
+This is the function that will tell the SDK to build the proposal and process the transfer action. 
 
-Next let’s look at that function.
+Next let’s look at that function. 
 
 __/utils/marbles_cc_lib.js__
 
 ```js
     //-------------------------------------------------------------------
-    // Set Marble Owner
+    // Set Marble Owner 
     //-------------------------------------------------------------------
     marbles_chaincode.set_marble_owner = function (options, cb) {
         console.log('');
@@ -403,12 +486,12 @@ __/utils/marbles_cc_lib.js__
         ...
 ```
 
-The the `set_marble_owner()` function is listed above.
-The important parts are that it is setting the proposal's invocation function name to "set_owner" with the line `fcn: 'set_owner'`.
-Note that the peer and orderer URLs have already been set when we enrolled the admin.
-By default the SDK will send this transaction to all peers that have been added with `chain.addPeer`.
-In our case the SDK will send to only 1 peer, since we have only added the 1 peer.
-Remember this peer was added in the `enrollment` section.
+The the `set_marble_owner()` function is listed above. 
+The important parts are that it is setting the proposal's invocation function name to "set_owner" with the line `fcn: 'set_owner'`. 
+Note that the peer and orderer URLs have already been set when we enrolled the admin. 
+By default the SDK will send this transaction to all peers that have been added with `chain.addPeer`. 
+In our case the SDK will send to only 1 peer, since we have only added the 1 peer. 
+Remember this peer was added in the `enrollment` section. 
 
 Now let’s look 1 more step up to how we sent this websocket message from the UI.
 
@@ -456,20 +539,20 @@ __/public/js/ui_building.js__
     }
 ```
 
-In the first section referencing `$('.innerMarbleWrap')` you can see we used jQuery and jQuery-UI to implement the drag and drop functionality.
-With this code we get a droppable event trigger.
-Much of the code is spent parsing for the details of the marble that was dropped and the user it was dropped into.
+In the first section referencing `$('.innerMarbleWrap')` you can see we used jQuery and jQuery-UI to implement the drag and drop functionality. 
+With this code we get a droppable event trigger. 
+Much of the code is spent parsing for the details of the marble that was dropped and the user it was dropped into. 
 
-When the event fires we first check to see if this marble actually moved owners, or if it was just picked up and dropped back down.
-If its owner has changed we go off to the `transfer_marble()` function.
-This function creates a JSON message with all the needed data and uses our websocket to send it with `ws.send()`.
+When the event fires we first check to see if this marble actually moved owners, or if it was just picked up and dropped back down. 
+If its owner has changed we go off to the `transfer_marble()` function. 
+This function creates a JSON message with all the needed data and uses our websocket to send it with `ws.send()`. 
 
-The last piece of the puzzle is how Marbles realize the transfer is complete.
-Well, marbles will periodically check on all the marbles and compares it to the last known state.
-If there is a difference it will broadcast the new marble state to all connected JS clients.
-The clients will receive this websocket message and redraw the marbles.
+The last piece of the puzzle is how Marbles realize the transfer is complete. 
+Well, marbles will periodically check on all the marbles and compares it to the last known state. 
+If there is a difference it will broadcast the new marble state to all connected JS clients. 
+The clients will receive this websocket message and redraw the marbles. 
 
-Now you know the whole flow.
+Now you know the whole flow. 
 The admin moved the marble, JS detected the drag/drop, client sends a websocket message, marbles receives the websocket message, sdk builds/sends a proposal, peer endorses the proposal, sdk sends the proposal for ordering, the orderer orders and sends a block to peer, our peer commits the block, marbles node code gets new marble status periodically, sends marble websocket message to client, and finally the client redraws the marble in its new home.
 
-That’s it! Hope you had fun transferring marbles.
+That’s it! Hope you had fun transferring marbles. 
