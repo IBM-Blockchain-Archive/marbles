@@ -15,7 +15,7 @@
 
 ***
 
-## Application Background
+# Application Background
 
 Hold on to your hats everyone, this application is going to demonstrate transferring marbles between many marble owners leveraging Hyperledger Fabric.
 We are going to do this in Node.js and a bit of GoLang.
@@ -90,7 +90,7 @@ Follow the steps below to have your own marbles blockchain demo run locally.
 6. [Run the Marbles App](#6-run-the-marbles-app)
 
 
-# 1. Clone the repo and download the Docker images
+## 1. Clone the repo and download the Docker images
 
 Determine a location on your local machine where you want to place the Marbles and SDK libraries.  Next, clone the marbles repo into the folder:
 
@@ -141,7 +141,7 @@ hyperledger/fabric-ccenv       latest               91792014b61f        3 weeks 
 hyperledger/fabric-ccenv       x86_64-1.0.0-alpha   91792014b61f        3 weeks ago         1.29 GB
 ```
 
-# 2. Set up the Fabric Node SDK
+## 2. Set up the Fabric Node SDK
 
 In the same folder, clone the repo for fabric node sdk:
 ```bash
@@ -188,7 +188,7 @@ cp marbles.v3/chaincode/src/marbles/* fabric-sdk-node/test/fixtures/src/github.c
 ```
 > **Note:** If you want to run your own code on hyperledger fabric V1, just copy the chaincode code in fabric-sdk-node/test/fixtures/src/github.com/example_cc directory.
 
-# 3. Edit the configuration
+## 3. Edit the configuration
 
 Update the `config.json` and `instantiate-chaincode.js` files in the `fabric-sdk-node` directory:
 
@@ -219,7 +219,7 @@ Use an editor to open `blockchain_creds1.json`. Replace the “network_id” fie
 
 Make sure to save all of your changes before continuing.
 
-# 4. Start your network
+## 4. Start your network
 
 Navigate to the test/fixtures folder in the fabric-sdk-node directory and run the docker-compose file:
 
@@ -242,7 +242,7 @@ abaae883eb13        couchdb                      "tini -- /docker-e..."   3 minu
 
 ```
 
-# 5. Use the Node SDK
+## 5. Use the Node SDK
 
 Go back to the root of the `fabric-sdk-node` directory.
 
@@ -298,7 +298,7 @@ Spin up the marbles containers:
 node test/integration/e2e/instantiate-chaincode.js
 ```
 
-# 6. Run the Marbles App
+## 6. Run the Marbles App
 
 Navigate to the marbles directory and install node modules:
 ```bash
