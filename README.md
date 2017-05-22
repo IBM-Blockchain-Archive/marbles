@@ -95,7 +95,7 @@ Follow the steps below to have your own marbles blockchain demo run locally.
 Determine a location on your local machine where you want to place the Marbles and SDK libraries.  Next, clone the marbles repo into the folder:
 
 ```bash
-git clone http://gopkg.in/ibm-blockchain/marbles.v3
+git clone https://github.com/IBM-Blockchain/marbles.git
 ```
 
 Download the [cURL](https://curl.haxx.se/download.html) tool if not already installed. Next, from your chosen workspace, execute the following command:
