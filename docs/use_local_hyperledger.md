@@ -3,7 +3,7 @@
 ### Creating a Local Hyperledger Fabric Network
 Use the Hyperledger Fabric docker images and docker-compose script to get a local network quickly.
 
-1. Follow the Fabric v1 [Getting Started instructions](http://fabric-rtd.readthedocs.io/en/latest/getting_started.html).
+1. Follow the Fabric v1 [Getting Started instructions](https://hyperledger-fabric.readthedocs.io/en/latest/getting_started.html).
 
 ### Finished
 The network is all setup, right? 
