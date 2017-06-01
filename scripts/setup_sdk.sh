@@ -7,9 +7,15 @@ sleep 1
 cd ./fabric-sdk-node
 git checkout v1.0.0-alpha
 git branch
-cd ../
+sleep 1
+
+# finish setting up sdk
+npm install
+npm install -g gulp
+gulp ca
 
 # use our docker compose file in sdk
+cd ../
 cp ./docker-compose-marblesv3.yaml fabric-sdk-node/test/fixtures
 
 # replace config.json - this one does not use tls

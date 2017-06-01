@@ -139,7 +139,7 @@ hyperledger/fabric-ccenv       x86_64-1.0.0-alpha   91792014b61f        3 weeks 
 
 From your `marbles/scripts` folder, run the `setup_sdk.sh` script:
 ```bash
-bash setup_sdk.sh
+sudo bash setup_sdk.sh
 ```
 
 ## 3. Start your network
@@ -164,27 +164,7 @@ abaae883eb13        couchdb                      "tini -- /docker-e..."   3 minu
 2c2d51fe88c0        hyperledger/fabric-ca        "sh -c 'fabric-ca-..."   3 minutes ago       Up 3 minutes        0.0.0.0:7054->7054/tcp                           ca_peerOrg1
 ```
 
-## 4. Use the Node SDK
-
-Go back to the root of the `fabric-sdk-node` directory.
-
-Install node modules in your SDK repo.
-```bash
-cd ../..
-npm install
-```
-The npm install command will put the node_modules into your SDK repo. This will take a minute or two. Next, install gulp:
-
-```bash
-sudo npm install -g gulp
-```
-
-Finally, build the fabric-ca client:
-```bash
-gulp ca
-```
-
-## 5. Create, Join, Install, Instantiate
+## 4. Create, Join, Install, Instantiate
 
 A Hyperledger Fabric channel is a private “subnet” of communication between two or more specific network members, for the purpose of conducting private and confidential transactions. A channel is defined by members (organizations), anchor peers per member, the shared ledger, chaincode application(s) and the ordering service node(s). Each transaction on the network is executed on a channel, where each party must be authenticated and authorized to transact on that channel. Each peer that joins a channel, has its own identity given by a membership services provider (MSP), which authenticates each peer to its channel peers and services.
 
@@ -208,7 +188,7 @@ Pass the genesis block - `mychannel.block` - to the ordering service and join th
 node test/integration/e2e/join-channel.js
 ```
 
-## 6. Setup and Run Marbles
+## 5. Setup and Run Marbles
 Install marbles npm dependencies by navigating back to the root of the marble directory:
 ```bash
 cd ../../
