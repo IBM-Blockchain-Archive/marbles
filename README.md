@@ -96,20 +96,21 @@ Determine a location on your local machine where you want to place the Marbles a
 
 ```bash
 git clone https://github.com/IBM-Blockchain/marbles.git
+git checkout master
 ```
 
 Next, we will download the the docker images required to setup the network for running Hyperledger Fabric V1.
 From your workspace, make the shell script an executable:
 
 ```bash
-cd marbles
+cd marbles/scripts
 chmod +x download-dockerimages.sh
 ```
 
 Now run the script. Make sure you have docker running before executing this script. This process will take a few minutes so be patient:
 
 ```bash
-./download-dockerimages.sh
+sudo ./download-dockerimages.sh
 ```
 
 Once the script has completed, you should see the following in your terminal:
@@ -136,96 +137,24 @@ hyperledger/fabric-ccenv       x86_64-1.0.0-alpha   91792014b61f        3 weeks 
 
 ## 2. Set up the Fabric Node SDK
 
-In the your work folder, clone the repo for fabric node sdk:
+From your `marbles/scripts` folder, run the `setup_sdk.sh` script:
 ```bash
-cd ../
-git clone https://github.com/hyperledger/fabric-sdk-node.git
+bash setup_sdk.sh
 ```
 
-First, checkout the alpha branch of the `fabric-sdk-node` repository:
-```bash
-cd fabric-sdk-node
-git checkout v1.0.0-alpha
-```
-
-Ensure that you are on the correct branch:
-```bash
-git branch
-```
-
-You should see the following:
-```bash
-* (HEAD detached at v1.0.0-alpha)
-  master
-```
-
-Now hop back to your workspace directory:
-```bash
-cd ..
-```
-
-From the `marbles` folder, move the `docker-compose-marblesv3.yaml` to the `test/fixtures` folder in the `fabric-sdk-node` directory:
-
-```bash
-mv marbles/docker-compose-marblesv3.yaml fabric-sdk-node/test/fixtures
-```
-
-Still from your workspace, empty the example chaincode source from the `fabric-sdk-node` directory:
-
-```bash
-rm -rf fabric-sdk-node/test/fixtures/src/github.com/example_cc/*
-```
-
-Now copy the marbles chaincode to the same folder:
-```bash
-cp marbles/chaincode/src/marbles/* fabric-sdk-node/test/fixtures/src/github.com/example_cc/
-```
-> **Note:** If you want to run your own code on hyperledger fabric V1, just copy the chaincode code in fabric-sdk-node/test/fixtures/src/github.com/example_cc directory.
-
-## 3. Edit the configuration
-
-Update the `config.json` and `instantiate-chaincode.js` files in the `fabric-sdk-node` directory:
-
-```bash
-cd fabric-sdk-node/test/integration/e2e
-```
-
-Use an editor to open the `config.json` and replace all instances of `grpcs` with `grpc`.
-
-Use an editor to open `instantiate-chaincode.js` and replace line 147 with:
-```bash
-args: ['100'],
-```
-
-Navigate up to the `fabric-sdk-node` directory:  
-```bash
-cd ../../../
-```
-Edit the `package.json` file. Add grpc dependency `"grpc": "1.1.2"` under "devDependencies".
-
-
-Navigate to the marbles repo and edit the credentials file:
-```bash
-cd ../marbles/config/
-```
-
-Use an editor to open `blockchain_creds1.json`. Replace the “network_id” field with a name of your choice. Change “chaincode_id” field to `end2end`. Change the "chaincode_version" field to `v1`.
-
-Make sure to save all of your changes before continuing.
-
-## 4. Start your network
+## 3. Start your network
 
 Navigate to the test/fixtures folder in the fabric-sdk-node directory and run the docker-compose file:
 
 ```bash
-cd ../../fabric-sdk-node/test/fixtures
-docker-compose -f docker-compose-marblesv3.yaml up -d
+cd ./fabric-sdk-node/test/fixtures
+sudo docker-compose -f docker-compose-marblesv3.yaml up -d
 ```
 
 Once complete, issue a `docker ps` command to view your currently running containers. You should see the following:
 ```bash
 CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS                       PORTS                                            NAMES
-e61cf829f171        hyperledger/fabric-peer      "peer node start -..."   3 minutes ago       Up 2 minutes           0.0.0.0:7056->7051/tcp, 0.0.0.0:7058->7053/tcp   peer1
+e61cf829f171        hyperledger/fabric-peer      "peer node start -..."   3 minutes ago       Up 2 minutes        0.0.0.0:7056->7051/tcp, 0.0.0.0:7058->7053/tcp   peer1
 0cc1f5ac24da        hyperledger/fabric-peer      "peer node start -..."   3 minutes ago       Up 2 minutes        0.0.0.0:8056->7051/tcp, 0.0.0.0:8058->7053/tcp   peer3
 7ab3106e5076        hyperledger/fabric-peer      "peer node start -..."   3 minutes ago       Up 3 minutes        0.0.0.0:7051->7051/tcp, 0.0.0.0:7053->7053/tcp   peer0
 2bc5c6606e6c        hyperledger/fabric-peer      "peer node start -..."   3 minutes ago       Up 3 minutes        0.0.0.0:8051->7051/tcp, 0.0.0.0:8053->7053/tcp   peer2
@@ -233,10 +162,9 @@ e61cf829f171        hyperledger/fabric-peer      "peer node start -..."   3 minu
 741c363ba34a        hyperledger/fabric-orderer   "orderer"                3 minutes ago       Up 3 minutes        0.0.0.0:7050->7050/tcp                           orderer0
 abaae883eb13        couchdb                      "tini -- /docker-e..."   3 minutes ago       Up 3 minutes        0.0.0.0:5984->5984/tcp                           couchdb
 2c2d51fe88c0        hyperledger/fabric-ca        "sh -c 'fabric-ca-..."   3 minutes ago       Up 3 minutes        0.0.0.0:7054->7054/tcp                           ca_peerOrg1
-
 ```
 
-## 5. Use the Node SDK
+## 4. Use the Node SDK
 
 Go back to the root of the `fabric-sdk-node` directory.
 
@@ -248,16 +176,15 @@ npm install
 The npm install command will put the node_modules into your SDK repo. This will take a minute or two. Next, install gulp:
 
 ```bash
-npm install -g gulp
-# if you get a "permission denied" error, then try with sudo
 sudo npm install -g gulp
 ```
+
 Finally, build the fabric-ca client:
 ```bash
 gulp ca
 ```
 
-## Create, Join, Install, Instantiate
+## 5. Create, Join, Install, Instantiate
 
 A Hyperledger Fabric channel is a private “subnet” of communication between two or more specific network members, for the purpose of conducting private and confidential transactions. A channel is defined by members (organizations), anchor peers per member, the shared ledger, chaincode application(s) and the ordering service node(s). Each transaction on the network is executed on a channel, where each party must be authenticated and authorized to transact on that channel. Each peer that joins a channel, has its own identity given by a membership services provider (MSP), which authenticates each peer to its channel peers and services.
 
@@ -269,8 +196,9 @@ rm -rf ~/.hfc-key-store
 
 ### Create channel
 
-Now, leverage the SDK test program to create a channel named `mychannel`. From the `fabric-sdk-node` directory:
+Now, leverage the SDK test program to create a channel named `mychannel`. From the `scripts` directory:
 ```bash
+cd ../fabric-sdk-node/
 node test/integration/e2e/create-channel.js
 ```
 
@@ -280,29 +208,32 @@ Pass the genesis block - `mychannel.block` - to the ordering service and join th
 node test/integration/e2e/join-channel.js
 ```
 
+## 6. Setup and Run Marbles
+Install marbles npm dependencies by navigating back to the root of the marble directory:
+```bash
+cd ../../
+npm install
+```
+
 ### Install chaincode
 Install the marbles source code on the peer's filesystems:
 ```bash
-node test/integration/e2e/install-chaincode.js
+cd ./scripts
+node install_chaincode.js
 ```
 
 ### Instantiate chaincode
 Spin up the marbles containers:
 ```bash
-node test/integration/e2e/instantiate-chaincode.js
+node instantiate_chaincode.js
 ```
 
-## 6. Run the Marbles App
+### Run the Marbles App
 
-Navigate to the marbles directory and install node modules:
+Navigate to the marbles directory and launch the application:
 ```bash
-cd ../marbles
-npm install
-```
-
-Now launch the application:
-```bash
-gulp marbles1
+cd ../
+gulp marbles3
 ```
 
 ### Use the UI
