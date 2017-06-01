@@ -167,7 +167,7 @@ abaae883eb13        couchdb                      "tini -- /docker-e..."   3 minu
 2c2d51fe88c0        hyperledger/fabric-ca        "sh -c 'fabric-ca-..."   3 minutes ago       Up 3 minutes        0.0.0.0:7054->7054/tcp                           ca_peerOrg1
 ```
 
-## 4. Create, Join, Install, Instantiate
+## 4. Setup Blockchain Network
 
 A Hyperledger Fabric channel is a private “subnet” of communication between two or more specific network members, for the purpose of conducting private and confidential transactions. A channel is defined by members (organizations), anchor peers per member, the shared ledger, chaincode application(s) and the ordering service node(s). Each transaction on the network is executed on a channel, where each party must be authenticated and authorized to transact on that channel. Each peer that joins a channel, has its own identity given by a membership services provider (MSP), which authenticates each peer to its channel peers and services.
 
@@ -199,14 +199,14 @@ npm install
 ```
 
 ### Install chaincode
-Install the marbles source code on the peer's filesystems:
+Install the marbles chaincode source on the peer's filesystems:
 ```bash
 cd ./scripts
 node install_chaincode.js
 ```
 
 ### Instantiate chaincode
-Spin up the marbles containers:
+Spin up the marbles chaincode on your channel:
 ```bash
 node instantiate_chaincode.js
 ```
