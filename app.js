@@ -43,6 +43,8 @@ process.env.marble_company = helper.getCompanyName();
 // ------------- Bluemix Detection ------------- //
 if (process.env.VCAP_APPLICATION) {
 	host = '0.0.0.0';							//overwrite defaults
+}
+if (process.env.PORT) {
 	port = process.env.PORT;
 }
 
