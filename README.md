@@ -164,7 +164,7 @@ Now hop back to your workspace directory:
 cd ..
 ```
 
-From your workspace, move the `docker-compose-marblesv3.yaml` to the `test/fixtures` folder in the `fabric-sdk-node` directory:
+From the marbles folder, move the `docker-compose-marblesv3.yaml` to the `test/fixtures` folder in the `fabric-sdk-node` directory:
 
 ```bash
 mv marbles/docker-compose-marblesv3.yaml fabric-sdk-node/test/fixtures
