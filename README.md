@@ -77,6 +77,7 @@ Follow the steps below to have your own marbles blockchain demo run locally.
 * [Docker Compose](https://docs.docker.com/compose/overview/) - v1.8 or higher
 * [Node.js & npm](https://nodejs.org/en/download/) - node v6.2.0 - v6.10.0 (v7+ not supported); npm comes with your node installation.
 * [xcode](https://developer.apple.com/xcode/) - only required for OS X users
+* [cURL](https://curl.haxx.se/download.html)
 * [nvm](https://github.com/creationix/nvm/blob/master/README.markdown) - if you want to use the nvm install command to retrieve a node version
 
 
@@ -98,7 +99,7 @@ Determine a location on your local machine where you want to place the Marbles a
 git clone https://github.com/IBM-Blockchain/marbles.git
 ```
 
-Download the [cURL](https://curl.haxx.se/download.html) tool if not already installed. Next, from your chosen workspace, execute the following command:
+Next, from your chosen workspace, execute the following command:
 ```bash
 curl -OO https://raw.githubusercontent.com/bmos299/fabric/rtd1/examples/e2e_cli/{download-dockerimages.sh,docker-compose-marblesv3.yaml}
 ```
