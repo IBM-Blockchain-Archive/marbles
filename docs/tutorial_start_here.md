@@ -94,7 +94,7 @@ You will need to do this step even if you plan on hosting marbles in Bluemix.
 - Run the following command:
 
 ```
-git clone http://gopkg.in/ibm-blockchain/marbles.v3
+git clone -b v3.0 http://gopkg.in/ibm-blockchain/marbles.v3
 ```
 
 - This will clone the v3.0 branch to your local system. 
