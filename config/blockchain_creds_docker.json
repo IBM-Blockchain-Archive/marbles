@@ -1,6 +1,6 @@
 {
 	"credentials": {
-		"network_id": "FakeNetworkId",
+		"network_id": "Docker Compose Network",
 		"orderers": [
 			{
 				"discovery": "grpc://localhost:7050",
