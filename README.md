@@ -77,7 +77,6 @@ Follow the steps below to have your own marbles blockchain demo run locally.
 * [Docker Compose](https://docs.docker.com/compose/overview/) - v1.8 or higher
 * [Node.js & npm](https://nodejs.org/en/download/) - node v6.2.0 - v6.10.0 (v7+ not supported); npm comes with your node installation.
 * [xcode](https://developer.apple.com/xcode/) - only required for OS X users
-* [cURL](https://curl.haxx.se/download.html)
 * [nvm](https://github.com/creationix/nvm/blob/master/README.markdown) - if you want to use the nvm install command to retrieve a node version
 
 
@@ -99,18 +98,11 @@ Determine a location on your local machine where you want to place the Marbles a
 git clone https://github.com/IBM-Blockchain/marbles.git
 ```
 
-Next, from your chosen workspace, execute the following command:
-```bash
-curl -OO https://raw.githubusercontent.com/bmos299/fabric/rtd1/examples/e2e_cli/{download-dockerimages.sh,docker-compose-marblesv3.yaml}
-```
-
-This command pulls a shell script that will download and extract the necessary docker images. It also pulls the docker-compose file that we will use to spawn our network.
-
-`download-dockerimages.sh` contains the code for downloading the docker images required to setup the network for running Hyperledger Fabric V1.
-
+Next, we will download the the docker images required to setup the network for running Hyperledger Fabric V1.
 From your workspace, make the shell script an executable:
 
 ```bash
+cd marbles
 chmod +x download-dockerimages.sh
 ```
 
@@ -144,8 +136,9 @@ hyperledger/fabric-ccenv       x86_64-1.0.0-alpha   91792014b61f        3 weeks 
 
 ## 2. Set up the Fabric Node SDK
 
-In the same folder, clone the repo for fabric node sdk:
+In the your work folder, clone the repo for fabric node sdk:
 ```bash
+cd ../
 git clone https://github.com/hyperledger/fabric-sdk-node.git
 ```
 
@@ -174,7 +167,7 @@ cd ..
 From your workspace, move the `docker-compose-marblesv3.yaml` to the `test/fixtures` folder in the `fabric-sdk-node` directory:
 
 ```bash
-mv docker-compose-marblesv3.yaml fabric-sdk-node/test/fixtures
+mv marbles/docker-compose-marblesv3.yaml fabric-sdk-node/test/fixtures
 ```
 
 Still from your workspace, empty the example chaincode source from the `fabric-sdk-node` directory:
@@ -185,7 +178,7 @@ rm -rf fabric-sdk-node/test/fixtures/src/github.com/example_cc/*
 
 Now copy the marbles chaincode to the same folder:
 ```bash
-cp marbles.v3/chaincode/src/marbles/* fabric-sdk-node/test/fixtures/src/github.com/example_cc/
+cp marbles/chaincode/src/marbles/* fabric-sdk-node/test/fixtures/src/github.com/example_cc/
 ```
 > **Note:** If you want to run your own code on hyperledger fabric V1, just copy the chaincode code in fabric-sdk-node/test/fixtures/src/github.com/example_cc directory.
 
@@ -303,7 +296,7 @@ node test/integration/e2e/instantiate-chaincode.js
 
 Navigate to the marbles directory and install node modules:
 ```bash
-cd ../marbles.v3
+cd ../marbles
 npm install
 ```
 
