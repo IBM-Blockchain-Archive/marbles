@@ -11,3 +11,6 @@ cd ../
 
 # use our docker compose file in sdk
 cp ./docker-compose-marblesv3.yaml fabric-sdk-node/test/fixtures
+
+# replace config.json - this one does not use tls
+cp ./config.json fabric-sdk-node/test/integration/e2e
