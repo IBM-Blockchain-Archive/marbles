@@ -72,12 +72,15 @@ Follow the steps below to have your own marbles blockchain demo run locally.
 
 ## Prerequisite
 
-* [Go](https://golang.org/) - most recent version
+These instructions have been tested on Ubuntu 14 and OSX.  It may work for Windows 10 if you install the Bash shell.
+**Note: Windows 7 users will need a virtual machine running some flavor of Linux.**
+
+* Bash - Bash scripts are needed to setup installation files
+* [GoLang](https://golang.org/) - 1.7.0 or highter
 * [Docker](https://www.docker.com/products/overview) - v1.13 or higher
 * [Docker Compose](https://docs.docker.com/compose/overview/) - v1.8 or higher
-* [Node.js & npm](https://nodejs.org/en/download/) - node v6.2.0 - v6.10.0 (v7+ not supported); npm comes with your node installation.
+* [Node.js](https://nodejs.org/en/download/) - node v6.2.0 - v6.10.0 **(v7+ not supported)**
 * [xcode](https://developer.apple.com/xcode/) - only required for OS X users
-* [nvm](https://github.com/creationix/nvm/blob/master/README.markdown) - if you want to use the nvm install command to retrieve a node version
 
 
 ## Steps
@@ -99,7 +102,7 @@ git clone https://github.com/IBM-Blockchain/marbles.git
 git checkout master
 ```
 
-Next, we will download the the docker images required to setup the network for running Hyperledger Fabric V1.
+Next, we will download the docker images required to setup the network for running Hyperledger Fabric V1.
 From your workspace, make the shell script an executable:
 
 ```bash
@@ -229,7 +232,7 @@ docker logs -f orderer0
 
 # Use Marbles
 
-1. If you are at this step, you should have your environment setup, blockchain network created, marbles app and chaincode running. Right? If not look up for help (up the page, not literaly upwards).
+1. If you are at this step, you should have your environment setup, blockchain network created, marbles app and chaincode running. Right? If not look up for help (up the page, not literally upwards).
 1. Open up your browser and browse to [http://localhost:3001](http://localhost:3001) or your Bluemix www route.
     - If the site does not load, check your node console logs for the hostname/ip and port marbles is using.
 1. Finally we can test the application. Click the "+" icon on one of your users in the "United Marbles" section
