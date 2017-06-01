@@ -87,10 +87,9 @@ These instructions have been tested on Ubuntu 14 and OSX.  It may work for Windo
 
 1. [Clone the repo and download the Docker images](#1-clone-the-repo-and-download-the-docker-images)
 2. [Set up the Fabric Node SDK](#2-set-up-the-fabric-node-sdk)
-3. [Edit the configuration](#3-edit-the-configuration)
-4. [Start your network](#4-start-your-network)
-5. [Use the Node SDK](#5-use-the-node-sdk)
-6. [Run the Marbles App](#6-run-the-marbles-app)
+3. [Start your network](#3-start-your-network)
+4. [Setup Blockchain Network](#4-setup-blockchain-network)
+5. [Setup and Run the Marbles App](#5-setup-and-run-marbles)
 
 
 ## 1. Clone the repo and download the Docker images
