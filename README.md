@@ -84,7 +84,7 @@ They will communicate via a networking protocol such as gRPC or WebSockets.
 
 ### 0. Setup Local Environment
 
-Follow these environment setup [instructions](./env_setup.md) to install **Git, Go** and **Node.js**.
+Follow these environment setup [instructions](./docs/env_setup.md) to install **Git, Go** and **Node.js**.
     - When you have finished come back to this tutorial. Start the next section "Download Marbles" below.
 
 ### 1. Download Marbles
@@ -110,9 +110,9 @@ Now we need a blockchain network.
 
 **Choose 1 option below:**
 
-- **Option 1:** Create a network with the Bluemix IBM Blockchain Service - [instructions](./use_bluemix_hyperledger.md)
+- **Option 1:** Create a network with the Bluemix IBM Blockchain Service - [instructions](./docs/use_bluemix_hyperledger.md)
 
-- **Option 2:** Use a locally hosted Hyperledger Network - [instructions](./use_local_hyperledger.md)
+- **Option 2:** Use a locally hosted Hyperledger Network - [instructions](./docs/use_local_hyperledger.md)
 
 <a name="installchaincode"></a>
 
@@ -123,9 +123,9 @@ There are two ways to do this.
 
 Choose the **only** option that is relevant for your setup:
 
-- **Option 1:** Install and instantiate chaincode with the IBM Blockchain Service - [instructions](./install_chaincode.md)
+- **Option 1:** Install and instantiate chaincode with the IBM Blockchain Service - [instructions](./docs/install_chaincode.md)
 
-- **Option 2:** Install and instantiate chaincode with the SDK locally - [instructions](./install_chaincode_locally.md)
+- **Option 2:** Install and instantiate chaincode with the SDK locally - [instructions](./docs/install_chaincode_locally.md)
 
 <a name="hostmarbles"></a>
 
@@ -135,8 +135,8 @@ Last but not least we need marbles running somewhere.
 
 **Choose 1 option below:**
 
-- **Option 1:** Host marbles on Bluemix - [instructions](./host_marbles_bluemix.md)
-- **Option 2:** Host marbles locally - [instructions](./host_marbles_locally.md)
+- **Option 1:** Host marbles on Bluemix - [instructions](./docs/host_marbles_bluemix.md)
+- **Option 2:** Host marbles locally - [instructions](./docs/host_marbles_locally.md)
 
 ***
 
