@@ -12,10 +12,10 @@
 ##### Versions and Supported Platforms
 Please note there are multiple version of marbles. 
 One for each major Hyperledger Fabric release. 
-You must pick a version of marbles that is compatible with your version of Fabric. 
-If you are starting from scratch, then pick the latest version!
+Pick a version of marbles that is compatible with your version of Fabric. 
+If you don't have any version of Fabric, then pick the marbles version marked **latest**! 
 
-- Marbles - Branch v3.0 **(Latest)** (You are in this branch!)
+- Marbles - Branch v3.0 **(Latest)** (You are viewing this branch!)
 	- Works with Hyperledger Fabric `v1.0`
 	- Works with the IBM Blockchain Bluemix Service - Plan **HSBN vNext**
 
