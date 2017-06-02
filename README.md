@@ -128,7 +128,7 @@ There are two ways to do this.
 
 Choose the **only** option that is relevant for your setup:
 
-- **Option 1:** Install and instantiate chaincode with the IBM Blockchain Service - [instructions](./docs/install_chaincode.md)
+- **Option 1:** Install and instantiate chaincode with your IBM Blockchain Service - [instructions](./docs/install_chaincode.md)
 
 - **Option 2:** :wink: Install and instantiate chaincode with the SDK locally - [instructions](./docs/install_chaincode_locally.md)
 
