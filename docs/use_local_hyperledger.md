@@ -167,5 +167,5 @@ Select one option below:
 If you plan to run marbles on the **same** machine as the docker conatiners then this step is already done for you. 
 Choose option 1, else choose option 2. 
 
-1. :wink: **Option 1:** - Fabric and Marbles on same machine -  [next](../README.md#installchaincode)
+1. **Option 1:** :wink: - Fabric and Marbles on same machine -  [next](../README.md#installchaincode)
 2. **Option 2:** - Fabric and Marbles on different machines - [edit config file](./config_file.md)

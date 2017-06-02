@@ -85,7 +85,7 @@ They will communicate via a networking protocol such as gRPC or WebSockets.
 I have good news and bad news. 
 The good news is marbles and the blockchain network can be setup for multiple different configurations depending on your preference. 
 The bad news is this makes the instructions complicated. 
-**If you are brand new to Blockchain and want the simplest setup then follow the :wink:. **
+**If you are brand new to Blockchain and want the simplest setup then follow the :wink:.** 
 Whenever there are options and you must choose your own adventrue, I'll drop a :wink: emojii on the option that is for you. 
 
 ### 0. Setup Local Environment
@@ -117,7 +117,7 @@ Now we need a blockchain network.
 
 - **Option 1:** Create a network with the Bluemix IBM Blockchain Service - [instructions](./docs/use_bluemix_hyperledger.md)
 
-- :wink: **Option 2:** Use a locally hosted Hyperledger Network - [instructions](./docs/use_local_hyperledger.md)
+-  **Option 2:** :wink: Use a locally hosted Hyperledger Network - [instructions](./docs/use_local_hyperledger.md)
 
 <a name="installchaincode"></a>
 
@@ -130,7 +130,7 @@ Choose the **only** option that is relevant for your setup:
 
 - **Option 1:** Install and instantiate chaincode with the IBM Blockchain Service - [instructions](./docs/install_chaincode.md)
 
-- :wink: **Option 2:** Install and instantiate chaincode with the SDK locally - [instructions](./docs/install_chaincode_locally.md)
+- **Option 2:** :wink: Install and instantiate chaincode with the SDK locally - [instructions](./docs/install_chaincode_locally.md)
 
 <a name="hostmarbles"></a>
 
@@ -141,7 +141,7 @@ Last but not least we need marbles running somewhere.
 **Choose 1 option below:**
 
 - **Option 1:** Host marbles on Bluemix - [instructions](./docs/host_marbles_bluemix.md)
-- :wink: **Option 2:** Host marbles locally - [instructions](./docs/host_marbles_locally.md)
+- **Option 2:** :wink: Host marbles locally - [instructions](./docs/host_marbles_locally.md)
 
 ***
 
