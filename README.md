@@ -82,10 +82,17 @@ They will communicate via a networking protocol such as gRPC or WebSockets.
 
 # Marbles Setup
 
+I have good news and bad news. 
+The good news is marbles and the blockchain network can be setup for multiple different configurations depending on your preference. 
+The bad news is this makes the instructions complicated. 
+**If you are brand new to Blockchain and want the simplest setup then follow the :wink:. **
+Whenever there are options and you must choose your own adventrue, I'll drop a :wink: emojii on the option that is for you. 
+
 ### 0. Setup Local Environment
 
 Follow these environment setup [instructions](./docs/env_setup.md) to install **Git, Go** and **Node.js**.
-    - When you have finished come back to this tutorial. Start the next section "Download Marbles" below.
+
+- When you have finished come back to this tutorial. Start the next section "Download Marbles" below.
 
 ### 1. Download Marbles
 We need to download marbles to your local system. 
@@ -95,12 +102,10 @@ You will need to do this step even if you plan on hosting marbles in Bluemix.
 - Open a command prompt/terminal and browse to your desired working directory
 - Run the following command:
 
-```
-git clone http://gopkg.in/ibm-blockchain/marbles.v3
-```
-
-- This will clone the v3.0 branch to your local system. 
-  Since we are using `gopkg.in` you will see your branch as `master`, but that’s intentional. `gopkg.in` created the master branch from our `v3.0` branch. We are jumping through these hoops to achieve versioning for GoLang (which only likes `master` branches).
+	```
+	git clone https://github.com/IBM-Blockchain/marbles.git
+	git checkout v3.0
+	```
 
 <a name="getnetwork"></a>
 
@@ -112,7 +117,7 @@ Now we need a blockchain network.
 
 - **Option 1:** Create a network with the Bluemix IBM Blockchain Service - [instructions](./docs/use_bluemix_hyperledger.md)
 
-- **Option 2:** Use a locally hosted Hyperledger Network - [instructions](./docs/use_local_hyperledger.md)
+- :wink: **Option 2:** Use a locally hosted Hyperledger Network - [instructions](./docs/use_local_hyperledger.md)
 
 <a name="installchaincode"></a>
 
@@ -125,7 +130,7 @@ Choose the **only** option that is relevant for your setup:
 
 - **Option 1:** Install and instantiate chaincode with the IBM Blockchain Service - [instructions](./docs/install_chaincode.md)
 
-- **Option 2:** Install and instantiate chaincode with the SDK locally - [instructions](./docs/install_chaincode_locally.md)
+- :wink: **Option 2:** Install and instantiate chaincode with the SDK locally - [instructions](./docs/install_chaincode_locally.md)
 
 <a name="hostmarbles"></a>
 
@@ -136,7 +141,7 @@ Last but not least we need marbles running somewhere.
 **Choose 1 option below:**
 
 - **Option 1:** Host marbles on Bluemix - [instructions](./docs/host_marbles_bluemix.md)
-- **Option 2:** Host marbles locally - [instructions](./docs/host_marbles_locally.md)
+- :wink: **Option 2:** Host marbles locally - [instructions](./docs/host_marbles_locally.md)
 
 ***
 
