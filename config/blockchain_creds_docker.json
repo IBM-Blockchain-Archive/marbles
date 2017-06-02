@@ -1,6 +1,6 @@
 {
 	"credentials": {
-		"network_id": "FakeNetworkId",
+		"network_id": "Docker Compose Network",
 		"orderers": [
 			{
 				"discovery": "grpc://localhost:7050",
@@ -10,12 +10,12 @@
 		],
 		"cas": [
 			{
-				"api": "http://localhost:8054",
+				"api": "http://localhost:7054",
 				"msp_id": "Org1MSP",
 				"users": [
 					{
-						"enrollId": "admin2",
-						"enrollSecret": "adminpw2"
+						"enrollId": "admin",
+						"enrollSecret": "adminpw"
 					}
 				],
 				"tls_certificate": "cert_1"
@@ -23,9 +23,9 @@
 		],
 		"peers": [
 			{
-				"name": "fabric-peer-2a",
-				"discovery": "grpc://localhost:8051",
-				"events": "grpc://localhost:8053",
+				"name": "fabric-peer-1a",
+				"discovery": "grpc://localhost:7051",
+				"events": "grpc://localhost:7053",
 				"msp_id": "Org1MSP",
 				"tls_certificate": "cert_1"
 			}

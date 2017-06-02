@@ -1,0 +1,13 @@
+{
+    "cred_filename": "blockchain_creds_docker.json",
+    "use_events": true,
+    "keep_alive_secs": 120,
+    "company": "United Marbles",
+    "usernames": [
+        "amy",
+        "alice",
+        "ava"
+    ],
+    "port": 3001,
+    "last_startup_hash": "777cec881f3af49df0d018c76c0870319861c1f7"
+}

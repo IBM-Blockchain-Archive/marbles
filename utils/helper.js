@@ -181,13 +181,18 @@ module.exports = function (config_filename, logger) {
 	function getTLScertObj(node, index) {
 		if (index < helper.creds.credentials[node].length) {
 			var obj = pickCertObj(helper.creds.credentials[node][index].tls_certificate);
-			return {
-				common_name: obj.common_name,
-				pem: loadCert(obj.pem)
-			};
+			if (obj) {
+				return {
+					common_name: obj.common_name,
+					pem: loadCert(obj.pem)
+				};
+			}
 		}
 		logger.warn('no tls cert found for ' + node + ' in creds json: ' + creds_path);
-		return null;
+		return  {
+			common_name: null,
+			pem: null
+		};
 	}
 
 	// pick which tls cert obj to load
