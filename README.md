@@ -5,13 +5,27 @@
 - **This demo is to aid a developer learn the basics of chaincode and app development with a Hyperledger network.**
 - This is a `very simple` asset transfer demonstration. Multiple users can create and transfer marbles with each other.
 
+	![](/doc_images/marbles-peek.gif)
+
 ***
 
-## Marbles Goals
-- Admin can create a marble and store it in the chaincode state
-- Admin can read and display all marbles in the chaincode state
-- Admin can transfer a marble to another marble owner
-- Admin can delete a marble
+##### Versions and Supported Platforms
+Please note there are multiple version of marbles. 
+One for each major Hyperledger Fabric release. 
+You must pick a version of marbles that is compatible with your version of Fabric. 
+If you are starting from scratch, then pick the latest version!
+
+- Marbles - Branch v3.0 **(Latest)** (You are in this branch!)
+	- Works with Hyperledger Fabric `v1.0`
+	- Works with the IBM Blockchain Bluemix Service - Plan **HSBN vNext**
+
+- [Marbles - Branch v2.0](https://github.com/ibm-blockchain/marbles/tree/v2.0)
+	- Works with Hyperledger Fabric `v0.6-developer-preview`
+	- Works with IBM Blockchain Bluemix Service - Plan **Starter** or **HSBN**
+
+- [Marbles - Branch v1.0](https://github.com/ibm-blockchain/marbles/tree/v1.0) **(Deprecated)**
+	- No longer supported by the IBM Blockchain Bluemix service
+	- Works with Hyperledger Fabric `v0.5-developer-preview`
 
 ***
 
