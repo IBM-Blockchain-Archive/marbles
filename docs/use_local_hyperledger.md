@@ -130,6 +130,14 @@ Pass the genesis block - `mychannel.block` - to the ordering service and join th
 node test/integration/e2e/join-channel.js
 ```
 
+### See the logs
+Open another terminal and view your peer or orderer logs:
+```bash
+docker logs -f peer0
+# control + c will exit the process
+docker logs -f orderer0
+```
+
 ### Finished
 The network is all setup, right? 
 So if you followed the instructions then your orderer will be batching new blocks every 10 seconds. 

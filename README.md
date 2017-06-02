@@ -114,8 +114,6 @@ Now we need a blockchain network.
 
 - **Option 2:** Use a locally hosted Hyperledger Network - [instructions](./use_local_hyperledger.md)
 
-**Update:** *local instructions are a work in progress*
-
 <a name="installchaincode"></a>
 
 ### 3. Install and Instantiate Chaincode
@@ -125,13 +123,9 @@ There are two ways to do this.
 
 Choose the **only** option that is relevant for your setup:
 
-- **Option 1:** Install chaincode with the IBM Blockchain Service - [instructions](./install_chaincode.md)
+- **Option 1:** Install and instantiate chaincode with the IBM Blockchain Service - [instructions](./install_chaincode.md)
 
-<strike>
-- **Option 2:** Install chaincode with the SDK locally
-</strike>
-
-**Update:** *instructions coming soon*
+- **Option 2:** Install and instantiate chaincode with the SDK locally - [instructions](./install_chaincode_locally.md)
 
 <a name="hostmarbles"></a>
 
@@ -146,49 +140,7 @@ Last but not least we need marbles running somewhere.
 
 ***
 
-
-
-Follow the steps below to have your own marbles blockchain demo run locally.
-
-
-## 5. Setup and Run Marbles
-Install marbles npm dependencies by navigating back to the root of the marble directory:
-```bash
-cd ../../
-npm install
-```
-
-### Install chaincode
-Install the marbles chaincode source on the peer's filesystems:
-```bash
-cd ./scripts
-node install_chaincode.js
-```
-
-### Instantiate chaincode
-Spin up the marbles chaincode on your channel:
-```bash
-node instantiate_chaincode.js
-```
-
-### Run the Marbles App
-
-Navigate to the marbles directory and launch the application:
-```bash
-cd ../
-gulp marbles3
-```
-
-### Use the UI
-Open a browser and visit localhost:3001. Scroll down to the bottom of the page and login as “admin”. You’re all set! Now you can create and trade marbles.
-
-### See the logs
-Open another terminal and view your peer or orderer logs:
-```bash
-docker logs -f peer0
-# control + c will exit the process
-docker logs -f orderer0
-```
+<a name="use"></a>
 
 # Use Marbles
 
