@@ -33,4 +33,4 @@ Lets do the very last setup for marbles.
 
 ![](/doc_images/localhost4.png)
 		
-1. Marbles is all setup! Now [continue the tutorial](./tutorial_start_here.md#use).
+1. Marbles is all setup! Now [continue the tutorial](../README.md#use).

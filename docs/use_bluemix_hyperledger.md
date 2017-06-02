@@ -66,4 +66,4 @@
 ### Finish Up
 Congrats! The network is all setup. If you want more detail on the IBM Blockchain service, available plans, or a detailed overview of the IBM Blockchain Dashboard, jump over [here](https://console.ng.bluemix.net/docs/services/blockchain/index.html?pos=2). If not let’s continue the setup. 
 
-- Continue where you left off in the [tutorial](./tutorial_start_here.md#installchaincode).
+- Continue where you left off in the [tutorial](../README.md#installchaincode).

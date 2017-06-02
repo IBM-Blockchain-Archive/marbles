@@ -61,5 +61,5 @@
 
 Congrats! The network is all setup and marbles chaincode is running. 
 
-- Continue where you left off in the [tutorial](./tutorial_start_here.md#hostmarbles).
+- Continue where you left off in the [tutorial](../README.md#hostmarbles).
 

@@ -129,4 +129,4 @@ There is already an example file in the config folder you can use.
 
 Once you have edited `blockchain_creds1.json` you are ready to install/instantiate Marbles. 
 
-1. Continue where you left off in the [tutorial](./tutorial_start_here.md#installchaincode). 
+1. Continue where you left off in the [tutorial](../README.md#installchaincode). 
