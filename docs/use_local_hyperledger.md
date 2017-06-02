@@ -22,19 +22,10 @@ These instructions have been tested on Ubuntu 14 and OSX.  It may work for Windo
 5. [Setup and Run the Marbles App](#5-setup-and-run-marbles)
 
 
-## 1. Clone the repo and download the Docker images
+## 1. Download Docker images
 
-Determine a location on your local machine where you want to place the Marbles and SDK libraries. 
-Next, clone the marbles repo into the folder. 
-If you already have marbles cloned locally, you can skip this step. 
-
-```bash
-git clone https://github.com/IBM-Blockchain/marbles.git
-git checkout v3.0
-```
-
-Next, we will download the docker images required to setup the network for running Hyperledger Fabric V1.
-From your workspace, make the shell script an executable:
+Download the docker images required to setup the network for running Hyperledger Fabric V1.
+From your marbles direcotry navigate to the scripts folder and make the shell script an executable:
 
 ```bash
 cd marbles/scripts
@@ -104,17 +95,18 @@ abaae883eb13        couchdb                      "tini -- /docker-e..."   3 minu
 You will need to troubleshoot this before moving on. 
 I'd suggest getting into the logs of one of the stopped containers with `sudo docker logs peer0` (replace peer0 with w/e name is stopped).
  
-* If you see a `containerID already exists` upon running docker-compose up, then you need to remove the existing container. This command will remove all containers; NOT your images:
-```bash
-docker rm -f $(docker ps -aq)
+* If you see a `containerID already exists` upon running docker-compose up, then you need to remove the existing container. This command will remove all containers `docker rm -f $(docker ps -aq)`
 ```
 
 
 ## 4. Setup Blockchain Network
 
-A Hyperledger Fabric channel is a private “subnet” of communication between two or more specific network members, for the purpose of conducting private and confidential transactions. A channel is defined by members (organizations), anchor peers per member, the shared ledger, chaincode application(s) and the ordering service node(s). Each transaction on the network is executed on a channel, where each party must be authenticated and authorized to transact on that channel. Each peer that joins a channel, has its own identity given by a membership services provider (MSP), which authenticates each peer to its channel peers and services.
+A Hyperledger Fabric channel is a private “subnet” of communication between two or more specific network members, for the purpose of conducting private and confidential transactions. 
+A channel is defined by members (organizations), peers, the shared ledger, chaincode application(s) and the ordering service node(s). 
+Each transaction on the network is executed on a channel, where each party must be authenticated and authorized to transact on that channel. 
+Each peer that joins a channel, has its own identity given by a membership services provider (MSP), which authenticates each peer to its channel peers and services.
 
-Before starting let’s remove the key value stores and hfc artifacts that may have cached during previous runs:
+Before starting let’s remove any key value stores and hfc artifacts that may have cached during previous runs:
 ```bash
 rm -rf /tmp/hfc-*
 rm -rf ~/.hfc-key-store
@@ -123,7 +115,7 @@ rm -rf ~/.hfc-key-store
 ### Create channel
 
 Now, leverage the SDK test script to create a channel named `mychannel`. 
-From the `scripts` directory:
+Navigate back to the the `scripts` directory and enter these commands: 
 ```bash
 cd ../fabric-sdk-node/
 node test/integration/e2e/create-channel.js
@@ -136,13 +128,17 @@ rm -rf ~/.hfc-key-store
 ```
 
 ### Join channel
-Pass the genesis block - `mychannel.block` - to the ordering service and join the peers to your channel:
+Great so you created a channel. 
+The next task is to join it. 
+Pass the genesis block - `mychannel.block` - to the ordering service and join the peers to your channel: 
 ```bash
 node test/integration/e2e/join-channel.js
 ```
 
 ### See the logs
-Open another terminal and view your peer or orderer logs:
+Viewing the logs of docker containers is helpful to troubleshoot issues. 
+While there is nothing important to see yet, it is a useful command to know. 
+Open another terminal and view your peer or orderer logs: 
 ```bash
 sudo docker logs -f peer0
 # control + c will exit the process
@@ -153,10 +149,10 @@ sudo docker logs -f orderer0
 The network is all setup, right? 
 So if you followed the instructions then your orderer will be batching new blocks every 10 seconds. 
 This is a litttttle long for our application, and may give you undesired behavior, sometimes. 
-Basicaly if you move a marble the trade will take 10 seconds to settle. 
+Essentially if you move a marble the trade will take 10 seconds to settle. 
 The **UI may redraw the marble back in its original position**, and then jump to a correct position after some time. 
-This is a known issue and is because of a the long batch time. 
-If you use the Bluemix service, the batch time is only 1 second and the app has been optimized for this delay. 
+This is a known issue and is because of the long batch time. 
+If you use the Bluemix service, the batch time is only 1 second and this is the delay the app has been optimized for. 
 
 Next we need to **pass the address and other info of our peer to our marbles application**. 
 This is done with the **blockchain creds** file. 
