@@ -100,9 +100,14 @@ abaae883eb13        couchdb                      "tini -- /docker-e..."   3 minu
 2c2d51fe88c0        hyperledger/fabric-ca        "sh -c 'fabric-ca-..."   3 minutes ago       Up 3 minutes        0.0.0.0:7054->7054/tcp                           ca_peerOrg1
 ```
 
-If you do not see all 8 containers running, then something is wrong. 
+* If you do not see all 8 containers running, then something is wrong. 
 You will need to troubleshoot this before moving on. 
 I'd suggest getting into the logs of one of the stopped containers with `sudo docker logs peer0` (replace peer0 with w/e name is stopped).
+ 
+* If you see a `containerID already exists` upon running docker-compose up, then you need to remove the existing container. This command will remove all containers; NOT your images:
+```bash
+docker rm -f $(docker ps -aq)
+```
 
 
 ## 4. Setup Blockchain Network
@@ -124,6 +129,12 @@ cd ../fabric-sdk-node/
 node test/integration/e2e/create-channel.js
 ```
 
+* When running `create-channel.js`, if you see an error stating `private key not found`, then try clearing your cached key value stores:
+```bash
+rm -rf /tmp/hfc-*
+rm -rf ~/.hfc-key-store
+```
+
 ### Join channel
 Pass the genesis block - `mychannel.block` - to the ordering service and join the peers to your channel:
 ```bash
@@ -133,9 +144,9 @@ node test/integration/e2e/join-channel.js
 ### See the logs
 Open another terminal and view your peer or orderer logs:
 ```bash
-docker logs -f peer0
+sudo docker logs -f peer0
 # control + c will exit the process
-docker logs -f orderer0
+sudo docker logs -f orderer0
 ```
 
 ### Finished

@@ -145,11 +145,12 @@ Last but not least we need marbles running somewhere.
 # Use Marbles
 
 1. If you are at this step, you should have your environment setup, blockchain network created, marbles app and chaincode running. Right? If not look up for help (up the page, not literally upwards).
-1. Open up your browser and browse to [http://localhost:3001](http://localhost:3001) or your Bluemix www route.
+1. Open up your favorite browser and browse to [http://localhost:3001](http://localhost:3001) or your Bluemix www route.
     - If the site does not load, check your node console logs for the hostname/ip and port marbles is using.
+
 1. Finally we can test the application. Click the "+" icon on one of your users in the "United Marbles" section
 
-![](/doc_images/use_marbles1.png)
+	![](/doc_images/use_marbles1.png)
 
 1. Fill out all the fields, then click the "CREATE" button
 1. After a few seconds your new marble should have appeared.
@@ -158,7 +159,7 @@ Last but not least we need marbles running somewhere.
     - If not refresh the page
 1. Now let’s delete a marble by dragging and dropping it into the trash can. It should disappear after a few seconds.
 
-![](/doc_images/use_marbles2.png)
+	![](/doc_images/use_marbles2.png)
 
 1. Refresh the page to double check that your actions "stuck".
 1. Use the search box to filter on marble owners or marble company names.  This is helpful when there are many companies/owners.
@@ -554,20 +555,6 @@ Now you know the whole flow.
 The admin moved the marble, JS detected the drag/drop, client sends a websocket message, marbles receives the websocket message, sdk builds/sends a proposal, peer endorses the proposal, sdk sends the proposal for ordering, the orderer orders and sends a block to peer, our peer commits the block, marbles node code gets new marble status periodically, sends marble websocket message to client, and finally the client redraws the marble in its new home.
 
 That’s it! Hope you had fun transferring marbles. 
-
-
-# Troubleshooting
-
-* If you see a `containerID already exists` upon running docker-compose up, then you need to remove the existing container. This command will remove all containers; NOT your images:
-```bash
-docker rm -f $(docker ps -aq)
-```
-
-* When running `create-channel.js`, if you see an error stating `private key not found`, then try clearing your cached key value stores:
-```bash
-rm -rf /tmp/hfc-*
-rm -rf ~/.hfc-key-store
-```
 
 # License
 [Apache 2.0](LICENSE)
