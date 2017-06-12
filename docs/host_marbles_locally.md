@@ -1,6 +1,6 @@
-#Host Marbles Locally:
+# Host Marbles Locally:
 
-###<a name="runlocal"></a>Run Marbles
+### <a name="runlocal"></a> Run Marbles
 Lets do the very last setup for marbles.
 
 1. Finally lets install marble's npm dependencies. Open a command prompt/terminal and browse to the root of this project.

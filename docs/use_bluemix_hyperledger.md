@@ -1,4 +1,4 @@
-#Use Bluemix IBM Blockchain Network:
+# Use Bluemix IBM Blockchain Network:
 
 ### Creating a Blockchain Network in IBM Bluemix
 1. Don't fret, this is as simple as clicking on a particular button and filling out a text input field or two. 

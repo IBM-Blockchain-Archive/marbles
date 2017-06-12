@@ -1,6 +1,6 @@
-#Run Marbles on Bluemix
+# Run Marbles on Bluemix
 
-###Run Marbles on Bluemix (command line)
+### Run Marbles on Bluemix (command line)
 
 1. Well to do this correctly you need to first [run marbles locally](./host_marbles_locally.md).
 1. Seriously make sure marbles starts up completely and you have traded a marble successfully before you continue.

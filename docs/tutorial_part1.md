@@ -1,6 +1,6 @@
-#Marbles Part 1 - Demo
+# Marbles Part 1 - Demo
 
-##About Marbles
+## About Marbles
 - The underlying network for this application is the [Hyperledger Fabric](https://github.com/hyperledger/fabric/tree/master/docs), a Linux Foundation project.  You may want to review these instructions to understand a bit about the Hyperledger Fabric.
 - **This demo is to aid a developer learn the basics of chaincode and app development with a Hyperledger network.**
 - This is a `very simple` asset transfer demonstration. Two users can create and exchange marbles with each other.
@@ -8,7 +8,7 @@
 
 ***
 
-##Part 1 Goals
+## Part 1 Goals
 - User can create a marble and store it in the chaincode state
 - User can read and display all marbles in the chaincode state
 - User can transfer a marble to another user
@@ -18,14 +18,14 @@
 
 ***
 
-#Prereq:
+# Prereq:
 1. I highly recommend you complete [learn chaincode](https://github.com/IBM-Blockchain/learn-chaincode) first
 1. If you want to run Marbles on a local blockchain network (ie. not using Bluemix) you will need to have completed the Hyperledger Fabric [development setup](https://github.com/hyperledger/fabric/blob/master/docs/Setup/Network-setup.md).
 1. [Node.js](https://nodejs.org/en/download/) 0.12.0+ and npm v2+ (only needed if you want to run the app locally, npm comes with node.js)
 1. Node.js experience. Marbles is a very simple blockchain app but it’s still a fairly involved node app. **You should be comfortable with node** and the express module.
 1. GoLang Environment (only needed to build your own chaincode, not needed if you just run the marbles app as is)
 
-###Application Background
+### Application Background
 Hold on to your hats everyone, this application is going to demonstrate transferring marbles between two users leveraging IBM Blockchain.
 We are going to do this in Node.js and a bit of GoLang. 
 The backend of this application will be the GoLang code running in our blockchain network. 
@@ -46,7 +46,7 @@ Interacting with the cc is done with a HTTP REST call to a peer on the network.
 The ibc-js SDK will abstract the details of the REST calls away.
 This allows us to use dot notation to call our GoLang functions (such as `chaincode.invoke.init_marble(args)`).
 
-###Application Communication Flow
+### Application Communication Flow
 
 ![](/doc_images/comm_flow.png)
 
@@ -56,7 +56,7 @@ This allows us to use dot notation to call our GoLang functions (such as `chainc
 1. The peer will communicate to its chaincode container at its leisure. Note that the previous HTTP request was really a 'submission' of chaincode to be run.  It will actually run at a later date (usually milliseconds).
 1. The cc container will carry out the desired operation and record it to the ledger. ie create/transfer a marble.
 
-###Context Clues
+### Context Clues
 There are 3 distinct parts/worlds that you need to keep straight. 
 They should be thought of as isolated environments that communicate over HTTP. 
 This walk through will jump from one to another as we setup and explain each part. 
@@ -108,7 +108,7 @@ git clone http://gopkg.in/ibm-blockchain/marbles.v2
 ***
 
 
-#<a name="use"></a>Use Marbles App
+# <a name="use"></a> Use Marbles App
 1. Open up your browser and browse to [http://localhost:3000](http://localhost:3000) or your Bluemix www route.
 1. You should be staring at our Marbles Part 1 application
 	- Part 2 can be found at [http://localhost:3000/p2](http://localhost:3000/p2), but lets stay on Part 1 for now  
@@ -121,7 +121,7 @@ git clone http://gopkg.in/ibm-blockchain/marbles.v2
 1. Congratulations you have a working marbles application :)!
 
 
-#SDK / IBM Blockchain Deeper Dive
+# SDK / IBM Blockchain Deeper Dive
 Before we examine how marbles works let’s examine what the SDK did to get our cc onto the network.
 The options argument for `ibc.load(options)` contains many important things. 
 An abbreviated version is below:
@@ -168,7 +168,7 @@ We should receive a hash in the response that is unique to this chaincode.
 This hash will be used along with the registered `enrollId` in all future invocations / queries against this cc. 
 
 
-#Marbles Deeper Dive
+# Marbles Deeper Dive
 Hopefully you have successfully traded a marble or two between users. 
 Let’s look at how this was done by starting at the chaincode.
 
@@ -393,5 +393,5 @@ Part 2 adds some new chaincode functions making it a little niftier.
 
 ***
 
-#Trouble Shooting
+# Trouble Shooting
 Stuck? Try my handy [trouble shooting guide](./i_lost_my_marbles.md).

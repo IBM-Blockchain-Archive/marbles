@@ -1,6 +1,6 @@
-#Marbles Part 2 - Demo
+# Marbles Part 2 - Demo
 
-##About Marbles
+## About Marbles
 - This tutorial assumes you have completed [Part 1](./tutorial_part1.md)
 - The underlying network for this application is the [Hyperledger Fabric](https://github.com/hyperledger/fabric/tree/master/docs), a Linux Foundation project.  You may want to review these instructions to understand a bit about the Hyperledger Fabric.
 - **This demo is to aid a developer learn the basics of chaincode and app development with a Hyperledger network.**
@@ -9,7 +9,7 @@
 
 ***
 
-##Part 2 Goals
+## Part 2 Goals
 - Users can advertise to trade/exchange their marbles (ie willing to trade large red for large blue/yellow/green)
 - User can remove their pending open trades
 - User identity (fake login as "bob" or "leroy")
@@ -17,7 +17,7 @@
 
 ***
 
-#Prereq:
+# Prereq:
 1. I highly recommend you complete [learn chaincode](https://github.com/IBM-Blockchain/learn-chaincode) first
 1. If you want to run Marbles on a local blockchain network (ie. not using Bluemix) you will need to have completed the Hyperledger Fabric [development setup](https://github.com/hyperledger/fabric/blob/master/docs/Setup/Network-setup.md).
 1. [Node.js](https://nodejs.org/en/download/) 0.12.0+ and npm v2+ (only needed if you want to run the app locally, npm comes with node.js)
@@ -25,7 +25,7 @@
 1. GoLang Environment (only needed to build your own chaincode, not needed if you just run the marbles app as is)
 
 
-#Summary
+# Summary
 Wow so you completed [Part 1](./tutorial_part1.md) and you came back to try part 2? Great stuff. 
 Now I know there are 4 goals listed above, but really there are only 2 major changes/additions we are going to do this time around. 
 We are going to (1) create a "login" for each user. 
@@ -38,7 +38,7 @@ Another user can "login" our app and execute the trade if he has a green marble 
 This is still a simplistic asset transfer demo using a monolithic chaincode model. 
 There will be no user security, crypto signatures or privacy until Part 3 [TBA].
 
-#Identity
+# dentity
 If you have already seen Part 2 on accident, then you've probably saw the new trade navigation link and the new "login" section. 
 The trading example we are building to requires knowing which user we are impersonating so we have built a fake login. 
 Go ahead and browse to your Part 2's url.
@@ -61,7 +61,7 @@ __./public/part2.js__
 That’s it for now. 
 Just keep this in mind as we leverage who the user is and accomplish some actions later. 
 
-#Trading
+# Trading
 Ok let’s do some real work again and look at chaincode. 
 Now last time we created stuff to be stored we created **individual** key/value pairs **for each** marble. 
 Let’s try something different this time and use **one** key/value pair to track **all** known trades. 
@@ -359,5 +359,5 @@ In Part 3 we will discuss authentication/authorization, but in the meantime feel
 
 ***
 
-#Trouble Shooting
+# Trouble Shooting
 Stuck? Try my handy [trouble shooting guide](./i_lost_my_marbles.md).

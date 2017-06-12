@@ -1,6 +1,6 @@
 *Note while this guide is written for debugging Marbles on our Bluemix IBM Blockchain service it is still relevant for a custom app using a custom IBM Blockchain* 
 
-#Marbles Debug Help
+# Marbles Debug Help
 
 So you think marbles is totally broken, nothing is working right and this whole thing is lame. 
 I can at least assure you that marbles is not broken. 
@@ -206,7 +206,7 @@ Your patience and enthusiasm is greatly appreciated!
 
 ***
 
-#Bluemix Node.js Logs
+# Bluemix Node.js Logs
 So first up. Do not debug initial setup errors on a Bluemix app. 
 You should really verify if marbles (or your own app) runs locally before debugging it here. 
 The only reason to debug the app running on Bluemix is when it runs locally but doesn't seem to run on Bluemix. 
@@ -259,7 +259,7 @@ Let’s get to the console logs your app is printing.
 
 		> cf logs <YOUR_APP_NAME_HERE> --recent
 
-#Local Machine Node.js Logs
+# Local Machine Node.js Logs
 Right so local machine logs...
 You will find node.js logs on the same command prompt/terminal that you used to start the node app. 
 So. Look at your screen. 
@@ -269,7 +269,7 @@ You may even have to move windows around, but I can sense it. Your logs are near
 - the most important logs for setup debugging are at the top near the ------------ Server Up - x.x.x.x:xxxx ------------ line
 - you will likely want to restart your app to get to logs that are relevant
 
-#Peer or ChainCode Logs
+# Peer or ChainCode Logs
 Peer logs will detail peer to peer chatter, peer to chaincode communication, and API rest calls. 
 Our handy monitor page has a link to view specific peer logs and chaincode logs.
 These instructions assume you have already created a service and are trying to debug a problematic one. 
