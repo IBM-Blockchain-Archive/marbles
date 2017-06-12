@@ -2,7 +2,7 @@
 
 ## About Marbles
 - The underlying network for this application is the [Hyperledger Fabric](https://github.com/hyperledger/fabric/tree/master/docs), a Linux Foundation project.  You may want to review these instructions to understand a bit about the Hyperledger Fabric.
-- **This demo is to aid a developer learn the basics of chaincode and app development with a Hyperledger network.**
+- **This demo is to aid a developer learn the basics of chaincode and app development with a Fabric network.**
 - This is a `very simple` asset transfer demonstration. Multiple users can create and transfer marbles with each other.
 
 	![](/doc_images/marbles-peek.gif)
@@ -118,7 +118,7 @@ Now we need a blockchain network.
 
 - **Option 1:** Create a network with the Bluemix IBM Blockchain Service - [instructions](./docs/use_bluemix_hyperledger.md)
 
--  **Option 2:** :lollipop: Use a locally hosted Hyperledger Network - [instructions](./docs/use_local_hyperledger.md)
+-  **Option 2:** :lollipop: Use a locally hosted Hyperledger Fabric Network - [instructions](./docs/use_local_hyperledger.md)
 
 <a name="installchaincode"></a>
 
@@ -193,7 +193,7 @@ Lets get some definitions out of the way first.
 
 **Ledger** - This is the storage for the blockchain on a peer. It contains the actual block data which consist of transaction parameters and key value pairs. It is written by chaincode.
 
-**Chaincode** - Chaincode is Hyperledger speak for smart contracts. It defines the assets and all rules about assets.
+**Chaincode** - Chaincode is Hyperledger Fabric speak for smart contracts. It defines the assets and all rules about assets.
 
 **Assets** - An asset is an entity that exists in the ledger. It’s a key value pair. In the context of marbles this is a marble, or a marble owner. 
 
