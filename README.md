@@ -85,8 +85,8 @@ They will communicate via a networking protocol such as gRPC or WebSockets.
 I have good news and bad news. 
 The good news is marbles and the blockchain network can be setup for multiple different configurations depending on your preference. 
 The bad news is this makes the instructions complicated. 
-**If you are new to Hyperledger Fabric and want the simplest setup then follow the :wink: emojii.** 
-Whenever there are options and you must choose your own adventrue, I'll drop a :wink: emojii on the option that is the simplest. 
+**If you are new to Hyperledger Fabric and want the simplest setup then follow the ::lollipop:: emojii.** 
+Whenever there are options and you must choose your own adventrue, I'll drop a ::lollipop:: emojii on the option that is the simplest. 
 This is the option for you. 
 
 ### 0. Setup Local Environment
@@ -118,7 +118,7 @@ Now we need a blockchain network.
 
 - **Option 1:** Create a network with the Bluemix IBM Blockchain Service - [instructions](./docs/use_bluemix_hyperledger.md)
 
--  **Option 2:** :wink: Use a locally hosted Hyperledger Network - [instructions](./docs/use_local_hyperledger.md)
+-  **Option 2:** ::lollipop:: Use a locally hosted Hyperledger Network - [instructions](./docs/use_local_hyperledger.md)
 
 <a name="installchaincode"></a>
 
@@ -131,7 +131,7 @@ Choose the **only** option that is relevant for your setup:
 
 - **Option 1:** Install and instantiate chaincode with your IBM Blockchain Service - [instructions](./docs/install_chaincode.md)
 
-- **Option 2:** :wink: Install and instantiate chaincode with the SDK locally - [instructions](./docs/install_chaincode_locally.md)
+- **Option 2:** ::lollipop:: Install and instantiate chaincode with the SDK locally - [instructions](./docs/install_chaincode_locally.md)
 
 <a name="hostmarbles"></a>
 
@@ -142,7 +142,7 @@ Last but not least we need marbles running somewhere.
 **Choose 1 option below:**
 
 - **Option 1:** Host marbles on Bluemix - [instructions](./docs/host_marbles_bluemix.md)
-- **Option 2:** :wink: Host marbles locally - [instructions](./docs/host_marbles_locally.md)
+- **Option 2:** ::lollipop:: Host marbles locally - [instructions](./docs/host_marbles_locally.md)
 
 ***
 
