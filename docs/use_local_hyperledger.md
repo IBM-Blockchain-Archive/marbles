@@ -96,8 +96,6 @@ You will need to troubleshoot this before moving on.
 I'd suggest getting into the logs of one of the stopped containers with `sudo docker logs peer0` (replace peer0 with w/e name is stopped).
  
 * If you see a `containerID already exists` upon running docker-compose up, then you need to remove the existing container. This command will remove all containers `docker rm -f $(docker ps -aq)`
-```
-
 
 ## 4. Setup Blockchain Network
 
@@ -106,7 +104,7 @@ A channel is defined by members (organizations), peers, the shared ledger, chain
 Each transaction on the network is executed on a channel, where each party must be authenticated and authorized to transact on that channel. 
 Each peer that joins a channel, has its own identity given by a membership services provider (MSP), which authenticates each peer to its channel peers and services.
 
-Before starting let’s remove any key value stores and hfc artifacts that may have cached during previous runs:
+Before starting let’s remove any key value stores and SDK artifacts that may have cached during previous runs:
 ```bash
 rm -rf /tmp/hfc-*
 rm -rf ~/.hfc-key-store
@@ -129,8 +127,8 @@ rm -rf ~/.hfc-key-store
 
 ### Join channel
 Great so you created a channel. 
-The next task is to join it. 
-Pass the genesis block - `mychannel.block` - to the ordering service and join the peers to your channel: 
+The next task is to join your peers to the channel. 
+Send the genesis block with the command: 
 ```bash
 node test/integration/e2e/join-channel.js
 ```
@@ -146,15 +144,15 @@ sudo docker logs -f orderer0
 ```
 
 ### Finished
-The network is all setup, right? 
-So if you followed the instructions then your orderer will be batching new blocks every 10 seconds. 
-This is a litttttle long for our application, and may give you undesired behavior, sometimes. 
+Nice work! The network is all setup. Right? I guess we will find out together. 
+If you followed the instructions then your orderer will be batching new blocks every 10 seconds. 
+This is a litttttle long for our application, and may give you undesired UI behavior, sometimes. 
 Essentially if you move a marble the trade will take 10 seconds to settle. 
-The **UI may redraw the marble back in its original position**, and then jump to a correct position after some time. 
+Thus the  **UI may redraw the marble back in its original position**, and then jump to a correct position after some time. 
 This is a known issue and is because of the long batch time. 
 If you use the Bluemix service, the batch time is only 1 second and this is the delay the app has been optimized for. 
 
-Next we need to **pass the address and other info of our peer to our marbles application**. 
+Next up we need to **pass the address and other info of our peer to our marbles application**. 
 This is done with the **blockchain creds** file. 
 Configuration of this file can be tricky. 
 
