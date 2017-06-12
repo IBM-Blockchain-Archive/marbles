@@ -33,7 +33,7 @@ fcw.enroll(helper.makeEnrollmentOptions(0), function (enrollErr, enrollResp) {
 		};
 		fcw.install_chaincode(enrollResp, opts, function (err, resp) {
 			console.log('---------------------------------------');
-			logger.info('Install done. Errors:', (err) ? 'nope' : err);
+			logger.info('Install done. Errors:', (!err) ? 'nope' : err);
 			console.log('---------------------------------------');
 		});
 	}
