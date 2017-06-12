@@ -72,14 +72,7 @@ to understand what chaincode is and how it's written, and set up your environmen
 
 
 # Marbles Setup Options:
-Decide if you want to use the deploy to Bluemix button. 
-Using the button will bypass all the setup below, but you will not have much control over the application. 
-This is great for just seeing what marbles is, but you cannot easily play with the code. 
-
-**Choose 1 option below:**
-
-- **Option 1:**  [Button Instructions](./host_marbles_bluemix_button.md)
-- **Option 2:** Follow these machine setup [instructions](https://github.com/IBM-Blockchain/learn-chaincode/blob/v2.0/docs/setup.md) to install **Git, Go** and **Node.js**.
+Follow these machine setup [instructions](https://github.com/IBM-Blockchain/learn-chaincode/blob/v2.0/docs/setup.md) to install **Git, Go** and **Node.js**.
 	- When you have finished come back to this tutorial. Start the next section "Download Marbles" below.
 
 ### Download Marbles

@@ -1,9 +1,5 @@
 # Marbles Demo
 
-[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/ibm-blockchain/marbles.git)
-
-***
-
 ##### Versions and Supported Platforms
 On November 9th, 2016, we released the IBM Blockchain Service v1.0.0 based on HyperLedger fabric v0.6.3 
 All new networks created in Bluemix will use this version. 
