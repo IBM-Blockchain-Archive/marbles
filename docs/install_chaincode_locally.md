@@ -1,4 +1,4 @@
-# Install and Instantiate Chaincode w/Local Hyperledger
+# Install and Instantiate Chaincode w/Local Hyperledger Fabric
 
 ## Setup Marbles
 We need some marbles dependecies in order to run the install/instantiate scripts.

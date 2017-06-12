@@ -85,8 +85,9 @@ They will communicate via a networking protocol such as gRPC or WebSockets.
 I have good news and bad news. 
 The good news is marbles and the blockchain network can be setup for multiple different configurations depending on your preference. 
 The bad news is this makes the instructions complicated. 
-**If you are brand new to Blockchain and want the simplest setup then follow the :wink:.** 
-Whenever there are options and you must choose your own adventrue, I'll drop a :wink: emojii on the option that is for you. 
+**If you are new to Hyperledger Fabric and want the simplest setup then follow the :wink: emojii.** 
+Whenever there are options and you must choose your own adventrue, I'll drop a :wink: emojii on the option that is the simplest. 
+This is the option for you. 
 
 ### 0. Setup Local Environment
 
