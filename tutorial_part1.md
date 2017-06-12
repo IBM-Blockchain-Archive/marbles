@@ -1,6 +1,8 @@
-#Marbles Part 1 - Demo
+# Marbles Part 1 - Demo
 
-##BEFORE YOU RUN
+### This Branch has been Deprecated! ###
+
+## BEFORE YOU RUN
 - The underlying network for this application is the [Hyperledger Fabric](https://github.com/hyperledger/fabric/tree/master/docs), a Linux Foundation project.
 - The expectations of this application are to test the JS SDK, guide its development and to aid a developer in becoming familiar with our SDK + chaincode.
 - This is a `very simple` asset transfer demonstration.  Two users can create and exchange marbles with each other.
@@ -9,7 +11,7 @@
 
 ***
 
-##Part 1 Goals
+## Part 1 Goals
 - User can create a marble and store it in the chaincode state
 - User can read and display all marbles in the chaincode state
 - User can transfer a marble to another user
@@ -19,7 +21,7 @@
 
 ***
 
-#Prereq:
+# Prereq:
 1. Bluemix ID https://console.ng.bluemix.net/ (needed to create your IBM Blockchain network if local network is not setup)
 1. If you want to run Marbles on a local blockchain network (ie. not using Bluemix) you will need to have completed the Hyperledger Fabric [development setup](https://github.com/hyperledger/fabric/blob/master/docs/source/Setup/Network-setup.rst).
 1. [Node.js](https://nodejs.org/en/download/) 0.12.0+ and npm v2+ (only needed if you want to run the app locally, npm comes with node.js)
@@ -29,7 +31,7 @@
 
 
 
-#Application Background
+# Application Background
 Hold on to your hats everyone, this application is going to demonstrate transferring marbles between two users leveraging IBM Blockchain.
 We are going to do this in Node.js and a bit of GoLang. 
 The backend of this application will be the GoLang code running in our blockchain network. 
@@ -50,7 +52,7 @@ Interacting with the cc is done with a HTTP REST call to a peer on the network.
 The ibc-js SDK will abstract the details of the REST calls away.
 This allows us to use dot notation to call our GoLang functions (such as `chaincode.invoke.init_marble(args)`).
 
-#Application Communication Flow
+# Application Communication Flow
 
 ![](/doc_images/comm_flow.png)
 
@@ -60,7 +62,7 @@ This allows us to use dot notation to call our GoLang functions (such as `chainc
 1. The peer will communicate to its chaincode container at its leisure. Note that the previous HTTP request was really a 'submission' of chaincode to be run, it will actually run at a later date (usually milliseconds).
 1. The cc container will carry out the desired operation and record it to the ledger. ie create/transfer a marble.
 
-#Context Clues
+# Context Clues
 There are 3 distinct parts/worlds that you need to keep straight. 
 They should be thought of as isolated environments that communicate over HTTP. 
 This walk through will jump from one to another as we setup and explain each part. 
@@ -71,7 +73,7 @@ There are certain keywords and context clues to help you identify one from anoth
 1. The Client Side JS Part - This is JavaScript code running in the user's browser. User interaction code happens here.
 1. The Server Side JS Part - This is JavaScript code running our application's backend. ie `Node.js` code which is the heart of Marbles! Sometimes referred to as our `node` or `server` code. Functions as the glue between the user and our blockchain.
 
-#Chaincode
+# Chaincode
 To understand what is going on we need to start looking at the chaincode.  The complete cc code for this example can be found [here](https://github.com/IBM-Blockchain/marbles/blob/v1.0/chaincode/part1/part1_chaincode.go). 
 Marbles Part 1 and Marbles Part 2 will use different chaincode, but Part 2 will include everything from Part 1. 
 Part 1 is just nicer to look at since it has less lines of code, and hopefully less things to confuse you on. 
@@ -269,7 +271,7 @@ The network is all setup.  **Now we need to copy the peer data and pass it to ou
 
 1. continue by [running the marbles app](#runlocal)
 
-#<a name="confignetwork"></a>Configure the SDK for your Blockchain Network
+# <a name="confignetwork"></a>Configure the SDK for your Blockchain Network
 The app is setup to either grab network configuration data from Bluemix via VCAP Service's environmental variable OR to load the hard coded list in `mycreds.json`. 
 
 - If you are running the app locally it will not find VCAP. Thus you need to edit `mycreds.json` 
@@ -321,7 +323,7 @@ If you are not using TLS you should also change the `options.tls` field to `fals
 All networks created with the Bluemix service will have Membership Services and support TLS exclusively.
 Once you have edited `mycreds.json` you are ready to run Marbles.
 
-#<a name="runlocal"></a>Run Marbles on Local Machine
+# <a name="runlocal"></a>Run Marbles on Local Machine
 Now we are ready to work on the application! 
 
 1. To run the app locally we need to get these files onto your machine
@@ -353,7 +355,7 @@ Now we are ready to work on the application!
 
 1. Continue by [using the marbles app](#use)
 		
-#Run Marbles on Bluemix (command line)
+# Run Marbles on Bluemix (command line)
 1. This app is already ready to run on Bluemix
 1. If you don't already have one, create a new network for the app
 1. Edit manifest.yml 
@@ -368,7 +370,7 @@ Now we are ready to work on the application!
 	
 1. The application will bind to the service "myblockchain" and grab the peer data from VCAP_SERVICES. Code for this is in [app.js](app.js#L153)
 
-#<a name="use"></a>Use Marbles App
+# <a name="use"></a>Use Marbles App
 1. Open up your browser and browse to [http://localhost:3000](http://localhost:3000) or your Bluemix www route.
 1. You should be staring at our Marbles Part 1 application
 	- Part 2 can be found at [http://localhost:3000/p2](http://localhost:3000/p2), but lets stay on Part 1 for now  
@@ -381,7 +383,7 @@ Now we are ready to work on the application!
 
 
 
-#SDK / IBM Blockchain Deeper Dive
+# SDK / IBM Blockchain Deeper Dive
 Before we examine how marbles works let’s examine what the SDK did to get our cc onto the network.
 The options argument for `ibc.load(options)` contains many important things. 
 An abbreviated version is below:
@@ -653,5 +655,5 @@ Part 2 adds some new chaincode functions making it a little niftier.
 
 ***
 
-#Trouble Shooting
+# Trouble Shooting
 Stuck? Try my handy [trouble shooting guide](./i_lost_my_marbles.md).
