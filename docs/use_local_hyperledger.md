@@ -6,7 +6,7 @@ These instructions have been tested on Ubuntu 14 and OSX.  It may work for Windo
 **Note: Windows 7 users will need a virtual machine running some flavor of Linux.**
 
 * Bash - Bash scripts are needed to setup installation files
-* [GoLang](https://golang.org/) - 1.7.0 or highter
+* [GoLang](https://golang.org/) - 1.7.0 or higher
 * [Docker](https://www.docker.com/products/overview) - v1.13 or higher
 * [Docker Compose](https://docs.docker.com/compose/overview/) - v1.8 or higher
 * [Node.js](https://nodejs.org/en/download/) - node v6.2.0 - v6.10.0 **(v7+ not supported)**
@@ -25,7 +25,7 @@ These instructions have been tested on Ubuntu 14 and OSX.  It may work for Windo
 ## 1. Download Docker images
 
 Download the docker images required to setup the network for running Hyperledger Fabric V1.
-From your marbles direcotry navigate to the scripts folder and make the shell script an executable:
+From your marbles directory navigate to the scripts folder and make the shell script an executable:
 
 ```bash
 cd marbles/scripts
@@ -115,7 +115,7 @@ rm -rf ~/.hfc-key-store
 ### Create channel
 
 Now, leverage the SDK test script to create a channel named `mychannel`. 
-Navigate back to the the `scripts` directory and enter these commands: 
+Navigate back to the `scripts` directory and enter these commands: 
 ```bash
 cd ../fabric-sdk-node/
 node test/integration/e2e/create-channel.js
@@ -160,7 +160,7 @@ Configuration of this file can be tricky.
 
 Select one option below:
 
-If you plan to run marbles on the **same** machine as the docker conatiners then this step is already done for you. 
+If you plan to run marbles on the **same** machine as the docker containers then this step is already done for you. 
 Choose option 1, else choose option 2. 
 
 1. **Option 1:** :lollipop: - Fabric and Marbles on same machine -  [next](../README.md#installchaincode)
