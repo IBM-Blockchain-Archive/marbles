@@ -1,9 +1,5 @@
 # Marbles Demo
 
-[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/ibm-blockchain/marbles.git)
-
-***
-
 ##### Versions and Supported Platforms
 Use the correct version for your Hyperledger network.
 

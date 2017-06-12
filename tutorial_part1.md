@@ -220,17 +220,11 @@ We will take a look at writing more specific chaincode after we get an environme
 So the cc is great and all but first we need a blockchain network. 
 Choose 1 option below:
 
-(1) Deploy the app and network at once on Bluemix.  Simply click this button &nbsp;&nbsp; 
-[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/ibm-blockchain/marbles.git)
-then continue [here](#use).
+(1) Deploy the app on my local machine, connecting to a Bluemix IBM Blockchain network - [instructions](#manbluenetwork)
 
 `OR`
 
-(2) Deploy the app on my local machine, connecting to a Bluemix IBM Blockchain network - [instructions](#manbluenetwork)
-
-`OR`
-
-(3) Deploy the app wherever and connect to a local/remote Hyperledger Network - [instructions](#confignetwork)
+(2) Deploy the app wherever and connect to a local/remote Hyperledger Network - [instructions](#confignetwork)
 
 # <a name="manbluenetwork"></a>Manual Bluemix Network:
 Don't fret, "manual" setup means I will guide you to click on a particular button and fill out a text input field or two. 
