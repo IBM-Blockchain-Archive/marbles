@@ -83,7 +83,7 @@ They will communicate via a networking protocol such as gRPC or WebSockets.
 # Marbles Setup
 
 I have good news and bad news. 
-The good news is marbles and the blockchain network can be setup for multiple different configurations depending on your preference. 
+The good news is marbles and the blockchain network can be setup for different configurations depending on your preference. 
 The bad news is this makes the instructions complicated. 
 **If you are new to Hyperledger Fabric and want the simplest setup then follow the :lollipop: emojii.** 
 Whenever there are options and you must choose your own adventrue, I'll drop a :lollipop: emojii on the option that is the simplest. 
