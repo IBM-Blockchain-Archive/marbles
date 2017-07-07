@@ -95,6 +95,19 @@ module.exports = function (config_filename, logger) {
 		}
 	};
 
+	// get a ca's name, could be null
+	helper.getCaName = function (index) {
+		if (index === undefined || index == null) {
+			throw new Error('CA index not passed');
+		} else {
+			if (index < helper.creds.credentials.cas.length) {
+				return helper.creds.credentials.cas[index].name;
+			} else {
+				throw new Error('CA index out of bounds. Total CA = ' + helper.creds.credentials.cas.length);
+			}
+		}
+	};
+
 	// get a ca obj
 	helper.getCA = function (index) {
 		if (index === undefined || index == null) {
@@ -146,11 +159,13 @@ module.exports = function (config_filename, logger) {
 		}
 		else {
 			var ca = helper.getCA(0);
-			if (ca && index < ca.users.length) {
-				return ca.users[index];
+			if (ca && ca.orgs) {
+				for(let i in ca.orgs) {
+					 return ca.orgs[i].users[index];
+				}
 			}
 			else {
-				throw new Error('Users index out of bounds. Total CA = ' + helper.creds.credentials.users.length);
+				throw new Error('Users index out of bounds.', index);
 			}
 		}
 	};
@@ -295,6 +310,7 @@ module.exports = function (config_filename, logger) {
 				channel_id: helper.getChannelId(),
 				uuid: 'marbles-' + helper.getNetworkId() + '-' + helper.getChannelId() + '-' + helper.getPeersName(0),
 				ca_url: helper.getCasUrl(0),
+				ca_name: helper.getCaName(0),
 				orderer_url: helper.getOrderersUrl(0),
 				peer_urls: [helper.getPeersUrl(0)],
 				enroll_id: user.enrollId,

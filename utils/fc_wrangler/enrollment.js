@@ -3,8 +3,7 @@
 //-------------------------------------------------------------------
 
 module.exports = function (logger) {
-	var HFC = require('fabric-client');
-	//HFC.setLogger({info: function(){}, debug: function(){}, warn: function(){}, error: function(){}});	//doesn't work
+	var FabricClient = require('fabric-client');
 	var path = require('path');
 	var common = require(path.join(__dirname, './common.js'))(logger);
 	var enrollment = {};
@@ -43,11 +42,11 @@ module.exports = function (logger) {
 	*/
 
 	enrollment.enroll = function (options, cb) {
-		var chain = {};
+		var channel = {};
 		var client = null;
 		try {
-			client = new HFC();
-			chain = client.newChain(options.channel_id);
+			client = new FabricClient();
+			channel = client.newChannel(options.channel_id);
 		}
 		catch (e) {
 			//it might error about 1 chain per network, but that's not a problem just continue
@@ -72,21 +71,21 @@ module.exports = function (logger) {
 		logger.info('[fcw] Going to enroll for mspId ', debug);
 
 		// Make eCert kvs (Key Value Store)
-		HFC.newDefaultKeyValueStore({
-			path: path.join(os.homedir(), '.hfc-key-store/' + options.uuid) //store eCert in the kvs directory
+		FabricClient.newDefaultKeyValueStore({
+			path: path.join(os.homedir(), '.hfc-key-store/' + options.uuid) 			//store eCert in the kvs directory
 		}).then(function (store) {
 			client.setStateStore(store);
-			return getSubmitter(client, options);							//do most of the work here
+			return getSubmitter(client, options);										//do most of the work here
 		}).then(function (submitter) {
 
-			chain.addOrderer(new Orderer(options.orderer_url, {
+			channel.addOrderer(new Orderer(options.orderer_url, {
 				pem: options.orderer_tls_opts.pem,
-				'ssl-target-name-override': options.orderer_tls_opts.common_name			//can be null if cert matches hostname
+				'ssl-target-name-override': options.orderer_tls_opts.common_name		//can be null if cert matches hostname
 			}));
 
 			try {
 				for (var i in options.peer_urls) {
-					chain.addPeer(new Peer(options.peer_urls[i], {
+					channel.addPeer(new Peer(options.peer_urls[i], {
 						pem: options.peer_tls_opts.pem,
 						'ssl-target-name-override': options.peer_tls_opts.common_name	//can be null if cert matches hostname
 					}));
@@ -96,39 +95,27 @@ module.exports = function (logger) {
 			catch (e) {
 				//might error if peer already exists, but we don't care
 			}
-			try {
-				chain.setPrimaryPeer(new Peer(options.peer_urls[0], {
-					pem: options.peer_tls_opts.pem,
-					'ssl-target-name-override': options.peer_tls_opts.common_name		//can be null if cert matches hostname
-				}));
-				logger.debug('added primary peer', options.peer_urls[0]);
-			}
-			catch (e) {
-				//might error b/c bugs, don't care
-			}
 
 			// --- Success --- //
 			logger.debug('[fcw] Successfully got enrollment ' + options.uuid);
-			if (cb) cb(null, { chain: chain, submitter: submitter });
+			if (cb) cb(null, { chain: channel, submitter: submitter });
 			return;
 
-		}).catch(
+		}).catch(function (err) {
 
 			// --- Failure --- //
-			function (err) {
-				logger.error('[fcw] Failed to get enrollment ' + options.uuid, err.stack ? err.stack : err);
-				var formatted = common.format_error_msg(err);
+			logger.error('[fcw] Failed to get enrollment ' + options.uuid, err.stack ? err.stack : err);
+			var formatted = common.format_error_msg(err);
 
-				if (cb) cb(formatted);
-				return;
-			}
-			);
+			if (cb) cb(formatted);
+			return;
+		});
 	};
 
 	// Get Submitter - ripped this function off from fabric-client
 	function getSubmitter(client, options) {
 		var member;
-		return client.getUserContext(options.enroll_id).then((user) => {
+		return client.getUserContext(options.enroll_id, true).then((user) => {
 			if (user && user.isEnrolled()) {
 				logger.info('[fcw] Successfully loaded member from persistence');
 				return user;
@@ -139,30 +126,32 @@ module.exports = function (logger) {
 					trustedRoots: [options.ca_tls_opts.pem],
 					verify: false
 				};
-				var ca_client = new CaService(options.ca_url, tlsOptions);
-				logger.debug('id', options.enroll_id, 'secret', options.enroll_secret);
-				logger.debug('msp_id', options.msp_id);
+				var ca_client = new CaService(options.ca_url, tlsOptions, options.ca_name);		//ca_name is important for the bluemix service
+				member = new User(options.enroll_id);
+
+				logger.debug('enroll id: "' + options.enroll_id + '", secret: "' + options.enroll_secret + '"');
+				logger.debug('msp_id: ', options.msp_id, 'ca_name:', options.ca_name);
+
 				return ca_client.enroll({
 					enrollmentID: options.enroll_id,
 					enrollmentSecret: options.enroll_secret
 
-					// Store Certs
 				}).then((enrollment) => {
-					logger.info('[fcw] Successfully enrolled user \'' + options.enroll_id + '\'');
-					member = new User(options.enroll_id, client);
 
+					// Store Certs
+					logger.info('[fcw] Successfully enrolled user \'' + options.enroll_id + '\'');
 					return member.setEnrollment(enrollment.key, enrollment.certificate, options.msp_id);
+				}).then(() => {
 
 					// Save Submitter Enrollment
-				}).then(() => {
 					return client.setUserContext(member);
+				}).then(() => {
 
 					// Return Submitter Enrollment
-				}).then(() => {
 					return member;
+				}).catch((err) => {
 
 					// Send Errors to Callback
-				}).catch((err) => {
 					logger.error('[fcw] Failed to enroll and persist user. Error: ' + err.stack ? err.stack : err);
 					throw new Error('Failed to obtain an enrolled user');
 				});
