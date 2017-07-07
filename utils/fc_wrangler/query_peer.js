@@ -19,10 +19,10 @@ module.exports = function (logger) {
 	*/
 	query_peer.query_block = function (obj, options, cb) {
 		logger.debug('[fcw] Querying Block: ' + options.block_id);
-		var chain = obj.chain;
+		var channel = obj.channel;
 
 		// send proposal to peer
-		chain.queryBlock(Number(options.block_id)).then(
+		channel.queryBlock(Number(options.block_id)).then(
 			function (block_resp) {
 				if (cb) return cb(null, format_block(block_resp));
 			}
@@ -45,10 +45,10 @@ module.exports = function (logger) {
 	*/
 	query_peer.query_channel = function (obj, options, cb) {
 		logger.debug('[fcw] Querying Channel Stats:');
-		var chain = obj.chain;
+		var channel = obj.channel;
 
 		// send proposal to peer
-		chain.queryInfo().then(
+		channel.queryInfo().then(
 			function (chain_resp) {
 				chain_resp.currentBlockHash = buffer2hexstr(chain_resp.currentBlockHash.buffer);
 				chain_resp.previousBlockHash = buffer2hexstr(chain_resp.previousBlockHash.buffer);
@@ -74,10 +74,10 @@ module.exports = function (logger) {
 	query_peer.query_channel_members = function (obj, options, cb) {
 		console.log('');
 		logger.debug('[fcw] Querying Channel Members:');
-		var chain = obj.chain;
+		var channel = obj.channel;
 
-		chain.initialize().then(() => {
-			let orgs = chain.getOrganizationUnits();
+		channel.initialize().then(() => {
+			let orgs = channel.getOrganizationUnits();
 			if (cb) return cb(null, orgs);
 		});
 	};
@@ -86,7 +86,7 @@ module.exports = function (logger) {
 	// Get List of Channels on Peer
 	//-------------------------------------------------------------------
 	/*
-		'chain' shoudn't be the object we interface with to get the list of
+		'channel' shoudn't be the object we interface with to get the list of
 		channels... but that's the way the SDK operates now
 
 		options: {
@@ -100,10 +100,10 @@ module.exports = function (logger) {
 	query_peer.query_list_channels = function (obj, options, cb) {
 		console.log('');
 		logger.debug('List Channels:', options);
-		var chain = obj.chain;
+		var channel = obj.channel;
 
 		// send proposal to peer
-		chain.queryChannels(new Peer(options.peer_urls[0], {
+		channel.queryChannels(new Peer(options.peer_urls[0], {
 			pem: options.peer_tls_opts.pem,
 			'ssl-target-name-override': options.peer_tls_opts.common_name		//can be null if cert matches hostname
 		})).then(
@@ -228,11 +228,11 @@ module.exports = function (logger) {
 	*/
 	query_peer.query_installed_cc = function (obj, options, cb) {
 		logger.debug('[fcw] Querying Installed Chaincodes\n');
-		var chain = obj.chain;
+		var channel = obj.channel;
 
 
 		// send proposal to peer
-		chain.queryInstalledChaincodes(new Peer(options.peer_urls[0], {
+		channel.queryInstalledChaincodes(new Peer(options.peer_urls[0], {
 			pem: options.peer_tls_opts.pem,
 			'ssl-target-name-override': options.peer_tls_opts.common_name		//can be null if cert matches hostname
 		})).then(
@@ -259,10 +259,10 @@ module.exports = function (logger) {
 	*/
 	query_peer.query_instantiated_cc = function (obj, options, cb) {
 		logger.debug('[fcw] Querying Instantiated Chaincodes:\n');
-		var chain = obj.chain;
+		var channel = obj.channel;
 
 		// send proposal to peer
-		chain.queryInstantiatedChaincodes().then(
+		channel.queryInstantiatedChaincodes().then(
 			function (resp) {
 				if (cb) return cb(null, resp);
 			}

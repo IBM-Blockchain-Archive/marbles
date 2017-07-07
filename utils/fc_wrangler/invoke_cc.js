@@ -34,7 +34,7 @@ module.exports = function (g_options, logger) {
 	invoke_cc.invoke_chaincode = function (obj, options, cb) {
 		logger.debug('[fcw] Invoking Chaincode: ' + options.cc_function + '()');
 		var eventhub;
-		var chain = obj.chain;
+		var channel = obj.channel;
 		var nonce = utils.getNonce();
 		var cbCalled = false;
 
@@ -45,7 +45,7 @@ module.exports = function (g_options, logger) {
 			chaincodeVersion: options.chaincode_version,
 			fcn: options.cc_function,
 			args: options.cc_args,
-			txId: chain.buildTransactionID(nonce, obj.submitter),
+			txId: channel.buildTransactionID(nonce, obj.submitter),
 			nonce: nonce,
 		};
 		logger.debug('[fcw] Sending invoke req', request);
@@ -64,11 +64,11 @@ module.exports = function (g_options, logger) {
 		}
 
 		// Send Proposal
-		chain.sendTransactionProposal(request).then(function (results) {
+		channel.sendTransactionProposal(request).then(function (results) {
 
 			// Check Response
 			var request = common.check_proposal_res(results, options.endorsed_hook);
-			return chain.sendTransaction(request);
+			return channel.sendTransaction(request);
 		}).then(function (response) {
 
 			// All good

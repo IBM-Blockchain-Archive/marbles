@@ -22,6 +22,7 @@ module.exports = function (logger) {
 			channel_id: 'channel name',
 			uuid: 'unique name for this enollment',
 			ca_url: 'http://urlhere:port',
+			ca_name: 'name of ca tou use, not used if ca's not in a hierarchy
 			orderer_url: 'grpc://urlhere:port',
 			enroll_id: 'enrollId',
 			enroll_secret: 'enrollSecret',
@@ -42,23 +43,10 @@ module.exports = function (logger) {
 	*/
 
 	enrollment.enroll = function (options, cb) {
-		var channel = {};
-		var client = null;
-		try {
-			client = new FabricClient();
-			channel = client.newChannel(options.channel_id);
-		}
-		catch (e) {
-			//it might error about 1 chain per network, but that's not a problem just continue
-		}
+		var client = new FabricClient();
+		var channel = client.newChannel(options.channel_id);
 
-		if (!options.uuid) {
-			logger.error('cannot enroll with undefined uuid');
-			if (cb) cb({ error: 'cannot enroll with undefined uuid' });
-			return;
-		}
-
-		var debug = {												// this is just for console printing, no PEM here
+		var debug = {														// this is just for console printing, no PEM here
 			peer_urls: options.peer_urls,
 			channel_id: options.channel_id,
 			uuid: options.uuid,
@@ -98,7 +86,7 @@ module.exports = function (logger) {
 
 			// --- Success --- //
 			logger.debug('[fcw] Successfully got enrollment ' + options.uuid);
-			if (cb) cb(null, { chain: channel, submitter: submitter });
+			if (cb) cb(null, { channel: channel, submitter: submitter });
 			return;
 
 		}).catch(function (err) {
@@ -117,13 +105,13 @@ module.exports = function (logger) {
 		var member;
 		return client.getUserContext(options.enroll_id, true).then((user) => {
 			if (user && user.isEnrolled()) {
-				logger.info('[fcw] Successfully loaded member from persistence');
+				logger.info('[fcw] Successfully loaded enrollment from persistence');			//load from KVS if we can
 				return user;
 			} else {
 
-				// Need to enroll it with CA server
+				// Need to enroll it with the CA
 				var tlsOptions = {
-					trustedRoots: [options.ca_tls_opts.pem],
+					trustedRoots: [options.ca_tls_opts.pem],									//pem cert required
 					verify: false
 				};
 				var ca_client = new CaService(options.ca_url, tlsOptions, options.ca_name);		//ca_name is important for the bluemix service
@@ -132,6 +120,7 @@ module.exports = function (logger) {
 				logger.debug('enroll id: "' + options.enroll_id + '", secret: "' + options.enroll_secret + '"');
 				logger.debug('msp_id: ', options.msp_id, 'ca_name:', options.ca_name);
 
+				// --- Lets Do It --- //
 				return ca_client.enroll({
 					enrollmentID: options.enroll_id,
 					enrollmentSecret: options.enroll_secret
@@ -151,7 +140,7 @@ module.exports = function (logger) {
 					return member;
 				}).catch((err) => {
 
-					// Send Errors to Callback
+					// Send Errors
 					logger.error('[fcw] Failed to enroll and persist user. Error: ' + err.stack ? err.stack : err);
 					throw new Error('Failed to obtain an enrolled user');
 				});
