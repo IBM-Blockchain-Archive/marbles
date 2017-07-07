@@ -1,13 +1,12 @@
 //-------------------------------------------------------------------
-// Query Chaincode - read chaincode state
+// Query Chaincode
 //-------------------------------------------------------------------
 
 module.exports = function (logger) {
-	var utils = require('fabric-client/lib/utils.js');
 	var query_cc = {};
 
 	//-------------------------------------------------------------------
-	// Get Marble Index List
+	// Query Chaincode - aka read the blockchain ledger
 	//-------------------------------------------------------------------
 	/*
 		options: {

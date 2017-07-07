@@ -1,25 +1,22 @@
 //-------------------------------------------------------------------
-// Invoke Chaincode - edit the ledger
+// Invoke Chaincode
 //-------------------------------------------------------------------
 var path = require('path');
 
 module.exports = function (g_options, logger) {
 	var common = require(path.join(__dirname, './common.js'))(logger);
 	var EventHub = require('fabric-client/lib/EventHub.js');
-	var utils = require('fabric-client/lib/utils.js');
 	var invoke_cc = {};
 
 	if (!g_options) g_options = {};
 	if (!g_options.block_delay) g_options.block_delay = 10000;
 
 	//-------------------------------------------------------------------
-	// Create User - options are {username: bob}
+	// Invoke Chaincode - aka write to the ledger
 	//-------------------------------------------------------------------
 	/*
 		options: {
-					channel_id: "channel id",
 					chaincode_id: "chaincode id",
-					chaincode_version: "v0",
 					event_url: "peers event url",			<optional>
 					endorsed_hook: function(error, res){},	<optional>
 					ordered_hook: function(error, res){},	<optional>
@@ -35,28 +32,26 @@ module.exports = function (g_options, logger) {
 		logger.debug('[fcw] Invoking Chaincode: ' + options.cc_function + '()');
 		var eventhub;
 		var channel = obj.channel;
-		var nonce = utils.getNonce();
+		var client = obj.client;
 		var cbCalled = false;
 
 		// send proposal to endorser
 		var request = {
-			chainId: options.channel_id,
 			chaincodeId: options.chaincode_id,
-			chaincodeVersion: options.chaincode_version,
 			fcn: options.cc_function,
 			args: options.cc_args,
-			txId: channel.buildTransactionID(nonce, obj.submitter),
-			nonce: nonce,
+			txId: client.newTransactionID(),
 		};
 		logger.debug('[fcw] Sending invoke req', request);
 
 		// Setup EventHub
 		if (options.event_url) {
 			logger.debug('[fcw] listening to event url', options.event_url);
-			eventhub = new EventHub();
+			eventhub = client.newEventHub();
 			eventhub.setPeerAddr(options.event_url, {
 				pem: options.peer_tls_opts.pem,
-				'ssl-target-name-override': options.peer_tls_opts.common_name		//can be null if cert matches hostname
+				'ssl-target-name-override': options.peer_tls_opts.common_name,		//can be null if cert matches hostname
+				'grpc.http2.keepalive_time': 15
 			});
 			eventhub.connect();
 		} else {

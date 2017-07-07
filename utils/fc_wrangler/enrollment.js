@@ -86,7 +86,7 @@ module.exports = function (logger) {
 
 			// --- Success --- //
 			logger.debug('[fcw] Successfully got enrollment ' + options.uuid);
-			if (cb) cb(null, { channel: channel, submitter: submitter });
+			if (cb) cb(null, { client: client, channel: channel, submitter: submitter });
 			return;
 
 		}).catch(function (err) {
