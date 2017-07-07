@@ -11,9 +11,7 @@ module.exports = function (logger) {
 	//-------------------------------------------------------------------
 	/*
 		options: {
-					channel_id: "channel id",
 					chaincode_id: "chaincode id",
-					chaincode_version: "v0",
 					cc_function: "function_name"
 					cc_args: ["argument 1"]
 		}
@@ -21,27 +19,15 @@ module.exports = function (logger) {
 	query_cc.query_chaincode = function (obj, options, cb) {
 		logger.debug('[fcw] Querying Chaincode: ' + options.cc_function + '()');
 		var channel = obj.channel;
-		var nonce = utils.getNonce();
 
 		// send proposal to peer
 		var request = {
-			chainId: options.channel_id,
 			chaincodeId: options.chaincode_id,
-			chaincodeVersion: options.chaincode_version,
 			fcn: options.cc_function,
 			args: options.cc_args,
-			txId: channel.buildTransactionID(nonce, obj.submitter),
-			nonce: nonce,
+			txId: null,												//apparently this is null for queries now
 		};
-		var debug = {												// this is just for console printing, no NONCE here
-			chainId: options.channel_id,
-			chaincodeId: options.chaincode_id,
-			chaincodeVersion: options.chaincode_version,
-			fcn: options.cc_function,
-			args: options.cc_args,
-			txId: channel.buildTransactionID(nonce, obj.submitter),
-		};
-		logger.debug('[fcw] Sending query req', debug);
+		logger.debug('[fcw] Sending query req', request);
 
 		channel.queryByChaincode(request
 			//nothing
