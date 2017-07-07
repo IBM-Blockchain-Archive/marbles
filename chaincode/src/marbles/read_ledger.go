@@ -183,7 +183,7 @@ func getHistory(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 		}
 
 		var tx AuditHistory
-		tx.TxId = historyData.TxID                             //copy transaction id over
+		tx.TxId = historyData.TxId                     //copy transaction id over
 		json.Unmarshal(historyData.Value, &marble)     //un stringify it aka JSON.parse()
 		if historyData.Value == nil {                  //marble has been deleted
 			var emptyMarble Marble
