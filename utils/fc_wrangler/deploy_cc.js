@@ -5,9 +5,7 @@ var path = require('path');
 
 module.exports = function (logger) {
 	var common = require(path.join(__dirname, './common.js'))(logger);
-	var Peer = require('fabric-client/lib/Peer.js');
-	//var EventHub = require('fabric-client/lib/EventHub.js');
-	var utils = require('fabric-client/lib/utils.js');
+	//var Peer = require('fabric-client/lib/Peer.js');
 	var deploy_cc = {};
 
 	//-------------------------------------------------------------------
@@ -20,7 +18,6 @@ module.exports = function (logger) {
 					chaincode_id: "chaincode id",
 					chaincode_version: "v0",
 					endorsed_hook: function(error, res){},
-					ordered_hook: function(error, res){},
 					peer_tls_opts: {
 						pem: 'complete tls certificate',					<optional>
 						common_name: 'common name used in pem certificate' 	<optional>
@@ -29,51 +26,37 @@ module.exports = function (logger) {
 	*/
 	deploy_cc.install_chaincode = function (obj, options, cb) {
 		logger.debug('[fcw] Installing Chaincode');
-		var channel = obj.channel;
-
-		try {
-			for (var i in options.peer_urls) {
-				channel.addPeer(new Peer(options.peer_urls[i], {
-					pem: options.peer_tls_opts.pem,
-					'ssl-target-name-override': options.peer_tls_opts.common_name	//can be null if cert matches hostname
-				}));
-			}
-		}
-		catch (e) {
-			//might error if peer already exists, but we don't care
-		}
+		var client = obj.client;
 
 		// fix GOPATH - does not need to be real!
 		process.env.GOPATH = path.join(__dirname, '../../chaincode');
-		var nonce = utils.getNonce();
 
 		// send proposal to endorser
 		var request = {
-			chaincodePath: options.path_2_chaincode,		//rel path from /server/libs/src/ to chaincode folder ex: './marbles_chaincode'
+			targets: [client.newPeer(options.peer_urls[0], {
+				pem: options.peer_tls_opts.pem,
+				'ssl-target-name-override': options.peer_tls_opts.common_name	//can be null if cert matches hostname
+			})],
+			chaincodePath: options.path_2_chaincode,							//rel path from /server/libs/src/ to chaincode folder ex: './marbles_chaincode'
 			chaincodeId: options.chaincode_id,
 			chaincodeVersion: options.chaincode_version,
-			txId: channel.buildTransactionID(nonce, obj.submitter),
-			nonce: nonce
 		};
 		logger.debug('[fcw] Sending install req', request);
 
-		channel.sendInstallProposal(request
-			//nothing
-		).then(
-			function (results) {
-				//check response
-				common.check_proposal_res(results, options.endorsed_hook);
-				if (cb) return cb(null, results);
-			}
-			).catch(
-			function (err) {
-				logger.error('[fcw] Error in install catch block', typeof err, err);
-				var formatted = common.format_error_msg(err);
+		client.installChaincode(request).then(function (results) {
 
-				if (cb) return cb(formatted, null);
-				else return;
-			}
-			);
+			// --- Check Install Response --- //
+			common.check_proposal_res(results, options.endorsed_hook);
+			if (cb) return cb(null, results);
+
+		}).catch(function (err) {
+
+			// --- Errors --- //
+			logger.error('[fcw] Error in install catch block', typeof err, err);
+			var formatted = common.format_error_msg(err);
+			if (cb) return cb(formatted, null);
+			else return;
+		});
 	};
 
 
@@ -98,6 +81,9 @@ module.exports = function (logger) {
 		}
 	*/
 	deploy_cc.instantiate_chaincode = function (obj, options, cb) {
+		logger.error('instantiate coming soon');
+		if(cb) cb(null);
+		/*
 		logger.debug('[fcw] Instantiating Chaincode', options);
 		var channel = obj.channel;
 		//var eventhub;
@@ -158,25 +144,6 @@ module.exports = function (logger) {
 						// Call optional order hook
 						if (options.ordered_hook) options.ordered_hook(null, request.txId.toString());
 
-						/*var watchdog = setTimeout(() => {
-							var msg = '[fcw] Failed to receive block event within the timeout period';
-							logger.error(msg);
-							throw msg;
-						}, options.deploy_wait || 60000);
-
-						// Wait for block event
-						eventhub.registerTxEvent(request.txId.toString(), (tx, invalid) => {
-							logger.debug('---------------------------------------------------------------------------\n');
-							logger.info('[fcw] The chaincode instantiate tx block committed successfully\n\n');
-							clearTimeout(watchdog);
-							//eventhub.unregisterTxEvent(request.txId.toString());		//dsh this seems to end the application...??!
-
-							console.log('! event hub says',  invalid);
-
-							if (cb) return cb(null);
-							else return;
-						});*/
-
 						setTimeout(function () {
 							if (cb) return cb(null);
 							else return;
@@ -198,7 +165,7 @@ module.exports = function (logger) {
 					else return;
 				}
 				);
-		});
+		});*/
 	};
 
 	return deploy_cc;

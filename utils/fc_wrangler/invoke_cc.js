@@ -5,7 +5,6 @@ var path = require('path');
 
 module.exports = function (g_options, logger) {
 	var common = require(path.join(__dirname, './common.js'))(logger);
-	var EventHub = require('fabric-client/lib/EventHub.js');
 	var invoke_cc = {};
 
 	if (!g_options) g_options = {};
@@ -88,7 +87,7 @@ module.exports = function (g_options, logger) {
 						}, g_options.block_delay + 2000);
 
 						// Wait for tx committed event
-						eventhub.registerTxEvent(request.txId.toString(), (tx, code) => {
+						eventhub.registerTxEvent(request.txId.getTransactionID(), (tx, code) => {
 							logger.info('[fcw] The chaincode transaction has been committed, success?:', code);
 							clearTimeout(watchdog);
 
