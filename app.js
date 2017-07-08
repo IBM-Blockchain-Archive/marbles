@@ -117,33 +117,43 @@ process.on('uncaughtException', function (err) {
 // ------------------------------------------------------------------------------------------------------------------------------
 // Life Starts Here!
 // ------------------------------------------------------------------------------------------------------------------------------
-process.env.app_state = 'starting';
-process.env.app_first_setup = 'yes';
+process.env.app_state = 'starting';					//init
+process.env.app_first_setup = 'yes';				//init
 helper.checkConfig();
 setupWebSocket();
 
-//var hash = helper.getMarbleStartUpHash();
-//if (hash === helper.getHash()) {
 console.log('\n\n');
 logger.info('Using settings in ' + process.env.creds_filename + ' to see if we have launch marbles before...');
-//logger.debug('Detected that we have launched successfully before');
-//logger.debug('Welcome back - Initiating start up\n\n');
-process.env.app_state = 'start_waiting';
-//process.env.app_first_setup = 'no';
+
+// --- Here We Go --- //
 enroll_admin(1, function (e) {
-	if (e == null) {
+	if (e != null) {
+		logger.warn('Error enrolling admin');
+		broadcast_state('failed_enroll');
+		startup_unsuccessful();
+	} else {
+
+		// --- Setup Marbles Library --- //
 		setup_marbles_lib(function () {
 
-			// --- Check If We have Started Before --- //
-			logger.info('Looking for marble owners in settings file');
-			marbles_lib.read_everything(null, function (err, resp) {
-				if (err == null) {
-					if (resp.parsed && resp.parsed.owners) {
-						if(find_missing_owners(resp.parsed)){
-							logger.info('We need to make marble owners');
-						} else {
-							logger.info('Everything is in place');
-						}
+			// --- Check If We have Started Marbles Before --- //
+			logger.info('Checking ledger for marble owners listed in the settings file');
+			marbles_lib.read_everything(null, function (err, resp) {				//read the ledger for marble owners
+				if (err != null) {
+					logger.warn('Error reading ledger');
+					broadcast_state('no_chaincode');
+					startup_unsuccessful();
+				} else {
+					if (find_missing_owners(resp)) {							//check if each user in the settings file has been created in the ledger
+						logger.info('We need to make marble owners');			//there are marble owners that do not exist!
+						broadcast_state('found_chaincode');
+						startup_unsuccessful();
+					} else {
+						broadcast_state('registered_owners');					//everything is good
+						process.env.app_first_setup = 'no';
+						logger.info('Everything is in place');
+						logger.debug('Detected that we have launched successfully before');
+						logger.debug('Welcome back - Initiating start up\n\n');
 					}
 				}
 			});
@@ -151,9 +161,20 @@ enroll_admin(1, function (e) {
 	}
 });
 
+// Wait for the user to help correct the settings file so we can startup!
+function startup_unsuccessful() {
+	process.env.app_first_setup = 'yes';
+	console.log('');
+	logger.debug('Detected that we have NOT launched successfully yet');
+	logger.debug('Open your browser to http://' + host + ':' + port + ' and login as "admin" to initiate startup\n\n');
+	// we wait here for the user to go the browser, then setup_marbles_lib() will be called from WS msg
+}
+
 // Detect if there are marble usernames in the settings doc that are not in the ledger
-function find_missing_owners(ledger) {
+function find_missing_owners(resp) {
+	let ledger = (resp) ? resp.parsed : [];
 	let user_base = helper.getMarbleUsernames();
+
 	for (let x in user_base) {
 		let found = false;
 		logger.debug('looking for', user_base[x]);
@@ -163,28 +184,13 @@ function find_missing_owners(ledger) {
 				break;
 			}
 		}
-		if(found === false) {
+		if (found === false) {
 			logger.debug('did not find marble username: ', user_base[x]);
 			return true;
 		}
 	}
 	return false;
 }
-//}
-/*else {
-	try {
-		rmdir(makeKVSpath());							//delete old kvs folder
-	} catch (e) {
-		logger.error('could not delete old kvs', e);
-	}
-
-	process.env.app_state = 'start_waiting';
-	process.env.app_first_setup = 'yes';
-	console.log('');
-	logger.debug('Detected that we have NOT launched successfully yet');
-	logger.debug('Open your browser to http://' + host + ':' + port + ' and login as "admin" to initiate startup\n\n');
-	// we wait here for the user to go the browser, then setup_marbles_lib() will be called from WS msg
-}*/
 // ------------------------------------------------------------------------------------------------------------------------------
 
 //setup marbles library and check if cc is instantiated
@@ -227,7 +233,7 @@ function setup_marbles_lib(cb) {
 	});
 }
 
-//enroll an admin with the CA for this peer/channel
+// Enroll an admin with the CA for this peer/channel
 function enroll_admin(attempt, cb) {
 	fcw.enroll(helper.makeEnrollmentOptions(0), function (errCode, obj) {
 		if (errCode != null) {
@@ -239,7 +245,7 @@ function enroll_admin(attempt, cb) {
 			} else {
 				try {
 					logger.warn('removing older kvs and trying to enroll again');
-					rmdir(makeKVSpath());				//delete old kvs folder
+					rmdir(makeKVSpath());							//delete old kvs folder
 					logger.warn('removed older kvs');
 					enroll_admin(++attempt, cb);
 				} catch (e) {
@@ -253,14 +259,14 @@ function enroll_admin(attempt, cb) {
 	});
 }
 
-//random integer
+// Random integer
 function getRandomInt(min, max) {
 	min = Math.ceil(min);
 	max = Math.floor(max);
 	return Math.floor(Math.random() * (max - min)) + min;
 }
 
-//random string of x length
+// Random string of x length
 function randStr(length) {
 	var text = '';
 	var possible = 'abcdefghijkmnpqrstuvwxyz0123456789';
@@ -268,14 +274,14 @@ function randStr(length) {
 	return text;
 }
 
-//real simple hash
+// Real simple hash
 function simple_hash(a_string) {
 	var hash = 0;
 	for (var i in a_string) hash ^= a_string.charCodeAt(i);
 	return hash;
 }
 
-// sanitise marble owner names
+// Sanitise marble owner names
 function saferNames(usernames) {
 	var ret = [];
 	for (var i in usernames) {
@@ -285,7 +291,7 @@ function saferNames(usernames) {
 	return ret;
 }
 
-// create marbles and marble owners, owners first
+// Create marbles and marble owners, owners first
 function create_assets(build_marbles_users) {
 	build_marbles_users = saferNames(build_marbles_users);
 	logger.info('Creating marble owners and marbles');
@@ -332,7 +338,7 @@ function create_assets(build_marbles_users) {
 	}
 }
 
-//create the marble owner
+// Create the marble owner
 function create_owners(attempt, username, cb) {
 	var options = {
 		peer_urls: [helper.getPeersUrl(0)],
@@ -353,7 +359,7 @@ function create_owners(attempt, username, cb) {
 	});
 }
 
-//create 1 marble
+// Create 1 marble
 function create_marbles(owner_id, username, cb) {
 	var randOptions = build_marble_options(owner_id, username, process.env.marble_company);
 	console.log('');
@@ -368,7 +374,7 @@ function create_marbles(owner_id, username, cb) {
 	});
 }
 
-//create random marble arguments (it is not important for it to be random, just more fun)
+// Create random marble arguments (it is not important for it to be random, just more fun)
 function build_marble_options(id, username, company) {
 	var colors = ['white', 'green', 'blue', 'purple', 'red', 'pink', 'orange', 'black', 'yellow'];
 	var sizes = ['35', '16'];
@@ -382,7 +388,7 @@ function build_marble_options(id, username, company) {
 	};
 }
 
-//we are done, inform the clients
+// We are done, inform the clients
 function all_done() {
 	console.log('\n------------------------------------------ All Done ------------------------------------------\n');
 	broadcast_state('registered_owners');
@@ -391,7 +397,7 @@ function all_done() {
 	ws_server.check_for_updates(null);									//call the periodic task to get the state of everything
 }
 
-//message to client to communicate where we are in the start up
+// Message to client to communicate where we are in the start up
 function build_state_msg() {
 	return {
 		msg: 'app_state',
@@ -400,13 +406,15 @@ function build_state_msg() {
 	};
 }
 
-//send to all connected clients
+// Send to all connected clients
 function broadcast_state(new_state) {
-	process.env.app_state = new_state;
-	wss.broadcast(build_state_msg());											//tell client our app state
+	try {
+		process.env.app_state = new_state;
+		wss.broadcast(build_state_msg());											//tell client our app state
+	} catch (e) { }
 }
 
-// remove any kvs from last run
+// Remove any kvs from last run
 function rmdir(dir_path) {
 	if (fs.existsSync(dir_path)) {
 		fs.readdirSync(dir_path).forEach(function (entry) {
@@ -422,7 +430,7 @@ function rmdir(dir_path) {
 	}
 }
 
-// make the path to the kvs we use
+// Make the path to the kvs we use
 function makeKVSpath() {
 	var temp = helper.makeEnrollmentOptions(0);
 	return path.join(os.homedir(), '.hfc-key-store/', temp.uuid);
