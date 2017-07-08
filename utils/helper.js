@@ -1,6 +1,5 @@
 var fs = require('fs');
 var path = require('path');
-var crypto = require('crypto');
 
 module.exports = function (config_filename, logger) {
 	var helper = {};
@@ -18,14 +17,6 @@ module.exports = function (config_filename, logger) {
 
 	logger.info('Loaded config file', config_path);
 	logger.info('Loaded creds file', creds_path);
-
-	// hash of credential json file
-	helper.getHash = function () {
-		var creds_file = JSON.parse(fs.readFileSync(creds_path, 'utf8'));
-		var shasum = crypto.createHash('sha1');
-		shasum.update(JSON.stringify(creds_file));
-		return shasum.digest('hex').toString();
-	};
 
 	// get network id
 	helper.getNetworkId = function () {
@@ -267,11 +258,6 @@ module.exports = function (config_filename, logger) {
 	};
 
 	// get the status of marbles previous startup
-	helper.getMarbleStartUpHash = function () {
-		return getMarblesField('last_startup_hash');
-	};
-
-	// get the status of marbles previous startup
 	helper.getEventsSetting = function () {
 		if (helper.config['use_events']) {
 			return helper.config['use_events'];
@@ -424,14 +410,15 @@ module.exports = function (config_filename, logger) {
 	// check if marbles UI and marbles chaincode work together
 	helper.errorWithVersions = function (v) {
 		var version = packagejson.version;
-		if (!v || !v.parsed) v = { parsed: '3.x.x' };		//default
+		if (!v || !v.parsed) v = { parsed: '0.x.x' };		//default
 		if (v.parsed[0] !== version[0]) {					//only check the major version
 			console.log('\n\n');
 			logger.warn('---------------------------------------------------------------');
 			logger.warn('----------------------------- Ah! -----------------------------');
 			logger.warn('---------------------------------------------------------------');
 			logger.error('Looks like you are using an old version of marbles chaincode: v' + v.parsed);
-			logger.warn('This UI is expecting chaincode version: v' + version[0] + '.x.x');
+			logger.warn('This code is expecting chaincode version: v' + version[0] + '.x.x');
+			logger.warn('This won\'t work =(');
 			logger.warn('Install and instantiate v' + version[0] + '.x.x' + ' chaincode on channel ' + helper.getChannelId());
 			logger.warn('----------------------------------------------------------------------');
 			console.log('\n\n');

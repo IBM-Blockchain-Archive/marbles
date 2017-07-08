@@ -122,21 +122,56 @@ process.env.app_first_setup = 'yes';
 helper.checkConfig();
 setupWebSocket();
 
-var hash = helper.getMarbleStartUpHash();
-if (hash === helper.getHash()) {
-	console.log('');
-	console.log('');
-	logger.debug('Detected that we have launched successfully before');
-	logger.debug('Welcome back - Initiating start up\n\n');
-	process.env.app_state = 'start_waiting';
-	process.env.app_first_setup = 'no';
-	enroll_admin(1, function (e) {
-		if (e == null) {
-			setup_marbles_lib();
+//var hash = helper.getMarbleStartUpHash();
+//if (hash === helper.getHash()) {
+console.log('\n\n');
+logger.info('Using settings in ' + process.env.creds_filename + ' to see if we have launch marbles before...');
+//logger.debug('Detected that we have launched successfully before');
+//logger.debug('Welcome back - Initiating start up\n\n');
+process.env.app_state = 'start_waiting';
+//process.env.app_first_setup = 'no';
+enroll_admin(1, function (e) {
+	if (e == null) {
+		setup_marbles_lib(function () {
+
+			// --- Check If We have Started Before --- //
+			logger.info('Looking for marble owners in settings file');
+			marbles_lib.read_everything(null, function (err, resp) {
+				if (err == null) {
+					if (resp.parsed && resp.parsed.owners) {
+						if(find_missing_owners(resp.parsed)){
+							logger.info('We need to make marble owners');
+						} else {
+							logger.info('Everything is in place');
+						}
+					}
+				}
+			});
+		});
+	}
+});
+
+// Detect if there are marble usernames in the settings doc that are not in the ledger
+function find_missing_owners(ledger) {
+	let user_base = helper.getMarbleUsernames();
+	for (let x in user_base) {
+		let found = false;
+		logger.debug('looking for', user_base[x]);
+		for (let i in ledger.owners) {
+			if (user_base[x] === ledger.owners[i].username) {
+				found = true;
+				break;
+			}
 		}
-	});
+		if(found === false) {
+			logger.debug('did not find marble username: ', user_base[x]);
+			return true;
+		}
+	}
+	return false;
 }
-else {
+//}
+/*else {
 	try {
 		rmdir(makeKVSpath());							//delete old kvs folder
 	} catch (e) {
@@ -149,31 +184,29 @@ else {
 	logger.debug('Detected that we have NOT launched successfully yet');
 	logger.debug('Open your browser to http://' + host + ':' + port + ' and login as "admin" to initiate startup\n\n');
 	// we wait here for the user to go the browser, then setup_marbles_lib() will be called from WS msg
-}
+}*/
 // ------------------------------------------------------------------------------------------------------------------------------
 
-//setup marbles library and check if cc is deployed
-function setup_marbles_lib() {
-	logger.debug('Setup Marbles Lib...');
-
+//setup marbles library and check if cc is instantiated
+function setup_marbles_lib(cb) {
 	var opts = helper.makeMarblesLibOptions();
 	marbles_lib = require('./utils/marbles_cc_lib.js')(enrollObj, opts, fcw, logger);
 	ws_server.setup(wss.broadcast);
 
-	logger.debug('Checking if chaincode is already deployed or not');
+	logger.debug('Checking if chaincode is already instantiated or not');
 	var options = {
 		peer_urls: [helper.getPeersUrl(0)],
 	};
-	marbles_lib.check_if_already_deployed(options, function (not_deployed, enrollUser) {
-		if (not_deployed) {										//if this is truthy we have not yet deployed.... error
+	marbles_lib.check_if_already_instantiated(options, function (not_instantiated, enrollUser) {
+		if (not_instantiated) {										//if this is truthy we have not yet instantiated.... error
 			console.log('');
-			logger.debug('Chaincode ID was not detected: "' + helper.getChaincodeId() + '", all stop');
-			logger.debug('Open your browser to http://' + host + ':' + port + ' and login to redo/init startup');
+			logger.debug('Chaincode was not detected: "' + helper.getChaincodeId() + '", all stop');
+			logger.debug('Open your browser to http://' + host + ':' + port + ' and login to tweak settings for startup');
 			process.env.app_first_setup = 'yes';				//overwrite state, bad startup
 			broadcast_state('no_chaincode');
 		}
-		else {													//else we already deployed
-			console.log('\n----------------------------- Chaincode Found on Channel ' + helper.getChannelId() + ' -----------------------------\n');
+		else {													//else we already instantiated
+			console.log('\n----------------------------- Chaincode found on channel "' + helper.getChannelId() + '" -----------------------------\n');
 
 			// --- Check Chaincode Compatibility  --- //
 			marbles_lib.check_version(options, function (err, resp) {
@@ -181,9 +214,13 @@ function setup_marbles_lib() {
 					broadcast_state('no_chaincode');
 				} else {
 					broadcast_state('found_chaincode');
-					var user_base = null;
-					if (process.env.app_first_setup === 'yes') user_base = helper.getMarbleUsernames();
-					create_assets(user_base); 					//builds marbles, then starts webapp
+					if (cb) {
+						console.log('here');
+						cb();
+					}
+					//var user_base = null;
+					//if (process.env.app_first_setup === 'yes') user_base = helper.getMarbleUsernames();
+					//create_assets(user_base); 					//builds marbles, then starts webapp
 				}
 			});
 		}
@@ -351,8 +388,6 @@ function all_done() {
 	broadcast_state('registered_owners');
 	process.env.app_first_setup = 'no';
 
-	logger.debug('hash is', helper.getHash());
-	helper.write({ hash: helper.getHash() });							//write state file so we know we started before
 	ws_server.check_for_updates(null);									//call the periodic task to get the state of everything
 }
 
@@ -424,7 +459,7 @@ function setupWebSocket() {
 					});
 				}
 
-				//find deployed chaincode
+				//find instantiated chaincode
 				else if (data.configure === 'find_chaincode') {
 					helper.write(data);										//write new config data to file
 					enroll_admin(1, function (e) {							//re-renroll b/c we may be using new peer/order urls

@@ -8,7 +8,7 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 	// Chaincode -------------------------------------------------------------------------------
 
 	//check if chaincode exists
-	marbles_chaincode.check_if_already_deployed = function (options, cb) {
+	marbles_chaincode.check_if_already_instantiated = function (options, cb) {
 		console.log('');
 		logger.info('Checking for chaincode...');
 
