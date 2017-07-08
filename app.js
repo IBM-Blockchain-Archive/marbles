@@ -137,24 +137,12 @@ enroll_admin(1, function (e) {
 		setup_marbles_lib(function () {
 
 			// --- Check If We have Started Marbles Before --- //
-			logger.info('Checking ledger for marble owners listed in the settings file');
-			marbles_lib.read_everything(null, function (err, resp) {				//read the ledger for marble owners
-				if (err != null) {
-					logger.warn('Error reading ledger');
-					broadcast_state('no_chaincode');
+			detect_prev_startup(function(err){
+				if(err) {
 					startup_unsuccessful();
 				} else {
-					if (find_missing_owners(resp)) {							//check if each user in the settings file has been created in the ledger
-						logger.info('We need to make marble owners');			//there are marble owners that do not exist!
-						broadcast_state('found_chaincode');
-						startup_unsuccessful();
-					} else {
-						broadcast_state('registered_owners');					//everything is good
-						process.env.app_first_setup = 'no';
-						logger.info('Everything is in place');
-						logger.debug('Detected that we have launched successfully before');
-						logger.debug('Welcome back - Initiating start up\n\n');
-					}
+					logger.debug('Detected that we have launched successfully before');
+					logger.debug('Welcome back - Initiating start up\n\n');
 				}
 			});
 		});
@@ -168,6 +156,29 @@ function startup_unsuccessful() {
 	logger.debug('Detected that we have NOT launched successfully yet');
 	logger.debug('Open your browser to http://' + host + ':' + port + ' and login as "admin" to initiate startup\n\n');
 	// we wait here for the user to go the browser, then setup_marbles_lib() will be called from WS msg
+}
+
+// Find if marbles has started up successfully before
+function detect_prev_startup(cb) {
+	logger.info('Checking ledger for marble owners listed in the settings file');
+	marbles_lib.read_everything(null, function (err, resp) {				//read the ledger for marble owners
+		if (err != null) {
+			logger.warn('Error reading ledger');
+			broadcast_state('no_chaincode');
+			if(cb) cb(true);
+		} else {
+			if (find_missing_owners(resp)) {							//check if each user in the settings file has been created in the ledger
+				logger.info('We need to make marble owners');			//there are marble owners that do not exist!
+				broadcast_state('found_chaincode');
+				if(cb) cb(true);
+			} else {
+				broadcast_state('registered_owners');					//everything is good
+				process.env.app_first_setup = 'no';
+				logger.info('Everything is in place');
+				if(cb) cb(null);
+			}
+		}
+	});
 }
 
 // Detect if there are marble usernames in the settings doc that are not in the ledger
@@ -204,7 +215,7 @@ function setup_marbles_lib(cb) {
 		peer_urls: [helper.getPeersUrl(0)],
 	};
 	marbles_lib.check_if_already_instantiated(options, function (not_instantiated, enrollUser) {
-		if (not_instantiated) {										//if this is truthy we have not yet instantiated.... error
+		if (not_instantiated) {									//if this is truthy we have not yet instantiated.... error
 			console.log('');
 			logger.debug('Chaincode was not detected: "' + helper.getChaincodeId() + '", all stop');
 			logger.debug('Open your browser to http://' + host + ':' + port + ' and login to tweak settings for startup');
@@ -220,13 +231,7 @@ function setup_marbles_lib(cb) {
 					broadcast_state('no_chaincode');
 				} else {
 					broadcast_state('found_chaincode');
-					if (cb) {
-						console.log('here');
-						cb();
-					}
-					//var user_base = null;
-					//if (process.env.app_first_setup === 'yes') user_base = helper.getMarbleUsernames();
-					//create_assets(user_base); 					//builds marbles, then starts webapp
+					if (cb) cb();
 				}
 			});
 		}
@@ -462,7 +467,13 @@ function setupWebSocket() {
 					helper.write(data);										//write new config data to file
 					enroll_admin(1, function (e) {
 						if (e == null) {
-							setup_marbles_lib();
+							setup_marbles_lib(function () {
+								detect_prev_startup(function(err){
+									if(err) {
+										create_assets(helper.getMarbleUsernames()); 	//builds marbles, then starts webapp
+									}
+								});
+							});
 						}
 					});
 				}
@@ -472,7 +483,13 @@ function setupWebSocket() {
 					helper.write(data);										//write new config data to file
 					enroll_admin(1, function (e) {							//re-renroll b/c we may be using new peer/order urls
 						if (e == null) {
-							setup_marbles_lib();
+							setup_marbles_lib(function () {
+								detect_prev_startup(function(err){
+									if(err) {
+										create_assets(helper.getMarbleUsernames()); 	//builds marbles, then starts webapp
+									}
+								});
+							});
 						}
 					});
 				}
