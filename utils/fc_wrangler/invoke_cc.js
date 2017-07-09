@@ -33,6 +33,7 @@ module.exports = function (g_options, logger) {
 		var channel = obj.channel;
 		var client = obj.client;
 		var cbCalled = false;
+		var startTime = Date.now();
 
 		// send proposal to endorser
 		var request = {
@@ -45,6 +46,7 @@ module.exports = function (g_options, logger) {
 
 		// Setup EventHub
 		if (options.event_url) {
+			console.log('------------------ test');
 			logger.debug('[fcw] listening to event url', options.event_url);
 			eventhub = client.newEventHub();
 			eventhub.setPeerAddr(options.event_url, {
@@ -84,11 +86,12 @@ module.exports = function (g_options, logger) {
 								return cb(null);						//timeout pass it back
 							}
 							else return;
-						}, g_options.block_delay + 2000);
+						}, g_options.block_delay + 3000);
 
 						// Wait for tx committed event
 						eventhub.registerTxEvent(request.txId.getTransactionID(), (tx, code) => {
-							logger.info('[fcw] The chaincode transaction has been committed, success?:', code);
+							var elasped = Date.now() - startTime + 'ms';
+							logger.info('[fcw] The chaincode transaction event has happened! success?:', code, elasped);
 							clearTimeout(watchdog);
 
 							if (code !== 'VALID') {
