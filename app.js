@@ -100,7 +100,11 @@ process.env.NODE_ENV = 'production';
 server.timeout = 240000;																							// Ta-da.
 console.log('------------------------------------------ Server Up - ' + host + ':' + port + ' ------------------------------------------');
 process.on('uncaughtException', function (err) {
-	logger.error('Caught exception: ', err.stack);			//don't ever give up
+	logger.error('Caught exception: ', err.stack);		//demos never give up
+	if(err.stack.indexOf('EADDRINUSE') >= 0){			//except for this error
+		logger.error('You already have something running on port 3001! kill it to run marbles.');
+		process.exit();
+	}
 });
 // ============================================================================================================================
 // 														Warning
