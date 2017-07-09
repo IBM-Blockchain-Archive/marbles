@@ -171,7 +171,7 @@ module.exports = function (g_options, fcw, logger) {
 				sch_next_check();
 				ws_server.check_for_updates(null);
 			}
-		}, 8000);
+		}, g_options.block_delay + 2000);
 	}
 
 	// --------------------------------------------------------

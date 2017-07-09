@@ -86,7 +86,7 @@ module.exports = function (g_options, logger) {
 								return cb(null);						//timeout pass it back
 							}
 							else return;
-						}, g_options.block_delay + 3000);
+						}, g_options.block_delay + 2000);
 
 						// Wait for tx committed event
 						eventhub.registerTxEvent(request.txId.getTransactionID(), (tx, code) => {
