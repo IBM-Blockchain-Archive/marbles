@@ -191,6 +191,7 @@ module.exports = function (g_options, fcw, logger) {
 				if (resp && resp.height && resp.height.low) {
 					if (resp.height.low > known_height || ws_client) {
 						if (!ws_client) {
+							console.log('');
 							logger.info('New block detected!', resp.height.low, resp);
 							known_height = resp.height.low;
 							newBlock = true;

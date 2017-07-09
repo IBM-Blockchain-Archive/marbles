@@ -288,7 +288,7 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 
 	// get block height
 	marbles_chaincode.channel_stats = function (options, cb) {
-		logger.info('Fetching block height...');
+		//logger.info('Fetching block height...');
 		fcw.query_channel(enrollObj, null, cb);
 	};
 
