@@ -44,24 +44,52 @@
 ![](/doc_images/4-resources-no-peers.PNG)
 
 - Congrats, you now have a blockchain network. You are currently eyeballing the list of nodes for you network. 
-- You will need nodes called "Peers" to run marbles chaincode.  Since we started this network we do not have any peers yet. Click the "Add Peer" button. 
+- You will need nodes called "Peers" to run marbles chaincode.  You may have peers already.  It depends on if you selected some during the create wizard. If not click the "Add Peer" button and create 1 peer of any size. 
 
 ![](/doc_images/5-after-added-peer.PNG)
 
 - When you have at least one peer, we can move on to making a channel. 
+    - Creating a channel is a bit of a process, so bare with me!
     - A channel is used to isolate our blockchain ledger from others on the network.  (Later we will have the oppturnity to invite members of our network to our channel) Members on the same channel will be able to vaildate eachothers transactions. For now we just want to make a channel for ourself.
-- Click the "Channels" link on the left.
+- Click the "Channels" link on the left navigation menu.
 - Next click the create "New Channel" button in the top right
 
-![](/doc_images/7-create-channel.PNG)
+![](/doc_images/7a-create-channel.PNG)
 
-- Give your channel a name
-- We will want to add ourself to this channel, so select yourself from the channel drop down and then click "Add Member"
-- Next click the "Create" button
+- Give your channel a name and description if you want
+    - Due to the crazy rules it may take a few minuets to pick a good name.  Stick to lowercase letters, numbers, dashes, and dots.
+- Then click "Next"
+
+![](/doc_images/7b-create-channel.PNG)
+
+- We need ourself added as an "Admin" so find your email addres and check the Admin box next to it.
+- If we wanted to invite others to the channel, we could add them from the drop down and select their roles. For now lets only have ourself on this channel. 
+- Then click the "Next" button
+
+![](/doc_images/7c-create-channel.PNG)
+
+- The update policy decides what it takes to make changes to the channel. In this case how many admins should it take. Since we only have ourself on the channel, the only value that makes sense is 1. Use the dropdown to set this to 1.
+- Then click the "Submit Request" button
+
+![](/doc_images/7d-create-channel.PNG)
+
+- OK. So the request is made, but we still have to sign it and submit it.
+- In the "Notifications" tab look for a pending request with your channel name on it.
+- Open the request with the Actions column by clicking "View Details"
+    - You could review it by expanding each section, but since we made it we know whats inside
+- Sign the request by clicking "Accept"
+- Aftering clicking accept the menu will close itself
+- Next submit the request with the same "Actions" column, but this time click "Submit Channel Request"
 
 ![](/doc_images/8-created-channel.PNG)
 
-- If all went well you should see the channel name listed after the panel refreshes.
+- Now browse to the "Channels" page in the left navigation menu
+- If all went well you should see the channel name listed after the panel refreshes
+- But we are not quite done... Click the dots in the action columna and select the "Join Peer" option
+- A menu will appear, check all of your peers and then click the "Add Selected" button
+- If the stars align the peer will be joined to your channel and everything is done
+    - You can tell it was successful if the date created and block height have dates and a number, instead of a '-'
+    - If you don't see a date, refresh the page or repeat the join
 
 ### Finish Up
 Congrats! The network is all setup. If you want more detail on the IBM Blockchain service, available plans, or a detailed overview of the IBM Blockchain Dashboard, jump over [here](https://console.ng.bluemix.net/docs/services/blockchain/index.html?pos=2). If not let’s continue the setup. 

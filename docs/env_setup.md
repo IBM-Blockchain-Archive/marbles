@@ -47,7 +47,9 @@ Next verify you can build GoLang code with the [hello world](https://golang.org/
 
 ## 3. Node.js
 
-Download and install the latest Node.js LTS version.
+Download and install the latest Node.js LTS version. 
+It should be version 6+. 
+**Marbles will not work with node.js v7 or v8** 
 
 - [Node.js Download Page](https://nodejs.org/en/download/)
 
@@ -71,13 +73,14 @@ Therefore in order to compile chaincode locally you will need to have the fabric
 
 **Choose 1 option below:**
 
-- **Option 1:** :lollipop: I don't want to modify chaincode - **If you only want to run marbles cc as is, you can skip this step completely.** Head back to the [tutorial](../README.md#downloadmarbles).
+- **Option 1:** :lollipop: This option is for those that do not want to modify chaincode.  You will be running marbles as is. 
+	- There are no steps, you are already done! Head back to the [tutorial](../README.md#downloadmarbles).
 
-- **Option 2:** I want to modify chaincode and use a local Fabric network
+- **Option 2:**  This option is for those that want to modify chaincode and use a local Fabric network
 	- You are going to use the [master branch of the Hyperledger fabric](https://gerrit.hyperledger.org/r/gitweb?p=fabric.git;a=summary). 
 	- Remember this hash `14055d7` and go to the `Continue the Fabric Install Instructions` section below. You will enter the hash there.
 
-- **Option 3:** I want to modify chaincode and use the Blockchain Service for my network
+- **Option 3:** Choose this option if you want to modify chaincode and use the Blockchain Service for my network
 	- You are most likely going to need to use the [v1.0.0-preview Hyperledger fabric](https://github.com/hyperledger/fabric/tree/v1.0.0-preview) version.
 	If you have a network, then the exact Fabric version can be found in the Release Notes section of your network's UI. 
 	![](/doc_images/marbles-env.PNG)

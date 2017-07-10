@@ -15,17 +15,21 @@ One for each major Hyperledger Fabric release.
 Pick a version of marbles that is compatible with your version of Fabric. 
 If you don't have any version of Fabric, then pick the marbles version marked **latest**! 
 
-- Marbles - Branch v3.0 **(Latest)** (You are viewing this branch!)
-	- Works with Hyperledger Fabric `v1.0`
+- Marbles - Branch v4.0 **(Latest)** (You are viewing this branch!)
+	- Works with Hyperledger Fabric `v1.0.0-rc1`
 	- Works with the IBM Blockchain Bluemix Service - Plan **HSBN vNext**
 
+- [Marbles - Branch v3.0](https://github.com/ibm-blockchain/marbles/tree/v3.0) 
+	- Works with Hyperledger Fabric `v1.0.0-alpha`
+	- No longer supported by the IBM Blockchain Bluemix service
+
 - [Marbles - Branch v2.0](https://github.com/ibm-blockchain/marbles/tree/v2.0)
-	- Works with Hyperledger Fabric `v0.6-developer-preview`
+	- Works with Hyperledger Fabric `v0.6.1-preview`
 	- Works with IBM Blockchain Bluemix Service - Plan **Starter** or **HSBN**
 
 - [Marbles - Branch v1.0](https://github.com/ibm-blockchain/marbles/tree/v1.0) **(Deprecated)**
-	- No longer supported by the IBM Blockchain Bluemix service
 	- Works with Hyperledger Fabric `v0.5-developer-preview`
+	- No longer supported by the IBM Blockchain Bluemix service
 
 ***
 
@@ -110,17 +114,20 @@ You will need to do this step even if you plan on hosting marbles in Bluemix.
 	git checkout v3.0
 	```
 
+- Great I'll meet you at step 2.
+
 <a name="getnetwork"></a>
 
 ### 2. Get a Network
 
-Now we need a blockchain network.
+Hello again. Now we need a blockchain network.
 
 **Choose 1 option below:**
 
 - **Option 1:** Create a network with the Bluemix IBM Blockchain Service - [instructions](./docs/use_bluemix_hyperledger.md)
 
--  **Option 2:** :lollipop: Use a locally hosted Hyperledger Fabric Network - [instructions](./docs/use_local_hyperledger.md)
+<strike>-  **Option 2:** :lollipop: Use a locally hosted Hyperledger Fabric Network - [instructions](./docs/use_local_hyperledger.md)</strike>
+- **Update:** Option 2 needs work with Fabric RC1.  Hang tight.
 
 <a name="installchaincode"></a>
 
@@ -133,7 +140,8 @@ Choose the **only** option that is relevant for your setup:
 
 - **Option 1:** Install and instantiate chaincode with your IBM Blockchain Service - [instructions](./docs/install_chaincode.md)
 
-- **Option 2:** :lollipop: Install and instantiate chaincode with the SDK locally - [instructions](./docs/install_chaincode_locally.md)
+<strike>- **Option 2:** :lollipop: Install and instantiate chaincode with the SDK locally - [instructions](./docs/install_chaincode_locally.md)</strike>
+- **Update:** Option 2 needs work with Fabric RC1.  Hang tight.
 
 <a name="hostmarbles"></a>
 
@@ -162,7 +170,7 @@ Last but not least we need marbles running somewhere.
 
 1. Fill out all the fields, then click the "CREATE" button
 1. After a few seconds your new marble should have appeared.
-    - If not refresh the page
+    - If not refresh the page by hitting the refresh button in your browser, or by pressing F5
 1. Next let’s trade a marble.  Drag and drop a marble from one owner to another. Only trade it to owners within "United Marbles" if you have multiple marble companies. It should temporary disappear and then redraw the marble within its new owner. That means it worked!
     - If not refresh the page
 1. Now let’s delete a marble by dragging and dropping it into the trash can. It should disappear after a few seconds.
@@ -172,6 +180,12 @@ Last but not least we need marbles running somewhere.
 1. Refresh the page to double check that your actions "stuck".
 1. Use the search box to filter on marble owners or marble company names.  This is helpful when there are many companies/owners.
     - The pin icon will prevent that user from being filtered out by the search box.
+1. Now lets turn on the special walk through. Click the "Settings" button near the top of the page.
+	- A dialog box will open.
+	- Click the "Enabled" button to enabled Story Mode
+	- Click the "x" in the top right to close the menu.
+	- Now pick another marble and drag it to another user.  You should see a breakdown of the transaction process. Hopefully it gives you a better idea of how Fabric works.
+	- Remember you can disable story mode when it becomes frustratingly repetitive and you are a cold husk of your former self.
 1. Congratulations you have a working marbles application :)!
 
 
@@ -563,6 +577,11 @@ Now you know the whole flow.
 The admin moved the marble, JS detected the drag/drop, client sends a websocket message, marbles receives the websocket message, sdk builds/sends a proposal, peer endorses the proposal, sdk sends the proposal for ordering, the orderer orders and sends a block to peer, our peer commits the block, marbles node code gets new marble status periodically, sends marble websocket message to client, and finally the client redraws the marble in its new home.
 
 That’s it! Hope you had fun transferring marbles. 
+
+## Marbles Tips
+There are few comments about marbles that don't fit neatly into the instructions above. 
+Here is an assortment of marbles tips and instructions. 
+- coming soon
 
 # License
 [Apache 2.0](LICENSE)
