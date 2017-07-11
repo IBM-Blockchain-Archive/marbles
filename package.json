@@ -15,8 +15,9 @@
     "express-session": "1.14.*",
     "fabric-ca-client": "1.0.0-alpha.0",
     "fabric-client": "1.0.0-alpha",
-	"pug": "2.0.0-beta11",
+    "pug": "2.0.0-beta11",
     "serve-static": "1.11.*",
+    "stream-buffers": "^3.0.1",
     "winston": "2.2.*",
     "ws": "1.1.*"
   },
