@@ -39,9 +39,14 @@ module.exports = function (g_options, logger) {
 	// Enrollment Functions
 	// ------------------------------------------------------------------------
 
-	// enroll an enrollId with the cop
+	// enroll an enrollId with the ca
 	fcw.enroll = function (options, cb_done) {
 		enrollment.enroll(options, cb_done);
+	};
+
+	// enroll with admin cert
+	fcw.enrollWithAdminCert = function (options, cb_done) {
+		enrollment.enrollWithAdminCert(options, cb_done);
 	};
 
 	// ------------------------------------------------------------------------

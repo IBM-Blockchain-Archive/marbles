@@ -8,6 +8,7 @@
  *******************************************************************************/
 var express = require('express');
 var router = express.Router();
+var helper = require(__dirname + '/../utils/helper.js')(process.env.creds_filename, console);
 
 //anything in here gets passed to Pug template engine
 function build_bag(req) {
@@ -22,10 +23,10 @@ function build_bag(req) {
 
 //get cred data
 function get_credential_data() {
-	var helper = require(__dirname + '/../utils/helper.js')(process.env.creds_filename, console);
+	let org_name = helper.getPeersMspId(0);			//lets use the first org we find
 	var ret = {
-		admin_id: helper.getUser(0).enrollId,
-		admin_secret: helper.getUser(0).enrollSecret,
+		admin_id: helper.getUser(org_name, 0).enrollId,
+		admin_secret: helper.getUser(org_name, 0).enrollSecret,
 		orderer: helper.getOrderersUrl(0),
 		ca: helper.getCasUrl(0),
 		peer: helper.getPeersUrl(0),

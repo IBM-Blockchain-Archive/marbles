@@ -86,19 +86,6 @@ module.exports = function (config_filename, logger) {
 		}
 	};
 
-	// get a ca's name, could be null
-	helper.getCaName = function () {
-		var ca = helper.getCA(0);
-		if (ca && ca.orgs) {
-			for (let i in ca.orgs) {
-				return ca.orgs[i].ca_name;
-			}
-		}
-		else {
-			throw new Error('Cannot find ca org.');
-		}
-	};
-
 	// get a ca obj
 	helper.getCA = function (index) {
 		if (index === undefined || index == null) {
@@ -109,6 +96,40 @@ module.exports = function (config_filename, logger) {
 			} else {
 				throw new Error('CA index out of bounds. Total CA = ' + helper.creds.credentials.cas.length);
 			}
+		}
+	};
+
+	// get a ca's name, could be null
+	helper.getCaName = function (orgName) {
+		var ca = helper.getCA(0);
+		if (ca && ca.orgs && ca.orgs[orgName]) {
+			return ca.orgs[orgName].ca_name;
+		}
+		else {
+			throw new Error('Cannot find org.', orgName);
+		}
+	};
+
+	// get an admin private key PEM certificate
+	helper.getAdminPrivateKeyPEM = function (orgName) {
+		var ca = helper.getCA(0);
+		if (ca && ca.orgs && ca.orgs[orgName]) {
+			return ca.orgs[orgName].privateKeyPEM;
+		}
+		else {
+			throw new Error('Cannot find org.', orgName);
+		}
+	};
+
+	// get an admin's signed cert PEM
+	helper.getAdminSignedCertPEM = function (orgName) {
+		var ca = helper.getCA(0);
+		console.log('orgName', orgName);
+		if (ca && ca.orgs && ca.orgs[orgName]) {
+			return ca.orgs[orgName].signedCertPEM;
+		}
+		else {
+			throw new Error('Cannot find org.', orgName);
 		}
 	};
 
@@ -144,19 +165,17 @@ module.exports = function (config_filename, logger) {
 	};
 
 	// get an enrollment user
-	helper.getUser = function (index) {
+	helper.getUser = function (orgName, index) {
 		if (index === undefined || index == null) {
 			return helper.creds.credentials.users;
 		}
 		else {
 			var ca = helper.getCA(0);
-			if (ca && ca.orgs) {
-				for (let i in ca.orgs) {
-					return ca.orgs[i].users[index];
-				}
+			if (ca && ca.orgs && ca.orgs[orgName] && ca.orgs[orgName].users[index]) {
+				return ca.orgs[orgName].users[index];
 			}
 			else {
-				throw new Error('Users index out of bounds.', index);
+				throw new Error('Cannot find enroll id at index.', orgName, index);
 			}
 		}
 	};
@@ -286,27 +305,44 @@ module.exports = function (config_filename, logger) {
 		};
 	};
 
-	// build the enrollment options
+	// build the enrollment options for using an enroll ID
 	helper.makeEnrollmentOptions = function (userIndex) {
 		if (userIndex === undefined || userIndex == null) {
 			throw new Error('User index not passed');
 		} else {
-			var user = helper.getUser(userIndex);
+			let org_name = helper.getPeersMspId(0);				//lets use the first org we find
+			let user = helper.getUser(org_name, userIndex);		//there may be multiple users
 			return {
 				channel_id: helper.getChannelId(),
 				uuid: 'marbles-' + helper.getNetworkId() + '-' + helper.getChannelId() + '-' + helper.getPeersName(0),
 				ca_url: helper.getCasUrl(0),
-				ca_name: helper.getCaName(),
+				ca_name: helper.getCaName(org_name),
 				orderer_url: helper.getOrderersUrl(0),
 				peer_urls: [helper.getPeersUrl(0)],
 				enroll_id: user.enrollId,
 				enroll_secret: user.enrollSecret,
-				msp_id: helper.getPeersMspId(0),
+				msp_id: org_name,
 				ca_tls_opts: helper.getCATLScert(0),
 				orderer_tls_opts: helper.getOrdererTLScert(0),
 				peer_tls_opts: helper.getPeerTLScertOpts(0),
 			};
 		}
+	};
+
+	// build the enrollment options using an admin cert
+	helper.makeEnrollmentOptionsUsingCert = function () {
+		let org_name = helper.getPeersMspId(0);				//lets use the first one
+		return {
+			channel_id: helper.getChannelId(),
+			uuid: 'marbles-' + helper.getNetworkId() + '-' + helper.getChannelId() + '-' + helper.getPeersName(0),
+			orderer_url: helper.getOrderersUrl(0),
+			peer_urls: [helper.getPeersUrl(0)],
+			msp_id: org_name,
+			privateKeyPEM: helper.getAdminPrivateKeyPEM(org_name),
+			signedCertPEM: helper.getAdminSignedCertPEM(org_name),
+			orderer_tls_opts: helper.getOrdererTLScert(0),
+			peer_tls_opts: helper.getPeerTLScertOpts(0),
+		};
 	};
 
 	// safely retrieve marbles fields

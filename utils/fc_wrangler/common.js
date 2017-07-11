@@ -79,5 +79,13 @@ module.exports = function (logger) {
 		}
 	};
 
+	//------------------------------------------------------------
+	// decode base64 into string
+	//------------------------------------------------------------
+	common.decodeb64 = function (b64string) {
+		if (!b64string) throw Error('cannot decode something that isn\'t there');
+		return (Buffer.from(b64string, 'base64')).toString();
+	};
+
 	return common;
 };
