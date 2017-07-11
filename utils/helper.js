@@ -35,7 +35,7 @@ module.exports = function (config_filename, logger) {
 		}
 		else {
 			if (index < helper.creds.credentials.peers.length) {
-				return helper.creds.credentials.peers[index].discovery;
+				return helper.creds.credentials.peers[index].discovery_url;
 			}
 			else {
 				throw new Error('Peer index out of bounds. Total peers = ' + helper.creds.credentials.peers.length);
@@ -79,7 +79,7 @@ module.exports = function (config_filename, logger) {
 			throw new Error('CA index not passed');
 		} else {
 			if (index < helper.creds.credentials.cas.length) {
-				return helper.creds.credentials.cas[index].api;
+				return helper.creds.credentials.cas[index].api_url;
 			} else {
 				throw new Error('CA index out of bounds. Total CA = ' + helper.creds.credentials.cas.length);
 			}
@@ -148,7 +148,7 @@ module.exports = function (config_filename, logger) {
 			throw new Error('Orderers index not passed');
 		} else {
 			if (index < helper.creds.credentials.orderers.length) {
-				return helper.creds.credentials.orderers[index].discovery;
+				return helper.creds.credentials.orderers[index].discovery_url;
 			} else {
 				throw new Error('Orderers index out of bounds. Total CA = ' + helper.creds.credentials.orderers.length);
 			}
@@ -186,9 +186,9 @@ module.exports = function (config_filename, logger) {
 			throw new Error('Peers index not passed');
 		} else {
 			if (index < helper.creds.credentials.peers.length) {
-				return helper.creds.credentials.peers[index].events;
+				return helper.creds.credentials.peers[index].event_url;
 			}
-			logger.warn('no events url found for peer in creds json: ' + creds_path);
+			logger.warn('no event url found for peer in creds json: ' + creds_path);
 			return null;
 		}
 	};
@@ -385,13 +385,13 @@ module.exports = function (config_filename, logger) {
 		var creds_file = JSON.parse(fs.readFileSync(creds_path, 'utf8'));
 
 		if (obj.ordererUrl) {
-			creds_file.credentials.orderers[0].discovery = obj.ordererUrl;
+			creds_file.credentials.orderers[0].discovery_url = obj.ordererUrl;
 		}
 		if (obj.peerUrl) {
-			creds_file.credentials.peers[0].discovery = obj.peerUrl;
+			creds_file.credentials.peers[0].discovery_url = obj.peerUrl;
 		}
 		if (obj.caUrl) {
-			creds_file.credentials.cas[0].api = obj.caUrl;
+			creds_file.credentials.cas[0].api_url = obj.caUrl;
 		}
 		if (obj.chaincodeId) {
 			creds_file.credentials.app.chaincode_id = obj.chaincodeId;
