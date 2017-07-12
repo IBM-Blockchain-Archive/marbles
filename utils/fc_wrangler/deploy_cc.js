@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------
-// Install + Instantiate Chaincode
+// Install + Instantiate + Upgrade Chaincode
 //-------------------------------------------------------------------
 var path = require('path');
 
@@ -9,7 +9,7 @@ module.exports = function (logger) {
 	var deploy_cc = {};
 
 	//-------------------------------------------------------------------
-	// Install Chaincode
+	// Install Chaincode - Must use Admin Cert enrollment
 	//-------------------------------------------------------------------
 	/*
 		options: {
@@ -61,68 +61,47 @@ module.exports = function (logger) {
 
 
 	//-------------------------------------------------------------------
-	// Instantiate Chaincode
+	// Instantiate Chaincode - Must use Admin Cert enrollment
 	//-------------------------------------------------------------------
 	/*
 		options: {
 					peer_urls: [array of peer urls],
 					path_2_chaincode: "path to chaincode from proj root",
-					channel_id: "channel id",
 					chaincode_id: "chaincode id",
 					chaincode_version: "v0",
 					endorsed_hook: function(error, res){},
 					ordered_hook: function(error, res){},
 					cc_args: ["argument 1"],
-					deploy_wait: 30000,
 					peer_tls_opts: {
 						pem: 'complete tls certificate',					<optional>
 						common_name: 'common name used in pem certificate' 	<optional>
 					}
 		}
 	*/
+
 	deploy_cc.instantiate_chaincode = function (obj, options, cb) {
-		logger.error('instantiate coming soon');
-		if(cb) cb(null);
-		/*
 		logger.debug('[fcw] Instantiating Chaincode', options);
 		var channel = obj.channel;
-		//var eventhub;
-
-		try {
-			for (var i in options.peer_urls) {
-				channel.addPeer(new Peer(options.peer_urls[i], {
-					pem: options.peer_tls_opts.pem,
-					'ssl-target-name-override': options.peer_tls_opts.common_name	//can be null if cert matches hostname
-				}));
-			}
-		}
-		catch (e) {
-			//might error if peer already exists, but we don't care
-		}
-
-		//channel.addOrderer(new Orderer(options.orderer_url));
+		var client = obj.client;
 
 		// fix GOPATH - does not need to be real!
 		process.env.GOPATH = path.join(__dirname, '../');
-		var nonce = utils.getNonce();
 
 		// send proposal to endorser
 		var request = {
+			targets: [client.newPeer(options.peer_urls[0], {
+				pem: options.peer_tls_opts.pem,
+				'ssl-target-name-override': options.peer_tls_opts.common_name	//can be null if cert matches hostname
+			})],
 			chainId: options.channel_id,
 			chaincodePath: options.path_2_chaincode,		//rel path from /server/libs/src/ to chaincode folder ex: './marbles_chaincode'
 			chaincodeId: options.chaincode_id,
 			chaincodeVersion: options.chaincode_version,
 			fcn: 'init',
 			args: options.cc_args,
-			txId: channel.buildTransactionID(nonce, obj.submitter),
-			nonce: nonce,
+			txId: client.newTransactionID(),
 		};
 		logger.debug('[fcw] Sending instantiate req', request);
-
-		// Setup EventHub
-		//eventhub = new EventHub();
-		//eventhub.setPeerAddr(options.event_url);
-		//eventhub.connect();
 
 		channel.initialize().then(() => {
 			channel.sendInstantiateProposal(request
@@ -165,7 +144,94 @@ module.exports = function (logger) {
 					else return;
 				}
 				);
-		});*/
+		});
+	};
+
+	//-------------------------------------------------------------------
+	// Upgrade Chaincode - Must use Admin Cert enrollment
+	//-------------------------------------------------------------------
+	/*
+		options: {
+					peer_urls: [array of peer urls],
+					path_2_chaincode: "path to chaincode from proj root",
+					chaincode_id: "chaincode id",
+					chaincode_version: "v0",
+					endorsed_hook: function(error, res){},
+					ordered_hook: function(error, res){},
+					cc_args: ["argument 1"],
+					peer_tls_opts: {
+						pem: 'complete tls certificate',					<optional>
+						common_name: 'common name used in pem certificate' 	<optional>
+					}
+		}
+	*/
+
+	deploy_cc.upgrade_chaincode = function (obj, options, cb) {
+		logger.debug('[fcw] Upgrading Chaincode', options);
+		var channel = obj.channel;
+		var client = obj.client;
+
+		// fix GOPATH - does not need to be real!
+		process.env.GOPATH = path.join(__dirname, '../');
+
+		// send proposal to endorser
+		var request = {
+			targets: [client.newPeer(options.peer_urls[0], {
+				pem: options.peer_tls_opts.pem,
+				'ssl-target-name-override': options.peer_tls_opts.common_name	//can be null if cert matches hostname
+			})],
+			chainId: options.channel_id,
+			chaincodePath: options.path_2_chaincode,		//rel path from /server/libs/src/ to chaincode folder ex: './marbles_chaincode'
+			chaincodeId: options.chaincode_id,
+			chaincodeVersion: options.chaincode_version,
+			fcn: 'init',
+			args: options.cc_args,
+			txId: client.newTransactionID(),
+		};
+		logger.debug('[fcw] Sending upgrade cc req', request);
+
+		channel.initialize().then(() => {
+			channel.sendUpgradeProposal(request
+				//nothing
+			).then(
+				function (results) {
+
+					//check response
+					var request = common.check_proposal_res(results, options.endorsed_hook);
+					return channel.sendTransaction(request);
+				}
+				).then(
+				function (response) {
+
+					// All good
+					if (response.status === 'SUCCESS') {
+						logger.debug('[fcw] Successfully ordered upgrade cc endorsement.');
+
+						// Call optional order hook
+						if (options.ordered_hook) options.ordered_hook(null, request.txId.toString());
+
+						setTimeout(function () {
+							if (cb) return cb(null);
+							else return;
+						}, 5000);
+					}
+
+					// No good
+					else {
+						logger.error('[fcw] Failed to order the upgrade cc endorsement.');
+						throw response;
+					}
+				}
+				).catch(
+				function (err) {
+					logger.error('[fcw] Error in upgrade cc catch block', typeof err, err);
+					var formatted = common.format_error_msg(err);
+
+					if (cb) return cb(formatted, null);
+					else return;
+				}
+				);
+		});
 	};
 
 	return deploy_cc;

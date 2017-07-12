@@ -427,9 +427,9 @@ module.exports = function (config_filename, logger) {
 			console.log('\n\n');
 			logger.warn('----------------------------------------------------------------------');
 			logger.warn('----------------------------- Hey Buddy! -----------------------------');
-			logger.warn('------------------------ It looks like you did -----------------------');
-			logger.error('------------------------------- not  --------------------------------');
-			logger.warn('------------------------- follow my instructions ---------------------');
+			logger.warn('------------------------- It looks like you --------------------------');
+			logger.error('------------------------------skipped -------------------------------');
+			logger.warn('------------------------- some instructions --------------------------');
 			logger.warn('----------------------------------------------------------------------');
 			logger.warn('Your network config JSON has a network ID of "FakeNetworkID"...');
 			logger.warn('You likely have other settings that are wrong too!');
