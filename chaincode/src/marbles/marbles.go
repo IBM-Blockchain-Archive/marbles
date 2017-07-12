@@ -50,6 +50,7 @@ type Owner struct {
 	Id         string `json:"id"`
 	Username   string `json:"username"`
 	Company    string `json:"company"`
+	Enabled    bool   `json:"enabled"`     //disabled owners will not be visible to the application
 }
 
 type OwnerRelation struct {
@@ -134,6 +135,8 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 		return getHistory(stub, args)
 	} else if function == "getMarblesByRange"{ //read a bunch of marbles by start and stop id
 		return getMarblesByRange(stub, args)
+	} else if function == "disable_owner"{     //disable a marble owner from appearing on the UI
+		return disable_owner(stub, args)
 	}
 
 	// error out

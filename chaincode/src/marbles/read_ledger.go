@@ -105,12 +105,12 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 	defer resultsIterator.Close()
 	
 	for resultsIterator.HasNext() {
-                aKeyValue, err := resultsIterator.Next()
+		aKeyValue, err := resultsIterator.Next()
 		if err != nil {
 			return shim.Error(err.Error())
 		}
-                queryKeyAsStr := aKeyValue.Key
-                queryValAsBytes := aKeyValue.Value
+		queryKeyAsStr := aKeyValue.Key
+		queryValAsBytes := aKeyValue.Value
 		fmt.Println("on marble id - ", queryKeyAsStr)
 		var marble Marble
 		json.Unmarshal(queryValAsBytes, &marble)                  //un stringify it aka JSON.parse()
@@ -126,21 +126,24 @@ func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
 	defer ownersIterator.Close()
 
 	for ownersIterator.HasNext() {
-                aKeyValue, err := ownersIterator.Next()
+		aKeyValue, err := ownersIterator.Next()
 		if err != nil {
 			return shim.Error(err.Error())
 		}
 		queryKeyAsStr := aKeyValue.Key
-                queryValAsBytes := aKeyValue.Value
+		queryValAsBytes := aKeyValue.Value
 		fmt.Println("on owner id - ", queryKeyAsStr)
 		var owner Owner
-		json.Unmarshal(queryValAsBytes, &owner)                  //un stringify it aka JSON.parse()
-		everything.Owners = append(everything.Owners, owner)     //add this marble to the list
+		json.Unmarshal(queryValAsBytes, &owner)                   //un stringify it aka JSON.parse()
+
+		if owner.Enabled {                                        //only return enabled owners
+			everything.Owners = append(everything.Owners, owner)  //add this marble to the list
+		}
 	}
 	fmt.Println("owner array - ", everything.Owners)
 
 	//change to array of bytes
-	everythingAsBytes, _ := json.Marshal(everything)             //convert to array of bytes
+	everythingAsBytes, _ := json.Marshal(everything)              //convert to array of bytes
 	return shim.Success(everythingAsBytes)
 }
 
@@ -177,7 +180,7 @@ func getHistory(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	defer resultsIterator.Close()
 
 	for resultsIterator.HasNext() {
-                historyData, err := resultsIterator.Next()
+		historyData, err := resultsIterator.Next()
 		if err != nil {
 			return shim.Error(err.Error())
 		}
@@ -235,8 +238,8 @@ func getMarblesByRange(stub shim.ChaincodeStubInterface, args []string) pb.Respo
 		if err != nil {
 			return shim.Error(err.Error())
 		}
-                queryResultKey := aKeyValue.Key
-                queryResultValue := aKeyValue.Value
+		queryResultKey := aKeyValue.Key
+		queryResultValue := aKeyValue.Value
 
 		// Add a comma before array members, suppress it for the first array member
 		if bArrayMemberAlreadyWritten == true {
