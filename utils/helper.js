@@ -409,10 +409,6 @@ module.exports = function (config_filename, logger) {
 			};
 		}
 
-		if (obj.hash) {
-			config_file.last_startup_hash = obj.hash;
-		}
-
 		fs.writeFileSync(creds_path, JSON.stringify(creds_file, null, 4), 'utf8');	//save to file
 		helper.creds = creds_file;													//replace old copy
 		fs.writeFileSync(config_path, JSON.stringify(config_file, null, 4), 'utf8');//save to file

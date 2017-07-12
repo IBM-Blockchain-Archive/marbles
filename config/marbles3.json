@@ -8,6 +8,5 @@
         "alice",
         "ava"
     ],
-    "port": 3001,
-    "last_startup_hash": "777cec881f3af49df0d018c76c0870319861c1f7"
+    "port": 3001
 }
