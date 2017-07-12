@@ -86,9 +86,6 @@ module.exports = function (logger) {
 	// Get List of Channels on Peer
 	//-------------------------------------------------------------------
 	/*
-		'channel' shoudn't be the object we interface with to get the list of
-		channels... but that's the way the SDK operates now
-
 		options: {
 			peer_urls: ['array of peer grpc urls'],
 			peer_tls_opts: {
@@ -100,26 +97,21 @@ module.exports = function (logger) {
 	query_peer.query_list_channels = function (obj, options, cb) {
 		console.log('');
 		logger.debug('List Channels:', options);
-		var channel = obj.channel;
+		var client = obj.client;
 
 		// send proposal to peer
-		channel.queryChannels(new Peer(options.peer_urls[0], {
+		client.queryChannels(new Peer(options.peer_urls[0], {
 			pem: options.peer_tls_opts.pem,
 			'ssl-target-name-override': options.peer_tls_opts.common_name		//can be null if cert matches hostname
-		})).then(
-			function (chain_resp) {
-				chain_resp.channels = _.sortBy(chain_resp.channels, [channel => channel.channel_id]);
-				if (cb) return cb(null, chain_resp);
-			}
-			).catch(
-			function (err) {
-				logger.error('[fcw] Error in query block', typeof err, err);
+		})).then(function (resp) {
+			resp.channels = _.sortBy(resp.channels, [channel => channel.channel_id]);
+			if (cb) return cb(null, resp);
+		}).catch(function (err) {
+			logger.error('[fcw] Error in query block', typeof err, err);
 
-				if (cb) return cb(err, null);
-				else return;
-			}
-			);
-		//return cb(null, options);
+			if (cb) return cb(err, null);
+			else return;
+		});
 	};
 
 	//format from byte array to hex string
@@ -131,7 +123,7 @@ module.exports = function (logger) {
 
 	// Format the Block
 	// I don't have the slightest idea if this will hold up, seems ok for marbles =/ 
-	function format_block(data) {
+	function format_block(data, blockNumber) {
 		var ret = {
 			parsed: {
 				block_id: data.header.number.low,
@@ -141,25 +133,23 @@ module.exports = function (logger) {
 			},
 			orig_data: data
 		};
+		data.blockNumber = blockNumber;								//copy it
 
-		// -- remove thigns I can't seem to see -- //
 		try {
-			var temp = '';
-			var msg = 'there was something here but its been removed';
-			ret.orig_data.header.previous_hash = msg;
-			ret.orig_data.header.data_hash = msg;
+			var tx = '';
 
 			// -- move though the block data! -- //
-			for (var i in ret.orig_data.data.data) {
+			for (var i in ret.orig_data.data.data) {				//iter thourgh transactions
 				try {
-					ret.orig_data.data.data[i].payload.header.signature_header.nonce = msg;
-					ret.orig_data.data.data[0].signature = msg;
-
-					temp = {
-						channel_id: ret.orig_data.data.data[i].payload.header.channel_header.channel_id,
-						timestamp: ret.orig_data.data.data[i].payload.header.channel_header.timestamp.seconds.low,
+					tx = {
 						tx_id: ret.orig_data.data.data[i].payload.header.channel_header.tx_id,
-						chaincode_id: ret.orig_data.data.data[i].payload.header.channel_header.extension.substr(4),
+						instantiate: parse_if_instantiate(ret.orig_data.data.data[i].payload.data),
+						channel_id: ret.orig_data.data.data[i].payload.header.channel_header.channel_id,
+						chaincode_id: parse_4_chaincode_id(ret.orig_data.data.data[i].payload.data),
+						timestamp: Date.parse(ret.orig_data.data.data[i].payload.header.channel_header.timestamp),
+						creator_msp_id: parse_4_msp_id(ret.orig_data.data.data[i].payload.data),
+						endorsements: parse_4_endorsements(ret.orig_data.data.data[i].payload.data),
+						write_set: parse_4_write_set(ret.orig_data.data.data[i].payload.data),
 					};
 				}
 				catch (e) {
@@ -167,13 +157,10 @@ module.exports = function (logger) {
 				}
 
 				// -- parse for parameters -- //
-				temp.params = stupid_parse(ret.orig_data.data.data[i].payload.data, temp.chaincode_id);
-				ret.parsed.txs.push(temp);
-			}
-
-			// -- remove thigns I can't seem to see -- //
-			for (i in ret.orig_data.metadata.metadata) {
-				ret.orig_data.metadata.metadata[i] = msg;
+				var temp = stupid_parse(ret.orig_data.data.data[i].payload.data, tx.chaincode_id);
+				tx.params = temp.parameters;
+				tx.params_debug = temp.debug;
+				ret.parsed.txs.push(tx);
 			}
 		}
 		catch (e) {
@@ -181,35 +168,127 @@ module.exports = function (logger) {
 		}
 
 		// -- DONE -- //
-		logger.debug('parsed data:', ret.parsed);
+		delete ret.orig_data;
 		return ret;
 	}
 
-	// retardely parse the block object to format for humans
-	function stupid_parse(str, chaincodeId) {
-		var ret = { debug: {}, parameters: [] };
+	// get msp id from header.creator
+	function parse_4_msp_id(data) {
+		try {
+			return data.actions[0].header.creator.Mspid;
+		} catch (e) {
+			if (data.blockNumber >= 0) logger.warn('could not find msp id in tx payload', e);		//don't worry about genesis block
+			return '-';
+		}
+	}
 
-		// get chaincode id
-		ret.debug.startPos = str.indexOf(chaincodeId);						//dumb detection
-		ret.debug.str = str.substr(ret.debug.startPos + chaincodeId.length);
-		ret.debug.stopPos = ret.debug.str.indexOf('\u0012');				//this is likely to break
-		ret.debug.finalStr = ret.debug.str.substr(0, ret.debug.stopPos);
+	// get chaincode id from rwset
+	function parse_if_instantiate(data) {
+		try {
+			for (var i in data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset) {
+				if (data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset[i].namespace === 'lscc') {	//skip system chaincode
+					if (data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset[i].rwset.reads[0].version) {
+						return false;
+					} else {
+						return true;
+					}
+				}
+			}
+		} catch (e) {
+			return false;
+		}
+	}
+
+	// get chaincode id from rwset
+	function parse_4_chaincode_id(data) {
+		try {
+			for (var i in data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset) {
+				if (data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset[i].namespace !== 'lscc') {	//skip system chaincode
+					return data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset[i].namespace;
+				}
+			}
+		} catch (e) {
+			if (data.blockNumber >= 0) logger.warn('could not find chaincode id in tx playload', e);
+			return '-';
+		}
+	}
+
+	// get array of endorsements for transaction
+	function parse_4_endorsements(data) {
+		var msp_ids = [];
+		try {
+			for (var i in data.actions[0].payload.action.endorsements) {
+				msp_ids.push(data.actions[0].payload.action.endorsements[i].endorser.Mspid);
+			}
+		} catch (e) {
+			if (data.blockNumber >= 0) logger.warn('could not find endorsements for tx', e);
+		}
+		return msp_ids;
+	}
+
+	// get the chaincode's write set to the ledger
+	function parse_4_write_set(data) {
+		try {
+			for (var i in data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset) {
+				if (data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset[i].namespace !== 'lscc') {	//skip system chaincode
+					return data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset[i].rwset.writes;
+				}
+			}
+		} catch (e) {
+			if (data.blockNumber >= 0) logger.warn('could not find chaincode id in tx playload', e);
+			return [];
+		}
+	}
+
+	// retardely parse the block object to format for humans - get input parameters for tx
+	function stupid_parse(data, chaincodeId) {
+		var ret = { debug: {}, parameters: [] };
+		var str = null;
+
+		try {
+			str = data.actions[0].payload.chaincode_proposal_payload.input.toString();
+			ret.debug.original = str;
+		} catch (e) {
+			logger.warn('no tx data to parse for this block... might be okay');
+			return ret;
+		}
+
+		// break up string
+		try {
+			ret.debug.startPos = str.indexOf(chaincodeId);						//dumb detection
+			ret.debug.str = str.substr(ret.debug.startPos + chaincodeId.length);
+			ret.debug.stopPos = ret.debug.str.indexOf('\u0012');				//this is likely to break
+			if (ret.debug.stopPos > 0) ret.debug.finalStr = ret.debug.str.substr(0, ret.debug.stopPos);
+			else ret.debug.finalStr = ret.debug.str;
+		} catch (e) {
+			logger.warn('error parsing string in stupid parse...', e);
+		}
 
 		var word = '';
-		for (var i in ret.debug.finalStr) {									//filter out giberish
-			if (ret.debug.finalStr.charCodeAt(i) >= 32 && ret.debug.finalStr.charCodeAt(i) <= 126) {
-				word += ret.debug.finalStr[i];
-			}
-			else {
-				if (word.length > 0) {
-					ret.parameters.push(word);
+		if (!ret.debug.finalStr) {
+			logger.error('parsing block data finalStr is undefined...');
+			ret.parameters.push('undefined');
+		}
+		else if (ret.debug.finalStr.length > 5000) {						//if its suspiciously long, don't process, self preservation
+			logger.warn('parsing block data finalStr is too large, skipping', ret.debug.finalStr.length);
+			ret.parameters.push('too long to show');
+		} else {
+			for (var i in ret.debug.finalStr) {								//filter out giberish
+				if (ret.debug.finalStr.charCodeAt(i) >= 32 && ret.debug.finalStr.charCodeAt(i) <= 126) {
+					word += ret.debug.finalStr[i];
 				}
-				word = '';
+				else {
+					if (word.length > 0) {									//end of word, push it
+						ret.parameters.push(word);
+					}
+					word = '';
+				}
+			}
+			if (word.length > 0) {											//end of word (also its the last word), push it
+				ret.parameters.push(word);
 			}
 		}
-		if (word.length > 0) {
-			ret.parameters.push(word);
-		}
+
 		return ret;
 	}
 
@@ -230,24 +309,19 @@ module.exports = function (logger) {
 		logger.debug('[fcw] Querying Installed Chaincodes\n');
 		var channel = obj.channel;
 
-
 		// send proposal to peer
 		channel.queryInstalledChaincodes(new Peer(options.peer_urls[0], {
 			pem: options.peer_tls_opts.pem,
 			'ssl-target-name-override': options.peer_tls_opts.common_name		//can be null if cert matches hostname
-		})).then(
-			function (resp) {
-				if (cb) return cb(null, resp);
-			}
-			).catch(
-			function (err) {
-				logger.error('[fcw] Error in query installed chaincode', typeof err, err);
-				var formatted = common.format_error_msg(err);
+		})).then(function (resp) {
+			if (cb) return cb(null, resp);
+		}).catch(function (err) {
+			logger.error('[fcw] Error in query installed chaincode', typeof err, err);
+			var formatted = common.format_error_msg(err);
 
-				if (cb) return cb(formatted, null);
-				else return;
-			}
-			);
+			if (cb) return cb(formatted, null);
+			else return;
+		});
 	};
 
 
@@ -262,19 +336,15 @@ module.exports = function (logger) {
 		var channel = obj.channel;
 
 		// send proposal to peer
-		channel.queryInstantiatedChaincodes().then(
-			function (resp) {
-				if (cb) return cb(null, resp);
-			}
-		).catch(
-			function (err) {
-				logger.error('[fcw] Error in query instantiated chaincodes', typeof err, err);
-				var formatted = common.format_error_msg(err);
+		channel.queryInstantiatedChaincodes().then(function (resp) {
+			if (cb) return cb(null, resp);
+		}).catch(function (err) {
+			logger.error('[fcw] Error in query instantiated chaincodes', typeof err, err);
+			var formatted = common.format_error_msg(err);
 
-				if (cb) return cb(formatted, null);
-				else return;
-			}
-			);
+			if (cb) return cb(formatted, null);
+			else return;
+		});
 	};
 
 	return query_peer;
