@@ -101,7 +101,7 @@ server.timeout = 240000;																							// Ta-da.
 console.log('------------------------------------------ Server Up - ' + host + ':' + port + ' ------------------------------------------');
 process.on('uncaughtException', function (err) {
 	logger.error('Caught exception: ', err.stack);		//demos never give up
-	if(err.stack.indexOf('EADDRINUSE') >= 0){			//except for this error
+	if (err.stack.indexOf('EADDRINUSE') >= 0) {			//except for this error
 		logger.error('You already have something running on port 3001! kill it to run marbles.');
 		process.exit();
 	}
@@ -141,7 +141,7 @@ enroll_admin(1, function (e) {
 		setup_marbles_lib(function () {
 
 			// --- Check If We have Started Marbles Before --- //
-			detect_prev_startup(function (err) {
+			detect_prev_startup({ startup: true }, function (err) {
 				if (err) {
 					startup_unsuccessful();
 				} else {
@@ -163,17 +163,19 @@ function startup_unsuccessful() {
 }
 
 // Find if marbles has started up successfully before
-function detect_prev_startup(cb) {
+function detect_prev_startup(opts, cb) {
 	logger.info('Checking ledger for marble owners listed in the config file');
 	marbles_lib.read_everything(null, function (err, resp) {			//read the ledger for marble owners
 		if (err != null) {
 			logger.warn('Error reading ledger');
-			broadcast_state('no_chaincode');
+			if(opts.startup) broadcast_state('start_waiting');			//do not send no chaincode state... pause it at "start_waiting"
+			else broadcast_state('no_chaincode');
 			if (cb) cb(true);
 		} else {
 			if (find_missing_owners(resp)) {							//check if each user in the settings file has been created in the ledger
 				logger.info('We need to make marble owners');			//there are marble owners that do not exist!
-				broadcast_state('found_chaincode');
+				if(opts.startup) broadcast_state('start_waiting');		//do not send found chaincode state... pause it at "start_waiting"
+				else broadcast_state('no_chaincode');
 				if (cb) cb(true);
 			} else {
 				broadcast_state('registered_owners');					//everything is good
@@ -472,7 +474,7 @@ function setupWebSocket() {
 					enroll_admin(1, function (e) {
 						if (e == null) {
 							setup_marbles_lib(function () {
-								detect_prev_startup(function (err) {
+								detect_prev_startup({ startup: false }, function (err) {
 									if (err) {
 										create_assets(helper.getMarbleUsernames()); 	//builds marbles, then starts webapp
 									}
@@ -488,7 +490,7 @@ function setupWebSocket() {
 					enroll_admin(1, function (e) {							//re-renroll b/c we may be using new peer/order urls
 						if (e == null) {
 							setup_marbles_lib(function () {
-								detect_prev_startup(function (err) {
+								detect_prev_startup({ startup: true }, function (err) {
 									if (err) {
 										create_assets(helper.getMarbleUsernames()); 	//builds marbles, then starts webapp
 									}
