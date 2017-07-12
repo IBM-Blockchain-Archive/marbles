@@ -3,14 +3,14 @@
 		"network_id": "Docker Compose Network",
 		"orderers": [
 			{
-				"discovery": "grpc://localhost:7050",
+				"discovery_url": "grpc://localhost:7050",
 				"msp_id": "Org1MSP",
 				"tls_certificate": "cert_1"
 			}
 		],
 		"cas": [
 			{
-				"api": "http://localhost:7054",
+				"api_url": "http://localhost:7054",
 				"msp_id": "Org1MSP",
 				"users": [
 					{
@@ -24,8 +24,8 @@
 		"peers": [
 			{
 				"name": "fabric-peer-1a",
-				"discovery": "grpc://localhost:7051",
-				"events": "grpc://localhost:7053",
+				"discovery_url": "grpc://localhost:7051",
+				"event_url": "grpc://localhost:7053",
 				"msp_id": "Org1MSP",
 				"tls_certificate": "cert_1"
 			}
