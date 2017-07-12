@@ -9,7 +9,7 @@ These instructions have been tested on Ubuntu 14 and OSX.  It may work for Windo
 * [GoLang](https://golang.org/) - 1.7.0 or higher
 * [Docker](https://www.docker.com/products/overview) - v1.13 or higher
 * [Docker Compose](https://docs.docker.com/compose/overview/) - v1.8 or higher
-* [Node.js](https://nodejs.org/en/download/) - node v6.2.0 - v6.10.0 **(v7+ not supported)**
+* [Node.js](https://nodejs.org/en/download/) - node v6.2.0 - v6.11.1 **(v7+ not supported)**
 * [xcode](https://developer.apple.com/xcode/) - only required for OS X users
 
 
