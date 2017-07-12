@@ -88,7 +88,7 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 		};
 		fcw.invoke_chaincode(enrollObj, opts, function (err, resp) {
 			if (cb) {
-				if(!resp) resp = {};
+				if (!resp) resp = {};
 				resp.id = opts.cc_args[0];			//pass marble id back
 				cb(err, resp);
 			}
@@ -225,7 +225,7 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 		};
 		fcw.invoke_chaincode(enrollObj, opts, function (err, resp) {
 			if (cb) {
-				if(!resp) resp = {};
+				if (!resp) resp = {};
 				resp.id = opts.cc_args[0];				//pass owner id back
 				cb(err, resp);
 			}
@@ -261,6 +261,34 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 			cc_args: ['_ownerindex']
 		};
 		fcw.query_chaincode(enrollObj, opts, cb);
+	};
+
+	// disable a marble owner
+	marbles_chaincode.disable_owner = function (options, cb) {
+		console.log('');
+		logger.info('Disabling a marble owner...');
+
+		var opts = {
+			channel_id: g_options.channel_id,
+			chaincode_id: g_options.chaincode_id,
+			chaincode_version: g_options.chaincode_version,
+			event_url: g_options.event_url,
+			endorsed_hook: options.endorsed_hook,
+			ordered_hook: options.ordered_hook,
+			cc_function: 'disable_owner',
+			cc_args: [
+				options.args.owner_id,
+				options.args.auth_company
+			],
+			peer_tls_opts: g_options.peer_tls_opts,
+		};
+		fcw.invoke_chaincode(enrollObj, opts, function (err, resp) {
+			if (cb) {
+				if (!resp) resp = {};
+				resp.id = opts.cc_args[0];				//pass owner id back
+				cb(err, resp);
+			}
+		});
 	};
 
 	//build full name

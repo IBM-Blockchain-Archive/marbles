@@ -124,6 +124,20 @@ module.exports = function (g_options, fcw, logger) {
 			}
 		}
 
+		// disable marble owner
+		else if (data.type === 'disable_owner') {
+			if (data.owner_id) {
+				logger.info('[ws] disable owner');
+				options.args = {
+					owner_id: data.owner_id,
+					auth_company: process.env.marble_company
+				};
+				marbles_lib.disable_owner(options, function (err, resp) {
+					if (err != null) send_err(err, resp);
+					else options.ws.send(JSON.stringify({ msg: 'tx_step', state: 'finished' }));
+				});
+			}
+		}
 
 		// send transaction error msg 
 		function send_err(msg, input) {

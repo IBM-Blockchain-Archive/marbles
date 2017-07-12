@@ -259,16 +259,17 @@ $auditSize: 333px;
 	font-weight: 100;
 	font-size: 12px;
 }
-.marblesFix{
+.marblesFix, .disableOwner{
 	padding: 2px;
 	font-size: 12px;
 	float:right;
+	margin-left: 7px;
 }
 .marblesWrap.marblesFixed .legend .marblesFix{
 	transform: rotate(45deg);
 	color: $hi_color2;
 }
-.marblesFix:hover, .marblesOpenSection:hover{
+.marblesFix:hover, .marblesOpenSection:hover, .disableOwner:hover{
 	color: $hi_color1;
 	cursor: pointer;
 }

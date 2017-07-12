@@ -278,6 +278,16 @@ $(document).on('ready', function () {
 		$('#rightEverything').addClass('rightEverythingOpened');
 		$('#leftEverything').fadeIn();
 	});
+
+	// disable the marble owner
+	$(document).on('click', '.disableOwner', function () {
+		var obj = {
+			type: 'disable_owner',
+			owner_id: $(this).parents('.marblesWrap').attr('owner_id')
+		};
+		ws.send(JSON.stringify(obj));
+		$(this).parents('.marblesWrap').css('opacity', 0.4);
+	});
 });
 
 //toggle story mode

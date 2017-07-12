@@ -168,13 +168,13 @@ function detect_prev_startup(opts, cb) {
 	marbles_lib.read_everything(null, function (err, resp) {			//read the ledger for marble owners
 		if (err != null) {
 			logger.warn('Error reading ledger');
-			if(opts.startup) broadcast_state('start_waiting');			//do not send no chaincode state... pause it at "start_waiting"
+			if (opts.startup) broadcast_state('start_waiting');			//do not send no chaincode state... pause it at "start_waiting"
 			else broadcast_state('no_chaincode');
 			if (cb) cb(true);
 		} else {
 			if (find_missing_owners(resp)) {							//check if each user in the settings file has been created in the ledger
 				logger.info('We need to make marble owners');			//there are marble owners that do not exist!
-				if(opts.startup) broadcast_state('start_waiting');		//do not send found chaincode state... pause it at "start_waiting"
+				if (opts.startup) broadcast_state('start_waiting');		//do not send found chaincode state... pause it at "start_waiting"
 				else broadcast_state('no_chaincode');
 				if (cb) cb(true);
 			} else {
@@ -332,14 +332,16 @@ function create_assets(build_marbles_users) {
 				logger.debug('prepared marbles obj', marbles.length, marbles);
 
 				// --- Create Marbles--- //
-				async.each(marbles, function (owner_obj, marble_cb) { 			//iter through each one 
-					create_marbles(owner_obj.id, owner_obj.username, marble_cb);
-				}, function (err) {												//marble owner creation finished
-					logger.debug('- finished creating asset');
-					if (err == null) {
-						all_done();												//delay for peer catch up
-					}
-				});
+				setTimeout(function () {
+					async.each(marbles, function (owner_obj, marble_cb) { 			//iter through each one 
+						create_marbles(owner_obj.id, owner_obj.username, marble_cb);
+					}, function (err) {												//marble owner creation finished
+						logger.debug('- finished creating asset');
+						if (err == null) {
+							all_done();												//delay for peer catch up
+						}
+					});
+				}, helper.getBlockDelay());
 			}
 		});
 	}

@@ -473,16 +473,17 @@ strong {
   font-weight: 100;
   font-size: 12px; }
 
-.marblesFix {
+.marblesFix, .disableOwner {
   padding: 2px;
   font-size: 12px;
-  float: right; }
+  float: right;
+  margin-left: 7px; }
 
 .marblesWrap.marblesFixed .legend .marblesFix {
   transform: rotate(45deg);
   color: #2EB9D6; }
 
-.marblesFix:hover, .marblesOpenSection:hover {
+.marblesFix:hover, .marblesOpenSection:hover, .disableOwner:hover {
   color: orange;
   cursor: pointer; }
 

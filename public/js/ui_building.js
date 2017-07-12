@@ -28,7 +28,7 @@ function build_marble(marble) {
 	if (marble.size == 16) size = 'smallMarble';
 	if (marble.color) colorClass = marble.color.toLowerCase() + 'bg';
 
-	if(auditingMarble && marble.id ===  auditingMarble.id) auditing = 'auditingMarble';
+	if (auditingMarble && marble.id === auditingMarble.id) auditing = 'auditingMarble';
 
 	html += '<span id="' + marble.id + '" class="ball ' + size + ' ' + colorClass + ' ' + auditing + ' title="' + marble.id + '"';
 	html += ' username="' + marble.owner.username + '" company="' + marble.owner.company + '" owner_id="' + marble.owner.id + '"></span>';
@@ -84,15 +84,16 @@ function build_user_panels(data) {
 
 		console.log('[ui] building owner panel ' + data[i].id);
 
-		html += '<div id="user' + i + 'wrap" username="' + data[i].username + '" company="' + data[i].company +
-			'" owner_id="' + data[i].id + '" class="marblesWrap ' + colorClass + '">';
-		html += '<div class="legend" style="' + size_user_name(data[i].username) + '">';
-		html += toTitleCase(data[i].username);
-		html += '<span class="fa fa-thumb-tack marblesCloseSectionPos marblesFix" title="Never Hide Owner"></span>';
-		html += '</div>';
-		html += '<div class="innerMarbleWrap"><i class="fa fa-plus addMarble"></i></div>';
-		html += '<div class="noMarblesMsg hint">No marbles</div>';
-		html += '</div>';
+		html += `<div id="user` + i + `wrap" username="` + data[i].username + `" company="` + data[i].company +
+			`" owner_id="` + data[i].id + `" class="marblesWrap ` + colorClass + `">
+					<div class="legend" style="` + size_user_name(data[i].username) + `">
+						` + toTitleCase(data[i].username) + `
+						<span class="fa fa-thumb-tack marblesFix" title="Never Hide Owner"></span>
+						<span class="fa fa-trash disableOwner" title="Disable Owner"></span>
+					</div>
+					<div class="innerMarbleWrap"><i class="fa fa-plus addMarble"></i></div>
+					<div class="noMarblesMsg hint">No marbles</div>
+				</div>`;
 
 		$('.companyPanel[company="' + data[i].company + '"]').find('.ownerWrap').append(html);
 		$('.companyPanel[company="' + data[i].company + '"]').find('.companyVisible').html(known_companies[data[i].company].visible);
@@ -149,21 +150,19 @@ function build_company_panel(company) {
 	var mycss = '';
 	if (company === escapeHtml(bag.marble_company)) mycss = 'myCompany';
 
-	var html = '';
-	html += '<div class="companyPanel" company="' + company + '">';
-	html += '<div class="companyNameWrap ' + mycss + '">';
-	html += '<span class="companyName">' + company + '&nbsp;-&nbsp;</span>';
-	html += '<span class="companyVisible">0</span>/';
-	html += '<span class="companyCount">0</span>';
+	var html = `<div class="companyPanel" company="` + company + `">
+					<div class="companyNameWrap ` + mycss + `">
+					<span class="companyName">` + company + `&nbsp;-&nbsp;</span>
+					<span class="companyVisible">0</span>
+					<span class="companyCount">0</span>`;
 	if (company === escapeHtml(bag.marble_company)) {
 		html += '<span class="fa fa-exchange floatRight"></span>';
-	}
-	else {
+	} else {
 		html += '<span class="fa fa-long-arrow-left floatRight"></span>';
 	}
-	html += '</div>';
-	html += '<div class="ownerWrap"></div>';
-	html += '</div>';
+	html += `	</div>
+				<div class="ownerWrap"></div>
+			</div>`;
 	$('#allUserPanelsWrap').append(html);
 }
 
@@ -177,12 +176,12 @@ function build_notification(error, msg) {
 		iconClass = 'fa-minus-circle';
 	}
 
-	html += '<div class="notificationWrap ' + css + '">';
-	html += '<span class="fa ' + iconClass + ' notificationIcon"></span>';
-	html += '<span class="noticeTime">' + formatDate(Date.now(), '%M/%d %I:%m:%s') + '&nbsp;&nbsp;</span>';
-	html += '<span>' + escapeHtml(msg) + '</span>';
-	html += '<span class="fa fa-close closeNotification"></span>';
-	html += '</div>';
+	html += `<div class="notificationWrap ` + css + `">
+				<span class="fa ` + iconClass + ` notificationIcon"></span>
+				<span class="noticeTime">` + formatDate(Date.now(), `%M/%d %I:%m:%s`) + `&nbsp;&nbsp;</span>
+				<span>` + escapeHtml(msg) + `</span>
+				<span class="fa fa-close closeNotification"></span>
+			</div>`;
 	return html;
 }
 
@@ -193,30 +192,30 @@ function build_a_tx(data, pos) {
 	var username = '-';
 	var company = '-';
 	var id = '-';
-	if(data &&  data.value && data.value.owner && data.value.owner.username) {
+	if (data && data.value && data.value.owner && data.value.owner.username) {
 		username = data.value.owner.username;
 		company = data.value.owner.company;
 		id = data.value.owner.id;
 	}
 
-	html += '<div class="txDetails">';
-	html +=		'<div class="txCount">TX ' + (Number(pos) + 1) + '</div>';
-	html +=		'<p>';
-	html +=			'<div class="marbleLegend">Transaction: </div>';
-	html +=			'<div class="marbleName txId">' + data.txId.substring(0, 14) + '...</div>';
-	html +=		'</p>';
-	html +=		'<p>';
-	html +=			'<div class="marbleLegend">Owner: </div>';
-	html +=			'<div class="marbleName">' + username + '</div>';
-	html +=		'</p>';
-	html +=		'<p>';
-	html +=			'<div class="marbleLegend">Company: </div>';
-	html +=			'<div class="marbleName">' + company  + '</div>';
-	html +=		'</p>';
-	html +=		'<p>';
-	html +=			'<div class="marbleLegend">Ower Id: </div>';
-	html +=			'<div class="marbleName">' + id  + '</div>';
-	html +=		'</p>';
-	html +=	'</div>';
+	html += `<div class="txDetails">
+				<div class="txCount">TX ` + (Number(pos) + 1) + `</div>
+				<p>
+					<div class="marbleLegend">Transaction: </div>
+					<div class="marbleName txId">` + data.txId.substring(0, 14) + `...</div>
+				</p>
+				<p>
+					<div class="marbleLegend">Owner: </div>
+					<div class="marbleName">` + username + `</div>
+				</p>
+				<p>
+					<div class="marbleLegend">Company: </div>
+					<div class="marbleName">` + company + `</div>
+				</p>
+				<p>
+					<div class="marbleLegend">Ower Id: </div>
+					<div class="marbleName">` + id + `</div>
+				</p>
+			</div>`;
 	return html;
 }
