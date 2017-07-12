@@ -23,6 +23,11 @@ module.exports = function (g_options, logger) {
 	fcw.instantiate_chaincode = function (obj, options, cb_done) {
 		deploy_cc.instantiate_chaincode(obj, options, cb_done);
 	};
+
+	// Upgrade Chaincode
+	fcw.upgrade_chaincode = function (obj, options, cb_done) {
+		deploy_cc.upgrade_chaincode(obj, options, cb_done);
+	};
 	
 	// Invoke Chaincode
 	fcw.invoke_chaincode = function (obj, options, cb_done) {

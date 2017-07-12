@@ -93,7 +93,6 @@ module.exports = function (logger) {
 				pem: options.peer_tls_opts.pem,
 				'ssl-target-name-override': options.peer_tls_opts.common_name	//can be null if cert matches hostname
 			})],
-			chainId: options.channel_id,
 			chaincodePath: options.path_2_chaincode,		//rel path from /server/libs/src/ to chaincode folder ex: './marbles_chaincode'
 			chaincodeId: options.chaincode_id,
 			chaincodeVersion: options.chaincode_version,
@@ -180,7 +179,6 @@ module.exports = function (logger) {
 				pem: options.peer_tls_opts.pem,
 				'ssl-target-name-override': options.peer_tls_opts.common_name	//can be null if cert matches hostname
 			})],
-			chainId: options.channel_id,
 			chaincodePath: options.path_2_chaincode,		//rel path from /server/libs/src/ to chaincode folder ex: './marbles_chaincode'
 			chaincodeId: options.chaincode_id,
 			chaincodeVersion: options.chaincode_version,
