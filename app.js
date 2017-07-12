@@ -153,7 +153,7 @@ enroll_admin(1, function (e) {
 	}
 });
 
-// Wait for the user to help correct the settings file so we can startup!
+// Wait for the user to help correct the config file so we can startup!
 function startup_unsuccessful() {
 	process.env.app_first_setup = 'yes';
 	console.log('');
@@ -164,7 +164,7 @@ function startup_unsuccessful() {
 
 // Find if marbles has started up successfully before
 function detect_prev_startup(cb) {
-	logger.info('Checking ledger for marble owners listed in the settings file');
+	logger.info('Checking ledger for marble owners listed in the config file');
 	marbles_lib.read_everything(null, function (err, resp) {			//read the ledger for marble owners
 		if (err != null) {
 			logger.warn('Error reading ledger');

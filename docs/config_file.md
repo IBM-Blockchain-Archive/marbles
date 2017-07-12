@@ -2,7 +2,8 @@
 
 Configuration of marbles happens with two files. 
 These files can be found in the folder `<marbles directory>/config`. 
-You must edit them from their default state. 
+You usually need to edit them from their default state. 
+Especially the creds file (section 2) since it has the IPs and other network details that are specific to your network. 
 
 ### 1. Config File:
 
@@ -33,8 +34,9 @@ You must edit them from their default state.
 
 Your config file must have all the fields listed above. 
 There is already an example file in the config folder you can use. 
+- **Make sure** the `cred_filename` field is set to the correct creds file. (open the creds file and look it over)
 
-**Details**
+**Field Details**
 
 - cred_filename - The name of the `Credential File` to use for your network. See the `Credential File` section for details.
 - use_events - When `true` it will use EventHub.js in the SDK to be notified when tx are committed to the ledger. When `false` it will wait/sleep for a block to be created.
@@ -47,10 +49,13 @@ There is already an example file in the config folder you can use.
 
 ### 2. Creds File:
 
-- This file has settings for your blockchain network. 
+- This file has settings for your blockchain network such as IPs, port numbers, and certificates. 
 - This can be found in `<marbles>/config/blockchain_creds1.json`. 
 - You only need to edit/create 1 file. Details below.
 	- Tip: Use seperate files for seperate blockchain networks.
+
+**If you are using the Bluemix Blockchain Service you will not need to manually edit these files**. 
+You should have already downloaded this file from the service during the [install chaincode tutorial](./install_chaincode.md). 
 
 **Example JSON**
 
@@ -102,9 +107,9 @@ There is already an example file in the config folder you can use.
 }
 ```
 
-**Details**
+**Field Details**
 
-- network_id - The main purpose of this is to detect when people try to use the default file w/o any editing! Set it to anything other than `FakeNetworkId`.
+- network_id - The main purpose of this is to detect when people try to use the default file w/o editing! Set it to anything other than `FakeNetworkId` to get past the startup check.
 - orderers - An Array. Must have at least 1 entry. You can add more, but currently only the first one will be used.
 	- discovery - The gRPC url to reach the orderer. It must include the port.
 	- msp_id - The ID associated with the orderer. See fabric documentation for MSP information.

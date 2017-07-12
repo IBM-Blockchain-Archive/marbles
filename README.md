@@ -139,9 +139,7 @@ There are two ways to do this.
 Choose the **only** option that is relevant for your setup:
 
 - **Option 1:** Install and instantiate chaincode with your IBM Blockchain Service - [instructions](./docs/install_chaincode.md)
-
-<strike>- **Option 2:** :lollipop: Install and instantiate chaincode with the SDK locally - [instructions](./docs/install_chaincode_locally.md)</strike>
-- **Update:** Option 2 needs work with Fabric RC1.  Hang tight.
+- **Option 2:** :lollipop: Install and instantiate chaincode with the SDK locally - [instructions](./docs/install_chaincode_locally.md)
 
 <a name="hostmarbles"></a>
 
