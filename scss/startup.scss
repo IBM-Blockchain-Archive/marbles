@@ -1,0 +1,99 @@
+#leftStepsWrap{
+	display: inline-block;
+	width: 170px;
+	//border-right: 1px #fff solid;
+}
+
+#rightDetailsWrap{
+	display: inline-block;
+	vertical-align: top;
+	width: 76%;
+	text-align: center;
+	//min-height: 320px;
+}
+
+.oneStepWrap{
+	display: block;
+	margin: 5px 0;
+}
+.oneStepWrap:hover{
+	cursor: pointer;
+	color: #2eb9d6;
+}
+.inactive:hover{						//inactive steps can't be clicked
+	cursor: not-allowed;
+	color: inherit;
+}
+
+.stepDivide{
+	display: block;
+	border-left: 1px #fff solid;
+	height: 16px;
+	margin: 0 6px;
+	margin-top: -4px;
+}
+
+.stepIcon{
+	display: inline-block;
+	font-size: 10px;
+	margin-left: 2.5px;
+	margin-top: 3px;
+}
+.successfulStepIcon .stepIcon, .successfulStepIcon .stepDivide{
+	color: #52b152;
+	border-color: #52b152;
+}
+
+.stepName{
+	display: inline-block;
+	margin-left: 10px;
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.onStep .stepIcon{
+	font-size: 18px;
+	margin-left: -1px;
+}
+
+#leftStepsTitle{
+	font-size: 22px;
+	margin-bottom: 18px;
+}
+.loadingdiv{
+	display: none;
+}
+
+
+// Step Contents
+.stepWrap{
+	display: inline-block;
+	text-align: center;
+	vertical-align: top;
+	line-height: 20px;
+	margin-left: 30px;
+}
+.stepDescription{
+	font-size: 13px;
+	text-align: left;
+}
+.successStep{
+	color: #52b152;
+	margin: 20px 0;
+	font-weight: 600;
+	font-size: 14px;
+	opacity: 0;
+}
+
+.nextStep{					//default, don't show button
+	display: none;
+}
+.success .successStep{		//show success message if done
+	opacity: 1;
+}
+.success .runStep{			//hide run buttons if already done
+	display: none;
+}
+.success .nextStep{			//show next buttons if already done
+	display: inline-block;
+}

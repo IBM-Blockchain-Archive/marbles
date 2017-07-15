@@ -620,6 +620,12 @@ $marble_left: 0;
 	border-color: transparent;
 }
 
+.backgroundMe{
+	background: #1f252b;
+	padding: 2px 5px;
+	color: #2eb9d6;
+}
+
 
 //-- start up panel -- //
 #startUpPanel, #txStoryPanel, #settingsPanel{
@@ -633,23 +639,11 @@ $marble_left: 0;
 	width: 90%;
 	left: 1%;
 	min-width: 720px;
+	border-radius: 3px;
 }
 #startUpPanel, #settingsPanel{
 	position: absolute;
 	top: 0;
-}
-.stepWrap{
-	display: inline-block;
-	width: 25%;
-	text-align: center;
-	vertical-align: top;
-	line-height: 16px;
-}
-.stepNext{
-	display: inline-block;
-	width:10%;
-	vertical-align: top;
-	margin-top: 100px;
 }
 .stepHeader{
 	font-weight: 600;
@@ -663,11 +657,6 @@ $marble_left: 0;
 	display: inline-block;
 	background: $main_color;
 	border-radius: 100px;
-}
-.stepDescription{
-	font-size: 13px;
-	text-align: left;
-	height: 115px;
 }
 .stepEdit{
 	font-size: 12px;
@@ -782,6 +771,9 @@ $marble_left: 0;
 	color: #d740fd;
 	margin-left: 10px;
 	font-size: 16px;
+}
+.stepWrap.hidden{
+	display: none;
 }
 
 

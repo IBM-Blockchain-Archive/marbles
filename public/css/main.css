@@ -842,6 +842,11 @@ strong {
   background: #018fe0;
   border-color: transparent; }
 
+.backgroundMe {
+  background: #1f252b;
+  padding: 2px 5px;
+  color: #2eb9d6; }
+
 #startUpPanel, #txStoryPanel, #settingsPanel {
   display: none;
   position: fixed;
@@ -852,24 +857,12 @@ strong {
   padding: 30px;
   width: 90%;
   left: 1%;
-  min-width: 720px; }
+  min-width: 720px;
+  border-radius: 3px; }
 
 #startUpPanel, #settingsPanel {
   position: absolute;
   top: 0; }
-
-.stepWrap {
-  display: inline-block;
-  width: 25%;
-  text-align: center;
-  vertical-align: top;
-  line-height: 16px; }
-
-.stepNext {
-  display: inline-block;
-  width: 10%;
-  vertical-align: top;
-  margin-top: 100px; }
 
 .stepHeader {
   font-weight: 600;
@@ -883,11 +876,6 @@ strong {
   display: inline-block;
   background: #fff;
   border-radius: 100px; }
-
-.stepDescription {
-  font-size: 13px;
-  text-align: left;
-  height: 115px; }
 
 .stepEdit {
   font-size: 12px;
@@ -995,6 +983,9 @@ strong {
   color: #d740fd;
   margin-left: 10px;
   font-size: 16px; }
+
+.stepWrap.hidden {
+  display: none; }
 
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
   #notificationHandle {
@@ -1354,4 +1345,90 @@ strong {
   100% {
     height: 10px;
     -moz-transform: translateZ(0); } }
+
+#leftStepsWrap {
+  display: inline-block;
+  width: 170px; }
+
+#rightDetailsWrap {
+  display: inline-block;
+  vertical-align: top;
+  width: 76%;
+  text-align: center; }
+
+.oneStepWrap {
+  display: block;
+  margin: 5px 0; }
+
+.oneStepWrap:hover {
+  cursor: pointer;
+  color: #2eb9d6; }
+
+.inactive:hover {
+  cursor: not-allowed;
+  color: inherit; }
+
+.stepDivide {
+  display: block;
+  border-left: 1px #fff solid;
+  height: 16px;
+  margin: 0 6px;
+  margin-top: -4px; }
+
+.stepIcon {
+  display: inline-block;
+  font-size: 10px;
+  margin-left: 2.5px;
+  margin-top: 3px; }
+
+.successfulStepIcon .stepIcon, .successfulStepIcon .stepDivide {
+  color: #52b152;
+  border-color: #52b152; }
+
+.stepName {
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 16px;
+  font-weight: 600; }
+
+.onStep .stepIcon {
+  font-size: 18px;
+  margin-left: -1px; }
+
+#leftStepsTitle {
+  font-size: 22px;
+  margin-bottom: 18px; }
+
+.loadingdiv {
+  display: none; }
+
+.stepWrap {
+  display: inline-block;
+  text-align: center;
+  vertical-align: top;
+  line-height: 20px;
+  margin-left: 30px; }
+
+.stepDescription {
+  font-size: 13px;
+  text-align: left; }
+
+.successStep {
+  color: #52b152;
+  margin: 20px 0;
+  font-weight: 600;
+  font-size: 14px;
+  opacity: 0; }
+
+.nextStep {
+  display: none; }
+
+.success .successStep {
+  opacity: 1; }
+
+.success .runStep {
+  display: none; }
+
+.success .nextStep {
+  display: inline-block; }
 

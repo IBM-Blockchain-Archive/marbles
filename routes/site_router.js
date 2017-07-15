@@ -14,6 +14,7 @@ var helper = require(__dirname + '/../utils/helper.js')(process.env.creds_filena
 function build_bag(req) {
 	return {
 		e: process.error,							//send any setup errors
+		creds_filename: process.env.creds_filename,
 		jshash: process.env.cachebust_js,			//js cache busting hash (not important)
 		csshash: process.env.cachebust_css,			//css cache busting hash (not important)
 		marble_company: process.env.marble_company,
@@ -31,6 +32,7 @@ function get_credential_data() {
 		ca: helper.getCasUrl(0),
 		peer: helper.getPeersUrl(0),
 		chaincode_id: helper.getChaincodeId(),
+		channel: helper.getChannelId(),
 		chaincode_version: helper.getChaincodeVersion(),
 		marble_owners: helper.getMarbleUsernames(),
 	};

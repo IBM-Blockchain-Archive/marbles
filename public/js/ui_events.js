@@ -288,6 +288,48 @@ $(document).on('ready', function () {
 		ws.send(JSON.stringify(obj));
 		$(this).parents('.marblesWrap').css('opacity', 0.4);
 	});
+
+	$('.nextStep').click(function () {
+		var nextStep = $(this).attr('nextstepid');
+		showStepPanel(nextStep);
+	});
+
+	$('.runStep').click(function () {
+		var stepid = $(this).attr('stepid');
+		var nextStepId = $(this).attr('nextstepid');
+		console.log('got id', stepid, nextStepId);
+
+		$('#' + stepid + ' .loadingdiv').show();
+		let self = this;
+		setTimeout(function(){
+			$('#' + stepid + ' .loadingdiv').hide();
+			$(self).parent().addClass('success');
+			$('.oneStepWrap[stepid="' + stepid + '"').addClass('successfulStepIcon').removeClass('inactive');
+			$('.oneStepWrap[stepid="' + nextStepId + '"').removeClass('inactive');
+		}, 500);
+	});
+
+	$('.oneStepWrap').click(function () {
+		var stepid = $(this).attr('stepid');
+		if (!$(this).hasClass('inactive')) {
+			showStepPanel(stepid);
+		}
+	});
+
+	// show the step content and hide the current step content
+	function showStepPanel(openStepId) {
+		let onStep = $('.onStep').attr('stepid');
+
+		if (onStep != openStepId) {
+			$('#' + onStep).fadeOut(300);
+			console.log('hiding step', onStep, 'showing step', openStepId);
+			setTimeout(function () {
+				$('#' + openStepId).fadeIn();
+				$('.onStep').removeClass('onStep');
+				$('.oneStepWrap[stepid="' + openStepId + '"').addClass('onStep');
+			}, 400);
+		}
+	}
 });
 
 //toggle story mode
