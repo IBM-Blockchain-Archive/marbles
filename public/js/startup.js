@@ -13,8 +13,21 @@ $(document).on('ready', function () {
 	});
 
 	// ----------------------------- Actions-------------------------------------
+	//enroll admin
+	$('#enrollAdmin').click(function () {
+		var obj = {
+			type: 'setup',
+			configure: 'enrollment',
+			caUrl: $('input[name="caUrl"]').val(),
+			enrollId: $('input[name="enrollId"]').val(),
+			enrollSecret: $('input[name="enrollSecret"]').val(),
+		};
+		console.log('[startup] sending enrollment msg', obj);
+		ws.send(JSON.stringify(obj));
+	});
+	
 	//find chaincode again
-	$('#retryDeploy').click(function () {
+	$('#findCcButton').click(function () {
 		var obj = {
 			type: 'setup',
 			configure: 'find_chaincode',
@@ -25,15 +38,12 @@ $(document).on('ready', function () {
 		};
 		console.log('[startup] sending find_chaincode msg');
 		ws.send(JSON.stringify(obj));
-		$('#chaincodeStep').slideUp();
-		$('#step2').removeClass('stepFailed');
 	});
 
 	//register new marble owners
 	$('#registerOwners').click(function () {
 		var owners = $('input[name="marbleOwners"]').val();
 		owners = owners.split(',');
-		console.log('owners', owners);
 		var obj = {
 			type: 'setup',
 			configure: 'register',
@@ -41,26 +51,15 @@ $(document).on('ready', function () {
 		};
 		console.log('[startup] sending register msg');
 		ws.send(JSON.stringify(obj));
-		$('#regUserStep').slideUp();
-		$('#step3').removeClass('stepFailed').removeClass('stepComplete');
 	});
 
-	//enroll admin
-	$('#enrollAdmin').click(function () {
-		var obj = {
-			type: 'setup',
-			configure: 'enrollment',
-			caUrl: $('input[name="caUrl"]').val(),
-			enrollId: $('input[name="enrollId"]').val(),
-			enrollSecret: $('input[name="enrollSecret"]').val(),
-		};
-		console.log('[startup] sending enrollment msg');
-		ws.send(JSON.stringify(obj));
-		$('#adminStep').slideUp();
-		$('#step1').removeClass('stepFailed').removeClass('stepComplete');
-	});
-
+	// show loading spinner
 	$('.runStep').click(function () {
+		var stepid = $(this).attr('stepid');
+		$('#' + stepid + ' .loadingdiv').show();
+	});
+
+	/*$('.runStep').click(function () {
 		var stepid = $(this).attr('stepid');
 		var nextStepId = $(this).attr('nextstepid');
 		console.log('got id', stepid, nextStepId);
@@ -73,11 +72,11 @@ $(document).on('ready', function () {
 			$('.oneStepWrap[stepid="' + stepid + '"').addClass('successfulStepIcon').removeClass('inactive');
 			$('.oneStepWrap[stepid="' + nextStepId + '"').removeClass('inactive');
 		}, 500);
-	});
+	});*/
 
 	// ----------------------------- Nav -------------------------------------
 	$('.closeStartUp').click(function () {
-		$('#createPanel, #startUpPanel, #tint, #adminStep, #chaincodeStep, #regUserStep').fadeOut();
+		$('#createPanel, #startUpPanel, #tint').fadeOut();
 	});
 
 	$('.settingsExpand').click(function () {
@@ -120,12 +119,12 @@ function show_start_up_step(obj) {
 	var state = obj.state;
 
 	//fake state stuff, dsh remove this
-	state = {
+	/*state = {
 		checklist: { state: 'success', step: 'step1' },
 		enrolling: { state: 'success', step: 'step2' },
 		find_chaincode: { state: 'success', step: 'step3' },
 		register_owners: { state: 'waiting', step: 'step4' },
-	};
+	};*/
 
 	// we are not done with startup, show the panel
 	if (state.register_owners.state !== 'success') {

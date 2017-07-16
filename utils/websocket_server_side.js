@@ -17,31 +17,20 @@ module.exports = function (g_options, fcw, logger) {
 	//--------------------------------------------------------
 	// Setup WS Module
 	//--------------------------------------------------------
-	ws_server.setup = function (l_broadcast) {
+	ws_server.setup = function (l_broadcast, l_marbles_lib) {
 		broadcast = l_broadcast;
+		marbles_lib = l_marbles_lib;
 
-		// ---- Enroll Admin ----- //
-		var enroll_options = helper.makeEnrollmentOptions(0);
-		fcw.enroll(enroll_options, function (errCode, enrollObj) {
-			if (errCode != null) {
-				logger.error('could not enroll');
-			} else {
-
-				// ---- Pass Chain Obj to Marbles Lib ----- //
-				var opts = helper.makeMarblesLibOptions();
-				marbles_lib = require(path.join(__dirname, './marbles_cc_lib.js'))(enrollObj, opts, fcw, logger);
-
-				// --- Repeat --- //
-				clearInterval(enrollInterval);
-				enrollInterval = setInterval(function () {					//to avoid REQUEST_TIMEOUT errors we periodically re-enroll
-					fcw.enroll(enroll_options, function (err, enrollObj2) { //think of it as a keep alive, but... not 
-						if (err == null) {
-							marbles_lib = require(path.join(__dirname, './marbles_cc_lib.js'))(enrollObj2, opts, fcw, logger);
-						}
-					});														//this seems to be safe 3/27/2017
-				}, helper.getKeepAliveMs());								//timeout happens at 5 minutes, so this interval should be faster than that
-			}
-		});
+		// --- Keep Alive  --- //
+		clearInterval(enrollInterval);
+		enrollInterval = setInterval(function () {					//to avoid REQUEST_TIMEOUT errors we periodically re-enroll
+			let enroll_options = helper.makeEnrollmentOptions(0);
+			fcw.enroll(enroll_options, function (err, enrollObj2) {
+				if (err == null) {
+					//marbles_lib = require(path.join(__dirname, './marbles_cc_lib.js'))(enrollObj2, opts, fcw, logger);
+				}
+			});														//this seems to be safe 3/27/2017
+		}, helper.getKeepAliveMs());								//timeout happens at 5 minutes, so this interval should be faster than that
 	};
 
 	// process web socket messages

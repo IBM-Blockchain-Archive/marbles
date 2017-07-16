@@ -142,6 +142,7 @@ enroll_admin(1, function (e) {
 		broadcast_state('enrolling', 'failed');
 		startup_unsuccessful();
 	} else {
+		logger.info('Success enrolling admin');
 		broadcast_state('enrolling', 'success');
 
 		// --- Setup Marbles Library --- //
@@ -224,7 +225,7 @@ function find_missing_owners(resp) {
 function setup_marbles_lib(cb) {
 	var opts = helper.makeMarblesLibOptions();
 	marbles_lib = require('./utils/marbles_cc_lib.js')(enrollObj, opts, fcw, logger);
-	ws_server.setup(wss.broadcast);
+	ws_server.setup(wss.broadcast, marbles_lib);
 
 	logger.debug('Checking if chaincode is already instantiated or not');
 	var options = {
@@ -264,20 +265,31 @@ function enroll_admin(attempt, cb) {
 			if (attempt >= 2) {
 				if (cb) cb(errCode);
 			} else {
-				try {
-					logger.warn('removing older kvs and trying to enroll again');
-					rmdir(makeKVSpath());							//delete old kvs folder
-					logger.warn('removed older kvs');
-					enroll_admin(++attempt, cb);
-				} catch (e) {
-					logger.error('could not delete old kvs', e);
-				}
+				removeKVS();
+				enroll_admin(++attempt, cb);
 			}
 		} else {
 			enrollObj = obj;
 			if (cb) cb(null);
 		}
 	});
+}
+
+// Clean Up OLD KVS
+function removeKVS() {
+	try {
+		logger.warn('removing older kvs and trying to enroll again');
+		rmdir(makeKVSpath());							//delete old kvs folder
+		logger.warn('removed older kvs');
+	} catch (e) {
+		logger.error('could not delete old kvs', e);
+	}
+
+	// Make the path to the kvs we use
+	function makeKVSpath() {
+		var temp = helper.makeEnrollmentOptions(0);
+		return path.join(os.homedir(), '.hfc-key-store/', temp.uuid);
+	}
 }
 
 // Random integer
@@ -453,12 +465,6 @@ function rmdir(dir_path) {
 	}
 }
 
-// Make the path to the kvs we use
-function makeKVSpath() {
-	var temp = helper.makeEnrollmentOptions(0);
-	return path.join(os.homedir(), '.hfc-key-store/', temp.uuid);
-}
-
 // ============================================================================================================================
 // 												WebSocket Communication Madness
 // ============================================================================================================================
@@ -482,6 +488,7 @@ function setupWebSocket() {
 
 				//enroll admin
 				if (data.configure === 'enrollment') {
+					removeKVS();
 					helper.write(data);										//write new config data to file
 					enroll_admin(1, function (e) {
 						if (e == null) {

@@ -57,7 +57,7 @@ module.exports = function (logger) {
 			enroll_secret: options.enroll_secret,
 			msp_id: options.msp_id,
 		};
-		logger.info('[fcw] Going to enroll for mspId ', debug);
+		logger.info('[fcw] Going to enroll', debug);
 
 		// Make eCert kvs (Key Value Store)
 		FabricClient.newDefaultKeyValueStore({

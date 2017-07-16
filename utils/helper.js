@@ -403,10 +403,12 @@ module.exports = function (config_filename, logger) {
 			creds_file.credentials.app.channel_id = obj.channelId;
 		}
 		if (obj.enrollId && obj.enrollSecret) {
-			creds_file.credentials.users[0] = {
-				enrollId: obj.enrollId,
-				enrollSecret: obj.enrollSecret
-			};
+			for (let i in creds_file.credentials.cas[0].orgs) {
+				creds_file.credentials.cas[0].orgs[i].users[0] = {
+					enrollId: obj.enrollId,
+					enrollSecret: obj.enrollSecret
+				};
+			}
 		}
 
 		fs.writeFileSync(creds_path, JSON.stringify(creds_file, null, 4), 'utf8');	//save to file
