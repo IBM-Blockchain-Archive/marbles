@@ -19,7 +19,7 @@
 		.oneStepWrap.inactive(stepid="step4")
 			.stepDivide
 			.stepIcon.fa.fa-circle
-			.stepName 4. Create Marbles
+			.stepName 4. Create Assets
 		.oneStepWrap.inactive(stepid="step5")
 			.stepDivide
 			.stepIcon.fa.fa-circle
@@ -160,14 +160,14 @@
 		//----------------- Step 4 Content [Register Marlbe Owners]
 		#step4.stepWrap.hidden
 			span.fa.fa-group.fa-5x
-			.stepHeader Register Marble Owners
+			.stepHeader Create Marble Owners
 			.stepDescription 
 				span Almost there! 
 				span As a marbles trading company you may bring new marble owners onboard. 
 				span These marble owners represent your user base. 
 				br
 				br
-				span Using your organization’s peer you will transfer marbles between owners. 
+				span This step will create the marble owners and 3 marbles per owner. 
 
 			include ./template/loading.pug
 
@@ -191,7 +191,7 @@
 		#step5.stepWrap.hidden.success
 			span.fa.fa-smile-o.fa-5x
 			.stepHeader Done
-			.stepDescription 
+			.stepDescription(style="text-align:center")
 				span Your marbles application is ready to use!
 				br
 				br

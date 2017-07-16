@@ -119,12 +119,6 @@ function showStepPanel(openStepId) {
 function show_start_up_step(obj) {
 	var state = obj.state;
 
-	// we are not done with startup, show the panel
-	if (state.register_owners !== 'success') {
-		$('#startUpPanel, #tint').fadeIn();
-		$('#doneStep').hide();
-	}
-
 	//fake state stuff, dsh remove this
 	state = {
 		checklist: { state: 'success', step: 'step1' },
@@ -133,6 +127,14 @@ function show_start_up_step(obj) {
 		register_owners: { state: 'waiting', step: 'step4' },
 	};
 
+	// we are not done with startup, show the panel
+	if (state.register_owners.state !== 'success') {
+		$('#startUpPanel, #tint').fadeIn();
+		$('#doneStep').hide();
+	} else {
+		get_everything_or_else();
+	}
+
 	for (let i in state) {
 		//console.log('working on state', i, state[i].step, state[i].state);
 		let nextStep = 'step' + (Number(state[i].step[4]) + 1);
@@ -140,7 +142,7 @@ function show_start_up_step(obj) {
 			$('#' + state[i].step).removeClass('errorStepContent').addClass('success');
 			$('.oneStepWrap[stepid="' + state[i].step + '"').removeClass('inactive, errorStepIcon').addClass('successfulStepIcon');
 			$('.oneStepWrap[stepid="' + nextStep + '"').removeClass('inactive');
-			console.log('removing inactive to step', nextStep, 'by step', i);
+			console.log('removing inactive to step', nextStep, 'by step', state[i].step);
 		} else if (state[i].state === 'failed') {
 			$('#' + state[i].step).removeClass('success').addClass('errorStepContent');
 			$('.oneStepWrap[stepid="' + state[i].step + '"').removeClass('successfulStepIcon, inactive').addClass('errorStepIcon');
@@ -148,10 +150,16 @@ function show_start_up_step(obj) {
 			console.log('adding inactive tostep', nextStep, 'by step', i);
 		} else {
 			$('#' + state[i].step).removeClass('success, errorStepContent');
-			$('.oneStepWrap[stepid="' + state[i].step + '"').removeClass('successfulStepIcon, errorStepIcon').addClass('inactive');
+			$('.oneStepWrap[stepid="' + state[i].step + '"').removeClass('successfulStepIcon, errorStepIcon');
 			$('.oneStepWrap[stepid="' + nextStep + '"').addClass('inactive');
 			console.log('adding inactive tostep', nextStep, 'by step', i);
 		}
+	}
+
+	if (state.register_owners.state === 'success') {				//last step
+		$('#step5').removeClass('errorStepContent').addClass('success');
+		$('.oneStepWrap[stepid="step5"').removeClass('inactive, errorStepIcon').addClass('successfulStepIcon');
+		$('.oneStepWrap[stepid="step5"').removeClass('inactive');
 	}
 
 	/*if(state === 'start_waiting'){						//lets start it up
