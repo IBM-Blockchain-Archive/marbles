@@ -321,13 +321,13 @@ $(document).on('ready', function () {
 		let onStep = $('.onStep').attr('stepid');
 
 		if (onStep != openStepId) {
-			$('#' + onStep).fadeOut(300);
+			$('#' + onStep).fadeOut(100);
 			console.log('hiding step', onStep, 'showing step', openStepId);
 			setTimeout(function () {
-				$('#' + openStepId).fadeIn();
+				$('#' + openStepId).fadeIn(400);
 				$('.onStep').removeClass('onStep');
 				$('.oneStepWrap[stepid="' + openStepId + '"').addClass('onStep');
-			}, 400);
+			}, 150);
 		}
 	}
 });

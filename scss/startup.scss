@@ -1,3 +1,4 @@
+@import 'color_theme';
 #leftStepsWrap{
 	display: inline-block;
 	width: 170px;
@@ -40,8 +41,12 @@
 	margin-top: 3px;
 }
 .successfulStepIcon .stepIcon, .successfulStepIcon .stepDivide{
-	color: #52b152;
-	border-color: #52b152;
+	color: $hi_color3;
+	border-color: $hi_color3;
+}
+.errorStepIcon .stepIcon, .errorStepIcon .stepDivide{
+	color: $err_color;
+	border-color: $err_color;
 }
 
 .stepName{
@@ -54,6 +59,7 @@
 .onStep .stepIcon{
 	font-size: 18px;
 	margin-left: -1px;
+	margin-right: -4px;
 }
 
 #leftStepsTitle{
@@ -62,6 +68,16 @@
 }
 .loadingdiv{
 	display: none;
+}
+.inactive .stepName{
+	font-style: italic;
+}
+
+.greenMe{
+	color:  $hi_color3;
+}
+.redMe{
+	color: $err_color;
 }
 
 
@@ -78,11 +94,18 @@
 	text-align: left;
 }
 .successStep{
-	color: #52b152;
+	color: $hi_color3;
 	margin: 20px 0;
 	font-weight: 600;
 	font-size: 14px;
 	opacity: 0;
+}
+.failureStep{
+	color: $err_color;
+	margin: 20px 0;
+	font-weight: 600;
+	font-size: 14px;
+	display: none;
 }
 
 .nextStep{					//default, don't show button
@@ -96,4 +119,32 @@
 }
 .success .nextStep{			//show next buttons if already done
 	display: inline-block;
+}
+.errorStepContent .failureStep{		//show failure message if done
+	display: block;
+}
+.settingsExpand{
+	//background: #5b6169;
+	color: #fff;
+	padding: 4px;
+	text-align: left;
+	padding-left: 17px;
+	cursor: pointer;
+}
+.settingsExpand:hover{
+	color: #ccc;
+}
+.settingsContent{
+	margin: 16px;
+	display: none;
+}
+.settingsWrap{
+	color: #5b6169;
+	border: 1px #5b6169 solid;
+	border-radius: 3px;
+	margin: 20px 0;
+}
+
+#registerOwnersInputPanel{
+	display: block;
 }

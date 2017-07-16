@@ -2,76 +2,111 @@
 
 	span.fa.fa-close#closeStartUp.closeStartUp
 
+	//----------------- Step Navigation
 	#leftStepsWrap
-		#leftStepsTitle Start Up
+		#leftStepsTitle Start Up Report
 		.oneStepWrap(stepid="step1").successfulStepIcon.onStep
 			.stepIcon.fa.fa-circle
-			.stepName Check Settings
+			.stepName 1. Check Settings
 		.oneStepWrap(stepid="step2")
 			.stepDivide
 			.stepIcon.fa.fa-circle
-			.stepName Enroll Admin
+			.stepName 2. Enroll Admin
 		.oneStepWrap.inactive(stepid="step3")
 			.stepDivide
 			.stepIcon.fa.fa-circle
-			.stepName Find Chaincode
+			.stepName 3. Find Chaincode
 		.oneStepWrap.inactive(stepid="step4")
 			.stepDivide
 			.stepIcon.fa.fa-circle
-			.stepName Create Marbles
+			.stepName 4. Create Marbles
 		.oneStepWrap.inactive(stepid="step5")
 			.stepDivide
 			.stepIcon.fa.fa-circle
-			.stepName Finish
+			.stepName 5. Finish
 
 	#rightDetailsWrap
 
-		//----------------- Step 1 Content
+		//----------------- Step 1 Content [Check Settings + Welcome]
 		#step1.stepWrap.success
 			span.fa.fa-gear.fa-5x
 			.stepHeader Check Settings
 			.stepDescription 
 				span Welcome! 
-				span Marbles has checked over your network credentials JSON file for easy to make mistakes. 
-				span Everything looks to be in order!
+				span Starting marbles requires a few steps. 
+				span Many of steps were automatically ran when you started the application.
+				span The outcome of each step can be found on the left. 
+				span.greenMe Green 
+				span is a step that passed, 
+				span.redMe Red 
+				span is a step that failed, and White is step that has yet to run. 
 				br
 				br
+				span The first step was to check over your network credentials JSON file for easy to make mistakes. 
 				span For reference, the file that was checked can be found in the 
 				span.backgroundMe /config/#{bag.creds_filename}
 				span &nbsp;folder.
-			.successStep Pass
+
+			.successStep 
+				span Settings File Looks Good
 			
-			button.runStep(stepid="step1" nextstepid="step2") Run
+			button.runStep(stepid="step1" nextstepid="step2") Submit
 			button.nextStep(nextstepid="step2") Next
 
-		//----------------- Step 2 Content
+		//----------------- Step 2 Content [Enroll Admin]
 		#step2.stepWrap.hidden
 			span.fa.fa-user.fa-5x
 			.stepHeader Enrolling Admin
 			.stepDescription 
-				span Next up, lets enroll you as your company's admin. 
-				span This step will contact your Certificate Authority (CA) and feed it the 
+				span Next up, we attemped to enroll you as your company's admin. 
+				span This step contacted your Certificate Authority (CA) and fed it the 
 				span.backgroundMe enrollID
 				span &nbsp;and 
 				span.backgroundMe enrollSecret
 				span &nbsp;from your creds file. 
 				br
 				br
-				span If successful, this application will download an enrollment certificate. 
+				span If successful, the application will download an enrollment certificate. 
 				span The admin's certificate is used to authenticate himself for marble transactions. 
 
 			include ./template/loading.pug
-			.successStep Success
-			
-			button.runStep(stepid="step2" nextstepid="step3") Run
+
+			.failureStep 
+				p Sorry, we could not enroll the admin against the CA. 
+				p Edit the settings below to try again.
+
+			.settingsWrap
+				.settingsExpand 
+					span.fa.fa-plus-square
+					span &nbsp;&nbsp;JSON Settings
+
+				.settingsContent
+					.stepInputLegend
+						span CA's 
+						span.backgroundMe api_url
+					input(type="text" placeholder="CA ex: 192.168.99.100:8888" name="caUrl" value=bag.creds.ca).longer
+					span.fa.fa-question-circle
+					br
+					.stepInputLegend
+						span.backgroundMe enrollId
+					input(type="text" placeholder="Enroll Id" name="enrollId" value=bag.creds.admin_id).longer
+					span.fa.fa-question-circle
+					br
+					.stepInputLegend
+						span.backgroundMe enrollSecret 
+					input(type="text" placeholder="Enroll Secret" name="enrollSecret" value=bag.creds.admin_secret).longer
+					span.fa.fa-question-circle
+
+			.successStep Enrollment Successful
+			button.runStep(stepid="step2" nextstepid="step3") Try Again
 			button.nextStep(nextstepid="step3") Next
 
-		//----------------- Step 3 Content
+		//----------------- Step 3 Content [Find Chaincode]
 		#step3.stepWrap.hidden
 			span.fa.fa-file-text.fa-5x
 			.stepHeader Finding Chaincode
 			.stepDescription 
-				span Now lets locate the instanitated chaincode on your channel called 
+				span Now we needed to locate the instanitated chaincode on your channel called 
 				span.backgroundMe #{bag.creds.channel}
 				span &nbsp;. 
 				br
@@ -80,12 +115,49 @@
 				span It only needs to be instantiated once per channel. 
 
 			include ./template/loading.pug
-			.successStep Success
 			
-			button.runStep(stepid="step3" nextstepid="step4") Run
+			.failureStep 
+				p We could not find the correct chaincode
+				p Edit the settings below to try again
+				p OR...
+				p 
+					span If this is your first time using the application then&nbsp;
+					a(href="https://github.com/IBM-Blockchain/marbles/blob/v3.0/docs/install_chaincode.md" target="_blank" style="color:#fff;") install/instantiate
+					span &nbsp;marbles chaincode
+
+			.settingsWrap
+				.settingsExpand 
+					span.fa.fa-plus-square
+					span &nbsp;&nbsp;JSON Settings
+
+				.settingsContent
+					.stepInputLegend
+						span Orderer's 
+						span.backgroundMe discovery_url
+					input(type="text" placeholder="Orderer ex: 192.168.99.100:5151" name="ordererUrl" value=bag.creds.orderer).longer
+					span.fa.fa-question-circle
+					br
+					.stepInputLegend
+						span Peer's 
+						span.backgroundMe discovery_url
+					input(type="text" placeholder="Peer ex: 192.168.99.100:7051" name="peerUrl" value=bag.creds.peer).longer
+					span.fa.fa-question-circle
+					br
+					.stepInputLegend
+						span.backgroundMe chaincode_id 
+					input(type="text" placeholder="Chaincode ID" name="chaincodeId" value=bag.creds.chaincode_id).longer
+					span.fa.fa-question-circle
+					br
+					.stepInputLegend
+						span.backgroundMe chaincode_version 
+					input(type="text" placeholder="Chaincode ID" name="chaincodeVersion" value=bag.creds.chaincode_version).longer
+					span.fa.fa-question-circle
+
+			.successStep Valid Chaincode Found
+			button.runStep(stepid="step3" nextstepid="step4") Try Again
 			button.nextStep(nextstepid="step4") Next
 
-		//----------------- Step 4 Content
+		//----------------- Step 4 Content [Register Marlbe Owners]
 		#step4.stepWrap.hidden
 			span.fa.fa-group.fa-5x
 			.stepHeader Register Marble Owners
@@ -98,14 +170,26 @@
 				span Using your organization’s peer you will transfer marbles between owners. 
 
 			include ./template/loading.pug
+
+			.settingsWrap
+				#registerOwnersInputPanel.settingsContent
+					.stepInputLegend
+						span Company 
+					input(type="text" value=bag.marble_company disabled="disabled").longer
+					span.fa.fa-question-circle
+					br
+					.stepInputLegend
+						span Marble Owners 
+					input(type="text" placeholder="bob, bill, amy" name="marbleOwners" value=bag.creds.marble_owners).longer
+					span.fa.fa-question-circle
+					
 			.successStep Finished
-			
-			button.runStep(stepid="step4" nextstepid="step5") Run
+			button.runStep(stepid="step4" nextstepid="step5") Create
 			button.nextStep(nextstepid="step5") Next
 
-		//----------------- Step 5 Content
+		//----------------- Step 5 Content [Finished]
 		#step5.stepWrap.hidden.success
-			span.fa.fa-group.fa-5x
+			span.fa.fa-smile-o.fa-5x
 			.stepHeader Done
 			.stepDescription 
 				span Your marbles application is ready to use!
@@ -113,86 +197,3 @@
 				br
 			
 			button(type="button").closeStartUp Enter
-
-	//
-	
-		//----------------- All done
-		.stepHelpWrap#doneStep
-			h2 Setup Complete
-			br
-			br
-			.stepHelpTxt
-				p Your marbles application is ready to use.
-				br
-				br
-				button(type="button").closeStartUp Close
-
-		//----------------- Enrollment Help 
-		.stepHelpWrap#adminStep
-			h2 Enroll Admin
-			br
-			br
-			.stepHelpTxt
-				p Sorry, we could not enroll the admin against the CA. 
-				p Edit the details below to try again.
-			br
-			.stepInputLegend CA
-			input(type="text" placeholder="CA ex: 192.168.99.100:8888" name="caUrl" value=bag.creds.ca).longer
-			br
-			.stepInputLegend Enroll ID 
-			input(type="text" placeholder="Enroll Id" name="enrollId" value=bag.creds.admin_id).longer
-			br
-			.stepInputLegend Enroll Secret 
-			input(type="text" placeholder="Enroll Secret" name="enrollSecret" value=bag.creds.admin_secret).longer
-			br
-			br
-			button(type="button")#enrollAdmin Retry
-
-		//---------- Find Chaincode Help
-		.stepHelpWrap#chaincodeStep
-			h2 Find Chaincode
-			br
-			br
-			.stepHelpTxt
-				p Whoops, we could not find the correct chaincode
-				br
-				p Edit the settings below to try again 
-				p OR...
-				p 
-					span If this is your first time using the application then&nbsp;
-					a(href="https://github.com/IBM-Blockchain/marbles/blob/v3.0/docs/install_chaincode.md" target="_blank" style="color:#fff;") install/instantiate
-					span &nbsp;marbles chaincode
-
-			br
-			.stepInputLegend Orderer 
-			input(type="text" placeholder="Orderer ex: 192.168.99.100:5151" name="ordererUrl" value=bag.creds.orderer).longer
-			br
-			.stepInputLegend Peer 
-			input(type="text" placeholder="Peer ex: 192.168.99.100:7051" name="peerUrl" value=bag.creds.peer).longer
-			br
-			.stepInputLegend Chaincode ID 
-			input(type="text" placeholder="Chaincode ID" name="chaincodeId" value=bag.creds.chaincode_id).longer
-			br
-			.stepInputLegend Chaincode Version 
-			input(type="text" placeholder="Chaincode Version" name="chaincodeVersion" value=bag.creds.chaincode_version).longer
-			br
-			button(type="button")#retryDeploy Retry
-
-		//---------- Register User Help
-		.stepHelpWrap#regUserStep
-			h2 Register Marble Owners
-			br
-			br
-			.stepHelpTxt
-				p Bring your marble owners onboard by providing a comma seperated list of usernames.
-				p These are the identies that can own marbles.
-			br
-			.stepInputLegend Company 
-			input(type="text" value=bag.marble_company disabled="disabled").longer
-			br
-
-			.stepInputLegend Owners 
-			input(type="text" placeholder="bob, bill, amy" name="marbleOwners" value=bag.creds.marble_owners).longer
-			br
-			br
-			button(type="button")#registerOwners Register

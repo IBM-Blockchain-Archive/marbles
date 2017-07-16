@@ -40,6 +40,13 @@ var enrollObj = null;
 var marbles_lib = null;
 process.env.marble_company = helper.getCompanyName();
 
+var start_up_states = {
+	checklist: { state: 'waiting', step: 'step1' },
+	enrolling: { state: 'waiting', step: 'step2' },
+	find_chaincode: { state: 'waiting', step: 'step3' },
+	register_owners: { state: 'waiting', step: 'step4' },
+};
+
 // ------------- Bluemix Detection ------------- //
 if (process.env.VCAP_APPLICATION) {
 	host = '0.0.0.0';							//overwrite defaults
@@ -121,7 +128,6 @@ process.on('uncaughtException', function (err) {
 // ------------------------------------------------------------------------------------------------------------------------------
 // Life Starts Here!
 // ------------------------------------------------------------------------------------------------------------------------------
-process.env.app_state = 'starting';					//init
 process.env.app_first_setup = 'yes';				//init
 helper.checkConfig();
 setupWebSocket();
@@ -133,9 +139,10 @@ logger.info('Using settings in ' + process.env.creds_filename + ' to see if we h
 enroll_admin(1, function (e) {
 	if (e != null) {
 		logger.warn('Error enrolling admin');
-		broadcast_state('failed_enroll');
+		broadcast_state('enrolling', 'failed');
 		startup_unsuccessful();
 	} else {
+		broadcast_state('enrolling', 'success');
 
 		// --- Setup Marbles Library --- //
 		setup_marbles_lib(function () {
@@ -168,17 +175,20 @@ function detect_prev_startup(opts, cb) {
 	marbles_lib.read_everything(null, function (err, resp) {			//read the ledger for marble owners
 		if (err != null) {
 			logger.warn('Error reading ledger');
-			if (opts.startup) broadcast_state('start_waiting');			//do not send no chaincode state... pause it at "start_waiting"
-			else broadcast_state('no_chaincode');
+			//if (opts.startup) broadcast_state('start_waiting');			//do not send no chaincode state... pause it at "start_waiting"
+			//else 
+			broadcast_state('find_chaincode', 'failed');
 			if (cb) cb(true);
 		} else {
 			if (find_missing_owners(resp)) {							//check if each user in the settings file has been created in the ledger
 				logger.info('We need to make marble owners');			//there are marble owners that do not exist!
-				if (opts.startup) broadcast_state('start_waiting');		//do not send found chaincode state... pause it at "start_waiting"
-				else broadcast_state('no_chaincode');
+				//if (opts.startup) broadcast_state('start_waiting');	//do not send found chaincode state... pause it at "start_waiting"
+				//else
+				broadcast_state('find_chaincode', 'failed');
 				if (cb) cb(true);
 			} else {
-				broadcast_state('registered_owners');					//everything is good
+				broadcast_state('find_chaincode', 'success');
+				broadcast_state('register_owners', 'success');			//everything is good
 				process.env.app_first_setup = 'no';
 				logger.info('Everything is in place');
 				if (cb) cb(null);
@@ -226,7 +236,7 @@ function setup_marbles_lib(cb) {
 			logger.debug('Chaincode was not detected: "' + helper.getChaincodeId() + '", all stop');
 			logger.debug('Open your browser to http://' + host + ':' + port + ' and login to tweak settings for startup');
 			process.env.app_first_setup = 'yes';				//overwrite state, bad startup
-			broadcast_state('no_chaincode');
+			broadcast_state('find_chaincode', 'failed');
 		}
 		else {													//else we already instantiated
 			console.log('\n----------------------------- Chaincode found on channel "' + helper.getChannelId() + '" -----------------------------\n');
@@ -234,9 +244,9 @@ function setup_marbles_lib(cb) {
 			// --- Check Chaincode Compatibility  --- //
 			marbles_lib.check_version(options, function (err, resp) {
 				if (helper.errorWithVersions(resp)) {
-					broadcast_state('no_chaincode');
+					broadcast_state('find_chaincode', 'failed');
 				} else {
-					broadcast_state('found_chaincode');
+					broadcast_state('find_chaincode', 'success');
 					if (cb) cb(null);
 				}
 			});
@@ -404,7 +414,7 @@ function build_marble_options(id, username, company) {
 // We are done, inform the clients
 function all_done() {
 	console.log('\n------------------------------------------ All Done ------------------------------------------\n');
-	broadcast_state('registered_owners');
+	broadcast_state('register_owners', 'success');
 	process.env.app_first_setup = 'no';
 
 	ws_server.check_for_updates(null);									//call the periodic task to get the state of everything
@@ -414,15 +424,15 @@ function all_done() {
 function build_state_msg() {
 	return {
 		msg: 'app_state',
-		state: process.env.app_state,
+		state: start_up_states,
 		first_setup: process.env.app_first_setup
 	};
 }
 
 // Send to all connected clients
-function broadcast_state(new_state) {
+function broadcast_state(change_state, outcome) {
 	try {
-		process.env.app_state = new_state;
+		start_up_states[change_state].state = outcome;
 		wss.broadcast(build_state_msg());											//tell client our app state
 	} catch (e) { }
 }

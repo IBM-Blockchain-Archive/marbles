@@ -120,7 +120,7 @@ tr {
   border-bottom: 6px #343D48 solid; }
 
 tr:hover {
-  background: orange; }
+  background: #ff5b5b; }
 
 td {
   padding: 15px 10px;
@@ -186,7 +186,7 @@ input[type="text"]:disabled, input[type="password"]:disabled, select:disabled {
   color: #646B73; }
 
 input.longer {
-  min-width: 250px; }
+  min-width: 333px; }
 
 button:disabled {
   cursor: default; }
@@ -313,7 +313,7 @@ strong {
   margin: 0 auto;
   padding: 5px;
   border-radius: 2px;
-  border-left: 5px #6CC284 solid;
+  border-left: 5px #52b152 solid;
   color: #E5EBEF;
   font-size: 14px;
   display: inline-block;
@@ -346,17 +346,17 @@ strong {
   margin-bottom: 35px; }
 
 .closeNotification:hover {
-  color: orange; }
+  color: #ff5b5b; }
 
 .notificationIcon {
   margin: 0 10px;
-  color: #6CC284; }
+  color: #52b152; }
 
 .warningNotice {
-  border-left: 5px orange solid; }
+  border-left: 5px #ff5b5b solid; }
 
 .warningNotice .notificationIcon {
-  color: orange; }
+  color: #ff5b5b; }
 
 #emptyNotifications {
   color: #39424D;
@@ -484,7 +484,7 @@ strong {
   color: #2EB9D6; }
 
 .marblesFix:hover, .marblesOpenSection:hover, .disableOwner:hover {
-  color: orange;
+  color: #ff5b5b;
   cursor: pointer; }
 
 .notAdminControl {
@@ -713,7 +713,7 @@ strong {
   font-size: 15px; }
 
 #loginCompany {
-  color: orange;
+  color: #ff5b5b;
   text-align: center; }
 
 #adminText {
@@ -911,9 +911,10 @@ strong {
 .stepInputLegend {
   display: inline-block;
   text-align: right;
-  width: 115px;
+  width: 150px;
   font-size: 13px;
-  margin-right: 5px; }
+  margin-right: 5px;
+  color: #fff; }
 
 #closeStartUp, #closeTxStoryPos, #closeSettings, #closeCreate {
   position: absolute;
@@ -921,7 +922,7 @@ strong {
   top: 15px; }
 
 #closeStartUp:hover, #closeTxStoryPos:hover, #closeSettings:hover, #closeCreate:hover {
-  color: orange;
+  color: #ff5b5b;
   cursor: pointer; }
 
 #appStartingText {
@@ -976,7 +977,7 @@ strong {
   margin-bottom: 50px; }
 
 .storyOn {
-  color: #6CC284;
+  color: #52b152;
   font-weight: 700; }
 
 #construction {
@@ -1385,6 +1386,10 @@ strong {
   color: #52b152;
   border-color: #52b152; }
 
+.errorStepIcon .stepIcon, .errorStepIcon .stepDivide {
+  color: #ff5b5b;
+  border-color: #ff5b5b; }
+
 .stepName {
   display: inline-block;
   margin-left: 10px;
@@ -1393,7 +1398,8 @@ strong {
 
 .onStep .stepIcon {
   font-size: 18px;
-  margin-left: -1px; }
+  margin-left: -1px;
+  margin-right: -4px; }
 
 #leftStepsTitle {
   font-size: 22px;
@@ -1401,6 +1407,15 @@ strong {
 
 .loadingdiv {
   display: none; }
+
+.inactive .stepName {
+  font-style: italic; }
+
+.greenMe {
+  color: #52b152; }
+
+.redMe {
+  color: #ff5b5b; }
 
 .stepWrap {
   display: inline-block;
@@ -1420,6 +1435,13 @@ strong {
   font-size: 14px;
   opacity: 0; }
 
+.failureStep {
+  color: #ff5b5b;
+  margin: 20px 0;
+  font-weight: 600;
+  font-size: 14px;
+  display: none; }
+
 .nextStep {
   display: none; }
 
@@ -1431,4 +1453,30 @@ strong {
 
 .success .nextStep {
   display: inline-block; }
+
+.errorStepContent .failureStep {
+  display: block; }
+
+.settingsExpand {
+  color: #fff;
+  padding: 4px;
+  text-align: left;
+  padding-left: 17px;
+  cursor: pointer; }
+
+.settingsExpand:hover {
+  color: #ccc; }
+
+.settingsContent {
+  margin: 16px;
+  display: none; }
+
+.settingsWrap {
+  color: #5b6169;
+  border: 1px #5b6169 solid;
+  border-radius: 3px;
+  margin: 20px 0; }
+
+#registerOwnersInputPanel {
+  display: block; }
 

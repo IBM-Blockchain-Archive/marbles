@@ -79,7 +79,7 @@ input[type="text"]:disabled, input[type="password"]:disabled, select:disabled{
 	color: $acc_color2;
 }
 input.longer{
-	min-width:250px;
+	min-width:333px;
 }
 button:disabled{
 	cursor: default;

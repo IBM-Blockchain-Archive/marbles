@@ -125,7 +125,7 @@ $auditSize: 333px;
 	margin-bottom: 35px;
 }
 .closeNotification:hover{
-	color: $hi_color1;
+	color: $err_color;
 }
 .notificationIcon{
 	margin: 0 10px;
@@ -692,9 +692,10 @@ $marble_left: 0;
 .stepInputLegend{
 	display: inline-block;
 	text-align: right;
-	width: 115px;
+	width: 150px;
 	font-size: 13px;
 	margin-right: 5px;
+	color: #fff;
 }
 #closeStartUp, #closeTxStoryPos, #closeSettings, #closeCreate{
 	position: absolute;
