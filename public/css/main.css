@@ -1443,7 +1443,12 @@ strong {
   display: none; }
 
 .nextStep {
-  display: none; }
+  display: none;
+  float: right; }
+
+.runStep {
+  float: right;
+  margin-right: 20px; }
 
 .success .successStep {
   opacity: 1; }
@@ -1477,6 +1482,6 @@ strong {
   border-radius: 3px;
   margin: 20px 0; }
 
-#registerOwnersInputPanel {
+#registerOwnersInputPanel, #registerOwners {
   display: block; }
 

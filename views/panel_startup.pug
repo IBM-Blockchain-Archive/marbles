@@ -50,7 +50,6 @@
 			.successStep 
 				span Config Files Look Valid
 			
-			button.runStep(stepid="step1" nextstepid="step2") Submit
 			button.nextStep(nextstepid="step2") Next
 
 		//----------------- Step 2 Content [Enroll Admin]
@@ -98,8 +97,8 @@
 					span.fa.fa-question-circle
 
 			.successStep Enrollment Successful
-			button.runStep(stepid="step2" nextstepid="step3")#enrollAdmin Try Again
 			button.nextStep(nextstepid="step3") Next
+			button.runStep(stepid="step2" nextstepid="step3")#enrollAdmin Try Again
 
 		//----------------- Step 3 Content [Find Chaincode]
 		#step3.stepWrap.hidden
@@ -154,8 +153,8 @@
 					span.fa.fa-question-circle
 
 			.successStep Valid Chaincode Found
-			button.runStep(stepid="step3" nextstepid="step4")#findCcButton Try Again
 			button.nextStep(nextstepid="step4") Next
+			button.runStep(stepid="step3" nextstepid="step4")#findCcButton Try Again
 
 		//----------------- Step 4 Content [Register Marlbe Owners]
 		#step4.stepWrap.hidden
@@ -184,8 +183,8 @@
 					span.fa.fa-question-circle
 					
 			.successStep Finished
-			button.runStep(stepid="step4" nextstepid="step5")#registerOwners Create
 			button.nextStep(nextstepid="step5") Next
+			button.runStep(stepid="step4" nextstepid="step5")#registerOwners Create
 
 		//----------------- Step 5 Content [Finished]
 		#step5.stepWrap.hidden.success

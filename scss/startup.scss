@@ -110,6 +110,11 @@
 
 .nextStep{					//default, don't show button
 	display: none;
+	float: right;
+}
+.runStep{
+	float: right;
+	margin-right: 20px;
 }
 .success .successStep{		//show success message if done
 	opacity: 1;
@@ -145,6 +150,6 @@
 	margin: 20px 0;
 }
 
-#registerOwnersInputPanel{
+#registerOwnersInputPanel, #registerOwners{
 	display: block;
 }
