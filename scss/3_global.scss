@@ -892,3 +892,50 @@ $marble_left: 0;
 	animation-duration: 2s;
 	animation-iteration-count: infinite;
 }
+
+
+@keyframes bounceInLeft {
+	from, 60%, 75%, 90%, to {
+		animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+	}
+	0% {
+		opacity: 0;
+		display: none;
+		transform: translate3d(-1000px, 0, 0);
+	}
+	60% {
+		opacity: 1;
+		display: block;
+		transform: translate3d(20px, 0, 0);
+	}
+	75% {
+		transform: translate3d(-10px, 0, 0);
+	}
+	90% {
+		transform: translate3d(4px, 0, 0);
+	}
+	to {
+		transform: none;
+	}
+}
+.bounceInLeft {
+	animation-name: bounceInLeft;
+	animation-duration: 1s;
+}
+
+
+@keyframes slideOutLeft {
+  from {
+	display: block;
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    display: none;
+    transform: translate3d(-120%, 0, 0);
+  }
+}
+.slideOutLeft {
+	animation-name: slideOutLeft;
+	animation-duration: 0.8s;
+}

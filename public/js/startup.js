@@ -9,7 +9,8 @@ $(document).on('ready', function () {
 	// jQuery UI Events
 	// =================================================================================
 	$('#showStartupPanel').click(function () {
-		$('#startUpPanel, #tint').fadeIn();
+		$('#tint').fadeIn();
+		$('#startUpPanel').show().addClass('bounceInLeft');
 	});
 
 	// ----------------------------- Actions-------------------------------------
@@ -61,7 +62,14 @@ $(document).on('ready', function () {
 
 	// ----------------------------- Nav -------------------------------------
 	$('.closeStartUp').click(function () {
-		$('#createPanel, #startUpPanel, #tint').fadeOut();
+		//$('#createPanel, #startUpPanel, #tint').removeClass('bounceInLeft').fadeOut();
+		$('#startUpPanel').removeClass('bounceInLeft').addClass('slideOutLeft');
+		setTimeout(function(){
+			$('#createPanel, #startUpPanel, #tint').fadeOut();
+		}, 300);
+		setTimeout(function(){
+			$('#startUpPanel').removeClass('slideOutLeft');
+		}, 700);
 	});
 
 	$('.settingsExpand').click(function () {
@@ -93,8 +101,8 @@ function showStepPanel(openStepId) {
 		console.log('hiding step', onStep, 'showing step', openStepId);
 		setTimeout(function () {
 			$('#' + openStepId).fadeIn(400);
-			$('.onStep').removeClass('onStep');
-			$('.oneStepWrap[stepid="' + openStepId + '"').addClass('onStep');
+			$('.onStep').removeClass('onStep').find('.stepIcon').removeClass('bounce');
+			$('.oneStepWrap[stepid="' + openStepId + '"').addClass('onStep').find('.stepIcon').addClass('bounce');
 		}, 150);
 	}
 }
