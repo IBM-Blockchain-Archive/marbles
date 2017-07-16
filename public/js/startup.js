@@ -134,6 +134,8 @@ function show_start_up_step(obj) {
 		get_everything_or_else();
 	}
 
+	$('.loadingdiv').hide();				//hide all loading spinners when we get an updated state
+
 	for (let i in state) {
 		//console.log('working on state', i, state[i].step, state[i].state);
 		let nextStep = 'step' + (Number(state[i].step[4]) + 1);

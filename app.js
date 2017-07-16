@@ -30,6 +30,14 @@ var logger = new (winston.Logger)({
 	]
 });
 var more_entropy = randStr(32);
+var start_up_states = {
+	checklist: { state: 'waiting', step: 'step1' },
+	enrolling: { state: 'waiting', step: 'step2' },
+	find_chaincode: { state: 'waiting', step: 'step3' },
+	register_owners: { state: 'waiting', step: 'step4' },
+};
+
+check_creds_for_valid_json();
 var helper = require(__dirname + '/utils/helper.js')(process.env.creds_filename, logger);
 var fcw = require('./utils/fc_wrangler/index.js')({ block_delay: helper.getBlockDelay() }, logger);
 var ws_server = require('./utils/websocket_server_side.js')({ block_delay: helper.getBlockDelay() }, fcw, logger);
@@ -39,13 +47,6 @@ var wss = {};
 var enrollObj = null;
 var marbles_lib = null;
 process.env.marble_company = helper.getCompanyName();
-
-var start_up_states = {
-	checklist: { state: 'waiting', step: 'step1' },
-	enrolling: { state: 'waiting', step: 'step2' },
-	find_chaincode: { state: 'waiting', step: 'step3' },
-	register_owners: { state: 'waiting', step: 'step4' },
-};
 
 // ------------- Bluemix Detection ------------- //
 if (process.env.VCAP_APPLICATION) {
@@ -131,11 +132,12 @@ process.on('uncaughtException', function (err) {
 process.env.app_first_setup = 'yes';				//init
 helper.checkConfig();
 setupWebSocket();
+broadcast_state('checklist', 'success');			//checklist step is done
 
+// --- Here We Go --- //
 console.log('\n\n');
 logger.info('Using settings in ' + process.env.creds_filename + ' to see if we have launch marbles before...');
 
-// --- Here We Go --- //
 enroll_admin(1, function (e) {
 	if (e != null) {
 		logger.warn('Error enrolling admin');
@@ -161,6 +163,34 @@ enroll_admin(1, function (e) {
 	}
 });
 
+// check if creds files is okay
+function check_creds_for_valid_json(cb) {
+	let creds_filename = process.env.creds_filename;
+	if (!creds_filename) {
+		creds_filename = 'marbles1.json';
+	}
+
+	var config_path = path.join(__dirname, './config/' + creds_filename);
+	try {
+		let configFile = require(config_path);
+		let creds_path = path.join(__dirname, './config/' + configFile.cred_filename);
+		let creds = require(creds_path);
+		if (creds.credentials.network_id) {
+			logger.info('Checking credentials file is done');
+			return null;
+		} else {
+			throw 'missing network id';
+		}
+	} catch (e) {
+		logger.error('---------------------------------------------------------------');
+		logger.error('----------------------------- Bah -----------------------------');
+		logger.error('------------- The credentials file is malformed ---------------');
+		logger.error('---------------------------------------------------------------');
+		logger.error(e);
+		process.exit();									//all stop
+	}
+}
+
 // Wait for the user to help correct the config file so we can startup!
 function startup_unsuccessful() {
 	process.env.app_first_setup = 'yes';
@@ -176,15 +206,11 @@ function detect_prev_startup(opts, cb) {
 	marbles_lib.read_everything(null, function (err, resp) {			//read the ledger for marble owners
 		if (err != null) {
 			logger.warn('Error reading ledger');
-			//if (opts.startup) broadcast_state('start_waiting');			//do not send no chaincode state... pause it at "start_waiting"
-			//else 
 			broadcast_state('find_chaincode', 'failed');
 			if (cb) cb(true);
 		} else {
 			if (find_missing_owners(resp)) {							//check if each user in the settings file has been created in the ledger
 				logger.info('We need to make marble owners');			//there are marble owners that do not exist!
-				//if (opts.startup) broadcast_state('start_waiting');	//do not send found chaincode state... pause it at "start_waiting"
-				//else
 				broadcast_state('find_chaincode', 'failed');
 				if (cb) cb(true);
 			} else {
@@ -445,8 +471,8 @@ function build_state_msg() {
 function broadcast_state(change_state, outcome) {
 	try {
 		start_up_states[change_state].state = outcome;
-		wss.broadcast(build_state_msg());											//tell client our app state
-	} catch (e) { }
+		wss.broadcast(build_state_msg());								//tell client our app state
+	} catch (e) { }														//this is expected to fail for "checking"
 }
 
 // Remove any kvs from last run
