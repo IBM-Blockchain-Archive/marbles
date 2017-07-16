@@ -165,12 +165,11 @@ enroll_admin(1, function (e) {
 
 // check if creds files is okay
 function check_creds_for_valid_json(cb) {
-	let creds_filename = process.env.creds_filename;
-	if (!creds_filename) {
-		creds_filename = 'marbles1.json';
+	if (!process.env.creds_filename) {
+		process.env.creds_filename = 'marbles1.json';
 	}
 
-	var config_path = path.join(__dirname, './config/' + creds_filename);
+	var config_path = path.join(__dirname, './config/' + process.env.creds_filename);
 	try {
 		let configFile = require(config_path);
 		let creds_path = path.join(__dirname, './config/' + configFile.cred_filename);

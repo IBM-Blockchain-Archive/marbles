@@ -25,7 +25,7 @@ $(document).on('ready', function () {
 		console.log('[startup] sending enrollment msg', obj);
 		ws.send(JSON.stringify(obj));
 	});
-	
+
 	//find chaincode again
 	$('#findCcButton').click(function () {
 		var obj = {
@@ -58,21 +58,6 @@ $(document).on('ready', function () {
 		var stepid = $(this).attr('stepid');
 		$('#' + stepid + ' .loadingdiv').show();
 	});
-
-	/*$('.runStep').click(function () {
-		var stepid = $(this).attr('stepid');
-		var nextStepId = $(this).attr('nextstepid');
-		console.log('got id', stepid, nextStepId);
-
-		$('#' + stepid + ' .loadingdiv').show();
-		let self = this;
-		setTimeout(function () {
-			$('#' + stepid + ' .loadingdiv').hide();
-			$(self).parent().addClass('success');
-			$('.oneStepWrap[stepid="' + stepid + '"').addClass('successfulStepIcon').removeClass('inactive');
-			$('.oneStepWrap[stepid="' + nextStepId + '"').removeClass('inactive');
-		}, 500);
-	});*/
 
 	// ----------------------------- Nav -------------------------------------
 	$('.closeStartUp').click(function () {
@@ -118,7 +103,7 @@ function showStepPanel(openStepId) {
 function show_start_up_step(obj) {
 	var state = obj.state;
 
-	//fake state stuff, dsh remove this
+	//dsh testing - remove this
 	/*state = {
 		checklist: { state: 'success', step: 'step1' },
 		enrolling: { state: 'success', step: 'step2' },
@@ -136,6 +121,7 @@ function show_start_up_step(obj) {
 
 	$('.loadingdiv').hide();				//hide all loading spinners when we get an updated state
 
+	let foundError = false;
 	for (let i in state) {
 		//console.log('working on state', i, state[i].step, state[i].state);
 		let nextStep = 'step' + (Number(state[i].step[4]) + 1);
@@ -149,6 +135,9 @@ function show_start_up_step(obj) {
 			$('.oneStepWrap[stepid="' + state[i].step + '"').removeClass('successfulStepIcon, inactive').addClass('errorStepIcon');
 			$('.oneStepWrap[stepid="' + nextStep + '"').addClass('inactive');
 			console.log('adding inactive tostep', nextStep, 'by step', i);
+
+			if(!foundError) showStepPanel(state[i].step);							//open the first failed step
+			foundError = true;
 		} else {
 			$('#' + state[i].step).removeClass('success, errorStepContent');
 			$('.oneStepWrap[stepid="' + state[i].step + '"').removeClass('successfulStepIcon, errorStepIcon');
@@ -162,15 +151,6 @@ function show_start_up_step(obj) {
 		$('.oneStepWrap[stepid="step5"').removeClass('inactive, errorStepIcon').addClass('successfulStepIcon');
 		$('.oneStepWrap[stepid="step5"').removeClass('inactive');
 	}
-
-	/*if(state === 'start_waiting'){						//lets start it up
-		var json = 	{
-						type: 'setup',
-						configure: 'enrollment',
-					};
-		console.log('[startup] sending enrollment msg');
-		ws.send(JSON.stringify(json));						//send msg to start
-	}*/
 
 	$('#showStartupPanel, #showSettingsPanel').prop('disabled', false);
 }
