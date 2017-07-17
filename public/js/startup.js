@@ -62,25 +62,34 @@ $(document).on('ready', function () {
 
 	// ----------------------------- Nav -------------------------------------
 	$('.closeStartUp').click(function () {
-		//$('#createPanel, #startUpPanel, #tint').removeClass('bounceInLeft').fadeOut();
 		$('#startUpPanel').removeClass('bounceInLeft').addClass('slideOutLeft');
-		setTimeout(function(){
+		setTimeout(function () {
 			$('#createPanel, #startUpPanel, #tint').fadeOut();
 		}, 300);
-		setTimeout(function(){
+		setTimeout(function () {
 			$('#startUpPanel').removeClass('slideOutLeft');
 		}, 700);
 	});
 
+	// Show JSON settings for the user on this step
 	$('.settingsExpand').click(function () {
 		let content = $(this).parent().find('.settingsContent');
-		if (content.is(':visible')) content.slideUp();
-		else content.slideDown();
+		if (content.is(':visible')) {
+			$(this).find('.fa').addClass('fa-plus-square').removeClass('fa-minus-square');
+			content.slideUp();
+		} else {
+			$(this).find('.fa').removeClass('fa-plus-square').addClass('fa-minus-square');
+			content.slideDown();
+		}
 	});
+
+	// Go to the next step
 	$('.nextStep').click(function () {
 		var nextStep = $(this).attr('nextstepid');
 		showStepPanel(nextStep);
 	});
+
+	// Jump to a step
 	$('.oneStepWrap').click(function () {
 		var stepid = $(this).attr('stepid');
 		if (!$(this).hasClass('inactive')) {
@@ -144,7 +153,7 @@ function show_start_up_step(obj) {
 			$('.oneStepWrap[stepid="' + nextStep + '"').addClass('inactive');
 			console.log('adding inactive tostep', nextStep, 'by step', i);
 
-			if(!foundError) showStepPanel(state[i].step);							//open the first failed step
+			if (!foundError) showStepPanel(state[i].step);							//open the first failed step
 			foundError = true;
 		} else {
 			$('#' + state[i].step).removeClass('success, errorStepContent');

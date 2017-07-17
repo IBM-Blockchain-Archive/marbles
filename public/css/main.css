@@ -1480,7 +1480,8 @@ strong {
   padding: 4px;
   text-align: left;
   padding-left: 17px;
-  cursor: pointer; }
+  cursor: pointer;
+  font-size: 13px; }
 
 .settingsExpand:hover {
   color: #ccc; }
@@ -1521,4 +1522,35 @@ strong {
 .slideOutDown {
   animation-name: slideOutDown;
   animation-duration: 0.8s; }
+
+.settingstooltip {
+  position: relative;
+  display: inline-block; }
+
+.settingstooltip .tooltiptext {
+  visibility: hidden;
+  width: 310px;
+  background-color: #50565f;
+  color: #fff;
+  text-align: center;
+  padding: 8px;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  font-size: 13.5px;
+  left: -156px;
+  top: -37px; }
+
+.settingstooltip:hover .tooltiptext {
+  visibility: visible; }
+
+.settingstooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #50565f transparent transparent transparent; }
 
