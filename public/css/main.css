@@ -864,22 +864,13 @@ strong {
   position: absolute;
   top: 0; }
 
-.stepHeader {
-  font-weight: 600;
-  margin-top: 10px;
-  height: 32px; }
-
-.stepCircleStatus, .txStatus {
+.txStatus {
   margin-top: 35px;
   height: 20px;
   width: 20px;
   display: inline-block;
   background: #fff;
   border-radius: 100px; }
-
-.stepEdit {
-  font-size: 12px;
-  padding-bottom: 20px; }
 
 .inactiveStep {
   opacity: 0.3; }
@@ -891,10 +882,10 @@ strong {
 .inactiveStep .stepLoadingWrap .stepLoading, .stepComplete .stepLoadingWrap .stepLoading, .stepFailed .stepLoadingWrap .stepLoading {
   display: none; }
 
-.stepComplete .stepCircleStatus, .stepComplete .txStatus {
+.stepComplete .txStatus {
   background: #6CC284; }
 
-.stepFailed .stepCircleStatus, .stepFailed .txStatus {
+.stepFailed .txStatus {
   background: #ed8f30; }
 
 .stepHelpWrap {
@@ -903,18 +894,6 @@ strong {
   border-top: 2px #ccc solid;
   margin-top: 15px;
   padding-top: 15px; }
-
-.stepHelpTxt {
-  font-size: 13px;
-  line-height: 16px; }
-
-.stepInputLegend {
-  display: inline-block;
-  text-align: right;
-  width: 150px;
-  font-size: 13px;
-  margin-right: 5px;
-  color: #fff; }
 
 #closeStartUp, #closeTxStoryPos, #closeSettings, #closeCreate {
   position: absolute;
@@ -974,7 +953,7 @@ strong {
   margin-left: 15px; }
 
 .settingsWrap {
-  margin-bottom: 50px; }
+  margin-bottom: 10px; }
 
 .storyOn {
   color: #52b152;
@@ -1388,7 +1367,7 @@ strong {
 #rightDetailsWrap {
   display: inline-block;
   vertical-align: top;
-  width: 76%;
+  width: calc(100% - 170px);
   text-align: center; }
 
 .oneStepWrap {
@@ -1510,7 +1489,7 @@ strong {
   margin: 16px;
   display: none; }
 
-.settingsWrap {
+.startupWrap {
   color: #5b6169;
   border: 1px #5b6169 solid;
   border-radius: 3px;
@@ -1518,4 +1497,28 @@ strong {
 
 #registerOwnersInputPanel, #registerOwners {
   display: block; }
+
+.stepHeader {
+  font-weight: 600;
+  margin-top: 10px;
+  height: 32px; }
+
+.stepInputLegend {
+  display: inline-block;
+  text-align: right;
+  width: 150px;
+  font-size: 13px;
+  margin-right: 5px;
+  color: #fff; }
+
+@keyframes slideOutDown {
+  from {
+    transform: translate3d(0, 0, 0); }
+  to {
+    visibility: hidden;
+    transform: translate3d(0, 100%, 0); } }
+
+.slideOutDown {
+  animation-name: slideOutDown;
+  animation-duration: 0.8s; }
 

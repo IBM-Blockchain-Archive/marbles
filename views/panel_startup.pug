@@ -29,8 +29,9 @@
 
 		//----------------- Step 1 Content [Check Settings + Welcome]
 		#step1.stepWrap.success
-			span.fa.fa-gear.fa-5x
-			.stepHeader Check Settings
+			.stepHeader 
+				span.fa.fa-gear
+				span &nbsp;&nbsp;Check Settings
 			.stepDescription 
 				span Welcome! 
 				span Starting marbles requires a few steps. 
@@ -54,8 +55,9 @@
 
 		//----------------- Step 2 Content [Enroll Admin]
 		#step2.stepWrap.hidden
-			span.fa.fa-user.fa-5x
-			.stepHeader Enrolling Admin
+			.stepHeader 
+				span.fa.fa-user
+				span &nbsp;&nbsp;Enrolling Admin
 			.stepDescription 
 				span Next up, we attemped to enroll you as your company's admin. 
 				span This step contacted your Certificate Authority (CA) and fed it the 
@@ -74,7 +76,7 @@
 				p Sorry, we could not enroll the admin against the CA. 
 				p Edit the settings below to try again.
 
-			.settingsWrap
+			.startupWrap
 				.settingsExpand 
 					span.fa.fa-plus-square
 					span &nbsp;&nbsp;JSON Settings
@@ -102,8 +104,9 @@
 
 		//----------------- Step 3 Content [Find Chaincode]
 		#step3.stepWrap.hidden
-			span.fa.fa-file-text.fa-5x
-			.stepHeader Finding Chaincode
+			.stepHeader 
+				span.fa.fa-file-text
+				span &nbsp;&nbsp;Finding Chaincode
 			.stepDescription 
 				span Now we needed to locate the instanitated chaincode on your channel called 
 				span.backgroundMe #{bag.creds.channel}
@@ -124,7 +127,7 @@
 					a(href="https://github.com/IBM-Blockchain/marbles/blob/v3.0/docs/install_chaincode.md" target="_blank" style="color:#fff;") install/instantiate
 					span &nbsp;marbles chaincode
 
-			.settingsWrap
+			.startupWrap
 				.settingsExpand 
 					span.fa.fa-plus-square
 					span &nbsp;&nbsp;JSON Settings
@@ -158,8 +161,9 @@
 
 		//----------------- Step 4 Content [Register Marlbe Owners]
 		#step4.stepWrap.hidden
-			span.fa.fa-group.fa-5x
-			.stepHeader Create Marble Owners
+			.stepHeader 
+				span.fa.fa-group
+				span &nbsp;&nbsp;Create Marble Owners
 			.stepDescription 
 				span Almost there! 
 				span As a marbles trading company you may bring new marble owners onboard. 
@@ -170,7 +174,7 @@
 
 			include ./template/loading.pug
 
-			.settingsWrap
+			.startupWrap
 				#registerOwnersInputPanel.settingsContent
 					.stepInputLegend
 						span Company 
@@ -188,7 +192,7 @@
 
 		//----------------- Step 5 Content [Finished]
 		#step5.stepWrap.hidden.success
-			span.fa.fa-smile-o.fa-5x
+			span.fa.fa-smile-o.fa-3x
 			.stepHeader Done
 			.stepDescription(style="text-align:center")
 				span Your marbles application is ready to use!

@@ -8,7 +8,7 @@
 #rightDetailsWrap{
 	display: inline-block;
 	vertical-align: top;
-	width: 76%;
+	width: calc(100% - 170px);
 	text-align: center;
 	//min-height: 320px;
 }
@@ -143,7 +143,7 @@
 	margin: 16px;
 	display: none;
 }
-.settingsWrap{
+.startupWrap{
 	color: #5b6169;
 	border: 1px #5b6169 solid;
 	border-radius: 3px;
@@ -152,4 +152,32 @@
 
 #registerOwnersInputPanel, #registerOwners{
 	display: block;
+}
+
+.stepHeader{
+	font-weight: 600;
+	margin-top: 10px;
+	height: 32px;
+}
+.stepInputLegend{
+	display: inline-block;
+	text-align: right;
+	width: 150px;
+	font-size: 13px;
+	margin-right: 5px;
+	color: #fff;
+}
+
+@keyframes slideOutDown {
+	from {
+		transform: translate3d(0, 0, 0);
+	}
+	to {
+		visibility: hidden;
+		transform: translate3d(0, 100%, 0);
+	}
+}
+.slideOutDown {
+	animation-name: slideOutDown;
+	animation-duration: 0.8s;
 }

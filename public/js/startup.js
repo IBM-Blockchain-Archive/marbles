@@ -97,13 +97,13 @@ function showStepPanel(openStepId) {
 	let onStep = $('.onStep').attr('stepid');
 
 	if (onStep != openStepId) {
-		$('#' + onStep).fadeOut(100);
+		$('#' + onStep).slideUp(400);
 		console.log('hiding step', onStep, 'showing step', openStepId);
 		setTimeout(function () {
-			$('#' + openStepId).fadeIn(400);
+			$('#' + openStepId).slideDown(400);
 			$('.onStep').removeClass('onStep').find('.stepIcon').removeClass('bounce');
 			$('.oneStepWrap[stepid="' + openStepId + '"').addClass('onStep').find('.stepIcon').addClass('bounce');
-		}, 150);
+		}, 450);
 	}
 }
 
@@ -121,8 +121,8 @@ function show_start_up_step(obj) {
 
 	// we are not done with startup, show the panel
 	if (state.register_owners.state !== 'success') {
-		$('#startUpPanel, #tint').fadeIn();
-		$('#doneStep').hide();
+		$('#tint').fadeIn();
+		$('#startUpPanel').show().addClass('bounceInLeft');
 	} else {
 		get_everything_or_else();
 	}
