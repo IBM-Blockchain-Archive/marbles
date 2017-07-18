@@ -7,7 +7,7 @@
 		#leftStepsTitle Start Up Report
 		.oneStepWrap(stepid="step1").successfulStepIcon.onStep
 			.stepIcon.fa.fa-circle.bounce
-			.stepName 1. Check Settings
+			.stepName 1. Check Files
 		.oneStepWrap(stepid="step2")
 			.stepDivide
 			.stepIcon.fa.fa-circle
@@ -31,7 +31,7 @@
 		#step1.stepWrap.success
 			.stepHeader 
 				span.fa.fa-gear
-				span &nbsp;&nbsp;Check Settings
+				span &nbsp;&nbsp;Check Configuration Files
 			.stepDescription 
 				span Welcome! 
 				span Starting marbles requires a few steps. 
@@ -48,9 +48,7 @@
 				span.backgroundMe /config/#{bag.creds_filename}
 				span &nbsp;.
 
-			.successStep 
-				span Config Files Look Valid
-			
+			.successStep Step Complete
 			button.nextStep(nextstepid="step2") Next
 
 		//----------------- Step 2 Content [Enroll Admin]
@@ -87,7 +85,7 @@
 						span.backgroundMe api_url
 					input(type="text" placeholder="CA ex: 192.168.99.100:8888" name="caUrl" value=bag.creds.ca).longer
 					span.fa.fa-question-circle.settingstooltip
-						span.tooltiptext This is the gRPC url to reach your certificate authority
+						span.tooltiptext This is the url to reach your certificate authority. It should include the protocol and port.
 					br
 					.stepInputLegend
 						span.backgroundMe enrollId
@@ -101,7 +99,7 @@
 					span.fa.fa-question-circle.settingstooltip
 						span.tooltiptext This is the matching enroll id's secret
 
-			.successStep Enrollment Successful
+			.successStep Step Complete
 			button.nextStep(nextstepid="step3") Next
 			button.runStep(stepid="step2" nextstepid="step3")#enrollAdmin Try Again
 
@@ -158,7 +156,7 @@
 					input(type="text" placeholder="Chaincode ID" name="chaincodeVersion" value=bag.creds.chaincode_version).longer
 					span.fa.fa-question-circle
 
-			.successStep Valid Chaincode Found
+			.successStep Step Complete
 			button.nextStep(nextstepid="step4") Next
 			button.runStep(stepid="step3" nextstepid="step4")#findCcButton Try Again
 
@@ -189,7 +187,7 @@
 					input(type="text" placeholder="bob, bill, amy" name="marbleOwners" value=bag.creds.marble_owners).longer
 					span.fa.fa-question-circle
 					
-			.successStep Finished
+			.successStep Step Complete
 			button.nextStep(nextstepid="step5") Next
 			button.runStep(stepid="step4" nextstepid="step5")#registerOwners Create
 
