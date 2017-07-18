@@ -27,7 +27,6 @@ fcw.enrollWithAdminCert(helper.makeEnrollmentOptionsUsingCert(0), function (enro
 
 		var opts = {
 			peer_urls: [helper.getPeersUrl(0)],
-			path_2_chaincode: 'marbles',										//same path used to install it
 			channel_id: helper.getChannelId(),
 			chaincode_id: helper.getChaincodeId(),
 			chaincode_version: helper.getChaincodeVersion(),
