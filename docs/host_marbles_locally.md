@@ -9,13 +9,14 @@
 		> npm install gulp -g
 		> npm install
 
-1. Almost there! 
-	-If you are using a local network use this command:
-		> gulp marbles3
+1. Next up, pick the command that matches your setup. This will run marbles.
 
-	- If you are using a bluemix network, use this command:
-		> gulp marbles1
-		
+- **Option 1:** :lollipop: If you are using a local network use this command:
+	> gulp marbles3
+
+- **Option 2:** If you are using a bluemix network, use this command:
+	> gulp marbles1
+
 1. If all goes well you should see this message in the console:
 
 ![](/doc_images/localhost1.png)
