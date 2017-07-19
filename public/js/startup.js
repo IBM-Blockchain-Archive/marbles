@@ -124,7 +124,7 @@ function show_start_up_step(obj) {
 	/*state = {
 		checklist: { state: 'success', step: 'step1' },
 		enrolling: { state: 'success', step: 'step2' },
-		find_chaincode: { state: 'success', step: 'step3' },
+		find_chaincode: { state: 'failed', step: 'step3' },
 		register_owners: { state: 'waiting', step: 'step4' },
 	};*/
 

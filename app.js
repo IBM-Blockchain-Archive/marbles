@@ -194,7 +194,7 @@ function check_creds_for_valid_json(cb) {
 function startup_unsuccessful() {
 	process.env.app_first_setup = 'yes';
 	console.log('');
-	logger.debug('Detected that we have NOT launched successfully yet');
+	logger.info('Detected that we have NOT launched successfully yet');
 	logger.debug('Open your browser to http://' + host + ':' + port + ' and login as "admin" to initiate startup\n\n');
 	// we wait here for the user to go the browser, then setup_marbles_lib() will be called from WS msg
 }
@@ -205,15 +205,13 @@ function detect_prev_startup(opts, cb) {
 	marbles_lib.read_everything(null, function (err, resp) {			//read the ledger for marble owners
 		if (err != null) {
 			logger.warn('Error reading ledger');
-			broadcast_state('find_chaincode', 'failed');
 			if (cb) cb(true);
 		} else {
 			if (find_missing_owners(resp)) {							//check if each user in the settings file has been created in the ledger
 				logger.info('We need to make marble owners');			//there are marble owners that do not exist!
-				broadcast_state('find_chaincode', 'failed');
+				broadcast_state('register_owners', 'waiting');
 				if (cb) cb(true);
 			} else {
-				broadcast_state('find_chaincode', 'success');
 				broadcast_state('register_owners', 'success');			//everything is good
 				process.env.app_first_setup = 'no';
 				logger.info('Everything is in place');
@@ -272,6 +270,7 @@ function setup_marbles_lib(cb) {
 				if (helper.errorWithVersions(resp)) {
 					broadcast_state('find_chaincode', 'failed');
 				} else {
+					logger.info('Chaincode version is good');
 					broadcast_state('find_chaincode', 'success');
 					if (cb) cb(null);
 				}

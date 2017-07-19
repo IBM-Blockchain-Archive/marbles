@@ -3,29 +3,25 @@
 	span.fa.fa-close#closeStartUp.closeStartUp
 
 	//----------------- Step Navigation
-	#leftStepsWrap
-		#leftStepsTitle Start Up Report
+	#stepsWrap
 		.oneStepWrap(stepid="step1").successfulStepIcon.onStep
-			.stepIcon.fa.fa-circle.bounce
-			.stepName 1. Check Files
+			.stepIcon.bounce 1
 		.oneStepWrap(stepid="step2")
 			.stepDivide
-			.stepIcon.fa.fa-circle
-			.stepName 2. Enroll Admin
+			.stepIcon 2
 		.oneStepWrap.inactive(stepid="step3")
 			.stepDivide
-			.stepIcon.fa.fa-circle
-			.stepName 3. Find Chaincode
+			.stepIcon 3
 		.oneStepWrap.inactive(stepid="step4")
 			.stepDivide
-			.stepIcon.fa.fa-circle
-			.stepName 4. Create Assets
+			.stepIcon 4
 		.oneStepWrap.inactive(stepid="step5")
 			.stepDivide
-			.stepIcon.fa.fa-circle
-			.stepName 5. Finish
+			.stepIcon 5
+		#stepsTitle There are 5 steps to complete. Click a step to jump to it.
 
-	#rightDetailsWrap
+
+	#detailsWrap
 
 		//----------------- Step 1 Content [Check Settings + Welcome]
 		#step1.stepWrap.success
@@ -34,13 +30,16 @@
 				span &nbsp;&nbsp;Check Configuration Files
 			.stepDescription 
 				span Welcome! 
-				span Starting marbles requires a few steps. 
+				span Starting this application requires a few steps. 
 				span Many of steps were automatically ran when you started the application.
-				span The outcome of each step can be found on the left. 
+				span The outcome of each step can be found above. 
 				span.greenMe Green 
 				span is a step that passed, 
 				span.redMe Red 
 				span is a step that failed, and White is step that has yet to run. 
+				br
+				br
+				strong Simply complete each step to fully setup marbles. 
 				br
 				br
 				span The first step was to check your config JSON files for easy to make mistakes. 
@@ -48,8 +47,8 @@
 				span.backgroundMe /config/#{bag.creds_filename}
 				span &nbsp;.
 
-			.successStep Step Complete
-			button.nextStep(nextstepid="step2") Next
+			.successStep Step 1 Complete
+			button.nextStep(nextstepid="step2") Next Step
 
 		//----------------- Step 2 Content [Enroll Admin]
 		#step2.stepWrap.hidden
@@ -66,7 +65,7 @@
 				br
 				br
 				span If successful, the application will download an enrollment certificate. 
-				span The admin's certificate is used to authenticate himself for marble transactions. 
+				span This is an important step because the admin's certificate will be used to authenticate marble transactions. 
 
 			include ./template/loading.pug
 
@@ -99,8 +98,8 @@
 					span.fa.fa-question-circle.settingstooltip
 						span.tooltiptext This is the matching enroll id's secret
 
-			.successStep Step Complete
-			button.nextStep(nextstepid="step3") Next
+			.successStep Step 2 Complete
+			button.nextStep(nextstepid="step3") Next Step
 			button.runStep(stepid="step2" nextstepid="step3")#enrollAdmin Try Again
 
 		//----------------- Step 3 Content [Find Chaincode]
@@ -109,13 +108,17 @@
 				span.fa.fa-file-text
 				span &nbsp;&nbsp;Finding Chaincode
 			.stepDescription 
-				span Now we needed to locate the instanitated chaincode on your channel called 
+				span Now we needed to locate the chaincode on your channel. 
+				span Each channel has its own ledger which is where all the marbles transactions will be stored. 
+				span We will look for running chaincode on the channel named 
 				span.backgroundMe #{bag.creds.channel}
 				span &nbsp;. 
 				br
 				br
 				span The chaincode defines the assets (marbles) and the rules around marble transfers. 
-				span It only needs to be instantiated once per channel. 
+				span The marbles chaincode was written in GoLang and can be found in the this folder: 
+				span.backgroundMe /chaincode/src/marbles
+				span &nbsp;. It only needs to be instantiated once per channel. 
 
 			include ./template/loading.pug
 			
@@ -156,8 +159,8 @@
 					input(type="text" placeholder="Chaincode ID" name="chaincodeVersion" value=bag.creds.chaincode_version).longer
 					span.fa.fa-question-circle
 
-			.successStep Step Complete
-			button.nextStep(nextstepid="step4") Next
+			.successStep Step 3 Complete
+			button.nextStep(nextstepid="step4") Next Step
 			button.runStep(stepid="step3" nextstepid="step4")#findCcButton Try Again
 
 		//----------------- Step 4 Content [Register Marlbe Owners]
@@ -187,14 +190,13 @@
 					input(type="text" placeholder="bob, bill, amy" name="marbleOwners" value=bag.creds.marble_owners).longer
 					span.fa.fa-question-circle
 					
-			.successStep Step Complete
-			button.nextStep(nextstepid="step5") Next
+			.successStep Step 4 Complete
+			button.nextStep(nextstepid="step5" style="display: inline-block") Next Step
 			button.runStep(stepid="step4" nextstepid="step5")#registerOwners Create
 
 		//----------------- Step 5 Content [Finished]
 		#step5.stepWrap.hidden.success
 			span.fa.fa-smile-o.fa-3x
-			.stepHeader Done
 			.stepDescription(style="text-align:center")
 				span Your marbles application is ready to use!
 				br

@@ -1,21 +1,21 @@
 @import 'color_theme';
-#leftStepsWrap{
-	display: inline-block;
-	width: 170px;
-	//border-right: 1px #fff solid;
+#stepsWrap{
+	display: block;
+	text-align: center;
+	margin-top: -10px;
+	margin-bottom: 25px;
 }
 
-#rightDetailsWrap{
-	display: inline-block;
-	vertical-align: top;
-	width: calc(100% - 170px);
+#detailsWrap{
+	display: block;
+	width: 100%;
 	text-align: center;
-	//min-height: 320px;
 }
 
 .oneStepWrap{
-	display: block;
-	margin: 5px 0;
+	display: inline-block;
+	margin: 0;
+	text-align: center;
 }
 .oneStepWrap:hover{
 	cursor: pointer;
@@ -27,19 +27,30 @@
 }
 
 .stepDivide{
-	display: block;
-	border-left: 1px #fff solid;
+	display: inline-block;
+	border-bottom: 1px #fff solid;
 	height: 16px;
 	margin: 0 6px;
-	margin-top: -4px;
+	margin-top: -2px;
+	width: 55px;
+	vertical-align: top;
 }
 
 .stepIcon{
 	display: inline-block;
-	font-size: 10px;
-	margin-left: 2.5px;
-	margin-top: 3px;
+	font-size: 16px;
+	border-radius: 1000px;
+	border: 1px #fff solid;
+	width: 25px;
+	height: 25px;
+	line-height: 25px;
+	text-align: center;
 }
+
+.onStep .stepIcon{
+	background: #fff;
+}
+
 .successfulStepIcon .stepIcon, .successfulStepIcon .stepDivide{
 	color: $hi_color3;
 	border-color: $hi_color3;
@@ -49,28 +60,28 @@
 	border-color: $err_color;
 }
 
-.stepName{
-	display: inline-block;
-	margin-left: 14px;
-	font-size: 16px;
-	font-weight: 600;
+.successfulStepIcon.onStep .stepIcon{
+	background: #52b152;
+}
+.errorStepIcon.onStep .stepIcon{
+	background: $err_color;
 }
 
 .onStep .stepIcon{
-	font-size: 20px;
-	margin-left: -1px;
-	margin-right: -4px;
+	color: #343d48;
 }
 
-#leftStepsTitle{
-	font-size: 22px;
-	margin-bottom: 18px;
+#stepsTitle{
+	font-size: 13px;
+	color: #646b73;
+	margin-top: 10px;
 }
 .loadingdiv{
 	display: none;
 }
-.inactive .stepName{
-	font-style: italic;
+.inactive .stepIcon, .inactive .stepDivide{
+	color: #555;
+	border-color: #555;
 }
 
 .greenMe{
@@ -87,10 +98,9 @@
 	text-align: center;
 	vertical-align: top;
 	line-height: 20px;
-	margin-left: 30px;
 }
 .stepDescription{
-	font-size: 13px;
+	font-size: 15px;
 	text-align: left;
 }
 .successStep{
@@ -156,8 +166,10 @@
 
 .stepHeader{
 	font-weight: 600;
-	margin-top: 10px;
 	height: 32px;
+	font-size: 25px;
+	margin-bottom: 20px;
+	text-align: left;
 }
 .stepInputLegend{
 	display: inline-block;
