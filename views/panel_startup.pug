@@ -84,19 +84,19 @@
 						span.backgroundMe api_url
 					input(type="text" placeholder="CA ex: 192.168.99.100:8888" name="caUrl" value=bag.creds.ca).longer
 					span.fa.fa-question-circle.settingstooltip
-						span.tooltiptext This is the url to reach your certificate authority. It should include the protocol and port.
+						span.tooltiptext This is main HTTP url to reach your certificate authority. It should include the protocol and port.
 					br
 					.stepInputLegend
 						span.backgroundMe enrollId
 					input(type="text" placeholder="Enroll Id" name="enrollId" value=bag.creds.admin_id).longer
 					span.fa.fa-question-circle.settingstooltip
-						span.tooltiptext This is a valid enroll id for your CA
+						span.tooltiptext This is a valid enroll id for your CA. It should already be registered on the CA.
 					br
 					.stepInputLegend
 						span.backgroundMe enrollSecret 
 					input(type="text" placeholder="Enroll Secret" name="enrollSecret" value=bag.creds.admin_secret).longer
 					span.fa.fa-question-circle.settingstooltip
-						span.tooltiptext This is the matching enroll id's secret
+						span.tooltiptext The enroll secret is paired with an enroll ID registered on the CA.
 
 			.successStep Step 2 Complete
 			button.nextStep(nextstepid="step3") Next Step
@@ -141,23 +141,27 @@
 						span Orderer's 
 						span.backgroundMe discovery_url
 					input(type="text" placeholder="Orderer ex: 192.168.99.100:5151" name="ordererUrl" value=bag.creds.orderer).longer
-					span.fa.fa-question-circle
+					span.fa.fa-question-circle.settingstooltip
+						span.tooltiptext This is the main gRPC url to reach your orderer. It should include the protocol and port. You will be sending marbles transactions here for orderering.
 					br
 					.stepInputLegend
 						span Peer's 
 						span.backgroundMe discovery_url
 					input(type="text" placeholder="Peer ex: 192.168.99.100:7051" name="peerUrl" value=bag.creds.peer).longer
-					span.fa.fa-question-circle
+					span.fa.fa-question-circle.settingstooltip
+						span.tooltiptext This is the main gRPC url to reach your peer.  It should include the protocol and port. You will be sending marble transactions here for endorsment.
 					br
 					.stepInputLegend
 						span.backgroundMe chaincode_id 
 					input(type="text" placeholder="Chaincode ID" name="chaincodeId" value=bag.creds.chaincode_id).longer
-					span.fa.fa-question-circle
+					span.fa.fa-question-circle.settingstooltip
+						span.tooltiptext This is the name of your instantiated chaincode. ex: marbles.
 					br
 					.stepInputLegend
 						span.backgroundMe chaincode_version 
 					input(type="text" placeholder="Chaincode ID" name="chaincodeVersion" value=bag.creds.chaincode_version).longer
-					span.fa.fa-question-circle
+					span.fa.fa-question-circle.settingstooltip
+						span.tooltiptext This is the version of your instantiated chaincode. ex: v4.
 
 			.successStep Step 3 Complete
 			button.nextStep(nextstepid="step4") Next Step
@@ -183,12 +187,14 @@
 					.stepInputLegend
 						span Company 
 					input(type="text" value=bag.marble_company disabled="disabled").longer
-					span.fa.fa-question-circle
+					span.fa.fa-question-circle.settingstooltip
+						span.tooltiptext Edit the config file and restart the application to change your company name.
 					br
 					.stepInputLegend
 						span Marble Owners 
 					input(type="text" placeholder="bob, bill, amy" name="marbleOwners" value=bag.creds.marble_owners).longer
-					span.fa.fa-question-circle
+					span.fa.fa-question-circle.settingstooltip
+						span.tooltiptext Enter the names of the marble owners you want created. Seperate them by commas.
 					
 			.successStep Step 4 Complete
 			button.nextStep(nextstepid="step5" style="display: inline-block") Next Step

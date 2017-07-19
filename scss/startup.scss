@@ -203,7 +203,7 @@
 }
 .settingstooltip .tooltiptext {
 	visibility: hidden;
-	width: 310px;
+	width: 300px;
 	background-color: #50565f;
 	color: #fff;
 	text-align: center;
@@ -212,8 +212,11 @@
 	position: absolute;
 	z-index: 1;
 	font-size: 13.5px;
-	left: -156px;
-	top: -37px;
+	left: -151px;
+	top: -57px;
+	line-height: 16px;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
 }
 .settingstooltip:hover .tooltiptext {
 	visibility: visible;
