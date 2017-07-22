@@ -13,11 +13,10 @@ gulp.task('build-sass', function () {
 		.pipe(sass().on('error', sass.logError))
 		.pipe(gulp.dest(path.join(__dirname,'/scss/temp')))			//build them here first
 		.pipe(concat('main.css'))									//concat them all
-		.pipe(gulp.dest(path.join(__dirname, '/public/css')))
+		//.pipe(gulp.dest(path.join(__dirname, '/public/css')))
 		.pipe(cleanCSS())											//minify
 		.pipe(rename('main.min.css'))
-		.pipe(gulp.dest(path.join(__dirname,'/public/css')))		//dump it here
-		.pipe(gulp.dest('.'));										//dump busters_css.json
+		.pipe(gulp.dest(path.join(__dirname,'/public/css')));		//dump it here
 });
 
 // ---------------- Run Application Task ---------------- //
