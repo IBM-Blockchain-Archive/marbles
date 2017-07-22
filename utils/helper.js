@@ -28,14 +28,30 @@ module.exports = function (config_filename, logger) {
 		return helper.config.cred_filename;
 	};
 
+	// get a peer object
+	helper.getPeer = function (index) {
+		if (index === undefined || index == null) {
+			throw new Error('Peer index not passed');
+		}
+		else {
+			if (index < helper.creds.credentials.peers.length) {
+				return helper.creds.credentials.peers[index];
+			}
+			else {
+				return null;
+			}
+		}
+	};
+
 	// get a peer's grpc url
 	helper.getPeersUrl = function (index) {
 		if (index === undefined || index == null) {
 			throw new Error('Peer index not passed');
 		}
 		else {
-			if (index < helper.creds.credentials.peers.length) {
-				return helper.creds.credentials.peers[index].discovery_url;
+			let peer = helper.getPeer(index);
+			if (peer) {
+				return peer.discovery_url;
 			}
 			else {
 				throw new Error('Peer index out of bounds. Total peers = ' + helper.creds.credentials.peers.length);
@@ -94,7 +110,7 @@ module.exports = function (config_filename, logger) {
 			if (index < helper.creds.credentials.cas.length) {
 				return helper.creds.credentials.cas[index];
 			} else {
-				throw new Error('CA index out of bounds. Total CA = ' + helper.creds.credentials.cas.length);
+				return null;
 			}
 		}
 	};
@@ -139,6 +155,19 @@ module.exports = function (config_filename, logger) {
 			throw new Error('CAs index not passed');
 		} else {
 			return getTLScertObj('cas', index);
+		}
+	};
+
+	// get an orderer object
+	helper.getOrderer = function (index) {
+		if (index === undefined || index == null) {
+			throw new Error('Orderers index not passed');
+		} else {
+			if (index < helper.creds.credentials.orderers.length) {
+				return helper.creds.credentials.orderers[index];
+			} else {
+				return null;
+			}
 		}
 	};
 
@@ -437,13 +466,13 @@ module.exports = function (config_filename, logger) {
 			logger.error('Fix this file: ./config/' + helper.getNetworkCredFileName());
 			logger.warn('It must have credentials/hostnames/ports/channels/etc for YOUR network');
 			logger.warn('How/where would I get that info? Are you using the Bluemix service? Then look at these instructions(near the end): ');
-			logger.warn('  https://github.com/IBM-Blockchain/marbles/blob/v4.0/docs/install_chaincode.md');
+			logger.warn('https://github.com/IBM-Blockchain/marbles/blob/v4.0/docs/install_chaincode.md');
 			logger.warn('----------------------------------------------------------------------');
 			console.log('\n\n');
 			errors.push('Using default values');
 			return errors;
 		}
-		return helper.check_protocols();					//run the next check
+		return helper.check_for_missing();					//run the next check
 	};
 
 	// check if marbles UI and marbles chaincode work together
@@ -467,34 +496,72 @@ module.exports = function (config_filename, logger) {
 		return false;
 	};
 
-	// check if user has protocol errors - returns error array when there is a problem
+	// check if config has missing entries
+	helper.check_for_missing = function () {
+		let errors = [];
+
+		if (!helper.getCA(0)) {
+			errors.push('There is no CA data in the "cas" field');
+		}
+		if (!helper.getOrderer(0)) {
+			errors.push('There is no Orderer data in the "orderers" field');
+		}
+		if (!helper.getPeer(0)) {
+			errors.push('There is no Peer data in the "peers" field');
+		}
+
+		if (errors.length > 0) {
+			console.log('\n');
+			logger.warn('----------------------------------------------------------------------');
+			logger.warn('------------------------------- Whoops -------------------------------');
+			logger.warn('----------- You are missing some data in your creds file -------------');
+			logger.warn('----------------------------------------------------------------------');
+			for (var i in errors) {
+				logger.error(errors[i]);
+			}
+			logger.warn('----------------------------------------------------------------------');
+			logger.error('Fix this file: ./config/' + helper.getNetworkCredFileName());
+			logger.warn('----------------------------------------------------------------------');
+			logger.warn('See this file for help:');
+			logger.warn('https://github.com/IBM-Blockchain/marbles/blob/v4.0/docs/config_file.md');
+			logger.warn('----------------------------------------------------------------------');
+			console.log('\n\n');
+			return errors;
+		}
+		return helper.check_protocols();					//run the next check
+	};
+
+	// check if config has protocol errors - returns error array when there is a problem
 	helper.check_protocols = function () {
 		let errors = [];
 
-		if(helper.getCasUrl(0).indexOf('grpc') >= 0) {
+		if (helper.getCasUrl(0).indexOf('grpc') >= 0) {
 			errors.push('You accidentally typed "grpc" in your CA url. It should be "http://" or "https://"');
 		}
-		if(helper.getOrderersUrl(0).indexOf('http') >= 0) {
+		if (helper.getOrderersUrl(0).indexOf('http') >= 0) {
 			errors.push('You accidentally typed "http" in your Orderer url. It should be "grpc://" or "grpcs://"');
 		}
-		if(helper.getPeersUrl(0).indexOf('http') >= 0) {
+		if (helper.getPeersUrl(0).indexOf('http') >= 0) {
 			errors.push('You accidentally typed "http" in your Peer discovery url. It should be "grpc://" or "grpcs://"');
 		}
-		if(helper.getPeerEventUrl(0).indexOf('http') >= 0) {
+		if (helper.getPeerEventUrl(0).indexOf('http') >= 0) {
 			errors.push('You accidentally typed "http" in your Peer events url. It should be "grpc://" or "grpcs://"');
 		}
 
-		if (errors) {
+		if (errors.length > 0) {
 			console.log('\n');
 			logger.warn('----------------------------------------------------------------------');
 			logger.warn('------------------------ Close but no cigar --------------------------');
 			logger.warn('---------------- You have at least one protocol typo -----------------');
 			logger.warn('----------------------------------------------------------------------');
-			for(var i in errors) {
+			for (var i in errors) {
 				logger.error(errors[i]);
 			}
 			logger.warn('----------------------------------------------------------------------');
 			logger.error('Fix this file: ./config/' + helper.getNetworkCredFileName());
+			logger.warn('----------------------------------------------------------------------');
+			logger.warn('See this file for help:');
+			logger.warn('https://github.com/IBM-Blockchain/marbles/blob/v4.0/docs/config_file.md');
 			logger.warn('----------------------------------------------------------------------');
 			console.log('\n\n');
 			return errors;

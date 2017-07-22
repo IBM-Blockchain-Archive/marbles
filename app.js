@@ -107,7 +107,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 process.env.NODE_ENV = 'production';
 server.timeout = 240000;																							// Ta-da.
 console.log('\n');
-console.log('------------------------------------------ Server Up - ' + host + ':' + port + ' ------------------------------------------');
+console.log('----------------------------- Server Up - ' + host + ':' + port + ' ------------------------------');
 process.on('uncaughtException', function (err) {
 	logger.error('Caught exception: ', err.stack);		//demos never give up
 	if (err.stack.indexOf('EADDRINUSE') >= 0) {			//except for this error
