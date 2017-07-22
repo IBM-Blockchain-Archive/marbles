@@ -65,7 +65,7 @@
 				span.fa.fa-user
 				span &nbsp;&nbsp;Enrolling Admin
 			.stepDescription 
-				span Next up, we attemped to enroll you as your company's admin. 
+				span Next up, we attempted to enroll you as your company's admin. 
 				span This step contacted your Certificate Authority (CA) and fed it the 
 				span.backgroundMe enrollID
 				span &nbsp;and 
@@ -135,7 +135,7 @@
 				p We could not find the correct chaincode
 				p Edit the settings below to try again
 				p OR...
-				p 
+				p(style="font-weight: 200;") 
 					span If this is your first time using the application then&nbsp;
 					a(href="https://github.com/IBM-Blockchain/marbles/blob/v4.0/docs/install_chaincode.md" target="_blank" style="color:#fff;") install/instantiate
 					span &nbsp;marbles chaincode
@@ -151,14 +151,14 @@
 						span.backgroundMe discovery_url
 					input(type="text" placeholder="Orderer ex: 192.168.99.100:5151" name="ordererUrl" value=bag.creds.orderer).longer
 					span.fa.fa-question-circle.settingstooltip
-						span.tooltiptext This is the main gRPC url to reach your orderer. It should include the protocol and port. You will be sending marbles transactions here for orderering.
+						span.tooltiptext This is the main gRPC url to reach your orderer. It should include the protocol and port. You will be sending marbles transactions here for ordering.
 					br
 					.stepInputLegend
 						span Peer's 
 						span.backgroundMe discovery_url
 					input(type="text" placeholder="Peer ex: 192.168.99.100:7051" name="peerUrl" value=bag.creds.peer).longer
 					span.fa.fa-question-circle.settingstooltip
-						span.tooltiptext This is the main gRPC url to reach your peer.  It should include the protocol and port. You will be sending marble transactions here for endorsment.
+						span.tooltiptext This is the main gRPC url to reach your peer.  It should include the protocol and port. You will be sending marble transactions here for endorsement.
 					br
 					.stepInputLegend
 						span.backgroundMe chaincode_id 

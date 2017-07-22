@@ -89,8 +89,8 @@ They will communicate via a networking protocol such as gRPC or WebSockets.
 I have good news and bad news. 
 The good news is marbles and the blockchain network can be setup for different configurations depending on your preference. 
 The bad news is this makes the instructions complicated. 
-**If you are new to Hyperledger Fabric and want the simplest setup then follow the :lollipop: emojii.** 
-Whenever there are options and you must choose your own adventrue, I'll drop a :lollipop: emojii on the option that is the simplest. 
+**If you are new to Hyperledger Fabric and want the simplest setup then follow the :lollipop: emoji.** 
+Whenever there are options and you must choose your own adventure, I'll drop a :lollipop: emoji on the option that is the simplest. 
 This is the option for you. 
 
 ### 0. Setup Local Environment
@@ -229,7 +229,7 @@ Let’s look at the operations involved when creating a new marble.
 Now lets see how we interface with the Fabric Client SDK. 
 Most of the configuration options can be found in `/config/blockchain_creds_tls.json`. 
 This file list the hostname (or ip) and port of various components of our blockchain network. 
-The `helper` functions will retreive IPs and ports from the configuration file.
+The `helper` functions will retrieve IPs and ports from the configuration file.
 
 ### Configure SDK:
 First action is to enroll the admin.  Look at the following code snippet on enrollment.  There are comments/instructions below the code.
@@ -318,12 +318,12 @@ enrollment.enroll = function (options, cb) {
 
 Step 1. The first thing the code does is create an instance of our SDK.
 
-Step 2. Next we create a key value store to store the enrollment certifcates with `newDefaultKeyValueStore`
+Step 2. Next we create a key value store to store the enrollment certificates with `newDefaultKeyValueStore`
 
 Step 3. Next we enroll our admin. This is when we authenticate to the CA with our enroll ID and enroll secret. The CA will issue enrollment certificates which the SDK will store in the key value store. Since we are using the default key value store, it will be stored in our local file system. 
 
 Step 4. After successful enrollment we set the orderer URL.  The orderer is not needed yet, but will be when we try to invoke chaincode. 
-    - The bussiness with `ssl-target-name-override` is only needed if you have self signed certificates. Set this field equal to the `common name` you used to create the PEM file.
+    - The business with `ssl-target-name-override` is only needed if you have self signed certificates. Set this field equal to the `common name` you used to create the PEM file.
     
 Step 5. Next we set the Peer URLs. These are also not needed yet, but we are going to setup our SDK chain object fully.
 
@@ -331,7 +331,7 @@ Step 6. At this point the SDK is fully configured and ready to interact with the
 
 # Marbles Deeper Dive
 Hopefully you have successfully traded a marble or two between users. 
-Let’s look at how transfering a marble is done by starting at the chaincode.
+Let’s look at how transferring a marble is done by starting at the chaincode.
 
 __/chaincode/marbles.go__
 
