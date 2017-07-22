@@ -139,7 +139,7 @@ if (config_error) {
 	broadcast_state('checklist', 'failed');			//checklist step is done
 } else {
 	broadcast_state('checklist', 'success');		//checklist step is done
-	console.log('\n\n');
+	console.log('\n');
 	logger.info('Using settings in ' + process.env.creds_filename + ' to see if we have launch marbles before...');
 
 	enroll_admin(1, function (e) {

@@ -419,10 +419,11 @@ module.exports = function (config_filename, logger) {
 
 
 
-	// check if user has changed the settings from the default ones - returns true when there is an error
+	// check if user has changed the settings from the default ones - returns error array when there is a problem
 	helper.checkConfig = function () {
+		let errors = [];
 		if (helper.getNetworkId() === 'Place Holder Network Name') {
-			console.log('\n\n');
+			console.log('\n');
 			logger.warn('----------------------------------------------------------------------');
 			logger.warn('----------------------------- Hey Buddy! -----------------------------');
 			logger.warn('------------------------- It looks like you --------------------------');
@@ -439,9 +440,10 @@ module.exports = function (config_filename, logger) {
 			logger.warn('  https://github.com/IBM-Blockchain/marbles/blob/v4.0/docs/install_chaincode.md');
 			logger.warn('----------------------------------------------------------------------');
 			console.log('\n\n');
-			return true;
+			errors.push('Using default values');
+			return errors;
 		}
-		return false;
+		return helper.check_protocols();					//run the next check
 	};
 
 	// check if marbles UI and marbles chaincode work together
@@ -449,19 +451,55 @@ module.exports = function (config_filename, logger) {
 		var version = packagejson.version;
 		if (!v || !v.parsed) v = { parsed: '0.x.x' };		//default
 		if (v.parsed[0] !== version[0]) {					//only check the major version
-			console.log('\n\n');
+			console.log('\n');
 			logger.warn('---------------------------------------------------------------');
 			logger.warn('----------------------------- Ah! -----------------------------');
 			logger.warn('---------------------------------------------------------------');
-			logger.error('Looks like you are using an old version of marbles chaincode: v' + v.parsed);
-			logger.warn('This code is expecting chaincode version: v' + version[0] + '.x.x');
-			logger.warn('This won\'t work =(');
-			logger.warn('Install and instantiate v' + version[0] + '.x.x' + ' chaincode on channel ' + helper.getChannelId());
+			logger.error('Looks like you are using an old version of marbles chaincode...');
+			logger.warn('The INTERNAL version of the chaincode found is: v' + v.parsed);
+			logger.warn('But this UI is expecting INTERNAL chaincode version: v' + version[0] + '.x.x');
+			logger.warn('This mismatch won\'t work =(');
+			logger.warn('Install and instantiate the chaincode found in the ./chaincode folder on your channel ' + helper.getChannelId());
 			logger.warn('----------------------------------------------------------------------');
 			console.log('\n\n');
 			return true;
 		}
 		return false;
+	};
+
+	// check if user has protocol errors - returns error array when there is a problem
+	helper.check_protocols = function () {
+		let errors = [];
+
+		if(helper.getCasUrl(0).indexOf('grpc') >= 0) {
+			errors.push('You accidentally typed "grpc" in your CA url. It should be "http://" or "https://"');
+		}
+		if(helper.getOrderersUrl(0).indexOf('http') >= 0) {
+			errors.push('You accidentally typed "http" in your Orderer url. It should be "grpc://" or "grpcs://"');
+		}
+		if(helper.getPeersUrl(0).indexOf('http') >= 0) {
+			errors.push('You accidentally typed "http" in your Peer discovery url. It should be "grpc://" or "grpcs://"');
+		}
+		if(helper.getPeerEventUrl(0).indexOf('http') >= 0) {
+			errors.push('You accidentally typed "http" in your Peer events url. It should be "grpc://" or "grpcs://"');
+		}
+
+		if (errors) {
+			console.log('\n');
+			logger.warn('----------------------------------------------------------------------');
+			logger.warn('------------------------ Close but no cigar --------------------------');
+			logger.warn('---------------- You have at least one protocol typo -----------------');
+			logger.warn('----------------------------------------------------------------------');
+			for(var i in errors) {
+				logger.error(errors[i]);
+			}
+			logger.warn('----------------------------------------------------------------------');
+			logger.error('Fix this file: ./config/' + helper.getNetworkCredFileName());
+			logger.warn('----------------------------------------------------------------------');
+			console.log('\n\n');
+			return errors;
+		}
+		return null;
 	};
 
 	return helper;

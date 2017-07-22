@@ -42,6 +42,7 @@ gulp.task('watch-server', function () {
 gulp.task('default', ['watch-sass', 'watch-server', 'server']);
 gulp.task('marbles_tls', ['start_marbles1', 'watch-sass', 'watch-server', 'server']);	//run with command `gulp marbles_tls` [THIS ONE!]
 gulp.task('marbles_local', ['start_marbles2', 'watch-sass', 'watch-server', 'server']);	//run with command `gulp marbles_local`
+gulp.task('marbles_dev', ['start_marbles3', 'watch-sass', 'watch-server', 'server']);	//run with command `gulp marbles_dev`
 gulp.task('dev', ['start_marbles3', 'watch-sass']);										//run with command `gulp dev`
 
 

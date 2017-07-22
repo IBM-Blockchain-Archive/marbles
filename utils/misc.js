@@ -4,10 +4,10 @@ var path = require('path');
 module.exports = function (logger) {
 	var misc = {};
 
-	// check if creds files is okay
+	// Check if blockchain creds files is okay
 	misc.check_creds_for_valid_json = function (cb) {
 		if (!process.env.creds_filename) {
-			process.env.creds_filename = 'marbles_tls.json';
+			process.env.creds_filename = 'marbles_tls.json';				//default to a file
 		}
 
 		var config_path = path.join(__dirname, '../config/' + process.env.creds_filename);
@@ -34,14 +34,14 @@ module.exports = function (logger) {
 		}
 	};
 
-	// Random integer
+	// Create Random integer between and including min-max
 	misc.getRandomInt = function (min, max) {
 		min = Math.ceil(min);
 		max = Math.floor(max);
 		return Math.floor(Math.random() * (max - min)) + min;
 	};
 
-	// Random string of x length
+	// Create a Random string of x length
 	misc.randStr = function (length) {
 		var text = '';
 		var possible = 'abcdefghijkmnpqrstuvwxyz0123456789';
@@ -60,13 +60,13 @@ module.exports = function (logger) {
 	misc.saferNames = function (usernames) {
 		var ret = [];
 		for (var i in usernames) {
-			var name = usernames[i].replace(/\W+/g, '');								//names should not contain many things...
+			var name = usernames[i].replace(/\W+/g, '');					//names should not contain many things...
 			if (name !== '') ret.push(name.toLowerCase());
 		}
 		return ret;
 	};
 
-	// Remove any kvs from last run
+	// Delete a folder
 	misc.rmdir = function (dir_path) {
 		if (fs.existsSync(dir_path)) {
 			fs.readdirSync(dir_path).forEach(function (entry) {
