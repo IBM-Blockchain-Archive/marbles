@@ -17,7 +17,6 @@ var http = require('http');
 var app = express();
 var cors = require('cors');
 var async = require('async');
-var fs = require('fs');
 var os = require('os');
 var ws = require('ws');											//websocket module 
 var winston = require('winston');								//logginer module
@@ -29,7 +28,8 @@ var logger = new (winston.Logger)({
 		new (winston.transports.Console)({ colorize: true }),
 	]
 });
-var more_entropy = randStr(32);
+var misc = require('./utils/misc.js')(logger);
+var more_entropy = misc.randStr(32);
 var start_up_states = {
 	checklist: { state: 'waiting', step: 'step1' },
 	enrolling: { state: 'waiting', step: 'step2' },
@@ -37,7 +37,7 @@ var start_up_states = {
 	register_owners: { state: 'waiting', step: 'step4' },
 };
 
-check_creds_for_valid_json();
+misc.check_creds_for_valid_json();
 var helper = require(__dirname + '/utils/helper.js')(process.env.creds_filename, logger);
 var fcw = require('./utils/fc_wrangler/index.js')({ block_delay: helper.getBlockDelay() }, logger);
 var ws_server = require('./utils/websocket_server_side.js')({ block_delay: helper.getBlockDelay() }, fcw, logger);
@@ -106,6 +106,7 @@ var server = http.createServer(app).listen(port, function () { });
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 process.env.NODE_ENV = 'production';
 server.timeout = 240000;																							// Ta-da.
+console.log('\n');
 console.log('------------------------------------------ Server Up - ' + host + ':' + port + ' ------------------------------------------');
 process.on('uncaughtException', function (err) {
 	logger.error('Caught exception: ', err.stack);		//demos never give up
@@ -130,67 +131,41 @@ process.on('uncaughtException', function (err) {
 // Life Starts Here!
 // ------------------------------------------------------------------------------------------------------------------------------
 process.env.app_first_setup = 'yes';				//init
-helper.checkConfig();
+let config_error = helper.checkConfig();
 setupWebSocket();
-broadcast_state('checklist', 'success');			//checklist step is done
 
 // --- Here We Go --- //
-console.log('\n\n');
-logger.info('Using settings in ' + process.env.creds_filename + ' to see if we have launch marbles before...');
+if (config_error) {
+	broadcast_state('checklist', 'failed');			//checklist step is done
+} else {
+	broadcast_state('checklist', 'success');		//checklist step is done
+	console.log('\n\n');
+	logger.info('Using settings in ' + process.env.creds_filename + ' to see if we have launch marbles before...');
 
-enroll_admin(1, function (e) {
-	if (e != null) {
-		logger.warn('Error enrolling admin');
-		broadcast_state('enrolling', 'failed');
-		startup_unsuccessful();
-	} else {
-		logger.info('Success enrolling admin');
-		broadcast_state('enrolling', 'success');
-
-		// --- Setup Marbles Library --- //
-		setup_marbles_lib(function () {
-
-			// --- Check If We have Started Marbles Before --- //
-			detect_prev_startup({ startup: true }, function (err) {
-				if (err) {
-					startup_unsuccessful();
-				} else {
-					logger.debug('Detected that we have launched successfully before');
-					logger.debug('Welcome back - Initiating start up\n\n');
-				}
-			});
-		});
-	}
-});
-
-// check if creds files is okay
-function check_creds_for_valid_json(cb) {
-	if (!process.env.creds_filename) {
-		process.env.creds_filename = 'marbles_tls.json';
-	}
-
-	var config_path = path.join(__dirname, './config/' + process.env.creds_filename);
-	try {
-		let configFile = require(config_path);
-		let creds_path = path.join(__dirname, './config/' + configFile.cred_filename);
-		let creds = require(creds_path);
-		if (creds.credentials.network_id) {
-			logger.info('Checking credentials file is done');
-			return null;
+	enroll_admin(1, function (e) {
+		if (e != null) {
+			logger.warn('Error enrolling admin');
+			broadcast_state('enrolling', 'failed');
+			startup_unsuccessful();
 		} else {
-			throw 'missing network id';
+			logger.info('Success enrolling admin');
+			broadcast_state('enrolling', 'success');
+
+			// --- Setup Marbles Library --- //
+			setup_marbles_lib(function () {
+
+				// --- Check If We have Started Marbles Before --- //
+				detect_prev_startup({ startup: true }, function (err) {
+					if (err) {
+						startup_unsuccessful();
+					} else {
+						logger.debug('Detected that we have launched successfully before');
+						logger.debug('Welcome back - Initiating start up\n\n');
+					}
+				});
+			});
 		}
-	} catch (e) {
-		logger.error('---------------------------------------------------------------');
-		logger.error('----------------------------- Bah -----------------------------');
-		logger.error('------------- The credentials file is malformed ---------------');
-		logger.error('---------------------------------------------------------------');
-		logger.error('Fix this file: ./config/' + process.env.creds_filename);
-		logger.warn('It must be valid JSON.  You may have dropped a comma or added one too many.');
-		logger.warn('----------------------------------------------------------------------');
-		logger.error(e);
-		process.exit();									//all stop
-	}
+	});
 }
 
 // Wait for the user to help correct the config file so we can startup!
@@ -302,58 +277,9 @@ function enroll_admin(attempt, cb) {
 	});
 }
 
-// Clean Up OLD KVS
-function removeKVS() {
-	try {
-		logger.warn('removing older kvs and trying to enroll again');
-		rmdir(makeKVSpath());							//delete old kvs folder
-		logger.warn('removed older kvs');
-	} catch (e) {
-		logger.error('could not delete old kvs', e);
-	}
-
-	// Make the path to the kvs we use
-	function makeKVSpath() {
-		var temp = helper.makeEnrollmentOptions(0);
-		return path.join(os.homedir(), '.hfc-key-store/', temp.uuid);
-	}
-}
-
-// Random integer
-function getRandomInt(min, max) {
-	min = Math.ceil(min);
-	max = Math.floor(max);
-	return Math.floor(Math.random() * (max - min)) + min;
-}
-
-// Random string of x length
-function randStr(length) {
-	var text = '';
-	var possible = 'abcdefghijkmnpqrstuvwxyz0123456789';
-	for (var i = 0; i < length; i++) text += possible.charAt(Math.floor(Math.random() * possible.length));
-	return text;
-}
-
-// Real simple hash
-function simple_hash(a_string) {
-	var hash = 0;
-	for (var i in a_string) hash ^= a_string.charCodeAt(i);
-	return hash;
-}
-
-// Sanitise marble owner names
-function saferNames(usernames) {
-	var ret = [];
-	for (var i in usernames) {
-		var name = usernames[i].replace(/\W+/g, '');								//names should not contain many things...
-		if (name !== '') ret.push(name.toLowerCase());
-	}
-	return ret;
-}
-
 // Create marbles and marble owners, owners first
 function create_assets(build_marbles_users) {
-	build_marbles_users = saferNames(build_marbles_users);
+	build_marbles_users = misc.saferNames(build_marbles_users);
 	logger.info('Creating marble owners and marbles');
 	var owners = [];
 
@@ -440,14 +366,31 @@ function create_marbles(owner_id, username, cb) {
 function build_marble_options(id, username, company) {
 	var colors = ['white', 'green', 'blue', 'purple', 'red', 'pink', 'orange', 'black', 'yellow'];
 	var sizes = ['35', '16'];
-	var color_index = simple_hash(more_entropy + company) % colors.length;		//build a psudeo random index to pick a color
-	var size_index = getRandomInt(0, sizes.length);								//build a random size for this marble
+	var color_index = misc.simple_hash(more_entropy + company) % colors.length;		//build a psudeo random index to pick a color
+	var size_index = misc.getRandomInt(0, sizes.length);								//build a random size for this marble
 	return {
 		color: colors[color_index],
 		size: sizes[size_index],
 		owner_id: id,
 		auth_company: process.env.marble_company
 	};
+}
+
+// Clean Up OLD KVS
+function removeKVS() {
+	try {
+		logger.warn('removing older kvs and trying to enroll again');
+		misc.rmdir(makeKVSpath());							//delete old kvs folder
+		logger.warn('removed older kvs');
+	} catch (e) {
+		logger.error('could not delete old kvs', e);
+	}
+
+	// Make the path to the kvs we use
+	function makeKVSpath() {
+		var temp = helper.makeEnrollmentOptions(0);
+		return path.join(os.homedir(), '.hfc-key-store/', temp.uuid);
+	}
 }
 
 // We are done, inform the clients
@@ -474,22 +417,6 @@ function broadcast_state(change_state, outcome) {
 		start_up_states[change_state].state = outcome;
 		wss.broadcast(build_state_msg());								//tell client our app state
 	} catch (e) { }														//this is expected to fail for "checking"
-}
-
-// Remove any kvs from last run
-function rmdir(dir_path) {
-	if (fs.existsSync(dir_path)) {
-		fs.readdirSync(dir_path).forEach(function (entry) {
-			var entry_path = path.join(dir_path, entry);
-			if (fs.lstatSync(entry_path).isDirectory()) {
-				rmdir(entry_path);
-			}
-			else {
-				fs.unlinkSync(entry_path);
-			}
-		});
-		fs.rmdirSync(dir_path);
-	}
 }
 
 // ============================================================================================================================

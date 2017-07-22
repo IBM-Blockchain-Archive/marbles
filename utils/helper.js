@@ -419,7 +419,7 @@ module.exports = function (config_filename, logger) {
 
 
 
-	// check if user has changed the settings from the default ones
+	// check if user has changed the settings from the default ones - returns true when there is an error
 	helper.checkConfig = function () {
 		if (helper.getNetworkId() === 'Place Holder Network Name') {
 			console.log('\n\n');
@@ -436,10 +436,12 @@ module.exports = function (config_filename, logger) {
 			logger.error('Fix this file: ./config/' + helper.getNetworkCredFileName());
 			logger.warn('It must have credentials/hostnames/ports/channels/etc for YOUR network');
 			logger.warn('How/where would I get that info? Are you using the Bluemix service? Then look at these instructions(near the end): ');
-			logger.warn('  https://github.com/IBM-Blockchain/marbles/blob/v3.0/docs/install_chaincode.md');
+			logger.warn('  https://github.com/IBM-Blockchain/marbles/blob/v4.0/docs/install_chaincode.md');
 			logger.warn('----------------------------------------------------------------------');
 			console.log('\n\n');
+			return true;
 		}
+		return false;
 	};
 
 	// check if marbles UI and marbles chaincode work together
