@@ -1,6 +1,7 @@
-**/launchConfigurations
-**/.vscode
-**/public/logs/**
-**/temp
-**/node_modules
-.project
+temp/
+node_modules/
+chaincode/
+doc_images/
+docs/
+scripts/
+scss/
