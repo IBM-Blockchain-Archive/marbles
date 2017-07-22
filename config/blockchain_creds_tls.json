@@ -1,7 +1,6 @@
 {
 	"credentials": {
-		"network_id": "9a3590a5ef98427fb1976a4ac6cd073e",
-		"network_name": "Place Holder Network Name",
+		"network_id": "Place Holder Network Name",
 		"orderers": [
 			{
 				"name": "fabric-orderer-12434a",
