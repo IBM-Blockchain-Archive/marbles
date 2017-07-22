@@ -5,7 +5,9 @@ These files can be found in the folder `<marbles directory>/config`.
 You usually need to edit them from their default state. 
 Especially the creds file (section 2) since it has the IPs and other network details that are specific to your network. 
 
-### 1. Config File:
+**You will need to restart the application after editing either file.**
+
+### 1. The Config File:
 
 - This is the file that has settings for the marble company you are pretending to be.
 	- Such as the name of your marbles company, list of marble owners, port for the app, etc.. 
@@ -44,7 +46,7 @@ There is already an example file in the config folder you can use.
 - `usernames` - The list of marbles owners that should be created on initial startup.
 - `port` - The port to use when hosting the marbles application.
 
-### 2. Creds File:
+### 2. The Creds File:
 
 - This file has settings for your blockchain network such as IPs, port numbers, and certificates. 
 - This can be found in `<marbles>/config/blockchain_creds_tls.json`. 

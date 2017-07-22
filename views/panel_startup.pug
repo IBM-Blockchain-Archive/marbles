@@ -47,6 +47,15 @@
 				span.backgroundMe /config/#{bag.creds_filename}
 				span &nbsp;.
 
+			.failureStep 
+				p 
+					span Uh oh, there is something wrong with the config files. 
+					span The server's console has more information.
+				br
+				p(style="font-weight: 200;") 
+					span Checkout the documentation we have on the 
+					a(href="https://github.com/IBM-Blockchain/marbles/blob/v4.0/docs/config_file.md" target="_blank" style="color:#fff;") config files.
+
 			.successStep Step 1 Complete
 			button.nextStep(nextstepid="step2") Next Step
 
