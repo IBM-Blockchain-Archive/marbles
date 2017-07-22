@@ -40,27 +40,22 @@ gulp.task('watch-server', function () {
 
 // ---------------- Runable Gulp Tasks ---------------- //
 gulp.task('default', ['watch-sass', 'watch-server', 'server']);
-gulp.task('marbles1', ['start_marbles1', 'watch-sass', 'watch-server', 'server']);	//run with command `gulp marbles1` [THIS ONE!]
-gulp.task('marbles2', ['start_marbles2', 'watch-sass', 'watch-server', 'server']);	//run with command `gulp marbles2`
-gulp.task('marbles3', ['start_marbles3', 'watch-sass', 'watch-server', 'server']);	//run with command `gulp marbles3`
-gulp.task('dev', ['start_marbles3', 'watch-sass']);					//run with command `gulp dev`
+gulp.task('marbles_tls', ['start_marbles1', 'watch-sass', 'watch-server', 'server']);	//run with command `gulp marbles_tls` [THIS ONE!]
+gulp.task('marbles_local', ['start_marbles2', 'watch-sass', 'watch-server', 'server']);	//run with command `gulp marbles_local`
+gulp.task('dev', ['start_marbles3', 'watch-sass']);										//run with command `gulp dev`
 
 
-
-// launch marbles 1
+// launch marbles 
 gulp.task('start_marbles1', function () {
-	env['creds_filename'] = 'marbles1.json';
-	console.log('\n[International Marbles Trading Consortium] 1\n');
+	env['creds_filename'] = 'marbles_tls.json';
 });
 
-// launch marbles 2
+// launch marbles - Docker Compose version
 gulp.task('start_marbles2', function () {
-	env['creds_filename'] = 'marbles2.json';
-	console.log('\n[International Marbles Trading Consortium] 2\n');
+	env['creds_filename'] = 'marbles_local.json';
 });
 
-// launch marbles 3 - Docker Compose version
+// launch marbles - Dev version
 gulp.task('start_marbles3', function () {
-	env['creds_filename'] = 'marbles3.json';
-	console.log('\n[International Marbles Trading Consortium] 1\n');
+	env['creds_filename'] = 'marbles_dev.json';
 });

@@ -1,0 +1,47 @@
+{
+	"credentials": {
+		"network_id": "Docker Compose Network",
+		"orderers": [
+			{
+				"discovery_url": "grpc://localhost:7050",
+				"msp_id": "Org1MSP",
+				"tls_certificate": null
+			}
+		],
+		"cas": [
+			{
+				"api_url": "http://localhost:7054",
+				"msp_id": "Org1MSP",
+				"orgs": {
+					"PeerOrg1": {
+						"users": [
+							{
+								"enrollId": "admin",
+								"enrollSecret": "adminpw"
+							}
+						],
+						"ca_name": "PeerOrg1CA",
+						"privateKeyPEM": "LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JR0hBZ0VBTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEJHMHdhd0lCQVFRZ0dzMk56c21oVm8yT0gxQW0KL0JwQkZPc0dSY2VOaGdzYXVaTm9UeHVCYmNtaFJBTkNBQVNDZ01uWFA4eTMvRldXelRkNmJ6Y1huQmNyVXZjZwpyZ1VnNjVDR0VSNmExaW4wYTNxTWNrZER5WGJwdWJ1WEdSNG9uQ3Vla2xnRnZsenZ3b0kybTVieQotLS0tLUVORCBQUklWQVRFIEtFWS0tLS0tCg==",
+						"signedCertPEM": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJrekNDQVRxZ0F3SUJBZ0lVTDM1c3hJOW9iQW5PN3VicFdFdkxlQ0FEaDFnd0NnWUlLb1pJemowRUF3SXcKR3pFWk1CY0dBMVVFQXhNUVlXUnRhVzVRWldWeVQzSm5NVU5CTVRBZUZ3MHhOekEzTVRNeE9UQTJNREJhRncweApPREEzTVRNeE9UQTJNREJhTUJjeEZUQVRCZ05WQkFNVERHRmtiV2x1YldGdVlXZGxjakJaTUJNR0J5cUdTTTQ5CkFnRUdDQ3FHU000OUF3RUhBMElBQklLQXlkYy96TGY4VlpiTk4zcHZOeGVjRnl0Uzl5Q3VCU0Rya0lZUkhwclcKS2ZScmVveHlSMFBKZHVtNXU1Y1pIaWljSzU2U1dBVytYTy9DZ2phYmx2S2pZREJlTUE0R0ExVWREd0VCL3dRRQpBd0lDQkRBTUJnTlZIUk1CQWY4RUFqQUFNQjBHQTFVZERnUVdCQlIwTTY5bzViYWNSY0pQdFZyaXNKV1piM0I2ClpqQWZCZ05WSFNNRUdEQVdnQlNKU2hGMklqWTRSSlhFUUFLZmpSd01Xa3MxM1RBS0JnZ3Foa2pPUFFRREFnTkgKQURCRUFpQm1oSFg0bi9tcjRhSzkrQklYMFZnd0dIYTlkMnB6aHRvZm0wa0RBc1JPYWdJZ2JpLytyaFFzM0lkYgpUb0JrMldvRWNHeGZKSzFSQmw3aHBWMFBsaFZOeTBvPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="
+					}
+				},
+				"tls_certificate": null
+			}
+		],
+		"peers": [
+			{
+				"name": "fabric-peer-1a",
+				"discovery_url": "grpc://localhost:7051",
+				"event_url": "grpc://localhost:7053",
+				"msp_id": "Org1MSP",
+				"tls_certificate": null
+			}
+		],
+		"app": {
+			"channel_id": "mychannel",
+			"chaincode_id": "marbles",
+			"chaincode_version": "v4",
+			"block_delay": 10000
+		}
+	}
+}

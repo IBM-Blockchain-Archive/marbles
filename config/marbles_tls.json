@@ -1,0 +1,12 @@
+{
+    "cred_filename": "blockchain_creds_tls.json",
+    "use_events": true,
+    "keep_alive_secs": 120,
+    "company": "United Marbles",
+    "usernames": [
+        "amy",
+        "alice",
+        "ava"
+    ],
+    "port": 3001
+}

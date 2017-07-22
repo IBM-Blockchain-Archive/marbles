@@ -227,7 +227,7 @@ Let’s look at the operations involved when creating a new marble.
 
 # SDK Deeper Dive
 Now lets see how we interface with the Fabric Client SDK. 
-Most of the configuration options can be found in `/config/blockchain_creds1.json`. 
+Most of the configuration options can be found in `/config/blockchain_creds_tls.json`. 
 This file list the hostname (or ip) and port of various components of our blockchain network. 
 The `helper` functions will retreive IPs and ports from the configuration file.
 

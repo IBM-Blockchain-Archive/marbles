@@ -9,7 +9,7 @@ Especially the creds file (section 2) since it has the IPs and other network det
 
 - This is the file that has settings for the marble company you are pretending to be.
 	- Such as the name of your marbles company, list of marble owners, port for the app, etc.. 
-- It can be found in `<marbles directory>/config/marbles1.json`. 
+- It can be found in `<marbles directory>/config/marbles_tls.json`. 
 - You only need to edit/create 1 file. Details below.
 	- Tip: Create a new file for each Marble company you want to pretend to be.
 
@@ -17,7 +17,7 @@ Especially the creds file (section 2) since it has the IPs and other network det
 
 ```json
 {
-    "cred_filename": "blockchain_creds4.json",
+    "cred_filename": "blockchain_creds_tls.json",
     "use_events": true,
     "keep_alive_secs": 120,
     "company": "United Marbles",
@@ -47,7 +47,7 @@ There is already an example file in the config folder you can use.
 ### 2. Creds File:
 
 - This file has settings for your blockchain network such as IPs, port numbers, and certificates. 
-- This can be found in `<marbles>/config/blockchain_creds1.json`. 
+- This can be found in `<marbles>/config/blockchain_creds_tls.json`. 
 - You only need to edit/create 1 file. Details below.
 	- Tip: Use seperate files for seperate blockchain networks.
 
@@ -132,6 +132,6 @@ You should have already downloaded this file from the service during the [instal
 	- `common_name` - Only needed when using self signed certs. It will override the common name.
 	- `pem` - Can be either the complete PEM file that has line breaks encoded as `\n` **OR** a relative file path to a PEM file inside the `config` folder.
 
-Once you have edited `blockchain_creds1.json` you are ready to install/instantiate Marbles. 
+Once you have edited `blockchain_creds_tls.json` you are ready to install/instantiate Marbles. 
 
 1. Continue where you left off in the [tutorial](../README.md#installchaincode). 

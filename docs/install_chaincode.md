@@ -54,7 +54,7 @@
 
 - The last thing we need to do is grab all the service instance's credentials for our network. We will use this data to inform the marbles node.js application of our blockchain's networking addresses and credentials.
 - Get basic service credentials by clicking the "JSON" button under the "App Integration" column (you may need to expand the chaincode row first)
-- This will open the JSON in your browser. Copy this data and save/replace the entire contents of the file `<marbles directory>/config/blockchain_creds1.json` 
+- This will open the JSON in your browser. Copy this data and save/replace the entire contents of the file `<marbles directory>/config/blockchain_creds_tls.json` 
   - This JSON a simplified version of your Service Credentials.  It has 1 orderer, 1 ca, 1 peer which is all we need for marbles.
 
 ### Finish Up

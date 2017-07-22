@@ -8,7 +8,7 @@ var logger = new (winston.Logger)({
 		new (winston.transports.Console)({ colorize: true }),
 	]
 });
-var helper = require(path.join(__dirname, '../utils/helper.js'))('marbles3.json', logger);			//set the config file name here
+var helper = require(path.join(__dirname, '../utils/helper.js'))('marbles_local.json', logger);			//set the config file name here
 var fcw = require(path.join(__dirname, '../utils/fc_wrangler/index.js'))({ block_delay: helper.getBlockDelay() }, logger);
 
 console.log('---------------------------------------');

@@ -166,7 +166,7 @@ enroll_admin(1, function (e) {
 // check if creds files is okay
 function check_creds_for_valid_json(cb) {
 	if (!process.env.creds_filename) {
-		process.env.creds_filename = 'marbles1.json';
+		process.env.creds_filename = 'marbles_tls.json';
 	}
 
 	var config_path = path.join(__dirname, './config/' + process.env.creds_filename);
