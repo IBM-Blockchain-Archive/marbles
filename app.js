@@ -185,6 +185,9 @@ function check_creds_for_valid_json(cb) {
 		logger.error('----------------------------- Bah -----------------------------');
 		logger.error('------------- The credentials file is malformed ---------------');
 		logger.error('---------------------------------------------------------------');
+		logger.error('Fix this file: ./config/' + process.env.creds_filename);
+		logger.warn('It must be valid JSON.  You may have dropped a comma or added one too many.');
+		logger.warn('----------------------------------------------------------------------');
 		logger.error(e);
 		process.exit();									//all stop
 	}

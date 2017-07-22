@@ -433,7 +433,7 @@ module.exports = function (config_filename, logger) {
 			logger.warn('I\'m afraid you cannot use the default settings as is.');
 			logger.warn('These settings must be edited to point to YOUR network.');
 			logger.warn('----------------------------------------------------------------------');
-			logger.error('Fix this file: ' + helper.getNetworkCredFileName());
+			logger.error('Fix this file: ./config/' + helper.getNetworkCredFileName());
 			logger.warn('It must have credentials/hostnames/ports/channels/etc for YOUR network');
 			logger.warn('How/where would I get that info? Are you using the Bluemix service? Then look at these instructions(near the end): ');
 			logger.warn('  https://github.com/IBM-Blockchain/marbles/blob/v3.0/docs/install_chaincode.md');
