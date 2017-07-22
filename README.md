@@ -16,7 +16,7 @@ Pick a version of marbles that is compatible with your version of Fabric.
 If you don't have any version of Fabric, then pick the marbles version marked **latest**! 
 
 - Marbles - Branch v4.0 **(Latest)** (You are viewing this branch!)
-	- Works with Hyperledger Fabric `v1.0.0-rc1`
+	- Works with Hyperledger Fabric `v1.0.0` and `v1.0.0-rc1`
 	- Works with the IBM Blockchain Bluemix Service - Plan **HSBN vNext**
 
 - [Marbles - Branch v3.0](https://github.com/ibm-blockchain/marbles/tree/v3.0) 
