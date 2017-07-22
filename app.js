@@ -21,36 +21,37 @@ var os = require('os');
 var ws = require('ws');											//websocket module 
 var winston = require('winston');								//logginer module
 
-// --- Set Our Things --- //
+// --- Get Our Modules --- //
 var logger = new (winston.Logger)({
 	level: 'debug',
 	transports: [
 		new (winston.transports.Console)({ colorize: true }),
 	]
 });
-var misc = require('./utils/misc.js')(logger);
-var more_entropy = misc.randStr(32);
-var start_up_states = {
-	checklist: { state: 'waiting', step: 'step1' },
-	enrolling: { state: 'waiting', step: 'step2' },
-	find_chaincode: { state: 'waiting', step: 'step3' },
-	register_owners: { state: 'waiting', step: 'step4' },
-};
-
+var misc = require('./utils/misc.js')(logger);					//random non-blockchain related functions
 misc.check_creds_for_valid_json();
-var helper = require(__dirname + '/utils/helper.js')(process.env.creds_filename, logger);
-var fcw = require('./utils/fc_wrangler/index.js')({ block_delay: helper.getBlockDelay() }, logger);
-var ws_server = require('./utils/websocket_server_side.js')({ block_delay: helper.getBlockDelay() }, fcw, logger);
+var helper = require(__dirname + '/utils/helper.js')(process.env.creds_filename, logger);				//parses our blockchain config file
+var fcw = require('./utils/fc_wrangler/index.js')({ block_delay: helper.getBlockDelay() }, logger);		//fabric client wrangler wrapps the SDK
+var ws_server = require('./utils/websocket_server_side.js')({ block_delay: helper.getBlockDelay() }, fcw, logger);	//websocket logic
+
+// ------------- Init ------------- //
+var more_entropy = misc.randStr(32);
 var host = 'localhost';
 var port = helper.getMarblesPort();
 var wss = {};
 var enrollObj = null;
 var marbles_lib = null;
 process.env.marble_company = helper.getCompanyName();
+var start_up_states = {												//Marbles Startup Steps
+	checklist: { state: 'waiting', step: 'step1' },					// Step 1 - check config files for somewhat correctness
+	enrolling: { state: 'waiting', step: 'step2' },					// Step 2 - enroll the admin
+	find_chaincode: { state: 'waiting', step: 'step3' },			// Step 3 - find the chaincode on the channel
+	register_owners: { state: 'waiting', step: 'step4' },			// Step 4 - create the marble owners
+};
 
-// ------------- Bluemix Detection ------------- //
+// ------------- Bluemix Host Detection ------------- //
 if (process.env.VCAP_APPLICATION) {
-	host = '0.0.0.0';							//overwrite defaults
+	host = '0.0.0.0';												//overwrite defaults
 	port = process.env.PORT;
 }
 
@@ -67,8 +68,8 @@ app.use(cors());
 //---------------------
 // Cache Busting Hash
 //---------------------
-process.env.cachebust_js = Date.now();			//i'm just making 1 hash against all js for easier pug implementation
-process.env.cachebust_css = Date.now();			//i'm just making 1 hash against all css for easier pug implementation
+process.env.cachebust_js = Date.now();
+process.env.cachebust_css = Date.now();
 logger.debug('cache busting hash js', process.env.cachebust_js, 'css', process.env.cachebust_css);
 
 // ============================================================================================================================
@@ -89,7 +90,7 @@ app.use(function (req, res, next) {
 	err.status = 404;
 	next(err);
 });
-app.use(function (err, req, res, next) {														// = development error handler, print stack trace
+app.use(function (err, req, res, next) {
 	logger.debug('Error Handeler -', req.url);
 	var errorCode = err.status || 500;
 	res.status(errorCode);
@@ -107,7 +108,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 process.env.NODE_ENV = 'production';
 server.timeout = 240000;																							// Ta-da.
 console.log('\n');
-console.log('----------------------------- Server Up - ' + host + ':' + port + ' ------------------------------');
+console.log('----------------------------------- Server Up - ' + host + ':' + port + ' -----------------------------------');
 process.on('uncaughtException', function (err) {
 	logger.error('Caught exception: ', err.stack);		//demos never give up
 	if (err.stack.indexOf('EADDRINUSE') >= 0) {			//except for this error
@@ -134,7 +135,6 @@ process.env.app_first_setup = 'yes';				//init
 let config_error = helper.checkConfig();
 setupWebSocket();
 
-// --- Here We Go --- //
 if (config_error) {
 	broadcast_state('checklist', 'failed');			//checklist step is done
 } else {
@@ -142,6 +142,7 @@ if (config_error) {
 	console.log('\n');
 	logger.info('Using settings in ' + process.env.creds_filename + ' to see if we have launch marbles before...');
 
+	// --- Go Go Enrollment --- //
 	enroll_admin(1, function (e) {
 		if (e != null) {
 			logger.warn('Error enrolling admin');
@@ -220,7 +221,6 @@ function find_missing_owners(resp) {
 	}
 	return false;
 }
-// ------------------------------------------------------------------------------------------------------------------------------
 
 //setup marbles library and check if cc is instantiated
 function setup_marbles_lib(cb) {
@@ -298,7 +298,7 @@ function create_assets(build_marbles_users) {
 			if (err == null) {
 
 				var marbles = [];
-				var marblesEach = 3;											//number of marbles each owner gets
+				var marblesEach = 3;												//number of marbles each owner gets
 				for (var i in owners) {
 					for (var x = 0; x < marblesEach; x++) {
 						marbles.push(owners[i]);
@@ -367,7 +367,7 @@ function build_marble_options(id, username, company) {
 	var colors = ['white', 'green', 'blue', 'purple', 'red', 'pink', 'orange', 'black', 'yellow'];
 	var sizes = ['35', '16'];
 	var color_index = misc.simple_hash(more_entropy + company) % colors.length;		//build a psudeo random index to pick a color
-	var size_index = misc.getRandomInt(0, sizes.length);								//build a random size for this marble
+	var size_index = misc.getRandomInt(0, sizes.length);							//build a random size for this marble
 	return {
 		color: colors[color_index],
 		size: sizes[size_index],
@@ -380,7 +380,7 @@ function build_marble_options(id, username, company) {
 function removeKVS() {
 	try {
 		logger.warn('removing older kvs and trying to enroll again');
-		misc.rmdir(makeKVSpath());							//delete old kvs folder
+		misc.rmdir(makeKVSpath());											//delete old kvs folder
 		logger.warn('removed older kvs');
 	} catch (e) {
 		logger.error('could not delete old kvs', e);
@@ -443,7 +443,7 @@ function setupWebSocket() {
 				//enroll admin
 				if (data.configure === 'enrollment') {
 					removeKVS();
-					helper.write(data);										//write new config data to file
+					helper.write(data);													//write new config data to file
 					enroll_admin(1, function (e) {
 						if (e == null) {
 							setup_marbles_lib(function () {
@@ -459,8 +459,8 @@ function setupWebSocket() {
 
 				//find instantiated chaincode
 				else if (data.configure === 'find_chaincode') {
-					helper.write(data);										//write new config data to file
-					enroll_admin(1, function (e) {							//re-renroll b/c we may be using new peer/order urls
+					helper.write(data);													//write new config data to file
+					enroll_admin(1, function (e) {										//re-renroll b/c we may be using new peer/order urls
 						if (e == null) {
 							setup_marbles_lib(function () {
 								detect_prev_startup({ startup: true }, function (err) {
@@ -488,7 +488,8 @@ function setupWebSocket() {
 		ws.send(JSON.stringify(build_state_msg()));							//tell client our app state
 	});
 
-	wss.broadcast = function broadcast(data) {								//send to all connections
+	// --- Send To All Connected Clients --- //
+	wss.broadcast = function broadcast(data) {
 		var i = 0;
 		wss.clients.forEach(function each(client) {
 			try {
