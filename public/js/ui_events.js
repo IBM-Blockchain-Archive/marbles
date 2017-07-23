@@ -279,14 +279,25 @@ $(document).on('ready', function () {
 		$('#leftEverything').fadeIn();
 	});
 
-	// disable the marble owner
+	let selectedOwner = null;
+	// show dialog to confirm if they want to disable the marble owner
 	$(document).on('click', '.disableOwner', function () {
+		$('#disableOwnerWrap, #tint').fadeIn();
+		selectedOwner = $(this).parents('.marblesWrap');
+	});
+
+	// disable the marble owner
+	$('#removeOwner').click(function () {
 		var obj = {
 			type: 'disable_owner',
-			owner_id: $(this).parents('.marblesWrap').attr('owner_id')
+			owner_id: selectedOwner.attr('owner_id')
 		};
 		ws.send(JSON.stringify(obj));
-		$(this).parents('.marblesWrap').css('opacity', 0.4);
+		selectedOwner.css('opacity', 0.4);
+	});
+
+	$('.closeDisableOwner, #removeOwner').click(function () {
+		$('#disableOwnerWrap, #tint').fadeOut();
 	});
 });
 

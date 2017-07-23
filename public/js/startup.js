@@ -58,6 +58,7 @@ $(document).on('ready', function () {
 		};
 		console.log('[startup] sending register msg');
 		ws.send(JSON.stringify(obj));
+		$(this).prev('button').html('Next Step');
 	});
 
 	// show loading spinner

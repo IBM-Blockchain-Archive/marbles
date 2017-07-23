@@ -84,12 +84,17 @@ function build_user_panels(data) {
 
 		console.log('[ui] building owner panel ' + data[i].id);
 
+		let disableHtml = '';
+		if (data[i].company  === escapeHtml(bag.marble_company)) {
+			disableHtml = '<span class="fa fa-trash disableOwner" title="Disable Owner"></span>';
+		}
+
 		html += `<div id="user` + i + `wrap" username="` + data[i].username + `" company="` + data[i].company +
 			`" owner_id="` + data[i].id + `" class="marblesWrap ` + colorClass + `">
 					<div class="legend" style="` + size_user_name(data[i].username) + `">
 						` + toTitleCase(data[i].username) + `
 						<span class="fa fa-thumb-tack marblesFix" title="Never Hide Owner"></span>
-						<span class="fa fa-trash disableOwner" title="Disable Owner"></span>
+						` + disableHtml + `
 					</div>
 					<div class="innerMarbleWrap"><i class="fa fa-plus addMarble"></i></div>
 					<div class="noMarblesMsg hint">No marbles</div>

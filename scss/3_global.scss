@@ -680,12 +680,12 @@ $marble_left: 0;
 	margin-top: 15px;
 	padding-top: 15px;
 }
-#closeStartUp, #closeTxStoryPos, #closeSettings, #closeCreate{
+#closeStartUp, #closeTxStoryPos, #closeSettings, #closeCreate, #closePos{
 	position: absolute;
 	right: 15px;
 	top: 15px;
 }
-#closeStartUp:hover, #closeTxStoryPos:hover, #closeSettings:hover, #closeCreate:hover{
+#closeStartUp:hover, #closeTxStoryPos:hover, #closeSettings:hover, #closeCreate:hover, #closePos:hover{
 	color: $hi_color1;
 	cursor: pointer;
 }
