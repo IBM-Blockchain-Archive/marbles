@@ -134,6 +134,10 @@ Hello again. Now we need a blockchain network.
 ### 3. Install and Instantiate Chaincode
 
 OK, almost there! Now we need to get our marbles chaincode running. 
+Remember the chaincode is a vital component that ultimately creates our marbles transactions on the ledger. 
+It is GoLang code that needs to be installed on our peer, and then instantiated on a channel. 
+The code is already written for you! 
+We just need to get it running. 
 There are two ways to do this. 
 
 Choose the **only** option that is relevant for your setup:
