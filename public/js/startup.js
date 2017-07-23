@@ -8,6 +8,11 @@ $(document).on('ready', function () {
 	// =================================================================================
 	// jQuery UI Events
 	// =================================================================================
+	$('#startSteps').click(function () {
+		$('#stepWelcomeWrap').hide();
+		$('#stepsWrap, #detailsWrap').fadeIn();
+	});
+
 	$('#showStartupPanel').click(function () {
 		$('#tint').fadeIn();
 		$('#startUpPanel').show().addClass('bounceInLeft');
@@ -34,6 +39,7 @@ $(document).on('ready', function () {
 			configure: 'find_chaincode',
 			ordererUrl: $('input[name="ordererUrl"]').val(),
 			peerUrl: $('input[name="peerUrl"]').val(),
+			channelId: $('input[name="channelId"]').val(),
 			chaincodeId: $('input[name="chaincodeId"]').val(),
 			chaincodeVersion: $('input[name="chaincodeVersion"]').val()
 		};
@@ -96,6 +102,14 @@ $(document).on('ready', function () {
 			showStepPanel(stepid);
 		}
 	});
+
+	$('.showMoreDetails').click(function(){
+		if($(this).next('.moreDetails').is(':visible')){
+			$(this).next('.moreDetails').fadeOut();
+		} else {
+			$(this).next('.moreDetails').fadeIn();
+		}
+	});
 });
 // =================================================================================
 // Start Up Fun
@@ -106,6 +120,7 @@ function showStepPanel(openStepId) {
 	let onStep = $('.onStep').attr('stepid');
 
 	if (onStep != openStepId) {
+		$('.moreDetails').hide();
 		$('#' + onStep).slideUp(400);
 		console.log('hiding step', onStep, 'showing step', openStepId);
 		setTimeout(function () {

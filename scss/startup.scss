@@ -4,12 +4,26 @@
 	text-align: center;
 	margin-top: -10px;
 	margin-bottom: 25px;
+	display: none;
 }
 
 #detailsWrap{
 	display: block;
 	width: 100%;
 	text-align: center;
+	display: none;
+}
+
+#stepWelcomeWrap{
+	text-align: center;
+}
+
+#breakdownWrap{
+	text-align: left;
+	width: 300px;
+	margin: auto;
+	margin-bottom: 15px;
+	margin-top: 15px;
 }
 
 .oneStepWrap{
@@ -97,7 +111,8 @@
 	display: inline-block;
 	text-align: center;
 	vertical-align: top;
-	line-height: 20px;
+	line-height: 24px;
+	width: 100%;
 }
 .stepDescription{
 	font-size: 15px;
@@ -163,7 +178,22 @@
 #registerOwnersInputPanel, #registerOwners{
 	display: block;
 }
-
+.showMoreDetails{
+	color:#646b73;
+	float: left;
+	cursor: pointer;
+}
+.showMoreDetails:hover{
+	color: #ccc;
+}
+.moreDetails{
+	display: none;
+	width: 100%;
+	text-align: left;
+	font-size: 14px;
+	clear: both;
+	color:#959ca4;
+}
 .stepHeader{
 	font-weight: 600;
 	height: 32px;

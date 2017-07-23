@@ -2,6 +2,18 @@
 
 	span.fa.fa-close#closeStartUp.closeStartUp
 
+	#stepWelcomeWrap
+		h1 Hi
+		br
+		p 
+			span Starting this application requires a few steps. 
+			br
+			br
+			strong Complete each step to fully setup marbles. 
+			br
+			br
+		button#startSteps Start
+
 	//----------------- Step Navigation
 	#stepsWrap
 		.oneStepWrap(stepid="step1").successfulStepIcon.onStep
@@ -29,21 +41,8 @@
 				span.fa.fa-gear
 				span &nbsp;&nbsp;Check Configuration Files
 			.stepDescription 
-				span Welcome! 
-				span Starting this application requires a few steps. 
-				span Many of steps were automatically ran when you started the application.
-				span The outcome of each step can be found above. 
-				span.greenMe Green 
-				span is a step that passed, 
-				span.redMe Red 
-				span is a step that failed, and White is step that has yet to run. 
-				br
-				br
-				strong Simply complete each step to fully setup marbles. 
-				br
-				br
 				span The first step was to check your config JSON files for easy to make mistakes. 
-				span The file that was checked can be found at 
+				span The file that was checked can be found in 
 				span.backgroundMe /config/#{bag.creds_filename}
 				span &nbsp;.
 
@@ -72,9 +71,6 @@
 				span.backgroundMe enrollSecret
 				span &nbsp;from your creds file. 
 				br
-				br
-				span If successful, the application will download an enrollment certificate. 
-				span This is an important step because the admin's certificate will be used to authenticate marble transactions. 
 
 			include ./template/loading.pug
 
@@ -111,6 +107,12 @@
 			button.nextStep(nextstepid="step3") Next Step
 			button.runStep(stepid="step2" nextstepid="step3")#enrollAdmin Try Again
 
+			.showMoreDetails Why is this important?
+			.moreDetails
+				span If successful, the application will download an enrollment certificate. 
+				span The certificat will be used to authenticate future marbles transactions. 
+				span Without it we cannot create transactions. 
+
 		//----------------- Step 3 Content [Find Chaincode]
 		#step3.stepWrap.hidden
 			.stepHeader 
@@ -118,26 +120,22 @@
 				span &nbsp;&nbsp;Finding Chaincode
 			.stepDescription 
 				span Now we needed to locate the chaincode on your channel. 
-				span Each channel has its own ledger which is where all the marbles transactions will be stored. 
-				span We will look for running chaincode on the channel named 
+				span Your creds file says to check the channel 
 				span.backgroundMe #{bag.creds.channel}
-				span &nbsp;. 
+				span &nbsp; for the chaincode named 
+				span.backgroundMe #{bag.creds.chaincode_id}
+				span &nbsp;.
 				br
-				br
-				span The chaincode defines the assets (marbles) and the rules around marble transfers. 
-				span The marbles chaincode was written in GoLang and can be found in the this folder: 
-				span.backgroundMe /chaincode/src/marbles
-				span &nbsp;. It only needs to be instantiated once per channel. 
 
 			include ./template/loading.pug
 			
 			.failureStep 
-				p We could not find the correct chaincode
+				p We could not find the chaincode
 				p Edit the settings below to try again
-				p OR...
+				p(style="font-weight: 200;") OR...
 				p(style="font-weight: 200;") 
 					span If this is your first time using the application then&nbsp;
-					a(href="https://github.com/IBM-Blockchain/marbles/blob/experimental/docs/install_chaincode.md" target="_blank" style="color:#fff;") install/instantiate
+					a(href="https://github.com/IBM-Blockchain/marbles/tree/experimental#3-install-and-instantiate-chaincode" target="_blank" style="color:#fff;") install/instantiate
 					span &nbsp;marbles chaincode
 
 			.startupWrap
@@ -161,6 +159,12 @@
 						span.tooltiptext This is the main gRPC url to reach your peer.  It should include the protocol and port. You will be sending marble transactions here for endorsement.
 					br
 					.stepInputLegend
+						span.backgroundMe channel 
+					input(type="text" placeholder="Channel Name" name="channelId" value=bag.creds.channel).longer
+					span.fa.fa-question-circle.settingstooltip
+						span.tooltiptext This is the name of a channel you created on the blockchain network.
+					br
+					.stepInputLegend
 						span.backgroundMe chaincode_id 
 					input(type="text" placeholder="Chaincode ID" name="chaincodeId" value=bag.creds.chaincode_id).longer
 					span.fa.fa-question-circle.settingstooltip
@@ -176,11 +180,23 @@
 			button.nextStep(nextstepid="step4") Next Step
 			button.runStep(stepid="step3" nextstepid="step4")#findCcButton Try Again
 
+			.showMoreDetails Why is this important?
+			.moreDetails
+				span Each channel on the network has its own ledger to store transactions. 
+				span When our chaincode is running on a channel we will be able to create and store these transactions. 
+				span There might be other types of activity on the channel, but we won't be concern with them. 
+				br
+				br
+				span The chaincode itself is code written in GoLang. 
+				span It defines the assets (marbles) and the rules around marble transfers. 
+				span Our chaincode transactions will create and modify marbles, marble owners, and marble companies. 
+				span We cannot use this application until the chaincode is instantiated on a channel. 
+				
 		//----------------- Step 4 Content [Register Marlbe Owners]
 		#step4.stepWrap.hidden
 			.stepHeader 
 				span.fa.fa-group
-				span &nbsp;&nbsp;Create Marble Owners
+				span &nbsp;&nbsp;Create Assets
 			.stepDescription 
 				span Almost there! 
 				span As a marbles trading company you may bring new marble owners onboard. 
