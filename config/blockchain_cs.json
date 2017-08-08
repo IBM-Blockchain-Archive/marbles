@@ -24,7 +24,7 @@
 							}
 						],
 						"ca_name": "CA1",
-						"privateKeyPEM": "or1_admin_key.pem",
+						"privateKeyPEM": "org1_admin_key.pem",
 						"signedCertPEM": "org1_admin_cert.pem"
 					}
 				},

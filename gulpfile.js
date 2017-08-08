@@ -63,5 +63,5 @@ gulp.task('start_marbles3', function () {
 
 // launch marbles - Container-service version
 gulp.task('start_marbles4', function () {
-	env['creds_filename'] = 'marbles_container_service.json';
+	env['creds_filename'] = 'marbles_cs.json';
 });
