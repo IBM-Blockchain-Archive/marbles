@@ -36,7 +36,7 @@ fcw.enroll(helper.makeEnrollmentOptions(0), function (enrollErr, enrollResp) {
 		};
 		fcw.instantiate_chaincode(enrollResp, opts, function (err, resp) {
 			console.log('---------------------------------------');
-			logger.info('Instantiate done. Errors:', (err) ? 'nope' : err);
+			logger.info('Instantiate done. Errors:', (!err) ? 'nope' : err);
 			console.log('---------------------------------------');
 		});
 	}

@@ -2,16 +2,30 @@
 
 ## About Marbles
 - The underlying network for this application is the [Hyperledger Fabric](https://github.com/hyperledger/fabric/tree/master/docs), a Linux Foundation project.  You may want to review these instructions to understand a bit about the Hyperledger Fabric.
-- **This demo is to aid a developer learn the basics of chaincode and app development with a Hyperledger network.**
+- **This demo is to aid a developer learn the basics of chaincode and app development with a Fabric network.**
 - This is a `very simple` asset transfer demonstration. Multiple users can create and transfer marbles with each other.
+
+	![](/doc_images/marbles-peek.gif)
 
 ***
 
-## Marbles Goals
-- Admin can create a marble and store it in the chaincode state
-- Admin can read and display all marbles in the chaincode state
-- Admin can transfer a marble to another marble owner
-- Admin can delete a marble
+##### Versions and Supported Platforms
+Please note there are multiple version of marbles. 
+One for each major Hyperledger Fabric release. 
+Pick a version of marbles that is compatible with your version of Fabric. 
+If you don't have any version of Fabric, then pick the marbles version marked **latest**! 
+
+- Marbles - Branch v3.0 **(Latest)** (You are viewing this branch!)
+	- Works with Hyperledger Fabric `v1.0`
+	- Works with the IBM Blockchain Bluemix Service - Plan **HSBN vNext**
+
+- [Marbles - Branch v2.0](https://github.com/ibm-blockchain/marbles/tree/v2.0)
+	- Works with Hyperledger Fabric `v0.6-developer-preview`
+	- Works with IBM Blockchain Bluemix Service - Plan **Starter** or **HSBN**
+
+- [Marbles - Branch v1.0](https://github.com/ibm-blockchain/marbles/tree/v1.0) **(Deprecated)**
+	- No longer supported by the IBM Blockchain Bluemix service
+	- Works with Hyperledger Fabric `v0.5-developer-preview`
 
 ***
 
@@ -68,175 +82,83 @@ They will communicate via a networking protocol such as gRPC or WebSockets.
 
 # Marbles Setup
 
-Follow the steps below to have your own marbles blockchain demo run locally.
+I have good news and bad news. 
+The good news is marbles and the blockchain network can be setup for different configurations depending on your preference. 
+The bad news is this makes the instructions complicated. 
+**If you are new to Hyperledger Fabric and want the simplest setup then follow the :lollipop: emojii.** 
+Whenever there are options and you must choose your own adventrue, I'll drop a :lollipop: emojii on the option that is the simplest. 
+This is the option for you. 
 
-## Prerequisite
+### 0. Setup Local Environment
 
-These instructions have been tested on Ubuntu 14 and OSX.  It may work for Windows 10 if you install the Bash shell.
-**Note: Windows 7 users will need a virtual machine running some flavor of Linux.**
+Follow these environment setup [instructions](./docs/env_setup.md) to install **Git, Go** and **Node.js**.
 
-* Bash - Bash scripts are needed to setup installation files
-* [GoLang](https://golang.org/) - 1.7.0 or highter
-* [Docker](https://www.docker.com/products/overview) - v1.13 or higher
-* [Docker Compose](https://docs.docker.com/compose/overview/) - v1.8 or higher
-* [Node.js](https://nodejs.org/en/download/) - node v6.2.0 - v6.10.0 **(v7+ not supported)**
-* [xcode](https://developer.apple.com/xcode/) - only required for OS X users
+- When you have finished come back to this tutorial. Start the next section "Download Marbles" below.
 
+<a name="downloadmarbles"></a>
 
-## Steps
+### 1. Download Marbles
+We need to download marbles to your local system. 
+Let’s do this with Git by cloning this repository. 
+You will need to do this step even if you plan on hosting marbles in Bluemix.
 
-1. [Clone the repo and download the Docker images](#1-clone-the-repo-and-download-the-docker-images)
-2. [Set up the Fabric Node SDK](#2-set-up-the-fabric-node-sdk)
-3. [Start your network](#3-start-your-network)
-4. [Setup Blockchain Network](#4-setup-blockchain-network)
-5. [Setup and Run the Marbles App](#5-setup-and-run-marbles)
+- Open a command prompt/terminal and browse to your desired working directory
+- Run the following command:
 
+	```
+	git clone https://github.com/IBM-Blockchain/marbles.git --depth 1
+	git checkout v3.0
+	```
 
-## 1. Clone the repo and download the Docker images
+<a name="getnetwork"></a>
 
-Determine a location on your local machine where you want to place the Marbles and SDK libraries.  Next, clone the marbles repo into the folder:
+### 2. Get a Network
 
-```bash
-git clone https://github.com/IBM-Blockchain/marbles.git
-git checkout master
-```
+Now we need a blockchain network.
 
-Next, we will download the docker images required to setup the network for running Hyperledger Fabric V1.
-From your workspace, make the shell script an executable:
+**Choose 1 option below:**
 
-```bash
-cd marbles/scripts
-chmod +x download-dockerimages.sh
-```
+- **Option 1:** Create a network with the Bluemix IBM Blockchain Service - [instructions](./docs/use_bluemix_hyperledger.md)
 
-Now run the script. Make sure you have docker running before executing this script. This process will take a few minutes so be patient:
+-  **Option 2:** :lollipop: Use a locally hosted Hyperledger Fabric Network - [instructions](./docs/use_local_hyperledger.md)
 
-```bash
-sudo ./download-dockerimages.sh
-```
+<a name="installchaincode"></a>
 
-Once the script has completed, you should see the following in your terminal:
+### 3. Install and Instantiate Chaincode
 
-```bash
-===> List out hyperledger docker images
-hyperledger/fabric-ca          latest               35311d8617b4        3 weeks ago         240 MB
-hyperledger/fabric-ca          x86_64-1.0.0-alpha   35311d8617b4        3 weeks ago         240 MB
-hyperledger/fabric-couchdb     latest               f3ce31e25872        3 weeks ago         1.51 GB
-hyperledger/fabric-couchdb     x86_64-1.0.0-alpha   f3ce31e25872        3 weeks ago         1.51 GB
-hyperledger/fabric-kafka       latest               589dad0b93fc        3 weeks ago         1.3 GB
-hyperledger/fabric-kafka       x86_64-1.0.0-alpha   589dad0b93fc        3 weeks ago         1.3 GB
-hyperledger/fabric-zookeeper   latest               9a51f5be29c1        3 weeks ago         1.31 GB
-hyperledger/fabric-zookeeper   x86_64-1.0.0-alpha   9a51f5be29c1        3 weeks ago         1.31 GB
-hyperledger/fabric-orderer     latest               5685fd77ab7c        3 weeks ago         182 MB
-hyperledger/fabric-orderer     x86_64-1.0.0-alpha   5685fd77ab7c        3 weeks ago         182 MB
-hyperledger/fabric-peer        latest               784c5d41ac1d        3 weeks ago         184 MB
-hyperledger/fabric-peer        x86_64-1.0.0-alpha   784c5d41ac1d        3 weeks ago         184 MB
-hyperledger/fabric-javaenv     latest               a08f85d8f0a9        3 weeks ago         1.42 GB
-hyperledger/fabric-javaenv     x86_64-1.0.0-alpha   a08f85d8f0a9        3 weeks ago         1.42 GB
-hyperledger/fabric-ccenv       latest               91792014b61f        3 weeks ago         1.29 GB
-hyperledger/fabric-ccenv       x86_64-1.0.0-alpha   91792014b61f        3 weeks ago         1.29 GB
-```
+OK, almost there! Now we need to get our marbles chaincode running. 
+There are two ways to do this. 
 
-## 2. Set up the Fabric Node SDK
+Choose the **only** option that is relevant for your setup:
 
-From your `marbles/scripts` folder, run the `setup_sdk.sh` script:
-```bash
-sudo bash setup_sdk.sh
-```
+- **Option 1:** Install and instantiate chaincode with your IBM Blockchain Service - [instructions](./docs/install_chaincode.md)
 
-## 3. Start your network
+- **Option 2:** :lollipop: Install and instantiate chaincode with the SDK locally - [instructions](./docs/install_chaincode_locally.md)
 
-Navigate to the test/fixtures folder in the fabric-sdk-node directory and run the docker-compose file:
+<a name="hostmarbles"></a>
 
-```bash
-cd ./fabric-sdk-node/test/fixtures
-sudo docker-compose -f docker-compose-marblesv3.yaml up -d
-```
+### 4. Host Marbles
 
-Once complete, issue a `docker ps` command to view your currently running containers. You should see the following:
-```bash
-CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS                       PORTS                                            NAMES
-e61cf829f171        hyperledger/fabric-peer      "peer node start -..."   3 minutes ago       Up 2 minutes        0.0.0.0:7056->7051/tcp, 0.0.0.0:7058->7053/tcp   peer1
-0cc1f5ac24da        hyperledger/fabric-peer      "peer node start -..."   3 minutes ago       Up 2 minutes        0.0.0.0:8056->7051/tcp, 0.0.0.0:8058->7053/tcp   peer3
-7ab3106e5076        hyperledger/fabric-peer      "peer node start -..."   3 minutes ago       Up 3 minutes        0.0.0.0:7051->7051/tcp, 0.0.0.0:7053->7053/tcp   peer0
-2bc5c6606e6c        hyperledger/fabric-peer      "peer node start -..."   3 minutes ago       Up 3 minutes        0.0.0.0:8051->7051/tcp, 0.0.0.0:8053->7053/tcp   peer2
-513be1b46467        hyperledger/fabric-ca        "sh -c 'fabric-ca-..."   3 minutes ago       Up 3 minutes        0.0.0.0:8054->7054/tcp                           ca_peerOrg2
-741c363ba34a        hyperledger/fabric-orderer   "orderer"                3 minutes ago       Up 3 minutes        0.0.0.0:7050->7050/tcp                           orderer0
-abaae883eb13        couchdb                      "tini -- /docker-e..."   3 minutes ago       Up 3 minutes        0.0.0.0:5984->5984/tcp                           couchdb
-2c2d51fe88c0        hyperledger/fabric-ca        "sh -c 'fabric-ca-..."   3 minutes ago       Up 3 minutes        0.0.0.0:7054->7054/tcp                           ca_peerOrg1
-```
+Last but not least we need marbles running somewhere.
 
-## 4. Setup Blockchain Network
+**Choose 1 option below:**
 
-A Hyperledger Fabric channel is a private “subnet” of communication between two or more specific network members, for the purpose of conducting private and confidential transactions. A channel is defined by members (organizations), anchor peers per member, the shared ledger, chaincode application(s) and the ordering service node(s). Each transaction on the network is executed on a channel, where each party must be authenticated and authorized to transact on that channel. Each peer that joins a channel, has its own identity given by a membership services provider (MSP), which authenticates each peer to its channel peers and services.
+- **Option 1:** Host marbles on Bluemix - [instructions](./docs/host_marbles_bluemix.md)
+- **Option 2:** :lollipop: Host marbles locally - [instructions](./docs/host_marbles_locally.md)
 
-Before starting let’s remove the key value stores and hfc artifacts that may have cached during previous runs:
-```bash
-rm -rf /tmp/hfc-*
-rm -rf ~/.hfc-key-store
-```
+***
 
-### Create channel
-
-Now, leverage the SDK test program to create a channel named `mychannel`. From the `scripts` directory:
-```bash
-cd ../fabric-sdk-node/
-node test/integration/e2e/create-channel.js
-```
-
-### Join channel
-Pass the genesis block - `mychannel.block` - to the ordering service and join the peers to your channel:
-```bash
-node test/integration/e2e/join-channel.js
-```
-
-## 5. Setup and Run Marbles
-Install marbles npm dependencies by navigating back to the root of the marble directory:
-```bash
-cd ../../
-npm install
-```
-
-### Install chaincode
-Install the marbles chaincode source on the peer's filesystems:
-```bash
-cd ./scripts
-node install_chaincode.js
-```
-
-### Instantiate chaincode
-Spin up the marbles chaincode on your channel:
-```bash
-node instantiate_chaincode.js
-```
-
-### Run the Marbles App
-
-Navigate to the marbles directory and launch the application:
-```bash
-cd ../
-gulp marbles3
-```
-
-### Use the UI
-Open a browser and visit localhost:3001. Scroll down to the bottom of the page and login as “admin”. You’re all set! Now you can create and trade marbles.
-
-### See the logs
-Open another terminal and view your peer or orderer logs:
-```bash
-docker logs -f peer0
-# control + c will exit the process
-docker logs -f orderer0
-```
+<a name="use"></a>
 
 # Use Marbles
 
 1. If you are at this step, you should have your environment setup, blockchain network created, marbles app and chaincode running. Right? If not look up for help (up the page, not literally upwards).
-1. Open up your browser and browse to [http://localhost:3001](http://localhost:3001) or your Bluemix www route.
+1. Open up your favorite browser and browse to [http://localhost:3001](http://localhost:3001) or your Bluemix www route.
     - If the site does not load, check your node console logs for the hostname/ip and port marbles is using.
+
 1. Finally we can test the application. Click the "+" icon on one of your users in the "United Marbles" section
 
-![](/doc_images/use_marbles1.png)
+	![](/doc_images/use_marbles1.png)
 
 1. Fill out all the fields, then click the "CREATE" button
 1. After a few seconds your new marble should have appeared.
@@ -245,7 +167,7 @@ docker logs -f orderer0
     - If not refresh the page
 1. Now let’s delete a marble by dragging and dropping it into the trash can. It should disappear after a few seconds.
 
-![](/doc_images/use_marbles2.png)
+	![](/doc_images/use_marbles2.png)
 
 1. Refresh the page to double check that your actions "stuck".
 1. Use the search box to filter on marble owners or marble company names.  This is helpful when there are many companies/owners.
@@ -253,27 +175,394 @@ docker logs -f orderer0
 1. Congratulations you have a working marbles application :)!
 
 
-# Additional resources
+# Blockchain Background
+Before we talk about how Marbles works let’s discuss the flow and topology of Hyperledger Fabric. 
+Lets get some definitions out of the way first.
 
-* [What is Chaincode](http://hyperledger-fabric.readthedocs.io/en/latest/chaincode.html)
-* [Fundamentals of IBM Blockchain](https://www.ibm.com/blockchain/what-is-blockchain.html)
-* [Hyperledger Fabric Documentation](http://fabric-rtd.readthedocs.io/en/latest/getting_started.html)
-* [Hyperledger Fabric code on GitHub](https://github.com/hyperledger/fabric)
-* [Todo List Network using Hyperledger Composer](https://github.com/sanjay-saxena/todolist-network-hlfv1)
+### Definitions:
+
+**Peer** - A peer is a member of the blockchain and is running Hyperledger Fabric. From marble's context, the peers are owned and operated by my marble company.
+
+**CA** - The CA (Certificate Authority) is responsible for gatekeeping our blockchain network. It will provide transaction certificates for clients such as our marbles node.js application. 
+
+**Orderer** - An orderer or ordering service is a member of the blockchain network whose main responsibility is to package transactions into blocks.
+
+**Users** - A user is an entity that is authorized to interact with the blockchain. In the Marbles context, this is our admin. The user can query and write to the ledger.
+
+**Blocks** - Blocks contain transactions and a hash to verify integrity.
+
+**Transactions** or **Proposals** - These represent interactions to the blockchain ledger. A read or write request of the ledger is sent as a transaction/proposal.
+
+**Ledger** - This is the storage for the blockchain on a peer. It contains the actual block data which consist of transaction parameters and key value pairs. It is written by chaincode.
+
+**Chaincode** - Chaincode is Hyperledger Fabric speak for smart contracts. It defines the assets and all rules about assets.
+
+**Assets** - An asset is an entity that exists in the ledger. It’s a key value pair. In the context of marbles this is a marble, or a marble owner. 
+
+Let’s look at the operations involved when creating a new marble.
+
+1. The first thing that happens in marbles is registering our admin `user` with our network's `CA`. If successful, the `CA` will send Marbles enrollment certificates that the SDK will store for us in our local file system. 
+1. When the admin creates a new marble from the user interface the SDK will create an invocation transaction. 
+1. The create marble transaction gets built as a `proposal` to invoke the chaincode function `init_marble()`. 
+1. Marbles (via the SDK) will send this `proposal` to a `peer` for endorsement. 
+1. The `peer` will simulate the transaction by running the Go function `init_marble()` and record any changes it attempted to write to the `ledger`. 
+1. If the function returns successfully the `peer` will endorse the `proposal` and send it back to Marbles. Errors will also be sent back, but the `proposal` will not be endorsed.
+1. Marbles (via the SDK), will then send the endorsed `proposal` to the `orderer`. 
+1. The `orderer` will organize a sequence of `proposals` from the whole network. It will check the sequence of transactions is valid by looking for transactions that conflict with each other. Any transactions that cannot be added to the block because of conflicts will be marked as errors. The `orderer` will broadcast the new block to the peers of the network.
+1. Our `peer` will receive the new block and validate it by looking at various signatures and hashes. It is then finally committed to the `peer's` `ledger`.
+1. At this point the new marble exists in our ledger and should soon exist in all peer's ledgers.
 
 
-# Troubleshooting
+# SDK Deeper Dive
+Now lets see how we interface with the Fabric Client SDK. 
+Most of the configuration options can be found in `/config/blockchain_creds1.json`. 
+This file list the hostname (or ip) and port of various components of our blockchain network. 
+The `helper` functions will retreive IPs and ports from the configuration file.
 
-* If you see a `containerID already exists` upon running docker-compose up, then you need to remove the existing container. This command will remove all containers; NOT your images:
-```bash
-docker rm -f $(docker ps -aq)
+### Configure SDK:
+First action is to enroll the admin.  Look at the following code snippet on enrollment.  There are comments/instructions below the code.
+
+```js
+//enroll admin
+enrollment.enroll = function (options, cb) {
+    var chain = {};
+    var client = null;
+    try {
+// [Step 1]
+        client = new HFC();
+        chain = client.newChain(options.channel_id);
+    }
+    catch (e) {
+        //it might error about 1 chain per network, but that's not a problem just continue
+    }
+
+    if (!options.uuid) {
+        logger.error('cannot enroll with undefined uuid');
+        if (cb) cb({ error: 'cannot enroll with undefined uuid' });
+        return;
+    }
+
+    logger.info('[fcw] Going to enroll for mspId ', options);
+
+// [Step 2]
+    // Make eCert kvs (Key Value Store)
+    HFC.newDefaultKeyValueStore({
+        path: path.join(os.homedir(), '.hfc-key-store/' + options.uuid) //store eCert in the kvs directory
+    }).then(function (store) {
+        client.setStateStore(store);
+
+// [Step 3]
+        return getSubmitter(client, options);              //do most of the work here
+    }).then(function (submitter) {
+
+// [Step 4]
+        chain.addOrderer(new Orderer(options.orderer_url, {
+          pem: options.orderer_tls_opts.pem,
+          'ssl-target-name-override': options.orderer_tls_opts.common_name  //can be null if cert matches hostname
+        }));
+
+// [Step 5]
+        try {
+            for (var i in options.peer_urls) {
+                chain.addPeer(new Peer(options.peer_urls[i], {
+                    pem: options.peer_tls_opts.pem,
+                    'ssl-target-name-override': options.peer_tls_opts.common_name
+                }));
+                logger.debug('added peer', options.peer_urls[i]);
+            }
+        }
+        catch (e) {
+            //might error if peer already exists, but we don't care
+        }
+        try {
+            chain.setPrimaryPeer(new Peer(options.peer_urls[0], {
+                 pem: options.peer_tls_opts.pem,
+                 'ssl-target-name-override': options.peer_tls_opts.common_name
+            }));
+            logger.debug('added primary peer', options.peer_urls[0]);
+        }
+        catch (e) {
+            //might error b/c bugs, don't care
+        }
+
+// [Step 6]
+        // --- Success --- //
+        logger.debug('[fcw] Successfully got enrollment ' + options.uuid);
+        if (cb) cb(null, { chain: chain, submitter: submitter });
+        return;
+
+    }).catch(
+
+        // --- Failure --- //
+        function (err) {
+            logger.error('[fcw] Failed to get enrollment ' + options.uuid, err.stack ? err.stack : err);
+            var formatted = common.format_error_msg(err);
+            if (cb) cb(formatted);
+            return;
+        }
+    );
+};
 ```
 
-* When running `create-channel.js`, if you see an error stating `private key not found`, then try clearing your cached key value stores:
-```bash
-rm -rf /tmp/hfc-*
-rm -rf ~/.hfc-key-store
+Step 1. The first thing the code does is create an instance of our SDK.
+
+Step 2. Next we create a key value store to store the enrollment certifcates with `newDefaultKeyValueStore`
+
+Step 3. Next we enroll our admin. This is when we authenticate to the CA with our enroll ID and enroll secret. The CA will issue enrollment certificates which the SDK will store in the key value store. Since we are using the default key value store, it will be stored in our local file system. 
+
+Step 4. After successful enrollment we set the orderer URL.  The orderer is not needed yet, but will be when we try to invoke chaincode. 
+    - The bussiness with `ssl-target-name-override` is only needed if you have self signed certificates. Set this field equal to the `common name` you used to create the PEM file.
+    
+Step 5. Next we set the Peer URLs. These are also not needed yet, but we are going to setup our SDK chain object fully.
+
+Step 6. At this point the SDK is fully configured and ready to interact with the blockchain.
+
+# Marbles Deeper Dive
+Hopefully you have successfully traded a marble or two between users. 
+Let’s look at how transfering a marble is done by starting at the chaincode.
+
+__/chaincode/marbles.go__
+
+```go
+    type Marble struct {
+        ObjectType string        `json:"docType"`
+        Id       string          `json:"id"`
+        Color      string        `json:"color"`
+        Size       int           `json:"size"`
+        Owner      OwnerRelation `json:"owner"`
+    }
 ```
+
+__/chaincode/write_ledger.go__
+
+```go
+    func set_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+        var err error
+        fmt.Println("starting set_owner")
+
+        // this is quirky
+        // todo - get the "company that authed the transfer" from the certificate instead of an argument
+        // should be possible since we can now add attributes to the enrollment cert
+        // as is.. this is a bit broken (security wise), but it's much much easier to demo! holding off for demos sake
+
+        if len(args) != 3 {
+            return shim.Error("Incorrect number of arguments. Expecting 3")
+        }
+
+        // input sanitation
+        err = sanitize_arguments(args)
+        if err != nil {
+            return shim.Error(err.Error())
+        }
+
+        var marble_id = args[0]
+        var new_owner_id = args[1]
+        var authed_by_company = args[2]
+        fmt.Println(marble_id + "->" + new_owner_id + " - |" + authed_by_company)
+
+        // check if user already exists
+        owner, err := get_owner(stub, new_owner_id)
+        if err != nil {
+            return shim.Error("This owner does not exist - " + new_owner_id)
+        }
+
+        // get marble's current state
+        marbleAsBytes, err := stub.GetState(marble_id)
+        if err != nil {
+            return shim.Error("Failed to get marble")
+        }
+        res := Marble{}
+        json.Unmarshal(marbleAsBytes, &res)           //un stringify it aka JSON.parse()
+
+        // check authorizing company
+        if res.Owner.Company != authed_by_company{
+            return shim.Error("The company '" + authed_by_company + "' cannot authorize transfers for '" + res.Owner.Company + "'.")
+        }
+
+        // transfer the marble
+        res.Owner.Id = new_owner_id                   //change the owner
+        res.Owner.Username = owner.Username
+        res.Owner.Company = owner.Company
+        jsonAsBytes, _ := json.Marshal(res)           //convert to array of bytes
+        err = stub.PutState(args[0], jsonAsBytes)     //rewrite the marble with id as key
+        if err != nil {
+            return shim.Error(err.Error())
+        }
+
+        fmt.Println("- end set owner")
+        return shim.Success(nil)
+    }
+```
+
+This `set_owner()` function will change the owner of a particular marble. 
+It takes in an array of strings input argument and returns `nil` if successful. 
+Within the array the first index should have the id of the marble which is also the key in the key/value pair. 
+We first need to retrieve the current marble struct by using this id. 
+This is done with `stub.GetState(marble_id)` and then unmarshal it into a marble structure with `json.Unmarshal(marbleAsBytes, &res)`. 
+From there we can index into the structure with `res.Owner.Id` and overwrite the marble's owner with the new owners Id. 
+Next we Marshal the structure back up so that we can use `stub.PutState()` to overwrite the marble with its new attributes. 
+
+Let’s take 1 step up and look at how this chaincode was called from our node.js app. 
+
+__/utils/websocket_server_side.js__
+
+```js
+    //process web socket messages
+    ws_server.process_msg = function (ws, data) {
+        var options = {
+            peer_urls: [helper.getPeersUrl(0)],
+            ws: ws,
+            endorsed_hook: endorse_hook,
+            ordered_hook: orderer_hook
+        };
+        if (marbles_lib === null) {
+            logger.error('marbles lib is null...');             //can't run in this state
+            return;
+        }
+
+        // create a new marble
+        if (data.type == 'create') {
+            logger.info('[ws] create marbles req');
+            options.args = {
+                color: data.color,
+                size: data.size,
+                marble_owner: data.username,
+                owners_company: data.company,
+                owner_id: data.owner_id,
+                auth_company: process.env.marble_company,
+            };
+
+            marbles_lib.create_a_marble(options, function (err, resp) {
+                if (err != null) send_err(err, data);
+                else options.ws.send(JSON.stringify({ msg: 'tx_step', state: 'finished' }));
+            });
+        }
+
+        // transfer a marble
+        else if (data.type == 'transfer_marble') {
+            logger.info('[ws] transfering req');
+            options.args = {
+                marble_id: data.id,
+                owner_id: data.owner_id,
+                auth_company: process.env.marble_company
+            };
+
+            marbles_lib.set_marble_owner(options, function (err, resp) {
+                if (err != null) send_err(err, data);
+                else options.ws.send(JSON.stringify({ msg: 'tx_step', state: 'finished' }));
+            });
+        }
+        ...
+```
+
+This snippet of `process_msg()` receives all websocket messages (code found in app.js). 
+It will detect what type of ws (websocket) message was sent. 
+In our case, it should detect a `transfer_marble` type. 
+Looking at that code we can see it will setup an `options` variable and then kick off `marbles_lib.set_marble_owner()`. 
+This is the function that will tell the SDK to build the proposal and process the transfer action. 
+
+Next let’s look at that function. 
+
+__/utils/marbles_cc_lib.js__
+
+```js
+    //-------------------------------------------------------------------
+    // Set Marble Owner 
+    //-------------------------------------------------------------------
+    marbles_chaincode.set_marble_owner = function (options, cb) {
+        console.log('');
+        logger.info('Setting marble owner...');
+
+        var opts = {
+            channel_id: g_options.channel_id,
+            chaincode_id: g_options.chaincode_id,
+            chaincode_version: g_options.chaincode_version,
+            event_url: g_options.event_url,
+            endorsed_hook: options.endorsed_hook,
+            ordered_hook: options.ordered_hook,
+            cc_function: 'set_owner',
+            cc_args: [
+                options.args.marble_id,
+                options.args.owner_id,
+                options.args.auth_company
+            ],
+            peer_tls_opts: g_options.peer_tls_opts,
+        };
+        fcw.invoke_chaincode(enrollObj, opts, cb);
+    };
+        ...
+```
+
+The the `set_marble_owner()` function is listed above. 
+The important parts are that it is setting the proposal's invocation function name to "set_owner" with the line `fcn: 'set_owner'`. 
+Note that the peer and orderer URLs have already been set when we enrolled the admin. 
+By default the SDK will send this transaction to all peers that have been added with `chain.addPeer`. 
+In our case the SDK will send to only 1 peer, since we have only added the 1 peer. 
+Remember this peer was added in the `enrollment` section. 
+
+Now let’s look 1 more step up to how we sent this websocket message from the UI.
+
+__/public/js/ui_building.js__
+
+```js
+    $('.innerMarbleWrap').droppable({drop:
+        function( event, ui ) {
+            var marble_id = $(ui.draggable).attr('id');
+
+            //  ------------ Delete Marble ------------ //
+            if($(event.target).attr('id') === 'trashbin'){
+                // [removed code for brevity]
+            }
+
+            //  ------------ Transfer Marble ------------ //
+            else{
+                var dragged_owner_id = $(ui.draggable).attr('owner_id');
+                var dropped_owner_id = $(event.target).parents('.marblesWrap').attr('owner_id');
+
+                console.log('dropped a marble', dragged_owner_id, dropped_owner_id);
+                if (dragged_owner_id != dropped_owner_id) {
+                $(ui.draggable).addClass('invalid bounce');
+                    transfer_marble(marble_id, dropped_owner_id);
+                    return true;
+                }
+            }
+        }
+    });
+
+    ...
+
+    function transfer_marble(marbleName, to_username, to_company){
+        show_tx_step({ state: 'building_proposal' }, function () {
+            var obj = {
+                type: 'transfer_marble',
+                id: marbleId,
+                owner_id: to_owner_id,
+                v: 1
+            };
+            console.log(wsTxt + ' sending transfer marble msg', obj);
+            ws.send(JSON.stringify(obj));
+            refreshHomePanel();
+        });
+    }
+```
+
+In the first section referencing `$('.innerMarbleWrap')` you can see we used jQuery and jQuery-UI to implement the drag and drop functionality. 
+With this code we get a droppable event trigger. 
+Much of the code is spent parsing for the details of the marble that was dropped and the user it was dropped into. 
+
+When the event fires we first check to see if this marble actually moved owners, or if it was just picked up and dropped back down. 
+If its owner has changed we go off to the `transfer_marble()` function. 
+This function creates a JSON message with all the needed data and uses our websocket to send it with `ws.send()`. 
+
+The last piece of the puzzle is how Marbles realize the transfer is complete. 
+Well, marbles will periodically check on all the marbles and compares it to the last known state. 
+If there is a difference it will broadcast the new marble state to all connected JS clients. 
+The clients will receive this websocket message and redraw the marbles. 
+
+Now you know the whole flow. 
+The admin moved the marble, JS detected the drag/drop, client sends a websocket message, marbles receives the websocket message, sdk builds/sends a proposal, peer endorses the proposal, sdk sends the proposal for ordering, the orderer orders and sends a block to peer, our peer commits the block, marbles node code gets new marble status periodically, sends marble websocket message to client, and finally the client redraws the marble in its new home.
+
+That’s it! Hope you had fun transferring marbles. 
 
 # License
 [Apache 2.0](LICENSE)
