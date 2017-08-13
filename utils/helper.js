@@ -19,8 +19,8 @@ module.exports = function (config_filename, logger) {
 	logger.info('Loaded creds file', creds_path);
 
 	// get network id
-	helper.getNetworkId = function () {
-		return helper.creds['x-networkId'];
+	helper.getNetworkName = function () {
+		return helper.creds.name;
 	};
 
 	// get cred file name
@@ -350,9 +350,13 @@ module.exports = function (config_filename, logger) {
 
 	// get the chaincode id on network
 	helper.getBlockDelay = function () {
-		//var ret = getBlockchainField('block_delay');
-		//if (!ret || isNaN(ret)) 
-		var ret = 10000;
+		let ret = 1000;
+		var channel = helper.getChannelId();
+		if (helper.creds.channels && helper.creds.channels[channel] && helper.creds.channels[channel]['x-blockDelay']) {
+			if (!isNaN(helper.creds.channels[channel]['x-blockDelay'])) {
+				ret = helper.creds.channels[channel]['x-blockDelay'];
+			}
+		}
 		return ret;
 	};
 
@@ -444,7 +448,7 @@ module.exports = function (config_filename, logger) {
 			const user_obj = helper.getEnrollObj(first_ca, userIndex);		//there may be multiple users
 			return {
 				channel_id: channel,
-				uuid: 'marbles-' + helper.getNetworkId() + '-' + channel + '-' + first_peer,
+				uuid: 'marbles-' + helper.getNetworkName() + '-' + channel + '-' + first_peer,
 				ca_url: helper.getCasUrl(first_ca),
 				ca_name: helper.getCaName(first_ca),
 				orderer_url: helper.getOrderersUrl(first_orderer),
@@ -464,11 +468,11 @@ module.exports = function (config_filename, logger) {
 		const channel = helper.getChannelId();
 		const first_org = helper.getFirstOrg();
 		const first_peer = helper.getFirstPeerName(channel);
-		const first_orderer = helper.getFirstOrdererName(channel);		
+		const first_orderer = helper.getFirstOrdererName(channel);
 		const org_name = helper.getOrgsMSPid(first_org);		//lets use the first org we find
 		return {
 			channel_id: channel,
-			uuid: 'marbles-' + helper.getNetworkId() + '-' + channel + '-' + first_peer,
+			uuid: 'marbles-' + helper.getNetworkName() + '-' + channel + '-' + first_peer,
 			orderer_url: helper.getOrderersUrl(first_orderer),
 			peer_urls: [helper.getPeersUrl(first_peer)],
 			msp_id: org_name,
@@ -526,7 +530,7 @@ module.exports = function (config_filename, logger) {
 	// check if user has changed the settings from the default ones - returns error array when there is a problem
 	helper.checkConfig = function () {
 		let errors = [];
-		if (helper.getNetworkId() === 'Place Holder Network Name') {
+		if (helper.getNetworkName() === 'Place Holder Network Name') {
 			console.log('\n');
 			logger.warn('----------------------------------------------------------------------');
 			logger.warn('----------------------------- Hey Buddy! -----------------------------');
@@ -534,7 +538,7 @@ module.exports = function (config_filename, logger) {
 			logger.error('----------------------------- skipped -------------------------------');
 			logger.warn('------------------------- some instructions --------------------------');
 			logger.warn('----------------------------------------------------------------------');
-			logger.warn('Your network config JSON has a network ID of "Place Holder Network Name"...');
+			logger.warn('Your network config JSON has a network name of "Place Holder Network Name"...');
 			logger.warn('I\'m afraid you cannot use the default settings as is.');
 			logger.warn('These settings must be edited to point to YOUR network.');
 			logger.warn('----------------------------------------------------------------------');
