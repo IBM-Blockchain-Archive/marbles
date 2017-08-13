@@ -3,6 +3,7 @@ var path = require('path');
 
 module.exports = function (logger) {
 	var misc = {};
+	let creds_path = null;
 
 	// Check if blockchain creds files is okay
 	misc.check_creds_for_valid_json = function (cb) {
@@ -13,9 +14,9 @@ module.exports = function (logger) {
 		var config_path = path.join(__dirname, '../config/' + process.env.creds_filename);
 		try {
 			let configFile = require(config_path);
-			let creds_path = path.join(__dirname, '../config/' + configFile.cred_filename);
+			creds_path = path.join(__dirname, '../config/' + configFile.cred_filename);
 			let creds = require(creds_path);
-			if (creds.credentials.network_id) {
+			if (creds.name) {
 				logger.info('Checking credentials file is done');
 				return null;
 			} else {
@@ -26,7 +27,7 @@ module.exports = function (logger) {
 			logger.error('----------------------------- Bah -----------------------------');
 			logger.error('------------- The credentials file is malformed ---------------');
 			logger.error('---------------------------------------------------------------');
-			logger.error('Fix this file: ./config/' + process.env.creds_filename);
+			logger.error('Fix this file: ' + creds_path);
 			logger.warn('It must be valid JSON.  You may have dropped a comma or added one too many.');
 			logger.warn('----------------------------------------------------------------------');
 			logger.error(e);

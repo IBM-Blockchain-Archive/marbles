@@ -35,12 +35,14 @@ fcw.enrollWithAdminCert(helper.makeEnrollmentOptionsUsingCert(0), function (enro
 		logger.info('Now we install');
 		console.log('---------------------------------------');
 
+		const channel = helper.getChannelId();
+		const first_peer = helper.getFirstPeerName(channel);
 		var opts = {
-			peer_urls: [helper.getPeersUrl(0)],
+			peer_urls: [helper.getPeersUrl(first_peer)],
 			path_2_chaincode: 'marbles',				//path to chaincode from <marblesroot>/chaincode/src/
 			chaincode_id: helper.getChaincodeId(),
 			chaincode_version: helper.getChaincodeVersion(),
-			peer_tls_opts: helper.getPeerTLScertOpts(0)
+			peer_tls_opts: helper.getPeerTLScertOpts(first_peer)
 		};
 		fcw.install_chaincode(enrollResp, opts, function (err, resp) {
 			console.log('---------------------------------------');

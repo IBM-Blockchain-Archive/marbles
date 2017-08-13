@@ -35,8 +35,10 @@ module.exports = function (g_options, fcw, logger) {
 
 	// process web socket messages
 	ws_server.process_msg = function (ws, data) {
+		const channel = helper.getChannelId();
+		const first_peer = helper.getFirstPeerName(channel);
 		var options = {
-			peer_urls: [helper.getPeersUrl(0)],
+			peer_urls: [helper.getPeersUrl(first_peer)],
 			ws: ws,
 			endorsed_hook: endorse_hook,
 			ordered_hook: orderer_hook
@@ -226,8 +228,10 @@ module.exports = function (g_options, fcw, logger) {
 
 	// read complete state of marble world
 	function read_everything(ws_client, cb) {
+		const channel = helper.getChannelId();
+		const first_peer = helper.getFirstPeerName(channel);
 		var options = {
-			peer_urls: [helper.getPeersUrl(0)],
+			peer_urls: [helper.getPeersUrl(first_peer)],
 		};
 
 		marbles_lib.read_everything(options, function (err, resp) {

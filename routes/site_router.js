@@ -24,13 +24,17 @@ function build_bag(req) {
 
 //get cred data
 function get_credential_data() {
-	let org_name = helper.getPeersMspId(0);			//lets use the first org we find
+	const channel = helper.getChannelId();
+	const first_org = helper.getFirstOrg();
+	const first_ca = helper.getFirstCAname(first_org);
+	const first_peer = helper.getFirstPeerName(channel);
+	const first_orderer = helper.getFirstOrdererName(channel);
 	var ret = {
-		admin_id: helper.getUser(org_name, 0).enrollId,
-		admin_secret: helper.getUser(org_name, 0).enrollSecret,
-		orderer: helper.getOrderersUrl(0),
-		ca: helper.getCasUrl(0),
-		peer: helper.getPeersUrl(0),
+		admin_id: helper.getEnrollObj(first_ca, 0).enrollId,
+		admin_secret: helper.getEnrollObj(first_ca, 0).enrollSecret,
+		orderer: helper.getOrderersUrl(first_orderer),
+		ca: helper.getCasUrl(first_ca),
+		peer: helper.getPeersUrl(first_peer),
 		chaincode_id: helper.getChaincodeId(),
 		channel: helper.getChannelId(),
 		chaincode_version: helper.getChaincodeVersion(),

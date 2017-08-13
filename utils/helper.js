@@ -20,7 +20,7 @@ module.exports = function (config_filename, logger) {
 
 	// get network id
 	helper.getNetworkId = function () {
-		return helper.creds.credentials.network_id;
+		return helper.creds['x-networkId'];
 	};
 
 	// get cred file name
@@ -28,14 +28,30 @@ module.exports = function (config_filename, logger) {
 		return helper.config.cred_filename;
 	};
 
+
+	// --------------------------------------------------------------------------------
+	// Peer Getters
+	// --------------------------------------------------------------------------------
+	// find the first ca in the peers field for this org
+	helper.getFirstPeerName = function (ch) {
+		const channel = helper.creds.channels[ch];
+		if (channel && channel.peers) {
+			const peers = Object.keys(channel.peers);
+			if (peers && peers[0]) {
+				return peers[0];
+			}
+		}
+		throw new Error('Orderer not found for this channel', ch);
+	};
+
 	// get a peer object
-	helper.getPeer = function (index) {
-		if (index === undefined || index == null) {
-			throw new Error('Peer index not passed');
+	helper.getPeer = function (key) {
+		if (key === undefined || key == null) {
+			throw new Error('Peer key not passed');
 		}
 		else {
-			if (index < helper.creds.credentials.peers.length) {
-				return helper.creds.credentials.peers[index];
+			if (helper.creds.peers) {
+				return helper.creds.peers[key];
 			}
 			else {
 				return null;
@@ -44,93 +60,232 @@ module.exports = function (config_filename, logger) {
 	};
 
 	// get a peer's grpc url
-	helper.getPeersUrl = function (index) {
-		if (index === undefined || index == null) {
-			throw new Error('Peer index not passed');
+	helper.getPeersUrl = function (key) {
+		if (key === undefined || key == null) {
+			throw new Error('Peer key not passed');
 		}
 		else {
-			let peer = helper.getPeer(index);
+			let peer = helper.getPeer(key);
 			if (peer) {
-				return peer.discovery_url;
+				return peer.url;
 			}
 			else {
-				throw new Error('Peer index out of bounds. Total peers = ' + helper.creds.credentials.peers.length);
+				throw new Error('Peer key not found.');
 			}
 		}
 	};
 
-	// get a peer's msp id
-	helper.getPeersMspId = function (index) {
-		if (index === undefined || index == null) {
-			throw new Error('Peer index not passed');
-		}
-		else {
-			if (index < helper.creds.credentials.peers.length) {
-				return helper.creds.credentials.peers[index].msp_id;
-			}
-			else {
-				throw new Error('Peer index out of bounds. Total peers = ' + helper.creds.credentials.peers.length);
-			}
-		}
-	};
-
-	// get a peer's name
-	helper.getPeersName = function (index) {
-		if (index === undefined || index == null) {
-			throw new Error('Peer index not passed');
-		}
-		else {
-			if (index < helper.creds.credentials.peers.length) {
-				return helper.creds.credentials.peers[index].name;
-			}
-			else {
-				throw new Error('Peer index out of bounds. Total peers = ' + helper.creds.credentials.peers.length);
-			}
-		}
-	};
-
-	// get a ca's http url
-	helper.getCasUrl = function (index) {
-		if (index === undefined || index == null) {
-			throw new Error('CA index not passed');
+	// get a peer's grpc event url
+	helper.getPeerEventUrl = function (key) {
+		if (key === undefined || key == null) {
+			throw new Error('Peer key not passed');
 		} else {
-			if (index < helper.creds.credentials.cas.length) {
-				return helper.creds.credentials.cas[index].api_url;
-			} else {
-				throw new Error('CA index out of bounds. Total CA = ' + helper.creds.credentials.cas.length);
+			let peer = helper.getPeer(key);
+			if (peer) {
+				return peer.eventUrl;
+			}
+			else {
+				throw new Error('Peer key not found.');
 			}
 		}
+	};
+
+	// get a peer's tls options
+	helper.getPeerTLScertOpts = function (key) {
+		if (key === undefined || key == null) {
+			throw new Error('Peer\'s key not passed');
+		} else {
+			let peer = helper.getPeer(key);
+			return buildTlsOpts(peer);
+		}
+	};
+
+
+	// --------------------------------------------------------------------------------
+	// Certificate Authorities Getters
+	// --------------------------------------------------------------------------------
+	// find the first ca in the certificateAuthorities field for this org
+	helper.getFirstCAname = function (orgName) {
+		const org = helper.creds.organizations[orgName];
+		if (org && org.certificateAuthorities) {
+			if (org.certificateAuthorities && org.certificateAuthorities[0]) {
+				return org.certificateAuthorities[0];
+			}
+		}
+		throw new Error('CAs not found.');
 	};
 
 	// get a ca obj
-	helper.getCA = function (index) {
-		if (index === undefined || index == null) {
-			throw new Error('CA index not passed');
+	helper.getCA = function (key) {
+		if (key === undefined || key == null) {
+			throw new Error('CA key not passed');
 		} else {
-			if (index < helper.creds.credentials.cas.length) {
-				return helper.creds.credentials.cas[index];
+			if (helper.creds.certificateAuthorities) {
+				return helper.creds.certificateAuthorities[key];
 			} else {
 				return null;
 			}
 		}
 	};
 
+	// get a ca's http url
+	helper.getCasUrl = function (key) {
+		if (key === undefined || key == null) {
+			throw new Error('CA key not passed');
+		} else {
+			let ca = helper.getCA(key);
+			if (ca) {
+				return ca.url;
+			}
+			else {
+				throw new Error('CA not found.');
+			}
+		}
+	};
+
 	// get a ca's name, could be null
-	helper.getCaName = function (orgName) {
-		var ca = helper.getCA(0);
-		if (ca && ca.orgs && ca.orgs[orgName]) {
-			return ca.orgs[orgName].ca_name;
+	helper.getCaName = function (key) {
+		if (key === undefined || key == null) {
+			throw new Error('CA key not passed');
+		} else {
+			let ca = helper.getCA(key);
+			if (ca) {
+				return ca.caName;
+			}
+			else {
+				throw new Error('CA not found.');
+			}
+		}
+	};
+
+	// get a ca's tls options
+	helper.getCATLScertOpts = function (key) {
+		if (key === undefined || key == null) {
+			throw new Error('CAs key not passed');
+		} else {
+			let ca = helper.getCA(key);
+			return buildTlsOpts(ca);
+		}
+	};
+
+	// get an enrollment user
+	helper.getEnrollObj = function (caKey, user_index) {
+		if (caKey === undefined || caKey == null) {
+			throw new Error('CA key not passed');
+		} else {
+			var ca = helper.getCA(caKey);
+			if (ca && ca.registrar && ca.registrar[user_index]) {
+				return ca.registrar[user_index];
+			}
+			else {
+				throw new Error('Cannot find enroll id at index.', caKey, user_index);
+			}
+		}
+	};
+
+	// --------------------------------------------------------------------------------
+	// Orderer Getters
+	// --------------------------------------------------------------------------------
+	// get the first orderer in the channels field
+	helper.getFirstOrdererName = function (ch) {
+		const channel = helper.creds.channels[ch];
+		if (channel && channel.orderers && channel.orderers[0]) {
+			return channel.orderers[0];
+		}
+		throw new Error('Orderer not found for this channel', ch);
+	};
+
+	// get an orderer object
+	helper.getOrderer = function (key) {
+		if (key === undefined || key == null) {
+			throw new Error('Orderers key not passed');
+		} else {
+			if (helper.creds.orderers) {
+				return helper.creds.orderers[key];
+			} else {
+				return null;
+			}
+		}
+	};
+
+	// get an orderer's grpc url
+	helper.getOrderersUrl = function (key) {
+		if (key === undefined || key == null) {
+			throw new Error('Orderers key not passed');
+		} else {
+			let orderer = helper.getOrderer(key);
+			if (orderer) {
+				return orderer.url;
+			}
+			else {
+				throw new Error('Orderer not found.');
+			}
+		}
+	};
+
+	// get a orderer's tls options
+	helper.getOrdererTLScertOpts = function (key) {
+		if (key === undefined || key == null) {
+			throw new Error('Orderer\'s key not passed');
+		} else {
+			let orderer = helper.getOrderer(key);
+			return buildTlsOpts(orderer);
+		}
+	};
+
+
+	// --------------------------------------------------------------------------------
+	// Other Credential Getters
+	// --------------------------------------------------------------------------------
+	// build the tls options for the sdk
+	function buildTlsOpts(node_obj) {
+		let ret = {
+			'ssl-target-name-override': null,
+			pem: null
+		};
+		if (node_obj) {
+			if (node_obj.tlsCACerts && node_obj.tlsCACerts.pem) {
+				ret.pem = loadCert(node_obj.tlsCACerts.pem);
+			} else if (node_obj.tlsCACerts && node_obj.tlsCACerts.path) {
+				ret.pem = loadCert(node_obj.tlsCACerts.path);
+			}
+			if (node_obj.grpcOptions) {
+				ret['ssl-target-name-override'] = node_obj.grpcOptions['ssl-target-name-override'];
+			}
+		}
+		return ret;
+	}
+
+	// find the first org name in the organizaiton field
+	helper.getFirstOrg = function () {
+		if (helper.creds.organizations) {
+			const orgs = Object.keys(helper.creds.organizations);
+			if (orgs && orgs[0]) {
+				return orgs[0];
+			}
+		}
+		throw new Error('Orgs not found.');
+	};
+
+	// get this org's msp id
+	helper.getOrgsMSPid = function (key) {
+		if (key === undefined || key == null) {
+			throw new Error('Org key not passed');
 		}
 		else {
-			throw new Error('Cannot find org.', orgName);
+			if (helper.creds.organizations && helper.creds.organizations[key]) {
+				return helper.creds.organizations[key].mspid;
+			}
+			else {
+				throw new Error('Org key not found.', key);
+			}
 		}
 	};
 
 	// get an admin private key PEM certificate
 	helper.getAdminPrivateKeyPEM = function (orgName) {
-		var ca = helper.getCA(0);
-		if (ca && ca.orgs && ca.orgs[orgName]) {
-			return loadKey(ca.orgs[orgName].privateKeyPEM);
+		if (orgName && helper.creds.organizations && helper.creds.organizations[orgName]) {
+			return loadKey(helper.creds.organizations[orgName].adminPrivateKeyPEM);
 		}
 		else {
 			throw new Error('Cannot find org.', orgName);
@@ -139,128 +294,18 @@ module.exports = function (config_filename, logger) {
 
 	// get an admin's signed cert PEM
 	helper.getAdminSignedCertPEM = function (orgName) {
-		var ca = helper.getCA(0);
-		console.log('orgName', orgName);
-		if (ca && ca.orgs && ca.orgs[orgName]) {
-			return loadCert(ca.orgs[orgName].signedCertPEM);
+		if (orgName && helper.creds.organizations && helper.creds.organizations[orgName]) {
+			return loadKey(helper.creds.organizations[orgName].signedCertPEM);
 		}
 		else {
 			throw new Error('Cannot find org.', orgName);
 		}
-	};
-
-	// get a CA's tls options
-	helper.getCATLScert = function (index) {
-		if (index === undefined || index == null) {
-			throw new Error('CAs index not passed');
-		} else {
-			return getTLScertObj('cas', index);
-		}
-	};
-
-	// get an orderer object
-	helper.getOrderer = function (index) {
-		if (index === undefined || index == null) {
-			throw new Error('Orderers index not passed');
-		} else {
-			if (index < helper.creds.credentials.orderers.length) {
-				return helper.creds.credentials.orderers[index];
-			} else {
-				return null;
-			}
-		}
-	};
-
-	// get an orderer's grpc url
-	helper.getOrderersUrl = function (index) {
-		if (index === undefined || index == null) {
-			throw new Error('Orderers index not passed');
-		} else {
-			if (index < helper.creds.credentials.orderers.length) {
-				return helper.creds.credentials.orderers[index].discovery_url;
-			} else {
-				throw new Error('Orderers index out of bounds. Total CA = ' + helper.creds.credentials.orderers.length);
-			}
-		}
-	};
-
-	// get a orderer's tls options
-	helper.getOrdererTLScert = function (index) {
-		if (index === undefined || index == null) {
-			throw new Error('Orderers index not passed');
-		} else {
-			return getTLScertObj('orderers', index);
-		}
-	};
-
-	// get an enrollment user
-	helper.getUser = function (orgName, index) {
-		if (index === undefined || index == null) {
-			return helper.creds.credentials.users;
-		}
-		else {
-			var ca = helper.getCA(0);
-			if (ca && ca.orgs && ca.orgs[orgName] && ca.orgs[orgName].users[index]) {
-				return ca.orgs[orgName].users[index];
-			}
-			else {
-				throw new Error('Cannot find enroll id at index.', orgName, index);
-			}
-		}
-	};
-
-	// get a peer's grpc event url
-	helper.getPeerEventUrl = function (index) {
-		if (index === undefined || index == null) {
-			throw new Error('Peers index not passed');
-		} else {
-			if (index < helper.creds.credentials.peers.length) {
-				return helper.creds.credentials.peers[index].event_url;
-			}
-			logger.warn('no event url found for peer in creds json: ' + creds_path);
-			return null;
-		}
-	};
-
-	// get a peer's tls options
-	helper.getPeerTLScertOpts = function (index) {
-		if (index === undefined || index == null) {
-			throw new Error('Peers index not passed');
-		} else {
-			return getTLScertObj('peers', index);
-		}
-	};
-
-	// get a node's tls pem obj
-	function getTLScertObj(node, index) {
-		if (index < helper.creds.credentials[node].length) {
-			var obj = pickCertObj(helper.creds.credentials[node][index].tls_certificate);
-			if (obj) {
-				return {
-					common_name: obj.common_name,
-					pem: loadCert(obj.pem)
-				};
-			}
-		}
-		logger.warn('no tls cert found for ' + node + ' in creds json: ' + creds_path);
-		return {
-			common_name: null,
-			pem: null
-		};
-	}
-
-	// pick which tls cert obj to load
-	function pickCertObj(cert_name) {
-		if (cert_name && helper.creds.credentials.tls_certificates && helper.creds.credentials.tls_certificates[cert_name]) {
-			return helper.creds.credentials.tls_certificates[cert_name];
-		}
-		logger.warn('no tls cert or path found in creds json: ' + creds_path);
 		return null;
-	}
+	};
 
 	// load cert from file path OR just pass cert back
 	function loadCert(value) {
-		if (value.indexOf('-BEGIN CERTIFICATE-') === -1) {				// looks like cert field is a path to a file
+		if (value && value.indexOf('-BEGIN CERTIFICATE-') === -1) {		// looks like cert field is a path to a file
 			var path2cert = path.join(__dirname, '../config/' + value);
 			return fs.readFileSync(path2cert, 'utf8') + '\r\n'; 		//read from file, LOOKING IN config FOLDER
 		} else {
@@ -270,7 +315,7 @@ module.exports = function (config_filename, logger) {
 
 	// load cert from file path OR just pass cert back
 	function loadKey(value) {
-		if (value.indexOf('-BEGIN PRIVATE KEY-') === -1) {				// looks like private key field is a path to a file
+		if (value && value.indexOf('-BEGIN PRIVATE KEY-') === -1) {		// looks like private key field is a path to a file
 			var path2cert = path.join(__dirname, '../config/' + value);
 			return fs.readFileSync(path2cert, 'utf8') + '\r\n'; 		//read from file, LOOKING IN config FOLDER
 		} else {
@@ -278,28 +323,43 @@ module.exports = function (config_filename, logger) {
 		}
 	}
 
-	// get the chaincode id on network
-	helper.getChaincodeId = function () {
-		return getBlockchainField('chaincode_id');
+	// get the channel id on network for marbles
+	helper.getChannelId = function () {
+		if (helper.creds && helper.creds.channels) {
+			var channels = Object.keys(helper.creds.channels);
+			if (channels[0]) {
+				return channels[0];
+			}
+		}
+		throw Error('No channels found in credentials file...');
 	};
 
-	// get the channel id on network
-	helper.getChannelId = function () {
-		return getBlockchainField('channel_id');
+	// get the chaincode id on network
+	helper.getChaincodeId = function () {
+		var channel = helper.getChannelId();
+		var chaincode = Object.keys(helper.creds.channels[channel].chaincodes);
+		return chaincode[0];
 	};
 
 	// get the chaincode version on network
 	helper.getChaincodeVersion = function () {
-		return getBlockchainField('chaincode_version');
+		var channel = helper.getChannelId();
+		var chaincode = Object.keys(helper.creds.channels[channel].chaincodes);
+		return helper.creds.channels[channel].chaincodes[chaincode];
 	};
 
 	// get the chaincode id on network
 	helper.getBlockDelay = function () {
-		var ret = getBlockchainField('block_delay');
-		if (!ret || isNaN(ret)) ret = 10000;
+		//var ret = getBlockchainField('block_delay');
+		//if (!ret || isNaN(ret)) 
+		var ret = 10000;
 		return ret;
 	};
 
+
+	// --------------------------------------------------------------------------------
+	// Config Getters
+	// --------------------------------------------------------------------------------
 	// get the marble owner names
 	helper.getMarbleUsernames = function () {
 		return getMarblesField('usernames');
@@ -330,60 +390,6 @@ module.exports = function (config_filename, logger) {
 		return (sec * 1000);
 	};
 
-	// build the marbles lib module options
-	helper.makeMarblesLibOptions = function () {
-		return {
-			block_delay: helper.getBlockDelay(),
-			channel_id: helper.getChannelId(),
-			chaincode_id: helper.getChaincodeId(),
-			event_url: (helper.getEventsSetting()) ? helper.getPeerEventUrl(0) : null,
-			chaincode_version: helper.getChaincodeVersion(),
-			ca_tls_opts: helper.getCATLScert(0),
-			orderer_tls_opts: helper.getOrdererTLScert(0),
-			peer_tls_opts: helper.getPeerTLScertOpts(0),
-		};
-	};
-
-	// build the enrollment options for using an enroll ID
-	helper.makeEnrollmentOptions = function (userIndex) {
-		if (userIndex === undefined || userIndex == null) {
-			throw new Error('User index not passed');
-		} else {
-			let org_name = helper.getPeersMspId(0);				//lets use the first org we find
-			let user = helper.getUser(org_name, userIndex);		//there may be multiple users
-			return {
-				channel_id: helper.getChannelId(),
-				uuid: 'marbles-' + helper.getNetworkId() + '-' + helper.getChannelId() + '-' + helper.getPeersName(0),
-				ca_url: helper.getCasUrl(0),
-				ca_name: helper.getCaName(org_name),
-				orderer_url: helper.getOrderersUrl(0),
-				peer_urls: [helper.getPeersUrl(0)],
-				enroll_id: user.enrollId,
-				enroll_secret: user.enrollSecret,
-				msp_id: org_name,
-				ca_tls_opts: helper.getCATLScert(0),
-				orderer_tls_opts: helper.getOrdererTLScert(0),
-				peer_tls_opts: helper.getPeerTLScertOpts(0),
-			};
-		}
-	};
-
-	// build the enrollment options using an admin cert
-	helper.makeEnrollmentOptionsUsingCert = function () {
-		let org_name = helper.getPeersMspId(0);				//lets use the first one
-		return {
-			channel_id: helper.getChannelId(),
-			uuid: 'marbles-' + helper.getNetworkId() + '-' + helper.getChannelId() + '-' + helper.getPeersName(0),
-			orderer_url: helper.getOrderersUrl(0),
-			peer_urls: [helper.getPeersUrl(0)],
-			msp_id: org_name,
-			privateKeyPEM: helper.getAdminPrivateKeyPEM(org_name),
-			signedCertPEM: helper.getAdminSignedCertPEM(org_name),
-			orderer_tls_opts: helper.getOrdererTLScert(0),
-			peer_tls_opts: helper.getPeerTLScertOpts(0),
-		};
-	};
-
 	// safely retrieve marbles fields
 	function getMarblesField(marbles_field) {
 		try {
@@ -401,28 +407,84 @@ module.exports = function (config_filename, logger) {
 		}
 	}
 
-	// safely retreive blockchain app fields
-	function getBlockchainField(field) {
-		try {
-			if (helper.creds.credentials.app[field]) {
-				return helper.creds.credentials.app[field];
-			}
-			else {
-				logger.warn('"' + field + '" not found in creds json: ' + creds_path);
-				return null;
-			}
+
+	// --------------------------------------------------------------------------------
+	// Build Options
+	// --------------------------------------------------------------------------------
+	// build the marbles lib module options
+	helper.makeMarblesLibOptions = function () {
+		const channel = helper.getChannelId();
+		const first_org = helper.getFirstOrg();
+		const first_ca = helper.getFirstCAname(first_org);
+		const first_peer = helper.getFirstPeerName(channel);
+		const first_orderer = helper.getFirstOrdererName(channel);
+		return {
+			block_delay: helper.getBlockDelay(),
+			channel_id: helper.getChannelId(),
+			chaincode_id: helper.getChaincodeId(),
+			event_url: (helper.getEventsSetting()) ? helper.getPeerEventUrl(first_peer) : null,
+			chaincode_version: helper.getChaincodeVersion(),
+			ca_tls_opts: helper.getCATLScertOpts(first_ca),
+			orderer_tls_opts: helper.getOrdererTLScertOpts(first_orderer),
+			peer_tls_opts: helper.getPeerTLScertOpts(first_peer),
+		};
+	};
+
+	// build the enrollment options for using an enroll ID
+	helper.makeEnrollmentOptions = function (userIndex) {
+		if (userIndex === undefined || userIndex == null) {
+			throw new Error('User index not passed');
+		} else {
+			const channel = helper.getChannelId();
+			const first_org = helper.getFirstOrg();
+			const first_ca = helper.getFirstCAname(first_org);
+			const first_peer = helper.getFirstPeerName(channel);
+			const first_orderer = helper.getFirstOrdererName(channel);
+			const org_name = helper.getOrgsMSPid(first_org);				//lets use the first org we find
+			const user_obj = helper.getEnrollObj(first_ca, userIndex);		//there may be multiple users
+			return {
+				channel_id: channel,
+				uuid: 'marbles-' + helper.getNetworkId() + '-' + channel + '-' + first_peer,
+				ca_url: helper.getCasUrl(first_ca),
+				ca_name: helper.getCaName(first_ca),
+				orderer_url: helper.getOrderersUrl(first_orderer),
+				peer_urls: [helper.getPeersUrl(first_peer)],
+				enroll_id: user_obj.enrollId,
+				enroll_secret: user_obj.enrollSecret,
+				msp_id: org_name,
+				ca_tls_opts: helper.getCATLScertOpts(first_ca),
+				orderer_tls_opts: helper.getOrdererTLScertOpts(first_orderer),
+				peer_tls_opts: helper.getPeerTLScertOpts(first_peer),
+			};
 		}
-		catch (e) {
-			logger.warn('"' + field + '" not found in creds json: ' + creds_path);
-			return null;
-		}
-	}
+	};
+
+	// build the enrollment options using an admin cert
+	helper.makeEnrollmentOptionsUsingCert = function () {
+		const channel = helper.getChannelId();
+		const first_org = helper.getFirstOrg();
+		const first_peer = helper.getFirstPeerName(channel);
+		const first_orderer = helper.getFirstOrdererName(channel);		
+		const org_name = helper.getOrgsMSPid(first_org);		//lets use the first org we find
+		return {
+			channel_id: channel,
+			uuid: 'marbles-' + helper.getNetworkId() + '-' + channel + '-' + first_peer,
+			orderer_url: helper.getOrderersUrl(first_orderer),
+			peer_urls: [helper.getPeersUrl(first_peer)],
+			msp_id: org_name,
+			privateKeyPEM: helper.getAdminPrivateKeyPEM(org_name),
+			signedCertPEM: helper.getAdminSignedCertPEM(org_name),
+			orderer_tls_opts: helper.getOrdererTLScertOpts(first_orderer),
+			peer_tls_opts: helper.getPeerTLScertOpts(first_peer),
+		};
+	};
 
 	// write new settings
 	helper.write = function (obj) {
+		/*
 		var config_file = JSON.parse(fs.readFileSync(config_path, 'utf8'));
 		var creds_file = JSON.parse(fs.readFileSync(creds_path, 'utf8'));
-
+	
 		if (obj.ordererUrl) {
 			creds_file.credentials.orderers[0].discovery_url = obj.ordererUrl;
 		}
@@ -449,15 +511,18 @@ module.exports = function (config_filename, logger) {
 				};
 			}
 		}
-
+	
 		fs.writeFileSync(creds_path, JSON.stringify(creds_file, null, 4), 'utf8');	//save to file
 		helper.creds = creds_file;													//replace old copy
 		fs.writeFileSync(config_path, JSON.stringify(config_file, null, 4), 'utf8');//save to file
 		helper.config = config_file;												//replace old copy
+		*/
 	};
 
 
-
+	// --------------------------------------------------------------------------------
+	// Input Checking
+	// --------------------------------------------------------------------------------
 	// check if user has changed the settings from the default ones - returns error array when there is a problem
 	helper.checkConfig = function () {
 		let errors = [];
@@ -509,15 +574,25 @@ module.exports = function (config_filename, logger) {
 	// check if config has missing entries
 	helper.check_for_missing = function () {
 		let errors = [];
+		const channel = helper.getChannelId();
 
-		if (!helper.getCA(0)) {
-			errors.push('There is no CA data in the "cas" field');
-		}
-		if (!helper.getOrderer(0)) {
-			errors.push('There is no Orderer data in the "orderers" field');
-		}
-		if (!helper.getPeer(0)) {
-			errors.push('There is no Peer data in the "peers" field');
+		if (!channel) {
+			errors.push('There is no channel data in the "channels" field');
+		} else {
+			const first_org = helper.getFirstOrg();
+			const first_ca = helper.getFirstCAname(first_org);
+			const first_orderer = helper.getFirstOrdererName(channel);
+			const first_peer = helper.getFirstPeerName(channel);
+
+			if (!helper.getCA(first_ca)) {
+				errors.push('There is no CA data in the "certificateAuthorities" field');
+			}
+			if (!helper.getOrderer(first_orderer)) {
+				errors.push('There is no Orderer data in the "orderers" field');
+			}
+			if (!helper.getPeer(first_peer)) {
+				errors.push('There is no Peer data in the "peers" field');
+			}
 		}
 
 		if (errors.length > 0) {
@@ -544,17 +619,22 @@ module.exports = function (config_filename, logger) {
 	// check if config has protocol errors - returns error array when there is a problem
 	helper.check_protocols = function () {
 		let errors = [];
+		const channel = helper.getChannelId();
+		const first_org = helper.getFirstOrg();
+		const first_ca = helper.getFirstCAname(first_org);
+		const first_orderer = helper.getFirstOrdererName(channel);
+		const first_peer = helper.getFirstPeerName(channel);
 
-		if (helper.getCasUrl(0).indexOf('grpc') >= 0) {
+		if (helper.getCasUrl(first_ca).indexOf('grpc') >= 0) {
 			errors.push('You accidentally typed "grpc" in your CA url. It should be "http://" or "https://"');
 		}
-		if (helper.getOrderersUrl(0).indexOf('http') >= 0) {
+		if (helper.getOrderersUrl(first_orderer).indexOf('http') >= 0) {
 			errors.push('You accidentally typed "http" in your Orderer url. It should be "grpc://" or "grpcs://"');
 		}
-		if (helper.getPeersUrl(0).indexOf('http') >= 0) {
+		if (helper.getPeersUrl(first_peer).indexOf('http') >= 0) {
 			errors.push('You accidentally typed "http" in your Peer discovery url. It should be "grpc://" or "grpcs://"');
 		}
-		if (helper.getPeerEventUrl(0).indexOf('http') >= 0) {
+		if (helper.getPeerEventUrl(first_peer).indexOf('http') >= 0) {
 			errors.push('You accidentally typed "http" in your Peer events url. It should be "grpc://" or "grpcs://"');
 		}
 

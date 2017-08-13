@@ -229,8 +229,10 @@ function setup_marbles_lib(cb) {
 	ws_server.setup(wss.broadcast, marbles_lib);
 
 	logger.debug('Checking if chaincode is already instantiated or not');
+	const channel = helper.getChannelId();
+	const first_peer = helper.getFirstPeerName(channel);
 	var options = {
-		peer_urls: [helper.getPeersUrl(0)],
+		peer_urls: [helper.getPeersUrl(first_peer)],
 	};
 	marbles_lib.check_if_already_instantiated(options, function (not_instantiated, enrollUser) {
 		if (not_instantiated) {									//if this is truthy we have not yet instantiated.... error
@@ -328,8 +330,10 @@ function create_assets(build_marbles_users) {
 
 // Create the marble owner
 function create_owners(attempt, username, cb) {
+	const channel = helper.getChannelId();
+	const first_peer = helper.getFirstPeerName(channel);
 	var options = {
-		peer_urls: [helper.getPeersUrl(0)],
+		peer_urls: [helper.getPeersUrl(first_peer)],
 		args: {
 			marble_owner: username,
 			owners_company: process.env.marble_company
@@ -350,11 +354,13 @@ function create_owners(attempt, username, cb) {
 // Create 1 marble
 function create_marbles(owner_id, username, cb) {
 	var randOptions = build_marble_options(owner_id, username, process.env.marble_company);
+	const channel = helper.getChannelId();
+	const first_peer = helper.getFirstPeerName(channel);
 	console.log('');
 	logger.debug('[startup] going to create marble:', randOptions);
 	var options = {
 		chaincode_id: helper.getChaincodeId(),
-		peer_urls: [helper.getPeersUrl(0)],
+		peer_urls: [helper.getPeersUrl(first_peer)],
 		args: randOptions
 	};
 	marbles_lib.create_a_marble(options, function () {

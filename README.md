@@ -425,8 +425,10 @@ __/utils/websocket_server_side.js__
 ```js
     //process web socket messages
     ws_server.process_msg = function (ws, data) {
+        const channel = helper.getChannelId();
+        const first_peer = helper.getFirstPeerName(channel);
         var options = {
-            peer_urls: [helper.getPeersUrl(0)],
+            peer_urls: [helper.getPeersUrl(first_peer)],
             ws: ws,
             endorsed_hook: endorse_hook,
             ordered_hook: orderer_hook
