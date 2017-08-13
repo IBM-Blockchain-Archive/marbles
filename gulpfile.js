@@ -42,8 +42,8 @@ gulp.task('default', ['watch-sass', 'watch-server', 'server']);
 gulp.task('marbles_tls', ['start_marbles1', 'watch-sass', 'watch-server', 'server']);	//run with command `gulp marbles_tls` [THIS ONE!]
 gulp.task('marbles_local', ['start_marbles2', 'watch-sass', 'watch-server', 'server']);	//run with command `gulp marbles_local`
 gulp.task('marbles_dev', ['start_marbles3', 'watch-sass', 'watch-server', 'server']);	//run with command `gulp marbles_dev`
-gulp.task('dev', ['start_marbles3', 'watch-sass']);										//run with command `gulp dev`
-
+gulp.task('marbles_cs', ['start_marbles4', 'watch-sass', 'watch-server', 'server']);	//run with command `gulp marbles_cs`
+gulp.task('dev', ['start_marbles3', 'watch-sass']);
 
 // launch marbles 
 gulp.task('start_marbles1', function () {
@@ -58,4 +58,9 @@ gulp.task('start_marbles2', function () {
 // launch marbles - Dev version
 gulp.task('start_marbles3', function () {
 	env['creds_filename'] = 'marbles_dev.json';
+});
+
+// launch marbles - Container-service version
+gulp.task('start_marbles4', function () {
+	env['creds_filename'] = 'marbles_cs.json';
 });

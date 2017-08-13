@@ -1,6 +1,4 @@
-FROM node:6.9.1
+FROM node:6.9
 COPY . /app
 WORKDIR /app
-RUN npm install
-RUN npm install -g gulp
-ENTRYPOINT ['gulp']
+RUN rm -rf node_modules && npm install && npm install -g gulp

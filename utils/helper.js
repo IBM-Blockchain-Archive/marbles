@@ -130,7 +130,7 @@ module.exports = function (config_filename, logger) {
 	helper.getAdminPrivateKeyPEM = function (orgName) {
 		var ca = helper.getCA(0);
 		if (ca && ca.orgs && ca.orgs[orgName]) {
-			return ca.orgs[orgName].privateKeyPEM;
+			return loadKey(ca.orgs[orgName].privateKeyPEM);
 		}
 		else {
 			throw new Error('Cannot find org.', orgName);
@@ -142,7 +142,7 @@ module.exports = function (config_filename, logger) {
 		var ca = helper.getCA(0);
 		console.log('orgName', orgName);
 		if (ca && ca.orgs && ca.orgs[orgName]) {
-			return ca.orgs[orgName].signedCertPEM;
+			return loadCert(ca.orgs[orgName].signedCertPEM);
 		}
 		else {
 			throw new Error('Cannot find org.', orgName);
@@ -261,6 +261,16 @@ module.exports = function (config_filename, logger) {
 	// load cert from file path OR just pass cert back
 	function loadCert(value) {
 		if (value.indexOf('-BEGIN CERTIFICATE-') === -1) {				// looks like cert field is a path to a file
+			var path2cert = path.join(__dirname, '../config/' + value);
+			return fs.readFileSync(path2cert, 'utf8') + '\r\n'; 		//read from file, LOOKING IN config FOLDER
+		} else {
+			return value;												//can be null if network is not using TLS
+		}
+	}
+
+	// load cert from file path OR just pass cert back
+	function loadKey(value) {
+		if (value.indexOf('-BEGIN PRIVATE KEY-') === -1) {				// looks like private key field is a path to a file
 			var path2cert = path.join(__dirname, '../config/' + value);
 			return fs.readFileSync(path2cert, 'utf8') + '\r\n'; 		//read from file, LOOKING IN config FOLDER
 		} else {
