@@ -8,7 +8,18 @@ var logger = new (winston.Logger)({
 		new (winston.transports.Console)({ colorize: true }),
 	]
 });
-var helper = require(path.join(__dirname, '../utils/helper.js'))('marbles_local.json', logger);			//set the config file name here
+
+var args = process.argv.slice(2);
+if (args[0]) {
+	logger.info('Config file passed in as argument: ' + args[0]);
+	logger.info('Using ' + args[0] + ' as the config file');
+	config_file = args[0];
+} else {
+	logger.info('Using default config');
+	config_file = 'marbles_local.json';
+}
+
+var helper = require(path.join(__dirname, '../utils/helper.js'))(config_file, logger);			//set the config file name here
 var fcw = require(path.join(__dirname, '../utils/fc_wrangler/index.js'))({ block_delay: helper.getBlockDelay() }, logger);
 
 console.log('---------------------------------------');

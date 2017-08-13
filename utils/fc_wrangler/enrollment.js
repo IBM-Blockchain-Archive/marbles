@@ -233,8 +233,8 @@ module.exports = function (logger) {
 			username: options.msp_id,
 			mspid: options.msp_id,
 			cryptoContent: {
-				privateKeyPEM: common.decodeb64(options.privateKeyPEM),
-				signedCertPEM: common.decodeb64(options.signedCertPEM)
+				privateKeyPEM: options.privateKeyPEM,
+				signedCertPEM: options.signedCertPEM
 			}
 		}));
 	}
