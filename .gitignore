@@ -13,4 +13,4 @@ chaincode.exe
 app_state*
 /utils/fc_wrangler/kvs
 /config/blockchain_creds_dev.json
-/config/marblesdev.json
+/config/marbles_dev.json
