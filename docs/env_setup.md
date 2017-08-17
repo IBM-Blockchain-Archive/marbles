@@ -82,8 +82,7 @@ Therefore in order to compile chaincode locally you will need to have the fabric
 
 - **Option 3:** Choose this option if you want to modify chaincode and use the Blockchain Service for my network
 	- You are most likely going to need to use the [v1.0.0-preview Hyperledger fabric](https://github.com/hyperledger/fabric/tree/v1.0.0-preview) version.
-	If you have a network, then the exact Fabric version can be found in the Release Notes section of your network's UI. 
-	![](/doc_images/marbles-env.PNG)
+	If you have a network, then the exact Fabric version can be found in the Support/Release Notes section of your network's UI. 
 	- Get the hash from your network or use the hash `14055d7`. Go to the `Continue the Fabric Install Instructions` section below. You will enter the hash there.
 
 	- **Update 5/1/2017**

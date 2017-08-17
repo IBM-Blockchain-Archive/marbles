@@ -16,7 +16,7 @@ Pick a version of marbles that is compatible with your version of Fabric.
 If you don't have any version of Fabric, then pick the marbles version marked **latest**! 
 
 - Marbles - Branch experimental **(Latest)** (You are viewing this branch!)
-	- Works with Hyperledger Fabric `v1.0.0` and `v1.0.0-rc1`
+	- Works with Hyperledger Fabric  `v1.0.1`, `v1.0.0` and `v1.0.0-rc1`
 	- Works with the IBM Blockchain Bluemix Service - Plan **HSBN vNext**
 
 - [Marbles - Branch v3.0](https://github.com/ibm-blockchain/marbles/tree/v3.0) 
@@ -127,7 +127,7 @@ Hello again. Now we need a blockchain network.
 - **Option 1:** Create a network with the Bluemix IBM Blockchain Service - [instructions](./docs/use_bluemix_hyperledger.md)
 
 <strike>-  **Option 2:** :lollipop: Use a locally hosted Hyperledger Fabric Network - [instructions](./docs/use_local_hyperledger.md)</strike>
-- **Update:** Option 2 needs work with Fabric RC1.  Hang tight.
+- **Update:** Option 2 needs work with Fabric v1.0.0+  Hang tight.
 
 <a name="installchaincode"></a>
 
@@ -458,7 +458,7 @@ __/utils/websocket_server_side.js__
 
         // transfer a marble
         else if (data.type == 'transfer_marble') {
-            logger.info('[ws] transfering req');
+            logger.info('[ws] transferring req');
             options.args = {
                 marble_id: data.id,
                 owner_id: data.owner_id,
