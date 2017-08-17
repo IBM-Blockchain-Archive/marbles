@@ -24,8 +24,8 @@
 
 1. Leave the "Service Name" alone or you can choose to rename it to something more friendly such as "Awesome Marbles Demo"
 1. Leave the "Credential name" field as its default value
-1. Leave the "Connected To:" field as "Leave unbound" (unless you already have an application, but you probably don't yet)
-1. Scroll to the bottom and change the "Selected Plan" to **High Security Business Network vNext(Limited Beta)** (its important to select the **vNext** Plan)
+1. Leave the "Connected To:" field as "Leave unbound"
+1. Scroll to the bottom and change the "Selected Plan" to **IBM Blockchain Platform - Enterprise Plan**
 1. Click the "Create" button at the bottom right.
 
 ![](/doc_images/1-welcome.PNG)
@@ -35,11 +35,13 @@
 
 ![](/doc_images/2-create-wizard.PNG)
 
-- Now you should see the create network wizard. Fill out the wizard and I'll meet you on the summary page.
+- Now you should see the create network wizard. Fill out the wizard and I'll meet you on the summary page. If anything confuses you just use the default settings.
 
 ![](/doc_images/3-create-summary.PNG)
 
-- Look over your choices and when finished click the "Create" button to get your blockchain network.
+- Look over your choices and when finished click the "Done" button to get your blockchain network.
+- Next you can select the number of peers for yourself.  
+	- Make sure you add at least 1 peer. If its too late you can still create the peer later on.
 
 ![](/doc_images/4-resources-no-peers.PNG)
 
@@ -52,7 +54,7 @@
     - Creating a channel is a bit of a process, so bare with me!
     - A channel is used to isolate our blockchain ledger from others on the network.  (Later we will have the opportunity to invite members of our network to our channel) Members on the same channel will be able to validate each others transactions. For now we just want to make a channel for ourself.
 - Click the "Channels" link on the left navigation menu.
-- Next click the create "New Channel" button in the top right
+- Next click the create "New Channel" button in the top right. You will see a panel similar to the image below.
 
 ![](/doc_images/7a-create-channel.PNG)
 
@@ -62,33 +64,34 @@
 
 ![](/doc_images/7b-create-channel.PNG)
 
-- We need ourself added as an "Admin" so find your email address and check the Admin box next to it.
+- We need ourself added as an "Operator". So find your email address and check the Operator box next to it.
+	- Operator means we get to vote on changes to this channel.
 - If we wanted to invite others to the channel, we could add them from the drop down and select their roles. For now lets only have ourself on this channel. 
 - Then click the "Next" button
 
 ![](/doc_images/7c-create-channel.PNG)
 
-- The update policy decides what it takes to make changes to the channel. In this case how many admins should it take. Since we only have ourself on the channel, the only value that makes sense is 1. Use the dropdown to set this to 1.
+- The update policy decides what it takes to make changes to the channel. In this case how many operators should it take. Since we only have ourself on the channel, the only value that makes sense is 1. Use the dropdown to set this to 1.
 - Then click the "Submit Request" button
 
 ![](/doc_images/7e-create-channel.PNG)
 
 - OK. So the request is made, but we still have to sign it and submit it.
 - In the "Notifications" tab look for a pending request with your channel name on it.
-- Open the request with the Actions column by clicking "View Details"
+- Open the request by clicking the big giant button in the Actions column called "Review Request"
     - You could review it by expanding each section, but since we made it we know whats inside
-- Sign the request by clicking "Accept"
-- After clicking accept the menu will close itself
-- Next submit the request with the same "Actions" column, but this time click "Submit Channel Request"
+- With the notification opened we can now sign the request by clicking "Accept"
+- After clicking accept the notification will close
+- Next submit the request with the same "Actions" column, but this time click "Submit Request" button
 
 ![](/doc_images/8-created-channel.PNG)
 
 - Now browse to the "Channels" page in the left navigation menu
 - If all went well you should see the channel name listed after the panel refreshes
-- But we are not quite done... Click the dots in the action column and select the "Join Peer" option
+- But we are not quite done... Click the dots in the action column and select the "Join Peers" option
 - A menu will appear, check all of your peers and then click the "Add Selected" button
 - If the stars align the peer will be joined to your channel and everything is done
-    - You can tell it was successful if the date created and block height have dates and a number, instead of a '-'
+    - You can tell it was successful if the date created and block height (on the channels page) have dates and a number, instead of a '-'
     - If you don't see a date, refresh the page or repeat the join
 
 ### Finish Up

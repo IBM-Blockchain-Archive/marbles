@@ -25,14 +25,14 @@
 
 - Great, so you should see marbles listed in the chaincode table for this peer.
 - All we've done so far is upload the files ont the peer. Next, we need to tell it what channel to run on.
-- Click the "Instantiate" button in the marbles row
+- Click the 3 dots in the "ACTIONS" column to open the actions menu. Then click "Instantiate".
 
 ![](/doc_images/12-instantiate-marbles.PNG)
 
 - The arguments input box is for entering the arguments we want to pass to our chaincode's Init() function.
     - Typically, this is an array of strings.  As you type you can see exactly what will be sent in the lower input named "Chaincode Arguments".
 - Marbles chaincode is expecting a single numeric input argument. Therefore, enter your favorite number. Mines 314. 
-    - Marbles chaincode will store this number to the ledger as a self-test of sorts. It can literaly be any number you want. 
+    - Marbles chaincode will store this number to the ledger as a self-test of sorts. It can literally be any number you want. 
 - Next from the "Channel" drop down, select our 1 and only channel
 - Then click the "Submit" button
 - If it went well the chaincode page will refresh
@@ -42,20 +42,25 @@
 - Now that the chaincode has been instantiated on the channel, lets look at it
 - Click the "Channels" link on the left navigation
 - Click the channel you instantiated marbles on
-- Click the "Chaincode" tab
-- On this panel, you should see something simialr to the picture above.  Marbles is instantiated on at least one peer
+- Click the "Chaincode" sub-tab
+- On this panel, you should see something similar to the picture above.  Marbles is instantiated on at least one peer
 - Expand the row to see which peer
 - Click the log button to see if marbles started up. You should log messages like:
 
 ```
     Marbles Is Starting Up
-    - ready for action
+    Init() args count: 1
+    Init() args found: [101]
+    Init() arg[0] length 3
+    args[0] is not empty, must be instantiating
+     - ready for action
 ```
 
 - The last thing we need to do is grab all the service instance's credentials for our network. We will use this data to inform the marbles node.js application of our blockchain's networking addresses and credentials.
-- Get basic service credentials by clicking the "JSON" button under the "App Integration" column (you may need to expand the chaincode row first)
-- This will open the JSON in your browser. Copy this data and save/replace the entire contents of the file `<marbles directory>/config/blockchain_creds_tls.json` 
-  - This JSON a simplified version of your Service Credentials.  It has 1 orderer, 1 ca, 1 peer which is all we need for marbles.
+- Get the service credentials by clicking the "JSON" button under the "App Integration" column (you may need to expand the chaincode row first)
+- **Important:** This will open the JSON in your browser. Copy this data and save/replace the entire contents of the file `<marbles directory>/config/blockchain_creds_tls.json` 
+  - This JSON contains all the details needed to connect to your network. 
+  - Marbles will read this file to connect and transact on your network on this channel.
 
 ### Finish Up
 
