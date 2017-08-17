@@ -34,7 +34,13 @@
 			],
 			"certificateAuthorities": [
 				"blockchain-ca"
-			]
+			],
+			"adminPrivateKey": {
+				"path": "org1_admin_key.pem"
+			},
+			"signedCert": {
+				"path": "org1_admin_cert.pem"
+			}
 		}
 	},
 	"orderers": {
@@ -60,8 +66,6 @@
 					"enrollSecret": "adminpw"
 				}
 			],
-			"privateKeyPEM": "org1_admin_key.pem",
-			"signedCertPEM": "org1_admin_cert.pem",
 			"caName": "CA1"
 		}
 	}

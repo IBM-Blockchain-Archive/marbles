@@ -244,10 +244,8 @@ module.exports = function (config_filename, logger) {
 			pem: null
 		};
 		if (node_obj) {
-			if (node_obj.tlsCACerts && node_obj.tlsCACerts.pem) {
-				ret.pem = loadCert(node_obj.tlsCACerts.pem);
-			} else if (node_obj.tlsCACerts && node_obj.tlsCACerts.path) {
-				ret.pem = loadCert(node_obj.tlsCACerts.path);
+			if (node_obj.tlsCACerts) {
+				ret.pem = loadPem(node_obj.tlsCACerts);
 			}
 			if (node_obj.grpcOptions) {
 				ret['ssl-target-name-override'] = node_obj.grpcOptions['ssl-target-name-override'];
@@ -285,7 +283,11 @@ module.exports = function (config_filename, logger) {
 	// get an admin private key PEM certificate
 	helper.getAdminPrivateKeyPEM = function (orgName) {
 		if (orgName && helper.creds.organizations && helper.creds.organizations[orgName]) {
-			return loadKey(helper.creds.organizations[orgName].adminPrivateKeyPEM);
+			if (!helper.creds.organizations[orgName].adminPrivateKey) {
+				throw new Error('Admin private key is not found in the creds json file');
+			} else {
+				return loadPem(helper.creds.organizations[orgName].adminPrivateKey);
+			}
 		}
 		else {
 			throw new Error('Cannot find org.', orgName);
@@ -295,7 +297,11 @@ module.exports = function (config_filename, logger) {
 	// get an admin's signed cert PEM
 	helper.getAdminSignedCertPEM = function (orgName) {
 		if (orgName && helper.creds.organizations && helper.creds.organizations[orgName]) {
-			return loadKey(helper.creds.organizations[orgName].signedCertPEM);
+			if (!helper.creds.organizations[orgName].signedCert) {
+				throw new Error('Admin certificate is not found in the creds json file');
+			} else {
+				return loadPem(helper.creds.organizations[orgName].signedCert);
+			}
 		}
 		else {
 			throw new Error('Cannot find org.', orgName);
@@ -304,23 +310,14 @@ module.exports = function (config_filename, logger) {
 	};
 
 	// load cert from file path OR just pass cert back
-	function loadCert(value) {
-		if (value && value.indexOf('-BEGIN CERTIFICATE-') === -1) {		// looks like cert field is a path to a file
-			var path2cert = path.join(__dirname, '../config/' + value);
+	function loadPem(obj) {
+		if (obj && obj.path) {											// looks like field is a path to a file
+			var path2cert = path.join(__dirname, '../config/' + obj.path);
 			return fs.readFileSync(path2cert, 'utf8') + '\r\n'; 		//read from file, LOOKING IN config FOLDER
 		} else {
-			return value;												//can be null if network is not using TLS
+			return obj.pem;												//can be null if network is not using TLS
 		}
-	}
-
-	// load cert from file path OR just pass cert back
-	function loadKey(value) {
-		if (value && value.indexOf('-BEGIN PRIVATE KEY-') === -1) {		// looks like private key field is a path to a file
-			var path2cert = path.join(__dirname, '../config/' + value);
-			return fs.readFileSync(path2cert, 'utf8') + '\r\n'; 		//read from file, LOOKING IN config FOLDER
-		} else {
-			return value;												//can be null if network is not using TLS
-		}
+		return null;
 	}
 
 	// get the channel id on network for marbles

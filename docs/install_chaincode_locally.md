@@ -9,6 +9,12 @@ If you already ran these commands, it's safe to run them again.
 cd ../../
 npm install
 ```
+**Important Notes:**
+The install and instantiate operations require an admin certificate and private key. 
+If these attributes are not found in the blockchain creds file you will be unable to run either operation. 
+[Follow these instructions](https://console.bluemix.net/docs/services/blockchain/v10_application.html#generating-the-client-side-certificates) to generate the crypto material if you run the script and it complains that they don't exists.
+	
+- You need to add the private key and signed certificate files to this folder: `<marbles root>/config/crypto/`
 
 ### Install chaincode
 With that done, we need to get the chaincode onto the peer's filesystem. 

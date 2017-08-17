@@ -77,7 +77,7 @@ You should have already downloaded this file from the service during the [instal
 						"enrollSecret": "adminpw"
 					}],
 					"ca_name": "PeerOrg1CA",
-					"privateKeyPEM": "-----BEGIN CERTIFICATE----- <removed> -----END CERTIFICATE-----\r\n",
+					"privateKeyPEM": "-----BEGIN PRIVATE KEY----- <removed> -----END PRIVATE KEY-----\r\n",
 					"signedCertPEM": "-----BEGIN CERTIFICATE----- <removed> -----END CERTIFICATE-----\r\n"
 				}
 			},

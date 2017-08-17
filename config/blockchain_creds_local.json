@@ -35,6 +35,12 @@
 			"certificateAuthorities": [
 				"fabric-ca"
 			]
+		},
+		"adminPrivateKey": {
+			"path": "./crypto/privateKey.pem"
+		},
+		"signedCert": {
+			"path": "./crypto/signedCert.pem"
 		}
 	},
 	"orderers": {
