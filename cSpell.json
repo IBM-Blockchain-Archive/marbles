@@ -1,0 +1,11 @@
+{
+	"dictionaryDefinitions": [
+		{
+			"name": "blockchainTerms",
+			"path": "./dictionary_blockchain.txt"
+		}
+	],
+	"dictionaries": [
+		"blockchainTerms"
+	]
+}
