@@ -86,8 +86,8 @@ Therefore in order to compile chaincode locally you will need to have the fabric
 	- Get the hash from your network or use the hash `14055d7`. Go to the `Continue the Fabric Install Instructions` section below. You will enter the hash there.
 
 	- **Update 5/1/2017**
-	If you are on Windows and using the Blockchain Sevice, please use this commit hash instead: `0616a9ddc02cc541409c9d77c8b7e97523a8b96e`. 
-	Windows needs a Fabric fix that disables pkcs11 that was not avaible until April 1st, 2017 (no joking). 
+	If you are on Windows and using the Blockchain Service, please use this commit hash instead: `0616a9ddc02cc541409c9d77c8b7e97523a8b96e`. 
+	Windows needs a Fabric fix that disables pkcs11 that was not available until April 1st, 2017 (no joking). 
 	Other OSes should be able to use the same version in their release note.
 
 

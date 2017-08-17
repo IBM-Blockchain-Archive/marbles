@@ -17,8 +17,8 @@
 
 ![](/doc_images/bluemix_ibc2.png)
 
-1. The service will be created in the currenty selected space. This is found on the top toolbar near your email address. Click the space if you want to create the Blockchain service in a different space. This will bring up multiple options for Region/Org/Space.
-    - All of this is a Bluemix concept for organzing services/apps. If these terms confuse you then leave the values alone.
+1. The service will be created in the currently selected space. This is found on the top toolbar near your email address. Click the space if you want to create the Blockchain service in a different space. This will bring up multiple options for Region/Org/Space.
+    - All of this is a Bluemix concept for organizing services/apps. If these terms confuse you then leave the values alone.
 
 ![](/doc_images/bluemix_ibc3.png)
 
@@ -50,7 +50,7 @@
 
 - When you have at least one peer, we can move on to making a channel. 
     - Creating a channel is a bit of a process, so bare with me!
-    - A channel is used to isolate our blockchain ledger from others on the network.  (Later we will have the oppturnity to invite members of our network to our channel) Members on the same channel will be able to vaildate eachothers transactions. For now we just want to make a channel for ourself.
+    - A channel is used to isolate our blockchain ledger from others on the network.  (Later we will have the opportunity to invite members of our network to our channel) Members on the same channel will be able to validate each others transactions. For now we just want to make a channel for ourself.
 - Click the "Channels" link on the left navigation menu.
 - Next click the create "New Channel" button in the top right
 
@@ -62,7 +62,7 @@
 
 ![](/doc_images/7b-create-channel.PNG)
 
-- We need ourself added as an "Admin" so find your email addres and check the Admin box next to it.
+- We need ourself added as an "Admin" so find your email address and check the Admin box next to it.
 - If we wanted to invite others to the channel, we could add them from the drop down and select their roles. For now lets only have ourself on this channel. 
 - Then click the "Next" button
 
@@ -78,14 +78,14 @@
 - Open the request with the Actions column by clicking "View Details"
     - You could review it by expanding each section, but since we made it we know whats inside
 - Sign the request by clicking "Accept"
-- Aftering clicking accept the menu will close itself
+- After clicking accept the menu will close itself
 - Next submit the request with the same "Actions" column, but this time click "Submit Channel Request"
 
 ![](/doc_images/8-created-channel.PNG)
 
 - Now browse to the "Channels" page in the left navigation menu
 - If all went well you should see the channel name listed after the panel refreshes
-- But we are not quite done... Click the dots in the action columna and select the "Join Peer" option
+- But we are not quite done... Click the dots in the action column and select the "Join Peer" option
 - A menu will appear, check all of your peers and then click the "Add Selected" button
 - If the stars align the peer will be joined to your channel and everything is done
     - You can tell it was successful if the date created and block height have dates and a number, instead of a '-'

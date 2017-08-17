@@ -41,7 +41,7 @@ There is already an example file in the config folder you can use.
 
 - `cred_filename` - The name of the `Credential File` to use for your network. See the `Credential File` section for details.
 - `use_events` - When `true` it will use EventHub.js in the SDK to be notified when tx are committed to the ledger. When `false` it will wait/sleep for a block to be created.
-- `keep_alive_secs` - How often to periodically re-enroll in seconds.  This keeps the gRPC connections alive. Recomended value is 120 seconds.
+- `keep_alive_secs` - How often to periodically re-enroll in seconds.  This keeps the gRPC connections alive. Recommended value is 120 seconds.
 - `company` - The name of your marbles company.
 - `usernames` - The list of marbles owners that should be created on initial startup.
 - `port` - The port to use when hosting the marbles application.
@@ -51,7 +51,7 @@ There is already an example file in the config folder you can use.
 - This file has settings for your blockchain network such as IPs, port numbers, and certificates. 
 - This can be found in `<marbles>/config/blockchain_creds_tls.json`. 
 - You only need to edit/create 1 file. Details below.
-	- Tip: Use seperate files for seperate blockchain networks.
+	- Tip: Use separate files for separate blockchain networks.
 
 **If you are using the Bluemix Blockchain Service you will not need to manually edit these files**. 
 You should have already downloaded this file from the service during the [install chaincode tutorial](./install_chaincode.md). 
@@ -114,11 +114,11 @@ You should have already downloaded this file from the service during the [instal
 - `cas` - An Array. Must have at least 1 entry. You can add more, but currently only the first one will be used.
 	- `api_url` - The gRPC url to reach the ca. It must include the port.
 	- `msp_id` - The ID associated with the ca.
-	- `orgs` - An object of organziations
+	- `orgs` - An object of organizations
 		- `users` - An array of enroll IDs and secrets for this org.  Used for invokes and queries on chaincode.
 			- `enrollId` - A registered user's id on the CA. Can be found in the CA's yaml file.
 			- `enrollSecret` - A registered user's secret on the CA. Can be found in the CA's yaml file. 
-		- `ca_name` - The CA to use to authenticate the ernoll ID
+		- `ca_name` - The CA to use to authenticate the enroll ID
 		- `privateKeyPEM` - An admin private key. Used during install and instantiated.
 		- `signedCertPEM` - An admin signed certificate. Used during install and instantiate.
 - `peers` - An array. Must have at least 1 entry. You can add more, but currently only the first one will be used.
