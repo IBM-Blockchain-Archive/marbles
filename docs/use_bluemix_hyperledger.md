@@ -71,7 +71,7 @@
 - The update policy decides what it takes to make changes to the channel. In this case how many admins should it take. Since we only have ourself on the channel, the only value that makes sense is 1. Use the dropdown to set this to 1.
 - Then click the "Submit Request" button
 
-![](/doc_images/7d-create-channel.PNG)
+![](/doc_images/7e-create-channel.PNG)
 
 - OK. So the request is made, but we still have to sign it and submit it.
 - In the "Notifications" tab look for a pending request with your channel name on it.
