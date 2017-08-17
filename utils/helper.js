@@ -576,7 +576,7 @@ module.exports = function (config_filename, logger) {
 			logger.error('Fix this file: ./config/' + helper.getNetworkCredFileName());
 			logger.warn('It must have credentials/hostnames/ports/channels/etc for YOUR network');
 			logger.warn('How/where would I get that info? Are you using the Bluemix service? Then look at these instructions(near the end): ');
-			logger.warn('https://github.com/IBM-Blockchain/marbles/blob/experimental/docs/install_chaincode.md');
+			logger.warn('https://github.com/IBM-Blockchain/marbles/blob/v4.0/docs/install_chaincode.md');
 			logger.warn('----------------------------------------------------------------------');
 			console.log('\n\n');
 			errors.push('Using default values');
@@ -643,7 +643,7 @@ module.exports = function (config_filename, logger) {
 			logger.error('Fix this file: ./config/' + helper.getNetworkCredFileName());
 			logger.warn('----------------------------------------------------------------------');
 			logger.warn('See this file for help:');
-			logger.warn('https://github.com/IBM-Blockchain/marbles/blob/experimental/docs/config_file.md');
+			logger.warn('https://github.com/IBM-Blockchain/marbles/blob/v4.0/docs/config_file.md');
 			logger.warn('----------------------------------------------------------------------');
 			console.log('\n\n');
 			return errors;
@@ -686,7 +686,7 @@ module.exports = function (config_filename, logger) {
 			logger.error('Fix this file: ./config/' + helper.getNetworkCredFileName());
 			logger.warn('----------------------------------------------------------------------');
 			logger.warn('See this file for help:');
-			logger.warn('https://github.com/IBM-Blockchain/marbles/blob/experimental/docs/config_file.md');
+			logger.warn('https://github.com/IBM-Blockchain/marbles/blob/v4.0/docs/config_file.md');
 			logger.warn('----------------------------------------------------------------------');
 			console.log('\n\n');
 			return errors;
