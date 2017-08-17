@@ -18,7 +18,7 @@ var app = express();
 var cors = require('cors');
 var async = require('async');
 var ws = require('ws');											//websocket module 
-var winston = require('winston');								//logginer module
+var winston = require('winston');								//logger module
 
 // --- Get Our Modules --- //
 var logger = new (winston.Logger)({
@@ -30,7 +30,7 @@ var logger = new (winston.Logger)({
 var misc = require('./utils/misc.js')(logger);					//random non-blockchain related functions
 misc.check_creds_for_valid_json();
 var helper = require(__dirname + '/utils/helper.js')(process.env.creds_filename, logger);				//parses our blockchain config file
-var fcw = require('./utils/fc_wrangler/index.js')({ block_delay: helper.getBlockDelay() }, logger);		//fabric client wrangler wrapps the SDK
+var fcw = require('./utils/fc_wrangler/index.js')({ block_delay: helper.getBlockDelay() }, logger);		//fabric client wrangler wraps the SDK
 var ws_server = require('./utils/websocket_server_side.js')({ block_delay: helper.getBlockDelay() }, fcw, logger);	//websocket logic
 
 // ------------- Init ------------- //
@@ -54,7 +54,7 @@ if (process.env.VCAP_APPLICATION) {
 	port = process.env.PORT;
 }
 
-// --- Pathing and Module Setup --- //
+// --- Module Setup --- //
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.use(compression());
@@ -90,7 +90,7 @@ app.use(function (req, res, next) {
 	next(err);
 });
 app.use(function (err, req, res, next) {
-	logger.debug('Error Handeler -', req.url);
+	logger.debug('Errors -', req.url);
 	var errorCode = err.status || 500;
 	res.status(errorCode);
 	req.bag.error = { msg: err.stack, status: errorCode };
@@ -371,7 +371,7 @@ function create_marbles(owner_id, username, cb) {
 function build_marble_options(id, username, company) {
 	var colors = ['white', 'green', 'blue', 'purple', 'red', 'pink', 'orange', 'black', 'yellow'];
 	var sizes = ['35', '16'];
-	var color_index = misc.simple_hash(more_entropy + company) % colors.length;		//build a psudeo random index to pick a color
+	var color_index = misc.simple_hash(more_entropy + company) % colors.length;		//build a pseudo random index to pick a color
 	var size_index = misc.getRandomInt(0, sizes.length);							//build a random size for this marble
 	return {
 		color: colors[color_index],
@@ -459,7 +459,7 @@ function setupWebSocket() {
 				//find instantiated chaincode
 				else if (data.configure === 'find_chaincode') {
 					helper.write(data);													//write new config data to file
-					enroll_admin(1, function (e) {										//re-renroll b/c we may be using new peer/order urls
+					enroll_admin(1, function (e) {										//re-enroll b/c we may be using new peer/order urls
 						if (e == null) {
 							setup_marbles_lib(function () {
 								detect_prev_startup({ startup: true }, function (err) {

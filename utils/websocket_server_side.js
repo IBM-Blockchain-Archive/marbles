@@ -11,7 +11,7 @@ module.exports = function (g_options, fcw, logger) {
 	var known_everything = {};
 	var marbles_lib = null;
 	var known_height = 0;
-	var checkPerodically = null;
+	var checkPeriodically = null;
 	var enrollInterval = null;
 
 	//--------------------------------------------------------
@@ -68,7 +68,7 @@ module.exports = function (g_options, fcw, logger) {
 
 		// transfer a marble
 		else if (data.type === 'transfer_marble') {
-			logger.info('[ws] transfering req');
+			logger.info('[ws] transferring req');
 			options.args = {
 				marble_id: data.id,
 				owner_id: data.owner_id,
@@ -165,8 +165,8 @@ module.exports = function (g_options, fcw, logger) {
 
 	// sch next periodic check
 	function sch_next_check() {
-		clearTimeout(checkPerodically);
-		checkPerodically = setTimeout(function () {
+		clearTimeout(checkPeriodically);
+		checkPeriodically = setTimeout(function () {
 			try {
 				ws_server.check_for_updates(null);
 			}
@@ -186,12 +186,12 @@ module.exports = function (g_options, fcw, logger) {
 		marbles_lib.channel_stats(null, function (err, resp) {
 			var newBlock = false;
 			if (err != null) {
-				var eobj = {
+				var eObj = {
 					msg: 'error',
 					e: err,
 				};
-				if (ws_client) ws_client.send(JSON.stringify(eobj)); 								//send to a client
-				else broadcast(eobj);																//send to all clients
+				if (ws_client) ws_client.send(JSON.stringify(eObj)); 								//send to a client
+				else broadcast(eObj);																//send to all clients
 			} else {
 				if (resp && resp.height && resp.height.low) {
 					if (resp.height.low > known_height || ws_client) {

@@ -10,72 +10,55 @@ These instructions have been tested on Ubuntu 14 and OSX.  It may work for Windo
 * [Docker](https://www.docker.com/products/overview) - v1.13 or higher
 * [Docker Compose](https://docs.docker.com/compose/overview/) - v1.8 or higher
 * [Node.js](https://nodejs.org/en/download/) - node v6.2.0 - v6.11.1 **(v7+ not supported)**
-* [xcode](https://developer.apple.com/xcode/) - only required for OS X users
+* [xcode](https://developer.apple.com/xcode/) - only required for **OS X** users
 
 
 ### Creating a Local Hyperledger Fabric Network
 
-1. [Clone the repo and download the Docker images](#1-clone-the-repo-and-download-the-docker-images)
-2. [Set up the Fabric Node SDK](#2-set-up-the-fabric-node-sdk)
+1. [Clone the repo and download the Fabric samples](#1-download-fabric-samples)
+2. [Install the Dependencies](#2-install-the-dependencies)
 3. [Start your network](#3-start-your-network)
-4. [Setup Blockchain Network](#4-setup-blockchain-network)
-5. [Setup and Run the Marbles App](#5-setup-and-run-marbles)
 
+## 1. Download Fabric Samples
 
-## 1. Download Docker images
+We are going to hijack the [Hyperledger Fabric samples](http://hyperledger-fabric.readthedocs.io/en/latest/samples.html) to run a local network. 
+They already did all the work, so we just need to rip it off to get the network going.
 
-Download the docker images required to setup the network for running Hyperledger Fabric V1.
-From your marbles directory navigate to the scripts folder and make the shell script an executable:
+Download the samples with the command:
 
 ```bash
-cd marbles/scripts
-chmod +x download-dockerimages.sh
+git clone https://github.com/hyperledger/fabric-samples.git
+cd fabric-samples
 ```
 
-Now run the script. Make sure you have docker running before executing this script. This process will take a few minutes so be patient:
+Once you have clones the repository, install the platform specific binaries:
 
 ```bash
-sudo ./download-dockerimages.sh
+url -sSL https://goo.gl/iX9dek | sudo bash
 ```
 
-Once the script has completed, you should see the following in your terminal:
+Be sure to add these binaries to your PATH variable by running the following command or pasting it into you .profile file.
 
 ```bash
-===> List out hyperledger docker images
-hyperledger/fabric-ca          latest               35311d8617b4        3 weeks ago         240 MB
-hyperledger/fabric-ca          x86_64-1.0.0-alpha   35311d8617b4        3 weeks ago         240 MB
-hyperledger/fabric-couchdb     latest               f3ce31e25872        3 weeks ago         1.51 GB
-hyperledger/fabric-couchdb     x86_64-1.0.0-alpha   f3ce31e25872        3 weeks ago         1.51 GB
-hyperledger/fabric-kafka       latest               589dad0b93fc        3 weeks ago         1.3 GB
-hyperledger/fabric-kafka       x86_64-1.0.0-alpha   589dad0b93fc        3 weeks ago         1.3 GB
-hyperledger/fabric-zookeeper   latest               9a51f5be29c1        3 weeks ago         1.31 GB
-hyperledger/fabric-zookeeper   x86_64-1.0.0-alpha   9a51f5be29c1        3 weeks ago         1.31 GB
-hyperledger/fabric-orderer     latest               5685fd77ab7c        3 weeks ago         182 MB
-hyperledger/fabric-orderer     x86_64-1.0.0-alpha   5685fd77ab7c        3 weeks ago         182 MB
-hyperledger/fabric-peer        latest               784c5d41ac1d        3 weeks ago         184 MB
-hyperledger/fabric-peer        x86_64-1.0.0-alpha   784c5d41ac1d        3 weeks ago         184 MB
-hyperledger/fabric-javaenv     latest               a08f85d8f0a9        3 weeks ago         1.42 GB
-hyperledger/fabric-javaenv     x86_64-1.0.0-alpha   a08f85d8f0a9        3 weeks ago         1.42 GB
-hyperledger/fabric-ccenv       latest               91792014b61f        3 weeks ago         1.29 GB
-hyperledger/fabric-ccenv       x86_64-1.0.0-alpha   91792014b61f        3 weeks ago         1.29 GB
+export PATH=<path to download location>/bin:$PATH
 ```
 
-## 2. Set up the Fabric Node SDK
+## 2. Install the Dependencies
 
-We are going to use the SDK's test environment to run our network. 
-The following script will clone their repo and set it up for us. 
-From your `marbles/scripts` folder, run the `setup_sdk.sh` script:
+Next we need to install node.js dependencies for the `fabcar` sample.
+
 ```bash
-sudo bash setup_sdk.sh
+    cd fabcar
+    npm install
 ```
 
 ## 3. Start your network
 
-Navigate to the test/fixtures folder in the fabric-sdk-node directory and run the docker-compose file:
+Next we need to start up the Fabric. 
+Run the script below to get everything going. 
 
 ```bash
-cd ./fabric-sdk-node/test/fixtures
-sudo docker-compose -f docker-compose-marblesv3.yaml up -d
+    ./startFabric.sh
 ```
 
 Once complete, issue a `docker ps` command to view your currently running containers. You should see the following:
@@ -97,46 +80,36 @@ I'd suggest getting into the logs of one of the stopped containers with `sudo do
  
 * If you see a `containerID already exists` upon running docker-compose up, then you need to remove the existing container. This command will remove all containers `docker rm -f $(docker ps -aq)`
 
-## 4. Setup Blockchain Network
+## Tips:
 
-A Hyperledger Fabric channel is a private “subnet” of communication between two or more specific network members, for the purpose of conducting private and confidential transactions. 
-A channel is defined by members (organizations), peers, the shared ledger, chaincode application(s) and the ordering service node(s). 
-Each transaction on the network is executed on a channel, where each party must be authenticated and authorized to transact on that channel. 
-Each peer that joins a channel, has its own identity given by a membership services provider (MSP), which authenticates each peer to its channel peers and services.
+### Test Network
+- To test the network before we run marbles, run a query by:
 
-Before starting let’s remove any key value stores and SDK artifacts that may have cached during previous runs:
 ```bash
-rm -rf /tmp/hfc-*
-rm -rf ~/.hfc-key-store
+    node query.js
 ```
 
-### Create channel
+### Stop Network
+- To stop the network processes run the commands:
 
-Now, leverage the SDK test script to create a channel named `mychannel`. 
-Navigate back to the `scripts` directory and enter these commands: 
 ```bash
-cd ../fabric-sdk-node/
-node test/integration/e2e/create-channel.js
+    cd ../basic-network
+    ./stop.sh
 ```
 
-* When running `create-channel.js`, if you see an error stating `private key not found`, then try clearing your cached key value stores:
-```bash
-rm -rf /tmp/hfc-*
-rm -rf ~/.hfc-key-store
-```
 
-### Join channel
-Great so you created a channel. 
-The next task is to join your peers to the channel. 
-Send the genesis block with the command: 
+### Start Over
+- To delete the network to start fresh:
+
 ```bash
-node test/integration/e2e/join-channel.js
+    ./teardown.sh
 ```
 
 ### See the logs
-Viewing the logs of docker containers is helpful to troubleshoot issues. 
+- Viewing the logs of docker containers is helpful to troubleshoot issues. 
 While there is nothing important to see yet, it is a useful command to know. 
 Open another terminal and view your peer or orderer logs: 
+
 ```bash
 sudo docker logs -f peer0
 # control + c will exit the process
@@ -148,7 +121,7 @@ Nice work! The network is all setup. Right? I guess we will find out together.
 If you followed the instructions then your orderer will be batching new blocks every 10 seconds. 
 This is a litttttle long for our application, and may give you undesired UI behavior, sometimes. 
 Essentially if you move a marble the trade will take 10 seconds to settle. 
-Thus the  **UI may redraw the marble back in its original position**, and then jump to a correct position after some time. 
+The **UI may redraw the marble back in its original position**, and then jump to the correct position after some time. 
 This is a known issue and is because of the long batch time. 
 If you use the Bluemix service, the batch time is only 1 second and this is the delay the app has been optimized for. 
 

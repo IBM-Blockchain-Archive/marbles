@@ -58,3 +58,11 @@ pkcs11
 prefilled
 blockchain's
 chaincode's
+cachebust
+truthy
+webapp
+vcap
+resave
+lostmymarbles
+selftest
+ownerindex
