@@ -5,7 +5,10 @@
 	"description": "Connection Profile for an Hyperledger Fabric network on a local machine",
 	"version": "1.0.0",
 	"client": {
-		"organization": "Org1MSP"
+		"organization": "Org1MSP",
+		"credentialStore": {
+			"path": "./crypto/prebaked"
+		}
 	},
 	"channels": {
 		"mychannel": {

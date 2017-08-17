@@ -1,5 +1,6 @@
 var fs = require('fs');
 var path = require('path');
+var os = require('os');
 
 module.exports = function (config_filename, logger) {
 	var helper = {};
@@ -105,7 +106,7 @@ module.exports = function (config_filename, logger) {
 	// Certificate Authorities Getters
 	// --------------------------------------------------------------------------------
 	// find the first ca in the certificateAuthorities field for this org
-	helper.getFirstCAname = function (orgName) {
+	helper.getFirstCaName = function (orgName) {
 		const org = helper.creds.organizations[orgName];
 		if (org && org.certificateAuthorities) {
 			if (org.certificateAuthorities && org.certificateAuthorities[0]) {
@@ -254,7 +255,7 @@ module.exports = function (config_filename, logger) {
 		return ret;
 	}
 
-	// find the first org name in the organizaiton field
+	// find the first org name in the organization field
 	helper.getFirstOrg = function () {
 		if (helper.creds.organizations) {
 			const orgs = Object.keys(helper.creds.organizations);
@@ -357,6 +358,23 @@ module.exports = function (config_filename, logger) {
 		return ret;
 	};
 
+	// get key value store location
+	helper.getKvsPath = function (opts) {
+		const id = helper.makeUniqueId();
+		const default_path = path.join(os.homedir(), '.hfc-key-store/', id);
+
+		if (opts && opts.going2delete) {							//if this is for a delete, return default so we don't wipe a kvs someone setup
+			return default_path;									//do the default one
+		}
+
+		if (helper.config.client && helper.config.client.credentialStore) {
+			const kvs_path = helper.config.client.credentialStore.path;
+			return path.join(__dirname, kvs_path);					//use the kvs provided in the json
+		} else {
+			return default_path;									//make a new kvs folder in the home dir
+		}
+	};
+
 
 	// --------------------------------------------------------------------------------
 	// Config Getters
@@ -412,11 +430,17 @@ module.exports = function (config_filename, logger) {
 	// --------------------------------------------------------------------------------
 	// Build Options
 	// --------------------------------------------------------------------------------
+	helper.makeUniqueId = function () {
+		const channel = helper.getChannelId();
+		const first_peer = helper.getFirstPeerName(channel);
+		return 'marbles-' + helper.getNetworkName() + '-' + channel + '-' + first_peer;
+	};
+
 	// build the marbles lib module options
 	helper.makeMarblesLibOptions = function () {
 		const channel = helper.getChannelId();
 		const first_org = helper.getFirstOrg();
-		const first_ca = helper.getFirstCAname(first_org);
+		const first_ca = helper.getFirstCaName(first_org);
 		const first_peer = helper.getFirstPeerName(channel);
 		const first_orderer = helper.getFirstOrdererName(channel);
 		return {
@@ -438,14 +462,14 @@ module.exports = function (config_filename, logger) {
 		} else {
 			const channel = helper.getChannelId();
 			const first_org = helper.getFirstOrg();
-			const first_ca = helper.getFirstCAname(first_org);
+			const first_ca = helper.getFirstCaName(first_org);
 			const first_peer = helper.getFirstPeerName(channel);
 			const first_orderer = helper.getFirstOrdererName(channel);
 			const org_name = helper.getOrgsMSPid(first_org);				//lets use the first org we find
 			const user_obj = helper.getEnrollObj(first_ca, userIndex);		//there may be multiple users
 			return {
 				channel_id: channel,
-				uuid: 'marbles-' + helper.getNetworkName() + '-' + channel + '-' + first_peer,
+				uuid: helper.makeUniqueId(),
 				ca_url: helper.getCasUrl(first_ca),
 				ca_name: helper.getCaName(first_ca),
 				orderer_url: helper.getOrderersUrl(first_orderer),
@@ -456,6 +480,7 @@ module.exports = function (config_filename, logger) {
 				ca_tls_opts: helper.getCATLScertOpts(first_ca),
 				orderer_tls_opts: helper.getOrdererTLScertOpts(first_orderer),
 				peer_tls_opts: helper.getPeerTLScertOpts(first_peer),
+				kvs_path: helper.getKvsPath()
 			};
 		}
 	};
@@ -469,7 +494,7 @@ module.exports = function (config_filename, logger) {
 		const org_name = helper.getOrgsMSPid(first_org);		//lets use the first org we find
 		return {
 			channel_id: channel,
-			uuid: 'marbles-' + helper.getNetworkName() + '-' + channel + '-' + first_peer,
+			uuid: helper.makeUniqueId(),
 			orderer_url: helper.getOrderersUrl(first_orderer),
 			peer_urls: [helper.getPeersUrl(first_peer)],
 			msp_id: org_name,
@@ -477,47 +502,56 @@ module.exports = function (config_filename, logger) {
 			signedCertPEM: helper.getAdminSignedCertPEM(org_name),
 			orderer_tls_opts: helper.getOrdererTLScertOpts(first_orderer),
 			peer_tls_opts: helper.getPeerTLScertOpts(first_peer),
+			kvs_path: helper.getKvsPath()
 		};
 	};
 
 	// write new settings
 	helper.write = function (obj) {
-		/*
-		var config_file = JSON.parse(fs.readFileSync(config_path, 'utf8'));
+		console.log('saving the creds file has been disabled temporarily');
+
+		const channel = helper.getChannelId();
+		const first_org = helper.getFirstOrg();
+		const first_peer = helper.getFirstPeerName(channel);
+		const first_ca = helper.getFirstCaName(first_org);
+		const first_orderer = helper.getFirstOrdererName(channel);
+
+		//var config_file = JSON.parse(fs.readFileSync(config_path, 'utf8'));
 		var creds_file = JSON.parse(fs.readFileSync(creds_path, 'utf8'));
-	
+
 		if (obj.ordererUrl) {
-			creds_file.credentials.orderers[0].discovery_url = obj.ordererUrl;
+			creds_file.orderers[first_orderer].url = obj.ordererUrl;
 		}
 		if (obj.peerUrl) {
-			creds_file.credentials.peers[0].discovery_url = obj.peerUrl;
+			creds_file.peers[first_peer].url = obj.peerUrl;
 		}
 		if (obj.caUrl) {
-			creds_file.credentials.cas[0].api_url = obj.caUrl;
+			creds_file.certificateAuthorities[first_ca].url = obj.caUrl;
 		}
 		if (obj.chaincodeId) {
-			creds_file.credentials.app.chaincode_id = obj.chaincodeId;
+			const version = helper.getChaincodeVersion();
+			creds_file.channels[channel].chaincodes = {};
+			creds_file.channels[channel].chaincodes[obj.chaincodeId] = version;
 		}
 		if (obj.chaincodeVersion) {
-			creds_file.credentials.app.chaincode_version = obj.chaincodeVersion;
+			creds_file.channels[channel].chaincodes[helper.getChaincodeId()] = obj.chaincodeVersion;
 		}
 		if (obj.channelId) {
-			creds_file.credentials.app.channel_id = obj.channelId;
+			const old_channel_obj = JSON.parse(JSON.stringify(creds_file.channels[channel]));
+			creds_file.channels = {};
+			creds_file.channels[obj.channelId] = old_channel_obj;
 		}
 		if (obj.enrollId && obj.enrollSecret) {
-			for (let i in creds_file.credentials.cas[0].orgs) {
-				creds_file.credentials.cas[0].orgs[i].users[0] = {
-					enrollId: obj.enrollId,
-					enrollSecret: obj.enrollSecret
-				};
-			}
+			creds_file.certificateAuthorities[first_ca].registrar[0] = {
+				enrollId: obj.enrollId,
+				enrollSecret: obj.enrollSecret
+			};
 		}
-	
+
 		fs.writeFileSync(creds_path, JSON.stringify(creds_file, null, 4), 'utf8');	//save to file
 		helper.creds = creds_file;													//replace old copy
-		fs.writeFileSync(config_path, JSON.stringify(config_file, null, 4), 'utf8');//save to file
-		helper.config = config_file;												//replace old copy
-		*/
+		//fs.writeFileSync(config_path, JSON.stringify(config_file, null, 4), 'utf8');//save to file
+		//helper.config = config_file;												//replace old copy
 	};
 
 
@@ -581,7 +615,7 @@ module.exports = function (config_filename, logger) {
 			errors.push('There is no channel data in the "channels" field');
 		} else {
 			const first_org = helper.getFirstOrg();
-			const first_ca = helper.getFirstCAname(first_org);
+			const first_ca = helper.getFirstCaName(first_org);
 			const first_orderer = helper.getFirstOrdererName(channel);
 			const first_peer = helper.getFirstPeerName(channel);
 
@@ -622,7 +656,7 @@ module.exports = function (config_filename, logger) {
 		let errors = [];
 		const channel = helper.getChannelId();
 		const first_org = helper.getFirstOrg();
-		const first_ca = helper.getFirstCAname(first_org);
+		const first_ca = helper.getFirstCaName(first_org);
 		const first_orderer = helper.getFirstOrdererName(channel);
 		const first_peer = helper.getFirstPeerName(channel);
 

@@ -40,6 +40,7 @@ module.exports = function (logger) {
 				pem: 'complete tls certificate',					<optional>
 				common_name: 'common name used in pem certificate' 	<optional>
 			},
+			kvs_path: '/path/to/the/key/value/store'
 		}
 	*/
 
@@ -61,7 +62,7 @@ module.exports = function (logger) {
 
 		// Make eCert kvs (Key Value Store)
 		FabricClient.newDefaultKeyValueStore({
-			path: path.join(os.homedir(), '.hfc-key-store/' + options.uuid) 			//store eCert in the kvs directory
+			path: options.kvs_path 							//store crypto in the kvs directory
 		}).then(function (store) {
 			client.setStateStore(store);
 			return getSubmitter(client, options);			//do most of the work here

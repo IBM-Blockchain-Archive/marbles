@@ -17,7 +17,6 @@ var http = require('http');
 var app = express();
 var cors = require('cors');
 var async = require('async');
-var os = require('os');
 var ws = require('ws');											//websocket module 
 var winston = require('winston');								//logginer module
 
@@ -386,16 +385,10 @@ function build_marble_options(id, username, company) {
 function removeKVS() {
 	try {
 		logger.warn('removing older kvs and trying to enroll again');
-		misc.rmdir(makeKVSpath());											//delete old kvs folder
+		misc.rmdir(helper.getKvsPath({ going2delete: true }));			//delete old kvs folder
 		logger.warn('removed older kvs');
 	} catch (e) {
 		logger.error('could not delete old kvs', e);
-	}
-
-	// Make the path to the kvs we use
-	function makeKVSpath() {
-		var temp = helper.makeEnrollmentOptions(0);
-		return path.join(os.homedir(), '.hfc-key-store/', temp.uuid);
 	}
 }
 

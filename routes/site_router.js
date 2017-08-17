@@ -26,7 +26,7 @@ function build_bag(req) {
 function get_credential_data() {
 	const channel = helper.getChannelId();
 	const first_org = helper.getFirstOrg();
-	const first_ca = helper.getFirstCAname(first_org);
+	const first_ca = helper.getFirstCaName(first_org);
 	const first_peer = helper.getFirstPeerName(channel);
 	const first_orderer = helper.getFirstOrdererName(channel);
 	var ret = {
