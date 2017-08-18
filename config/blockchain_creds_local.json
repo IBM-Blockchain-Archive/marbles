@@ -37,13 +37,13 @@
 			],
 			"certificateAuthorities": [
 				"fabric-ca"
-			]
-		},
-		"adminPrivateKey": {
-			"path": "./crypto/privateKey.pem"
-		},
-		"signedCert": {
-			"path": "./crypto/signedCert.pem"
+			],
+			"adminPrivateKey": {
+				"path": "./crypto/prebaked/5890f0061619c06fb29dea8cb304edecc020fe63f41a6db109f1e227cc1cb2a8-priv"
+			},
+			"signedCert": {
+				"path": "./crypto/prebaked/PeerAdminCert.pem"
+			}
 		}
 	},
 	"orderers": {

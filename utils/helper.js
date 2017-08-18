@@ -285,7 +285,7 @@ module.exports = function (config_filename, logger) {
 	helper.getAdminPrivateKeyPEM = function (orgName) {
 		if (orgName && helper.creds.organizations && helper.creds.organizations[orgName]) {
 			if (!helper.creds.organizations[orgName].adminPrivateKey) {
-				throw new Error('Admin private key is not found in the creds json file');
+				throw new Error('Admin private key is not found in the creds json file: ' + orgName);
 			} else {
 				return loadPem(helper.creds.organizations[orgName].adminPrivateKey);
 			}
@@ -299,7 +299,7 @@ module.exports = function (config_filename, logger) {
 	helper.getAdminSignedCertPEM = function (orgName) {
 		if (orgName && helper.creds.organizations && helper.creds.organizations[orgName]) {
 			if (!helper.creds.organizations[orgName].signedCert) {
-				throw new Error('Admin certificate is not found in the creds json file');
+				throw new Error('Admin certificate is not found in the creds json file: ' + orgName);
 			} else {
 				return loadPem(helper.creds.organizations[orgName].signedCert);
 			}

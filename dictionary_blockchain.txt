@@ -64,3 +64,4 @@ cc's
 keepalive
 lscc
 rwset
+priv
