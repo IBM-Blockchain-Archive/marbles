@@ -12,17 +12,11 @@ These instructions have been tested on Ubuntu 14 and OSX.  It may work for Windo
 * [Node.js](https://nodejs.org/en/download/) - node v6.2.0 - v6.11.1 **(v7+ not supported)**
 * [xcode](https://developer.apple.com/xcode/) - only required for **OS X** users
 
-
-### Creating a Local Hyperledger Fabric Network
-
-1. [Clone the repo and download the Fabric samples](#1-download-fabric-samples)
-2. [Install the Dependencies](#2-install-the-dependencies)
-3. [Start your network](#3-start-your-network)
-
 ## 1. Download Fabric Samples
 
 We are going to hijack the [Hyperledger Fabric samples](http://hyperledger-fabric.readthedocs.io/en/latest/samples.html) to run a local network. 
-They already did all the work, so we just need to rip it off to get the network going.
+Their code has the setup for a Fabric network as well as example chaincode. 
+We will only be using the network setup part.
 
 Download the samples with the command:
 
@@ -31,25 +25,28 @@ git clone https://github.com/hyperledger/fabric-samples.git
 cd fabric-samples
 ```
 
-Once you have clones the repository, install the platform specific binaries:
+Once you have cloned the repository start downloading the docker images of the various fabric components.
 
 ```bash
-url -sSL https://goo.gl/iX9dek | sudo bash
+curl -sSL https://goo.gl/iX9dek -o setup_script.sh
+sudo bash setup_script.sh
 ```
 
 Be sure to add these binaries to your PATH variable by running the following command or pasting it into you .profile file.
 
 ```bash
-export PATH=<path to download location>/bin:$PATH
+export PATH=$PWD/bin:$PATH
 ```
 
 ## 2. Install the Dependencies
 
-Next we need to install node.js dependencies for the `fabcar` sample.
+Next we are going to install node.js dependencies for the `fabcar` sample. 
+It's not critical to do this step, but it is useful to test if the network is working before moving on. 
+Thus we will use the fabcar example to make sure everything is working as desired. 
 
 ```bash
     cd fabcar
-    npm install
+    sudo npm install
 ```
 
 ## 3. Start your network
@@ -62,31 +59,43 @@ Run the script below to get everything going.
 ```
 
 Once complete, issue a `docker ps` command to view your currently running containers. You should see the following:
+
 ```bash
-CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS                       PORTS                                            NAMES
-e61cf829f171        hyperledger/fabric-peer      "peer node start -..."   3 minutes ago       Up 2 minutes        0.0.0.0:7056->7051/tcp, 0.0.0.0:7058->7053/tcp   peer1
-0cc1f5ac24da        hyperledger/fabric-peer      "peer node start -..."   3 minutes ago       Up 2 minutes        0.0.0.0:8056->7051/tcp, 0.0.0.0:8058->7053/tcp   peer3
-7ab3106e5076        hyperledger/fabric-peer      "peer node start -..."   3 minutes ago       Up 3 minutes        0.0.0.0:7051->7051/tcp, 0.0.0.0:7053->7053/tcp   peer0
-2bc5c6606e6c        hyperledger/fabric-peer      "peer node start -..."   3 minutes ago       Up 3 minutes        0.0.0.0:8051->7051/tcp, 0.0.0.0:8053->7053/tcp   peer2
-513be1b46467        hyperledger/fabric-ca        "sh -c 'fabric-ca-..."   3 minutes ago       Up 3 minutes        0.0.0.0:8054->7054/tcp                           ca_peerOrg2
-741c363ba34a        hyperledger/fabric-orderer   "orderer"                3 minutes ago       Up 3 minutes        0.0.0.0:7050->7050/tcp                           orderer0
-abaae883eb13        couchdb                      "tini -- /docker-e..."   3 minutes ago       Up 3 minutes        0.0.0.0:5984->5984/tcp                           couchdb
-2c2d51fe88c0        hyperledger/fabric-ca        "sh -c 'fabric-ca-..."   3 minutes ago       Up 3 minutes        0.0.0.0:7054->7054/tcp                           ca_peerOrg1
+CONTAINER ID        IMAGE                                     COMMAND                  CREATED              STATUS              PORTS                                            NAMES
+8bfa753977b1        dev-peer0.org1.example.com-fabcar-1.0     "chaincode -peer.a..."   About a minute ago   Up About a minute                                                    dev-peer0.org1.example.com-fabcar-1.0
+56a7a5f0fb4d        hyperledger/fabric-tools:x86_64-1.0.0     "/bin/bash"              2 minutes ago        Up 2 minutes                                                         cli
+b1600301db8f        hyperledger/fabric-peer:x86_64-1.0.0      "peer node start"        2 minutes ago        Up 2 minutes        0.0.0.0:7051->7051/tcp, 0.0.0.0:7053->7053/tcp   peer0.org1.example.com
+16c045817270        hyperledger/fabric-orderer:x86_64-1.0.0   "orderer"                2 minutes ago        Up 2 minutes        0.0.0.0:7050->7050/tcp                           orderer.example.com
+36fcbc7d2a44        hyperledger/fabric-couchdb:x86_64-1.0.0   "tini -- /docker-e..."   2 minutes ago        Up 2 minutes        4369/tcp, 9100/tcp, 0.0.0.0:5984->5984/tcp       couchdb
+a7bd6802bcf4        hyperledger/fabric-ca:x86_64-1.0.0        "sh -c 'fabric-ca-..."   2 minutes ago        Up 2 minutes        0.0.0.0:7054->7054/tcp                           ca.example.com
 ```
 
-* If you do not see all 8 containers running, then something is wrong. 
+* If you do not see all 6 containers running, then something is wrong. 
 You will need to troubleshoot this before moving on. 
 I'd suggest getting into the logs of one of the stopped containers with `sudo docker logs peer0` (replace peer0 with w/e name is stopped).
  
 * If you see a `containerID already exists` upon running docker-compose up, then you need to remove the existing container. This command will remove all containers `docker rm -f $(docker ps -aq)`
 
-## Tips:
+## Handy Tips:
 
 ### Test Network
-- To test the network before we run marbles, run a query by:
+- To test the network before we run marbles, run a query with the command:
 
 ```bash
     node query.js
+```
+
+The correct response will look similar to:
+
+```
+Create a client and set the wallet location
+Set wallet path, and associate user  PeerAdmin  with application
+Check user is enrolled, and set a query URL in the network
+Make query
+Assigning transaction_id:  d7cb048ebca9d1da2e3f1474e898fc2627e9ea04130941e6a91246dc36972ba7
+returned from query
+Query result count =  1
+Response is  [{"Key":"CAR0", "Record":{"colour":"blue","make":"Toyota","model":"Prius","owner":"Tomoko"}},{"Key":"CAR1", "Record":{"colour":"red","make":"Ford","model":"Mustang","owner":"Brad"}},{"Key":"CAR2", "Record":{"colour":"green","make":"Hyundai","model":"Tucson","owner":"Jin Soo"}},{"Key":"CAR3", "Record":{"colour":"yellow","make":"Volkswagen","model":"Passat","owner":"Max"}},{"Key":"CAR4", "Record":{"colour":"black","make":"Tesla","model":"S","owner":"Adriana"}},{"Key":"CAR5", "Record":{"colour":"purple","make":"Peugeot","model":"205","owner":"Michel"}},{"Key":"CAR6", "Record":{"colour":"white","make":"Chery","model":"S22L","owner":"Aarav"}},{"Key":"CAR7", "Record":{"colour":"violet","make":"Fiat","model":"Punto","owner":"Pari"}},{"Key":"CAR8", "Record":{"colour":"indigo","make":"Tata","model":"Nano","owner":"Valeria"}},{"Key":"CAR9", "Record":{"colour":"brown","make":"Holden","model":"Barina","owner":"Shotaro"}}]
 ```
 
 ### Stop Network
@@ -99,7 +108,7 @@ I'd suggest getting into the logs of one of the stopped containers with `sudo do
 
 
 ### Start Over
-- To delete the network to start fresh:
+- To delete the network to start over:
 
 ```bash
     ./teardown.sh
@@ -119,15 +128,13 @@ sudo docker logs -f orderer0
 ### Finished
 Nice work! The network is all setup. Right? I guess we will find out together. 
 If you followed the instructions then your orderer will be batching new blocks every 10 seconds. 
-This is a litttttle long for our application, and may give you undesired UI behavior, sometimes. 
-Essentially if you move a marble the trade will take 10 seconds to settle. 
-The **UI may redraw the marble back in its original position**, and then jump to the correct position after some time. 
-This is a known issue and is because of the long batch time. 
+This is a litttttle long for our application. 
 If you use the Bluemix service, the batch time is only 1 second and this is the delay the app has been optimized for. 
+The application will continue to work with a 10 sec batch time, but you will have excess idle time to contemplate your life choices. 
 
-Next up we need to **pass the address and other info of our peer to our marbles application**. 
-This is done with the **blockchain creds** file. 
-Configuration of this file can be tricky. 
+Next up we need to **pass network info (such as IP addresses)** to our marbles application. 
+This is a critical step. That is sadly error prone. 
+We will accomplish it with a JSON **blockchain creds** file. 
 
 Select one option below:
 

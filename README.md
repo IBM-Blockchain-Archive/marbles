@@ -125,7 +125,7 @@ Hello again. Now we need a blockchain network.
 **Choose 1 option below:**
 
 - **Option 1:** Create a network with the Bluemix IBM Blockchain Service - [instructions](./docs/use_bluemix_hyperledger.md)
--**Option 2:** :lollipop: Use a locally hosted Hyperledger Fabric Network - [instructions](./docs/use_local_hyperledger.md)
+- **Option 2:** :lollipop: Use a locally hosted Hyperledger Fabric Network - [instructions](./docs/use_local_hyperledger.md)
 
 <a name="installchaincode"></a>
 
