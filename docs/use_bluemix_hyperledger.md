@@ -36,26 +36,27 @@
 ![](/doc_images/1-welcome.PNG)
 
 <a name ="get_credentials" ></a> 
-- If all goes well you should be on the welcome screen for your new service. Click the "Create Network" button to see the dashboard for your network. 
+- If all goes well you should see a similar screen as the image above. Click the "Create Network" button to enter the create wizard. 
 
 ![](/doc_images/2-create-wizard.PNG)
 
-- Now you should see the create network wizard. Fill out the wizard and I'll meet you on the summary page. If anything confuses you just use the default settings.
+- Now you should see the create network wizard with the words "Let's Get Started". Fill out the whole wizard and I'll meet you on the summary page. If anything confuses you just use the default settings.
 
 ![](/doc_images/3-create-summary.PNG)
 
-- Look over your choices and when finished click the "Done" button to get your blockchain network.
-- Next you can select the number of peers for yourself.  
+- Now that we are on the "Review Summary" screen lets look over your choices. When finished click the "Done" button.
+- Next you will see an option to create peers or enter the dashboard.  Select the "Add Peers" button. 
 	- Make sure you add at least 1 peer. If its too late you can still create the peer later on.
+	- Click the "Submit" button
 
 ![](/doc_images/4-resources-no-peers.PNG)
 
-- Congrats, you now have a blockchain network. You are currently eyeballing the list of nodes for you network. 
+- Congrats, you now have a blockchain network. You are currently eyeballing the list of nodes for you network. This is your "Overview" page.
 - You will need nodes called "Peers" to run marbles chaincode.  You may have peers already.  It depends on if you selected some during the create wizard. If not click the "Add Peer" button and create 1 peer of any size. 
 
 ![](/doc_images/5-after-added-peer.PNG)
 
-- When you have at least one peer, we can move on to making a channel. 
+- When you see at least one peer listed in the table, we can move on to making a channel. 
     - Creating a channel is a bit of a process, so bare with me!
     - A channel is used to isolate our blockchain ledger from others on the network.  (Later we will have the opportunity to invite members of our network to our channel) Members on the same channel will be able to validate each others transactions. For now we just want to make a channel for ourself.
 - Click the "Channels" link on the left navigation menu.
@@ -91,7 +92,7 @@
 
 ![](/doc_images/8-created-channel.PNG)
 
-- Now browse to the "Channels" page in the left navigation menu
+- Now browse to the "Channels" page in the left navigation menu. It should look similar to the image above.
 - If all went well you should see the channel name listed after the panel refreshes
 - But we are not quite done... Click the dots in the action column and select the "Join Peers" option
 - A menu will appear, check all of your peers and then click the "Add Selected" button
