@@ -18,7 +18,7 @@ We are going to hijack the [Hyperledger Fabric samples](http://hyperledger-fabri
 Their code has the setup for a Fabric network as well as example chaincode. 
 We will only be using the network setup part.
 
-Download the samples with the command:
+Download their samples with the command:
 
 ```bash
 git clone https://github.com/hyperledger/fabric-samples.git
@@ -58,7 +58,7 @@ Run the script below to get everything going.
     ./startFabric.sh
 ```
 
-Once complete, issue a `docker ps` command to view your currently running containers. You should see the following:
+Once complete, run the command `docker ps` to view your currently running docker containers. You should see something similar to the following:
 
 ```bash
 CONTAINER ID        IMAGE                                     COMMAND                  CREATED              STATUS              PORTS                                            NAMES
@@ -108,15 +108,19 @@ Response is  [{"Key":"CAR0", "Record":{"colour":"blue","make":"Toyota","model":"
 
 
 ### Start Over
-- To delete the network to start over:
+- To start over you can wipe the network by deleting the containers.
+	- After deleting you can create the network again with the script `./startFabric.sh`. 
 
 ```bash
+    cd ../basic-network
     ./teardown.sh
 ```
 
 ### See the logs
 - Viewing the logs of docker containers is helpful to troubleshoot issues. 
 While there is nothing important to see yet, it is a useful command to know. 
+You do not have to specify the entire container name in the command. 
+You only need enough characters of the name such that docker knows which container you want. 
 Open another terminal and view your peer or orderer logs: 
 
 ```bash

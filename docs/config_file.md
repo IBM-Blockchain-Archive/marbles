@@ -60,46 +60,77 @@ You should have already downloaded this file from the service during the [instal
 
 ```json
 {
-	"credentials": {
-		"network_id": "FakeNetworkId",
-		"orderers": [{
-			"discovery": "grpc://localhost:7050",
-			"msp_id": "Org1MSP",
-			"tls_certificate": "cert_1"
-		}],
-		"cas": [{
-			"api_url": "http://localhost:7054",
-			"msp_id": "Org1MSP",
-			"orgs": {
-				"PeerOrg1": {
-					"users": [{
-						"enrollId": "admin",
-						"enrollSecret": "adminpw"
-					}],
-					"ca_name": "PeerOrg1CA",
-					"privateKeyPEM": "-----BEGIN PRIVATE KEY----- <removed> -----END PRIVATE KEY-----\r\n",
-					"signedCertPEM": "-----BEGIN CERTIFICATE----- <removed> -----END CERTIFICATE-----\r\n"
+	"name": "Docker Compose Network",
+	"x-networkId": "not-important",
+	"x-type": "hlfv1",
+	"description": "Connection Profile for an Hyperledger Fabric network on a local machine",
+	"version": "1.0.0",
+	"client": {
+		"organization": "Org1MSP",
+		"credentialStore": {
+			"path": "./crypto/prebaked"
+		}
+	},
+	"channels": {
+		"mychannel": {
+			"orderers": [
+				"fabric-orderer"
+			],
+			"peers": {
+				"fabric-peer-org1": {
+					"endorsingPeer": true,
+					"chaincodeQuery": true,
+					"ledgerQuery": true,
+					"eventSource": true
 				}
 			},
-			"tls_certificate": "cert_1"
-		}],
-		"peers": [{
-			"discovery_url": "grpc://localhost:7051",
-			"event_url": "grpc://localhost:7053",
-			"msp_id": "Org1MSP",
-			"tls_certificate": "cert_1"
-		}],
-		"app": {
-			"channel_id": "mychannel",
-			"chaincode_id": "marbles",
-			"chaincode_version": "v0",
-			"block_delay": 1000
-		},
-		"tls_certificates": {
-			"cert_1": {
-				"common_name": null,
-				"pem": "-----BEGIN CERTIFICATE----- <removed> -----END CERTIFICATE-----\r\n"
+			"chaincodes": {
+				"marbles": "v4"
+			},
+			"x-blockDelay": 10000
+		}
+	},
+	"organizations": {
+		"Org1MSP": {
+			"mspid": "Org1MSP",
+			"peers": [
+				"fabric-peer-org1"
+			],
+			"certificateAuthorities": [
+				"fabric-ca"
+			],
+			"adminPrivateKey": {
+				"path": "./crypto/prebaked/5890f0061619c06fb29dea8cb304edecc020fe63f41a6db109f1e227cc1cb2a8-priv"
+			},
+			"signedCert": {
+				"path": "./crypto/prebaked/PeerAdminCert.pem"
 			}
+		}
+	},
+	"orderers": {
+		"fabric-orderer": {
+			"url": "grpc://localhost:7050"
+		}
+	},
+	"peers": {
+		"fabric-peer-org1": {
+			"url": "grpc://localhost:7051",
+			"eventUrl": "grpc://localhost:7053"
+		}
+	},
+	"certificateAuthorities": {
+		"fabric-ca": {
+			"url": "http://localhost:7054",
+			"httpOptions": {
+				"verify": true
+			},
+			"registrar": [
+				{
+					"enrollId": "PeerAdmin",
+					"enrollSecret": "-"
+				}
+			],
+			"caName": null
 		}
 	}
 }
@@ -107,32 +138,37 @@ You should have already downloaded this file from the service during the [instal
 
 **Field Details**
 
-- `network_id` - The main purpose of this is to detect when people try to use the default file w/o editing! Set it to anything other than `FakeNetworkId` to get past the startup check.
-- `orderers` - An Array. Must have at least 1 entry. You can add more, but currently only the first one will be used.
-	- `discovery_url` - The gRPC url to reach the orderer. It must include the port.
-	- `msp_id` - The ID associated with the orderer. See fabric documentation for MSP information.
-- `cas` - An Array. Must have at least 1 entry. You can add more, but currently only the first one will be used.
-	- `api_url` - The gRPC url to reach the ca. It must include the port.
-	- `msp_id` - The ID associated with the ca.
-	- `orgs` - An object of organizations
-		- `users` - An array of enroll IDs and secrets for this org.  Used for invokes and queries on chaincode.
-			- `enrollId` - A registered user's id on the CA. Can be found in the CA's yaml file.
-			- `enrollSecret` - A registered user's secret on the CA. Can be found in the CA's yaml file. 
-		- `ca_name` - The CA to use to authenticate the enroll ID
-		- `privateKeyPEM` - An admin private key. Used during install and instantiated.
-		- `signedCertPEM` - An admin signed certificate. Used during install and instantiate.
-- `peers` - An array. Must have at least 1 entry. You can add more, but currently only the first one will be used.
-	- `discovery_url` - The gRPC url to reach the peer. It must include the port.
-	- `event_url` - The gRPC url to reach event endpoint of the peer. It must include the port and it is different than the discovery port!
-	- `msp_id` - The ID associated with the peer.
-- `app` - This is an object
-	- `channel_id` - Name of the channel where marbles chaincode has been instantiated.
-	- `chaincode_id` - Name of the chaincode installed.
-	- `chaincode_version` - Version of the chaincode installed.
-	- `block_delay` - Time in ms for a block to be created by the orderer. This is a setting in the orderer's yaml.
-- `tls_certificates` - TLS certificate options.
-	- `common_name` - Only needed when using self signed certs. It will override the common name.
-	- `pem` - Can be either the complete PEM file that has line breaks encoded as `\n` **OR** a relative file path to a PEM file inside the `config` folder.
+- `name` - The main purpose of this is to detect when people try to use the default file w/o editing! Set it to anything other than `Place Holder Network Name` to get past the startup check.
+- `client`
+	- `organization` = The name of the org to use for our application. This name will match an entry in the `organizations` object.
+	- `credentialStore` - (Optional)
+		- `path` - The path of a key value store for the SDK to use.  Stores crypto material.
+- `channels`
+	- `orderers` - An array of names of a orderers that have joined this channel. Each name will match an entry in the `orderers` object.
+	- `peers` - An array of names of peers that has joined this channel. Each name will match an entry in the `peers` object.
+	- `chaincodes` - An object of instantiated chaincode IDs on this channel.  The key is a chaincode id, the value is the chaincode version.
+	- `x-blockDelay` - Time in ms for a block to be created by the orderer. This is a setting for the channel.
+- `organizations` 
+	- `peers` - The key name of a peer that is owned by this org. This name will match an entry in the `peers` object.
+	- `certificateAuthorities` - The key name of a ca that is owned by this org. This name will match an entry in the `certificateAuthorities` object.
+	- `peers` - The key name of a peer that is owned by this org. This name will match an entry in the `peers` object.
+	- `adminPrivateKey` - Note this object can contain `path` **or** `pem` fields.
+		- `path`- The path to an admin private key. Used during install and instantiated.
+		- `pem` - The admin private key. Used during install and instantiated.
+	- `signedCert` - Note this object can contain `path` **or** `pem` fields.
+		- `path` - The path to an admin signed certificate. Used during install and instantiate.
+		- `pem` - The admin signed certificate. Used during install and instantiate.
+- `orderers` - An object. Must have at least 1 entry. You can add more, but currently only the first one will be used.
+	- `url` - The gRPC url to reach the orderer. It must include the port.
+- `peers` - An object. Must have at least 1 entry. You can add more, but currently only the first one will be used.
+	- `url` - The gRPC url to reach the peer. It must include the port.
+	- `eventUrl` - The gRPC url to reach event endpoint of the peer. It must include the port and it is different than the discovery port!
+- `certificateAuthorities` - An object. Must have at least 1 entry. You can add more, but currently only the first one will be used.
+	- `url` - The gRPC url to reach the ca. It must include the port.
+	- `registrar` - An object of enroll IDs and secrets for this org.  Used for invokes and queries on chaincode.
+		- `enrollId` - A registered user's id on the CA. Can be found in the CA's yaml file.
+		- `enrollSecret` - A registered user's secret on the CA. Can be found in the CA's yaml file. 
+	- `caName` - The CA to use to authenticate the enroll ID.
 
 Once you have edited `blockchain_creds_tls.json` you are ready to install/instantiate Marbles. 
 
