@@ -11,21 +11,25 @@
 
 ##### Versions and Supported Platforms
 Please note there are multiple version of marbles. 
-One for each major Hyperledger Fabric release. 
+One marbles branch for each major Hyperledger Fabric release. 
 Pick a version of marbles that is compatible with your version of Fabric. 
 If you don't have any version of Fabric, then pick the marbles version marked **latest**! 
 
-- Marbles - Branch v3.0 **(Latest)** (You are viewing this branch!)
-	- Works with Hyperledger Fabric `v1.0`
-	- Works with the IBM Blockchain Bluemix Service - Plan **HSBN vNext**
+- [Marbles - Branch v4.0](https://github.com/ibm-blockchain/marbles/tree/v4.0) **(Latest)**
+	- Works with Hyperledger Fabric  `v1.0.1`, `v1.0.0` and `v1.0.0-rc1`
+	- Works with the IBM Blockchain Bluemix Service - Plan **IBM Blockchain Platform - Enterprise**
 
-- [Marbles - Branch v2.0](https://github.com/ibm-blockchain/marbles/tree/v2.0)
-	- Works with Hyperledger Fabric `v0.6-developer-preview`
+- Marbles - Branch v3.0 **(Deprecated)** (You are viewing this branch!)
+	- Works with Hyperledger Fabric `v1.0.0-alpha`
+	- No longer supported by the IBM Blockchain Bluemix service
+
+- [Marbles - Branch v2.0](https://github.com/ibm-blockchain/marbles/tree/v2.0) **(Deprecated)**
+	- Works with Hyperledger Fabric `v0.6.1-preview`
 	- Works with IBM Blockchain Bluemix Service - Plan **Starter** or **HSBN**
 
 - [Marbles - Branch v1.0](https://github.com/ibm-blockchain/marbles/tree/v1.0) **(Deprecated)**
-	- No longer supported by the IBM Blockchain Bluemix service
 	- Works with Hyperledger Fabric `v0.5-developer-preview`
+	- No longer supported by the IBM Blockchain Bluemix service
 
 ***
 
