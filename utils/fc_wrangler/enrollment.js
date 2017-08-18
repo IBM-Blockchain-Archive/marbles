@@ -21,10 +21,10 @@ module.exports = function (logger) {
 		options = {
 			peer_urls: ['array of peer grpc urls'],
 			channel_id: 'channel name',
-			uuid: 'unique name for this enollment',
+			uuid: 'unique name for this enrollment',
 			ca_url: 'http://urlhere:port',
 			ca_name: 'name of ca tou use, not used if ca's not in a hierarchy
-			orderer_url: 'grpc://urlhere:port',
+			orderer_url: 'grpc://url_here:port',
 			enroll_id: 'enrollId',
 			enroll_secret: 'enrollSecret',
 			msp_id: 'string',
@@ -157,8 +157,8 @@ module.exports = function (logger) {
 		options = {
 			peer_urls: ['array of peer grpc urls'],
 			channel_id: 'channel name',
-			uuid: 'unique name for this enollment',
-			orderer_url: 'grpc://urlhere:port',
+			uuid: 'unique name for this enrollment',
+			orderer_url: 'grpc://url_here:port',
 			privateKeyPEM: '<cert here>',
 			signedCertPEM: '<cert here>',
 			msp_id: 'string',

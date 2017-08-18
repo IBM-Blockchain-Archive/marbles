@@ -29,7 +29,7 @@ module.exports = function (g_options, logger) {
 	*/
 	invoke_cc.invoke_chaincode = function (obj, options, cb) {
 		logger.debug('[fcw] Invoking Chaincode: ' + options.cc_function + '()');
-		var eventhub;
+		var eventHub;
 		var channel = obj.channel;
 		var client = obj.client;
 		var cbCalled = false;
@@ -48,13 +48,13 @@ module.exports = function (g_options, logger) {
 		if (options.event_url) {
 			console.log('------------------ test');
 			logger.debug('[fcw] listening to event url', options.event_url);
-			eventhub = client.newEventHub();
-			eventhub.setPeerAddr(options.event_url, {
+			eventHub = client.newEventHub();
+			eventHub.setPeerAddr(options.event_url, {
 				pem: options.peer_tls_opts.pem,
 				'ssl-target-name-override': options.peer_tls_opts.common_name,		//can be null if cert matches hostname
 				'grpc.http2.keepalive_time': 15
 			});
-			eventhub.connect();
+			eventHub.connect();
 		} else {
 			logger.debug('[fcw] will not use tx event');
 		}
@@ -89,9 +89,9 @@ module.exports = function (g_options, logger) {
 						}, g_options.block_delay + 2000);
 
 						// Wait for tx committed event
-						eventhub.registerTxEvent(request.txId.getTransactionID(), (tx, code) => {
-							var elasped = Date.now() - startTime + 'ms';
-							logger.info('[fcw] The chaincode transaction event has happened! success?:', code, elasped);
+						eventHub.registerTxEvent(request.txId.getTransactionID(), (tx, code) => {
+							var elapsed = Date.now() - startTime + 'ms';
+							logger.info('[fcw] The chaincode transaction event has happened! success?:', code, elapsed);
 							clearTimeout(watchdog);
 
 							if (code !== 'VALID') {

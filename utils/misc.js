@@ -57,7 +57,7 @@ module.exports = function (logger) {
 		return hash;
 	};
 
-	// Sanitise marble owner names
+	// Sanitize marble owner names
 	misc.saferNames = function (usernames) {
 		var ret = [];
 		for (var i in usernames) {

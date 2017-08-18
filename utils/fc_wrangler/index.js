@@ -72,7 +72,7 @@ module.exports = function (g_options, logger) {
 	};
 	
 
-	// Get Blockheight
+	// Get Block height
 	fcw.query_channel = function(obj, options, cb_done){
 		query_peer.query_channel(obj, options, cb_done);
 	};

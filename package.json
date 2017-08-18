@@ -1,41 +1,41 @@
 {
-  "name": "marbles",
-  "version": "4.0.0",
-  "description": "A demonstration Node.js web application on Hyperledger Fabric.",
-  "main": "app.js",
-  "scripts": {
-    "start": "node app.js"
-  },
-  "dependencies": {
-    "async": "0.9.*",
-    "compression": "1.6.*",
-    "cookie-parser": "1.4.*",
-    "cors": "2.8.*",
-    "express": "4.14.*",
-    "express-session": "1.14.*",
-    "fabric-ca-client": "1.0.1",
-    "fabric-client": "1.0.1",
-	"pug": "2.0.0-beta11",
-    "serve-static": "1.11.*",
-    "winston": "2.2.*",
-    "ws": "1.1.*"
-  },
-  "engines": {
-    "node": "^6.2.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/IBM-Blockchain/marbles.git"
-  },
-  "devDependencies": {
-    "gulp": "^3.9.0",
-    "gulp-sass": "*",
-    "gulp-concat": "*",
-    "gulp-clean-css": "*",
-    "gulp-rename": "*"
-  },
-  "author": {
-    "name": "David Huffman"
-  },
-  "license": "Apache-2.0"
+	"name": "marbles",
+	"version": "4.0.0",
+	"description": "A demonstration Node.js web application on Hyperledger Fabric.",
+	"main": "app.js",
+	"scripts": {
+		"start": "node app.js"
+	},
+	"dependencies": {
+		"async": "0.9.*",
+		"compression": "1.6.*",
+		"cookie-parser": "1.4.*",
+		"cors": "2.8.*",
+		"express": "4.14.*",
+		"express-session": "1.14.*",
+		"fabric-ca-client": "1.0.1",
+		"fabric-client": "1.0.1",
+		"pug": "2.0.0-beta11",
+		"serve-static": "1.11.*",
+		"winston": "2.2.*",
+		"ws": "1.1.*"
+	},
+	"engines": {
+		"node": "^6.2.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/IBM-Blockchain/marbles.git"
+	},
+	"devDependencies": {
+		"gulp": "^3.9.0",
+		"gulp-sass": "*",
+		"gulp-concat": "*",
+		"gulp-clean-css": "*",
+		"gulp-rename": "*"
+	},
+	"author": {
+		"name": "David Huffman"
+	},
+	"license": "Apache-2.0"
 }

@@ -1,4 +1,4 @@
-var winston = require('winston');								//logginer module
+var winston = require('winston');								//logger module
 var path = require('path');
 
 // --- Set Our Things --- //
@@ -44,7 +44,7 @@ fcw.enrollWithAdminCert(helper.makeEnrollmentOptionsUsingCert(0), function (enro
 			chaincode_id: helper.getChaincodeId(),
 			chaincode_version: helper.getChaincodeVersion(),
 			cc_args: ['12345'],
-			peer_tls_opts: helper.getPeerTLScertOpts(first_peer)
+			peer_tls_opts: helper.getPeerTlsCertOpts(first_peer)
 		};
 		fcw.instantiate_chaincode(enrollResp, opts, function (err, resp) {
 			console.log('---------------------------------------');

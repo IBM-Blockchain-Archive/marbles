@@ -14,7 +14,7 @@ module.exports = function (config_filename, logger) {
 	helper.config = require(config_path);
 	var creds_path = path.join(__dirname, '../config/' + helper.config.cred_filename);
 	helper.creds = require(creds_path);
-	var packagejson = require(path.join(__dirname, '../package.json'));
+	var package_json = require(path.join(__dirname, '../package.json'));
 
 	logger.info('Loaded config file', config_path);
 	logger.info('Loaded creds file', creds_path);
@@ -92,7 +92,7 @@ module.exports = function (config_filename, logger) {
 	};
 
 	// get a peer's tls options
-	helper.getPeerTLScertOpts = function (key) {
+	helper.getPeerTlsCertOpts = function (key) {
 		if (key === undefined || key == null) {
 			throw new Error('Peer\'s key not passed');
 		} else {
@@ -160,7 +160,7 @@ module.exports = function (config_filename, logger) {
 	};
 
 	// get a ca's tls options
-	helper.getCATLScertOpts = function (key) {
+	helper.getCaTlsCertOpts = function (key) {
 		if (key === undefined || key == null) {
 			throw new Error('CAs key not passed');
 		} else {
@@ -225,7 +225,7 @@ module.exports = function (config_filename, logger) {
 	};
 
 	// get a orderer's tls options
-	helper.getOrdererTLScertOpts = function (key) {
+	helper.getOrdererTlsCertOpts = function (key) {
 		if (key === undefined || key == null) {
 			throw new Error('Orderer\'s key not passed');
 		} else {
@@ -449,9 +449,9 @@ module.exports = function (config_filename, logger) {
 			chaincode_id: helper.getChaincodeId(),
 			event_url: (helper.getEventsSetting()) ? helper.getPeerEventUrl(first_peer) : null,
 			chaincode_version: helper.getChaincodeVersion(),
-			ca_tls_opts: helper.getCATLScertOpts(first_ca),
-			orderer_tls_opts: helper.getOrdererTLScertOpts(first_orderer),
-			peer_tls_opts: helper.getPeerTLScertOpts(first_peer),
+			ca_tls_opts: helper.getCaTlsCertOpts(first_ca),
+			orderer_tls_opts: helper.getOrdererTlsCertOpts(first_orderer),
+			peer_tls_opts: helper.getPeerTlsCertOpts(first_peer),
 		};
 	};
 
@@ -477,9 +477,9 @@ module.exports = function (config_filename, logger) {
 				enroll_id: user_obj.enrollId,
 				enroll_secret: user_obj.enrollSecret,
 				msp_id: org_name,
-				ca_tls_opts: helper.getCATLScertOpts(first_ca),
-				orderer_tls_opts: helper.getOrdererTLScertOpts(first_orderer),
-				peer_tls_opts: helper.getPeerTLScertOpts(first_peer),
+				ca_tls_opts: helper.getCaTlsCertOpts(first_ca),
+				orderer_tls_opts: helper.getOrdererTlsCertOpts(first_orderer),
+				peer_tls_opts: helper.getPeerTlsCertOpts(first_peer),
 				kvs_path: helper.getKvsPath()
 			};
 		}
@@ -500,8 +500,8 @@ module.exports = function (config_filename, logger) {
 			msp_id: org_name,
 			privateKeyPEM: helper.getAdminPrivateKeyPEM(org_name),
 			signedCertPEM: helper.getAdminSignedCertPEM(org_name),
-			orderer_tls_opts: helper.getOrdererTLScertOpts(first_orderer),
-			peer_tls_opts: helper.getPeerTLScertOpts(first_peer),
+			orderer_tls_opts: helper.getOrdererTlsCertOpts(first_orderer),
+			peer_tls_opts: helper.getPeerTlsCertOpts(first_peer),
 			kvs_path: helper.getKvsPath()
 		};
 	};
@@ -587,7 +587,7 @@ module.exports = function (config_filename, logger) {
 
 	// check if marbles UI and marbles chaincode work together
 	helper.errorWithVersions = function (v) {
-		var version = packagejson.version;
+		var version = package_json.version;
 		if (!v || !v.parsed) v = { parsed: '0.x.x' };		//default
 		if (v.parsed[0] !== version[0]) {					//only check the major version
 			console.log('\n');

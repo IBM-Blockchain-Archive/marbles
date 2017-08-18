@@ -50,8 +50,8 @@ module.exports = function (logger) {
 		// send proposal to peer
 		channel.queryInfo().then(
 			function (chain_resp) {
-				chain_resp.currentBlockHash = buffer2hexstr(chain_resp.currentBlockHash.buffer);
-				chain_resp.previousBlockHash = buffer2hexstr(chain_resp.previousBlockHash.buffer);
+				chain_resp.currentBlockHash = buffer2hexStr(chain_resp.currentBlockHash.buffer);
+				chain_resp.previousBlockHash = buffer2hexStr(chain_resp.previousBlockHash.buffer);
 				if (cb) return cb(null, chain_resp);
 			}
 		).catch(
@@ -115,7 +115,7 @@ module.exports = function (logger) {
 	};
 
 	//format from byte array to hex string
-	function buffer2hexstr(byteArray) {
+	function buffer2hexStr(byteArray) {
 		return byteArray.map(function (byte) {
 			return ('0' + byte.toString(16)).slice(-2);
 		}).join('');
@@ -139,7 +139,7 @@ module.exports = function (logger) {
 			var tx = '';
 
 			// -- move though the block data! -- //
-			for (var i in ret.orig_data.data.data) {				//iter thourgh transactions
+			for (var i in ret.orig_data.data.data) {				//iter through transactions
 				try {
 					tx = {
 						tx_id: ret.orig_data.data.data[i].payload.header.channel_header.tx_id,
@@ -208,7 +208,7 @@ module.exports = function (logger) {
 				}
 			}
 		} catch (e) {
-			if (data.blockNumber >= 0) logger.warn('could not find chaincode id in tx playload', e);
+			if (data.blockNumber >= 0) logger.warn('could not find chaincode id in tx payload', e);
 			return '-';
 		}
 	}
@@ -235,12 +235,12 @@ module.exports = function (logger) {
 				}
 			}
 		} catch (e) {
-			if (data.blockNumber >= 0) logger.warn('could not find chaincode id in tx playload', e);
+			if (data.blockNumber >= 0) logger.warn('could not find chaincode id in tx payload', e);
 			return [];
 		}
 	}
 
-	// retardely parse the block object to format for humans - get input parameters for tx
+	// parse the block object to format for humans - get input parameters for tx
 	function stupid_parse(data, chaincodeId) {
 		var ret = { debug: {}, parameters: [] };
 		var str = null;
@@ -273,7 +273,7 @@ module.exports = function (logger) {
 			logger.warn('parsing block data finalStr is too large, skipping', ret.debug.finalStr.length);
 			ret.parameters.push('too long to show');
 		} else {
-			for (var i in ret.debug.finalStr) {								//filter out giberish
+			for (var i in ret.debug.finalStr) {								//filter out gibberish
 				if (ret.debug.finalStr.charCodeAt(i) >= 32 && ret.debug.finalStr.charCodeAt(i) <= 126) {
 					word += ret.debug.finalStr[i];
 				}
