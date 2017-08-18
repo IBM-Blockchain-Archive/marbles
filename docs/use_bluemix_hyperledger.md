@@ -17,10 +17,15 @@
 
 ![](/doc_images/bluemix_ibc2.png)
 
+1. You should now be on the Blockchain Platform page where you can find more blockchain related information
+1. Click the blue "Service Plan" button
+
+![](/doc_images/bluemix_ibc3.png)
+
 1. The service will be created in the currently selected space. This is found on the top toolbar near your email address. Click the space if you want to create the Blockchain service in a different space. This will bring up multiple options for Region/Org/Space.
     - All of this is a Bluemix concept for organizing services/apps. If these terms confuse you then leave the values alone.
 
-![](/doc_images/bluemix_ibc3.png)
+![](/doc_images/bluemix_ibc4.png)
 
 1. Leave the "Service Name" alone or you can choose to rename it to something more friendly such as "Awesome Marbles Demo"
 1. Leave the "Credential name" field as its default value
