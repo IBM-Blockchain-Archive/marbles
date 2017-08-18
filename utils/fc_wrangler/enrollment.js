@@ -57,6 +57,7 @@ module.exports = function (logger) {
 			enroll_id: options.enroll_id,
 			enroll_secret: options.enroll_secret,
 			msp_id: options.msp_id,
+			kvs_path: options.kvs_path
 		};
 		logger.info('[fcw] Going to enroll', debug);
 

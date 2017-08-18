@@ -65,11 +65,11 @@
 			},
 			"registrar": [
 				{
-					"enrollId": "admin",
-					"enrollSecret": "adminpw"
+					"enrollId": "PeerAdmin",
+					"enrollSecret": "-"
 				}
 			],
-			"caName": "PeerOrg1CA"
+			"caName": null
 		}
 	}
 }

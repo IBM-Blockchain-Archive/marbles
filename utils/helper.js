@@ -367,11 +367,25 @@ module.exports = function (config_filename, logger) {
 			return default_path;									//do the default one
 		}
 
-		if (helper.config.client && helper.config.client.credentialStore) {
-			const kvs_path = helper.config.client.credentialStore.path;
-			return path.join(__dirname, kvs_path);					//use the kvs provided in the json
+		// -- Using Custom KVS -- //
+		if (helper.creds.client && helper.creds.client.credentialStore) {
+			const kvs_path = helper.creds.client.credentialStore.path;
+			const ret = path.join(__dirname, '../config/' + kvs_path + '/');
+			copy_keys_over(ret);
+			return ret;												//use the kvs provided in the json
 		} else {
 			return default_path;									//make a new kvs folder in the home dir
+		}
+
+		// copy over private and public keys to the hfc key value store
+		function copy_keys_over(custom_path) {
+			try {
+				const default_path2 = path.join(os.homedir(), '.hfc-key-store/');
+				const private_key = '5890f0061619c06fb29dea8cb304edecc020fe63f41a6db109f1e227cc1cb2a8-priv';	//todo make this generic
+				const public_key = '5890f0061619c06fb29dea8cb304edecc020fe63f41a6db109f1e227cc1cb2a8-pub';
+				fs.createReadStream(custom_path + private_key).pipe(fs.createWriteStream(default_path2 + private_key));
+				fs.createReadStream(custom_path + public_key).pipe(fs.createWriteStream(default_path2 + public_key));
+			} catch (e) { }
 		}
 	};
 
