@@ -39,7 +39,7 @@
 
 ![](/doc_images/13-instantiated-marbles.PNG)
 
-- Now that the chaincode has been instantiated on the channel, lets look at it
+- Now that the chaincode has been instantiated on the channel, let's look at it
 - Click the "Channels" link on the left navigation
 - Click the channel you instantiated marbles on
 - Click the "Chaincode" sub-tab
