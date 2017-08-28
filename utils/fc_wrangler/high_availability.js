@@ -1,5 +1,5 @@
 // ------------------------------------------------------------------------
-// HA Functions (HA = High Availability) aka try another peer/orderer
+// HA Functions (HA = High Availability) aka try another peer/CAs
 // ------------------------------------------------------------------------
 // - Remember the last peer we used that worked. Keep using this peer as long as it works.
 // - If the peer has crashed, switch to the next peer.
@@ -10,7 +10,10 @@ module.exports = function (logger) {
 	var ha = {};
 	ha.success_peer_position = 0;								//the last peer position that was successful
 	ha.using_peer_position = 0;									//the peer array position to use for the next request
+	ha.success_ca_position = 0;									//the last ca position that was successful
+	ha.using_ca_position = 0;									//the ca array position to use for the next enrollment
 
+	// ------------------------------------------------------------------------
 	// Change what peer the SDK is using
 	/*
 		options: {
@@ -21,6 +24,7 @@ module.exports = function (logger) {
 					},
 		}
 	*/
+	// ------------------------------------------------------------------------
 	ha.use_peer = function (obj, options) {
 		try {
 			logger.debug('Adding peer to sdk client', options.peer_url);
@@ -34,6 +38,7 @@ module.exports = function (logger) {
 		}
 	};
 
+	// ------------------------------------------------------------------------
 	// Switch to Another Peer - returns null if there IS another peer to switch to
 	/*
 		options: {
@@ -44,6 +49,7 @@ module.exports = function (logger) {
 					},
 		}
 	*/
+	// ------------------------------------------------------------------------
 	ha.switch_peer = function (obj, options) {
 		if (!options || !options.peer_urls || !options.peer_tls_opts) {
 			logger.error('Missing options for switch_peer()');
@@ -73,6 +79,61 @@ module.exports = function (logger) {
 			ha.use_peer(obj, temp);
 			return null;
 		}
+	};
+
+	// ------------------------------------------------------------------------
+	// Get the Next Certificate Authority - returns options to use for enrollment if there IS another CA to switch to
+	/*
+		options: {
+					ca_urls: ['array of ca grpc urls'],
+					ca_tls_opts: {
+						pem: 'complete tls certificate',					<required if using ssl>
+						common_name: 'common name used in pem certificate' 	<required if using ssl>
+					},
+		}
+	*/
+	// ------------------------------------------------------------------------
+	ha.get_next_ca = function (options) {
+		if (!options || !options.ca_urls || !options.ca_tls_opts) {
+			logger.error('Missing options for get_next_ca()');
+			return null;
+		}
+
+		ha.using_ca_position++;
+		if (ha.using_ca_position >= options.ca_urls.length) {				//wrap around
+			ha.using_ca_position = 0;
+		}
+
+		if (ha.using_ca_position === ha.success_ca_position) {				//we've tried all ca, error out
+			logger.error('Exhausted all CAs. There are no more CAs to try.');
+			return null;
+		} else {
+			return ha.get_ca(options);
+		}
+	};
+
+	// ------------------------------------------------------------------------
+	// Get the Current Certificate Authority - returns options for enrollment
+	/*
+		options: {
+					ca_urls: ['array of ca grpc urls'],
+					ca_tls_opts: {
+						pem: 'complete tls certificate',					<required if using ssl>
+						common_name: 'common name used in pem certificate' 	<required if using ssl>
+					},
+		}
+	*/
+	// ------------------------------------------------------------------------
+	ha.get_ca = function (options) {
+		if (!options || !options.ca_urls || !options.ca_tls_opts) {
+			logger.error('Missing options for get_ca()');
+			return null;
+		}
+
+		options.ca_url = options.ca_urls[ha.using_ca_position];			//use this CA
+		//options.ca_tls_opts = options.ca_tls_opts;					//dsh todo get the array, return the right one
+		//options.ca_name = options.ca_name;							//dsh todo get the array, return the right one
+		return options;
 	};
 
 	return ha;

@@ -159,6 +159,15 @@ module.exports = function (config_filename, logger) {
 		}
 	};
 
+	// get all the ca http urls
+	helper.getAllCaUrls = function () {
+		let ret = [];
+		for(let id in helper.creds.certificateAuthorities) {
+			ret.push(helper.creds.certificateAuthorities[id].url);
+		}
+		return ret;
+	};
+
 	// get a ca's name, could be null
 	helper.getCaName = function (key) {
 		if (key === undefined || key == null) {
@@ -500,7 +509,7 @@ module.exports = function (config_filename, logger) {
 			return {
 				channel_id: channel,
 				uuid: helper.makeUniqueId(),
-				ca_url: helper.getCasUrl(first_ca),
+				ca_urls: helper.getAllCaUrls(),
 				ca_name: helper.getCaName(first_ca),
 				orderer_url: helper.getOrderersUrl(first_orderer),
 				peer_urls: [helper.getPeersUrl(first_peer)],

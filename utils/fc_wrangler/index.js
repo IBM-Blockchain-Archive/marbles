@@ -57,11 +57,11 @@ module.exports = function (g_options, logger) {
 					logger.info('Retrying invoke on different peer');
 					fcw.invoke_chaincode(obj, options, cb_done);
 				} else {
-					cb_done(err, resp);									//out of peers, give up
+					if (cb_done) cb_done(err, resp);					//out of peers, give up
 				}
 			} else {													//all good, pass resp back to callback
 				ha.success_peer_position = ha.using_peer_position;		//remember the last good one
-				cb_done(err, resp);
+				if (cb_done) cb_done(err, resp);
 			}
 		});
 	};
@@ -89,11 +89,11 @@ module.exports = function (g_options, logger) {
 					logger.info('Retrying query on different peer');
 					fcw.query_chaincode(obj, options, cb_done);
 				} else {
-					cb_done(err, resp);									//out of peers, give up
+					if (cb_done) cb_done(err, resp);					//out of peers, give up
 				}
 			} else {													//all good, pass resp back to callback
 				ha.success_peer_position = ha.using_peer_position;		//remember the last good one
-				cb_done(err, resp);
+				if (cb_done) cb_done(err, resp);
 			}
 		});
 	};
@@ -105,7 +105,21 @@ module.exports = function (g_options, logger) {
 
 	// enroll an enrollId with the ca
 	fcw.enroll = function (options, cb_done) {
-		enrollment.enroll(options, cb_done);
+		let opts = ha.get_ca(options);
+		enrollment.enroll(opts, function (err, resp) {
+			if (err != null) {
+				opts = ha.get_next_ca(options);							//try another CA
+				if (opts) {
+					logger.info('Retrying enrollment on different ca');
+					fcw.enroll(options, cb_done);
+				} else {
+					if (cb_done) cb_done(err, resp);					//out of CAs, give up
+				}
+			} else {
+				ha.success_ca_position = ha.using_ca_position;			//remember the last good one
+				if (cb_done) cb_done(err, resp);
+			}
+		});
 	};
 
 	// enroll with admin cert
@@ -150,11 +164,11 @@ module.exports = function (g_options, logger) {
 					logger.info('Retrying query on different peer');
 					fcw.query_channel(obj, options, cb_done);
 				} else {
-					cb_done(err, resp);									//out of peers, give up
+					if (cb_done) cb_done(err, resp);					//out of peers, give up
 				}
 			} else {													//all good, pass resp back to callback
 				ha.success_peer_position = ha.using_peer_position;		//remember the last good one
-				cb_done(err, resp);
+				if (cb_done) cb_done(err, resp);
 			}
 		});
 	};

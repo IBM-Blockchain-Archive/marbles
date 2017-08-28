@@ -29,16 +29,16 @@ module.exports = function (logger) {
 			enroll_secret: 'enrollSecret',
 			msp_id: 'string',
 			ca_tls_opts: {
-				pem: 'complete tls certificate',					<optional>
-				common_name: 'common name used in pem certificate' 	<optional>
+				pem: 'complete tls certificate',					<required if using ssl>
+				common_name: 'common name used in pem certificate' 	<required if using ssl>
 			},
 			orderer_tls_opts: {
-				pem: 'complete tls certificate',					<optional>
-				common_name: 'common name used in pem certificate' 	<optional>
+				pem: 'complete tls certificate',					<required if using ssl>
+				common_name: 'common name used in pem certificate' 	<required if using ssl>
 			},
 			peer_tls_opts: {
-				pem: 'complete tls certificate',					<optional>
-				common_name: 'common name used in pem certificate' 	<optional>
+				pem: 'complete tls certificate',					<required if using ssl>
+				common_name: 'common name used in pem certificate' 	<required if using ssl>
 			},
 			kvs_path: '/path/to/the/key/value/store'
 		}
@@ -157,12 +157,12 @@ module.exports = function (logger) {
 			signedCertPEM: '<cert here>',
 			msp_id: 'string',
 			orderer_tls_opts: {
-				pem: 'complete tls certificate',					<optional>
-				common_name: 'common name used in pem certificate' 	<optional>
+				pem: 'complete tls certificate',					<required if using ssl>
+				common_name: 'common name used in pem certificate' 	<required if using ssl>
 			},
 			peer_tls_opts: {
-				pem: 'complete tls certificate',					<optional>
-				common_name: 'common name used in pem certificate' 	<optional>
+				pem: 'complete tls certificate',					<required if using ssl>
+				common_name: 'common name used in pem certificate' 	<required if using ssl>
 			}
 		}
 	*/
