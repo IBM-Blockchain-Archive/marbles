@@ -193,18 +193,11 @@ module.exports = function (logger) {
 				'ssl-target-name-override': options.orderer_tls_opts.common_name		//can be null if cert matches hostname
 			}));
 
-			try {
-				for (var i in options.peer_urls) {
-					channel.addPeer(new Peer(options.peer_urls[i], {
-						pem: options.peer_tls_opts.pem,
-						'ssl-target-name-override': options.peer_tls_opts.common_name	//can be null if cert matches hostname
-					}));
-					logger.debug('added peer', options.peer_urls[i]);
-				}
-			}
-			catch (e) {
-				//might error if peer already exists, but we don't care
-			}
+			channel.addPeer(new Peer(options.peer_urls[0], {							//add the first peer
+				pem: options.peer_tls_opts.pem,
+				'ssl-target-name-override': options.peer_tls_opts.common_name			//can be null if cert matches hostname
+			}));
+			logger.debug('added peer', options.peer_urls[0]);
 
 			// --- Success --- //
 			logger.debug('[fcw] Successfully got enrollment ' + options.uuid);

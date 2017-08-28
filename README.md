@@ -276,29 +276,12 @@ enrollment.enroll = function (options, cb) {
         }));
 
 // [Step 5]
-        try {
-            for (var i in options.peer_urls) {
-                chain.addPeer(new Peer(options.peer_urls[i], {
-                    pem: options.peer_tls_opts.pem,
-                    'ssl-target-name-override': options.peer_tls_opts.common_name
-                }));
-                logger.debug('added peer', options.peer_urls[i]);
-            }
-        }
-        catch (e) {
-            //might error if peer already exists, but we don't care
-        }
-        try {
-            chain.setPrimaryPeer(new Peer(options.peer_urls[0], {
-                 pem: options.peer_tls_opts.pem,
-                 'ssl-target-name-override': options.peer_tls_opts.common_name
-            }));
-            logger.debug('added primary peer', options.peer_urls[0]);
-        }
-        catch (e) {
-            //might error b/c bugs, don't care
-        }
-
+        chain.addPeer(new Peer(options.peer_urls[0], {
+            pem: options.peer_tls_opts.pem,
+            'ssl-target-name-override': options.peer_tls_opts.common_name
+        }));
+        logger.debug('added peer', options.peer_urls[0]);
+        
 // [Step 6]
         // --- Success --- //
         logger.debug('[fcw] Successfully got enrollment ' + options.uuid);
