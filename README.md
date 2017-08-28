@@ -239,28 +239,14 @@ First action is to enroll the admin.  Look at the following code snippet on enro
 ```js
 //enroll admin
 enrollment.enroll = function (options, cb) {
-    var chain = {};
-    var client = null;
-    try {
 // [Step 1]
-        client = new HFC();
-        chain = client.newChain(options.channel_id);
-    }
-    catch (e) {
-        //it might error about 1 chain per network, but that's not a problem just continue
-    }
-
-    if (!options.uuid) {
-        logger.error('cannot enroll with undefined uuid');
-        if (cb) cb({ error: 'cannot enroll with undefined uuid' });
-        return;
-    }
-
+    var client = new FabricClient();
+    var channel = client.newChannel(options.channel_id);
     logger.info('[fcw] Going to enroll for mspId ', options);
 
 // [Step 2]
     // Make eCert kvs (Key Value Store)
-    HFC.newDefaultKeyValueStore({
+    FabricClient.newDefaultKeyValueStore({
         path: path.join(os.homedir(), '.hfc-key-store/' + options.uuid) //store eCert in the kvs directory
     }).then(function (store) {
         client.setStateStore(store);
@@ -270,13 +256,13 @@ enrollment.enroll = function (options, cb) {
     }).then(function (submitter) {
 
 // [Step 4]
-        chain.addOrderer(new Orderer(options.orderer_url, {
+        channel.addOrderer(new Orderer(options.orderer_url, {
           pem: options.orderer_tls_opts.pem,
           'ssl-target-name-override': options.orderer_tls_opts.common_name  //can be null if cert matches hostname
         }));
 
 // [Step 5]
-        chain.addPeer(new Peer(options.peer_urls[0], {
+        channel.addPeer(new Peer(options.peer_urls[0], {
             pem: options.peer_tls_opts.pem,
             'ssl-target-name-override': options.peer_tls_opts.common_name
         }));
@@ -285,7 +271,7 @@ enrollment.enroll = function (options, cb) {
 // [Step 6]
         // --- Success --- //
         logger.debug('[fcw] Successfully got enrollment ' + options.uuid);
-        if (cb) cb(null, { chain: chain, submitter: submitter });
+        if (cb) cb(null, { channel: channel, submitter: submitter });
         return;
 
     }).catch(
@@ -495,7 +481,7 @@ __/utils/marbles_cc_lib.js__
 The the `set_marble_owner()` function is listed above. 
 The important parts are that it is setting the proposal's invocation function name to "set_owner" with the line `fcn: 'set_owner'`. 
 Note that the peer and orderer URLs have already been set when we enrolled the admin. 
-By default the SDK will send this transaction to all peers that have been added with `chain.addPeer`. 
+By default the SDK will send this transaction to all peers that have been added with `channel.addPeer`. 
 In our case the SDK will send to only 1 peer, since we have only added the 1 peer. 
 Remember this peer was added in the `enrollment` section. 
 
