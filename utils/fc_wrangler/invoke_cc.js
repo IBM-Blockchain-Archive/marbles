@@ -22,8 +22,8 @@ module.exports = function (g_options, logger) {
 					cc_function: "function_name",
 					cc_args: ["argument 1"],
 					peer_tls_opts: {
-						pem: 'complete tls certificate',					<optional>
-						common_name: 'common name used in pem certificate' 	<optional>
+						pem: 'complete tls certificate',					<required if using ssl>
+						common_name: 'common name used in pem certificate' 	<required if using ssl>
 					}
 		}
 	*/

@@ -13,6 +13,8 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 		logger.info('Checking for chaincode...');
 
 		var opts = {
+			peer_urls: g_options.peer_urls,
+			peer_tls_opts: g_options.peer_tls_opts,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
 			chaincode_version: g_options.chaincode_version,
@@ -40,6 +42,8 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 		logger.info('Checking chaincode and ui compatibility...');
 
 		var opts = {
+			peer_urls: g_options.peer_urls,
+			peer_tls_opts: g_options.peer_tls_opts,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
 			chaincode_version: g_options.chaincode_version,
@@ -70,6 +74,8 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 		logger.info('Creating a marble...');
 
 		var opts = {
+			peer_urls: g_options.peer_urls,
+			peer_tls_opts: g_options.peer_tls_opts,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
 			chaincode_version: g_options.chaincode_version,
@@ -84,7 +90,6 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 				options.args.owner_id,
 				options.args.auth_company
 			],
-			peer_tls_opts: g_options.peer_tls_opts,
 		};
 		fcw.invoke_chaincode(enrollObj, opts, function (err, resp) {
 			if (cb) {
@@ -101,6 +106,8 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 		logger.info('Fetching marble index list...');
 
 		var opts = {
+			peer_urls: g_options.peer_urls,
+			peer_tls_opts: g_options.peer_tls_opts,
 			channel_id: g_options.channel_id,
 			chaincode_version: g_options.chaincode_version,
 			chaincode_id: g_options.chaincode_id,
@@ -115,6 +122,8 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 		logger.info('fetching marble ' + options.marble_id + ' list...');
 
 		var opts = {
+			peer_urls: g_options.peer_urls,
+			peer_tls_opts: g_options.peer_tls_opts,
 			channel_id: g_options.channel_id,
 			chaincode_version: g_options.chaincode_version,
 			chaincode_id: g_options.chaincode_id,
@@ -130,6 +139,8 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 		logger.info('Setting marble owner...');
 
 		var opts = {
+			peer_urls: g_options.peer_urls,
+			peer_tls_opts: g_options.peer_tls_opts,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
 			chaincode_version: g_options.chaincode_version,
@@ -142,7 +153,6 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 				options.args.owner_id,
 				options.args.auth_company
 			],
-			peer_tls_opts: g_options.peer_tls_opts,
 		};
 		fcw.invoke_chaincode(enrollObj, opts, cb);
 	};
@@ -153,6 +163,8 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 		logger.info('Deleting a marble...');
 
 		var opts = {
+			peer_urls: g_options.peer_urls,
+			peer_tls_opts: g_options.peer_tls_opts,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
 			chaincode_version: g_options.chaincode_version,
@@ -161,7 +173,6 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 			ordered_hook: options.ordered_hook,
 			cc_function: 'delete_marble',
 			cc_args: [options.args.marble_id, options.args.auth_company],
-			peer_tls_opts: g_options.peer_tls_opts,
 		};
 		fcw.invoke_chaincode(enrollObj, opts, cb);
 	};
@@ -171,6 +182,8 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 		logger.info('Getting history for...', options.args);
 
 		var opts = {
+			peer_urls: g_options.peer_urls,
+			peer_tls_opts: g_options.peer_tls_opts,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
 			chaincode_version: g_options.chaincode_version,
@@ -188,6 +201,8 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 		logger.info('Getting marbles between ids', options.args);
 
 		var opts = {
+			peer_urls: g_options.peer_urls,
+			peer_tls_opts: g_options.peer_tls_opts,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
 			chaincode_version: g_options.chaincode_version,
@@ -209,6 +224,8 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 		logger.info('Creating a marble owner...');
 
 		var opts = {
+			peer_urls: g_options.peer_urls,
+			peer_tls_opts: g_options.peer_tls_opts,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
 			chaincode_version: g_options.chaincode_version,
@@ -221,7 +238,6 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 				options.args.marble_owner,
 				options.args.owners_company
 			],
-			peer_tls_opts: g_options.peer_tls_opts,
 		};
 		fcw.invoke_chaincode(enrollObj, opts, function (err, resp) {
 			if (cb) {
@@ -239,6 +255,8 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 		logger.info('Fetching owner ' + full_username + ' list...');
 
 		var opts = {
+			peer_urls: g_options.peer_urls,
+			peer_tls_opts: g_options.peer_tls_opts,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
 			chaincode_version: g_options.chaincode_version,
@@ -254,6 +272,8 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 		logger.info('Fetching owner index list...');
 
 		var opts = {
+			peer_urls: g_options.peer_urls,
+			peer_tls_opts: g_options.peer_tls_opts,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
 			chaincode_version: g_options.chaincode_version,
@@ -269,6 +289,8 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 		logger.info('Disabling a marble owner...');
 
 		var opts = {
+			peer_urls: g_options.peer_urls,
+			peer_tls_opts: g_options.peer_tls_opts,
 			channel_id: g_options.channel_id,
 			chaincode_id: g_options.chaincode_id,
 			chaincode_version: g_options.chaincode_version,
@@ -280,7 +302,6 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 				options.args.owner_id,
 				options.args.auth_company
 			],
-			peer_tls_opts: g_options.peer_tls_opts,
 		};
 		fcw.invoke_chaincode(enrollObj, opts, function (err, resp) {
 			if (cb) {
@@ -305,6 +326,8 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 		logger.info('Fetching EVERYTHING...');
 
 		var opts = {
+			peer_urls: g_options.peer_urls,
+			peer_tls_opts: g_options.peer_tls_opts,
 			channel_id: g_options.channel_id,
 			chaincode_version: g_options.chaincode_version,
 			chaincode_id: g_options.chaincode_id,
@@ -314,10 +337,13 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 		fcw.query_chaincode(enrollObj, opts, cb);
 	};
 
-	// get block height
+	// get block height of the channel
 	marbles_chaincode.channel_stats = function (options, cb) {
-		//logger.info('Fetching block height...');
-		fcw.query_channel(enrollObj, null, cb);
+		var opts = {
+			peer_urls: g_options.peer_urls,
+			peer_tls_opts: g_options.peer_tls_opts
+		};
+		fcw.query_channel(enrollObj, opts, cb);
 	};
 
 

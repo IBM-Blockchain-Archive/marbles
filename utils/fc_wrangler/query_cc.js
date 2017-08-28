@@ -12,7 +12,7 @@ module.exports = function (logger) {
 		options: {
 					chaincode_id: "chaincode id",
 					cc_function: "function_name"
-					cc_args: ["argument 1"]
+					cc_args: ["argument 1"],
 		}
 	*/
 	query_cc.query_chaincode = function (obj, options, cb) {
@@ -26,33 +26,30 @@ module.exports = function (logger) {
 			args: options.cc_args,
 			txId: null,												//apparently this is null for queries now
 		};
-		logger.debug('[fcw] Sending query req', request);
+		logger.debug('[fcw] Sending query req:', request);
 
-		channel.queryByChaincode(request
-			//nothing
-		).then(
-			function (response_payloads) {
-				var formatted = format_query_resp(response_payloads);
+		channel.queryByChaincode(request).then(function (response_payloads) {
+			var formatted = format_query_resp(response_payloads);
 
-				// --- response looks bad -- //
-				if (formatted.parsed == null) {
-					logger.debug('[fcw] Query response is empty', formatted.raw);
-				}
-
-				// --- response looks good --- //
-				else {
-					logger.debug('[fcw] Successful query transaction.'); //, formatted.parsed);
-				}
-				if (cb) return cb(null, formatted);
+			// --- response looks bad -- //
+			if (formatted.parsed == null) {
+				logger.debug('[fcw] Query parsed response is empty:', formatted.raw);
 			}
-			).catch(
-			function (err) {
-				logger.error('[fcw] Error in query catch block', typeof err, err);
-
-				if (cb) return cb(err, null);
-				else return;
+			if (formatted.error) {
+				logger.debug('[fcw] Query response is an error:', formatted.raw);
 			}
-			);
+
+			// --- response looks good --- //
+			else {
+				logger.debug('[fcw] Successful query transaction.');
+			}
+			if (cb) return cb(formatted.error, formatted);
+		}).catch(function (err) {
+			logger.error('[fcw] Error in query catch block', typeof err, err);
+
+			if (cb) return cb(err, null);
+			else return;
+		});
 	};
 
 	//-----------------------------------------------------------------
@@ -62,7 +59,8 @@ module.exports = function (logger) {
 		var ret = {
 			parsed: null,
 			peers_agree: true,
-			raw_peer_payloads: [],
+			peer_payloads: [],
+			error: null
 		};
 		var last = null;
 
@@ -70,13 +68,10 @@ module.exports = function (logger) {
 		for (var i in peer_responses) {
 			var as_string = peer_responses[i].toString('utf8');
 			var as_obj = {};
-
-			//logger.debug('[fcw] Peer ' + i, 'payload as str:', as_string, 'len', as_string.length);
-			logger.debug('[fcw] Peer ' + i, 'len', as_string.length);
-			ret.raw_peer_payloads.push(as_string);
+			ret.peer_payloads.push(as_string);
 
 			// -- compare peer responses -- //
-			if (last != null) {								//check if all peers agree
+			if (last != null) {									//check if all peers agree
 				if (last !== as_string) {
 					logger.warn('[fcw] warning - some peers do not agree on query', last, as_string);
 					ret.peers_agree = false;
@@ -90,20 +85,32 @@ module.exports = function (logger) {
 				} else {
 					as_obj = JSON.parse(as_string);				//if we can parse it, its great
 				}
-				logger.debug('[fcw] Peer ' + i, 'type', typeof as_obj);
+				logger.debug('[fcw] Peer Query Response - len:', as_string.length, 'type:', typeof as_obj);
 				if (ret.parsed === null) ret.parsed = as_obj;	//store the first one here
 			}
 			catch (e) {
-				if (as_string.indexOf('Error: failed to obtain') >= 0) {
-					logger.error('[fcw] query resp looks like an error', typeof as_string, as_string);
+				if (known_sdk_errors(as_string)) {
+					logger.error('[fcw] query resp looks like an error:', typeof as_string, as_string);
 					ret.parsed = null;
+					ret.error = as_string;
 				} else {
-					logger.warn('[fcw] warning - query resp is not json, might be okay.', typeof as_string, as_string);
+					logger.warn('[fcw] warning - query resp is not json, might be okay:', typeof as_string, as_string);
 					ret.parsed = as_string;
 				}
 			}
 		}
 		return ret;
+	}
+
+	//test if this is a sdk thrown error (we want to handle chaincode thrown errors differently)
+	function known_sdk_errors(str) {
+		const known_errors = ['Error: failed to obtain', 'Error: Connect Failed'];		//list of known sdk errors from a query
+		for (let i in known_errors) {
+			if (str && str.indexOf(known_errors[i]) >= 0) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	return query_cc;

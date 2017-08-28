@@ -76,6 +76,15 @@ module.exports = function (config_filename, logger) {
 		}
 	};
 
+	// get all peers' grpc url
+	helper.getAllPeerUrls = function () {
+		let ret = [];
+		for (let i in helper.creds.peers) {
+			ret.push(helper.creds.peers[i].url);
+		}
+		return ret;
+	};
+
 	// get a peer's grpc event url
 	helper.getPeerEventUrl = function (key) {
 		if (key === undefined || key == null) {
@@ -466,6 +475,7 @@ module.exports = function (config_filename, logger) {
 			ca_tls_opts: helper.getCaTlsCertOpts(first_ca),
 			orderer_tls_opts: helper.getOrdererTlsCertOpts(first_orderer),
 			peer_tls_opts: helper.getPeerTlsCertOpts(first_peer),
+			peer_urls: helper.getAllPeerUrls(),
 		};
 	};
 

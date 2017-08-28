@@ -8,6 +8,7 @@ module.exports = function (g_options, logger) {
 	var query_cc = require('./query_cc.js')(logger);
 	var query_peer = require('./query_peer.js')(logger);
 	var enrollment = require('./enrollment.js')(logger);
+	var ha = require('./high_availability.js')(logger);
 	var fcw = {};
 
 	// ------------------------------------------------------------------------
@@ -28,15 +29,73 @@ module.exports = function (g_options, logger) {
 	fcw.upgrade_chaincode = function (obj, options, cb_done) {
 		deploy_cc.upgrade_chaincode(obj, options, cb_done);
 	};
-	
+
 	// Invoke Chaincode
+	/*
+		obj: {
+			client: <sdk client object>
+			channel: <sdk channel object>
+		}
+		options: {
+					chaincode_id: "chaincode id",
+					event_url: "peers event url",			<optional>
+					endorsed_hook: function(error, res){},	<optional>
+					ordered_hook: function(error, res){},	<optional>
+					cc_function: "function_name",
+					cc_args: ["argument 1"],
+					peer_urls: ['array of peer grpc urls'],		<optional> used for HA
+					peer_tls_opts: {							used for eventHub and HA
+						pem: 'complete tls certificate',					<required if using ssl>
+						common_name: 'common name used in pem certificate' 	<required if using ssl>
+					}
+		}
+	*/
 	fcw.invoke_chaincode = function (obj, options, cb_done) {
-		invoke_cc.invoke_chaincode(obj, options, cb_done);
+		invoke_cc.invoke_chaincode(obj, options, function (err, resp) {
+			if (err != null) {											//looks like an error with the request
+				if (ha.switch_peer(obj, options) == null) {				//try another peer
+					logger.debug('Retrying invoke on different peer');
+					fcw.invoke_chaincode(obj, options, cb_done);
+				} else {
+					cb_done(err, resp);									//out of peers, give up
+				}
+			} else {													//all good, pass resp back to callback
+				ha.success_peer_position = ha.using_peer_position;		//remember the last good one
+				cb_done(err, resp);
+			}
+		});
 	};
 
 	// Query Chaincode
+	/*
+		obj: {
+			channel: <sdk channel object>
+		}
+		options: {
+					chaincode_id: "chaincode id",
+					cc_function: "function_name"
+					cc_args: ["argument 1"],
+					peer_urls: ['array of peer grpc urls'],		<optional> used for HA
+					peer_tls_opts: {							<optional> used for HA
+						pem: 'complete tls certificate',					<required if using ssl>
+						common_name: 'common name used in pem certificate' 	<required if using ssl>
+					},
+		}
+	*/
 	fcw.query_chaincode = function (obj, options, cb_done) {
-		query_cc.query_chaincode(obj, options, cb_done);
+		query_cc.query_chaincode(obj, options, function (err, resp) {
+			if (err != null) {											//looks like an error with the request
+				if (ha.switch_peer(obj, options) == null) {				//try another peer
+					logger.debug('Retrying query on different peer');
+					fcw.query_chaincode(obj, options, cb_done);
+				} else {
+					cb_done(err, resp);									//out of peers, give up
+				}
+			} else {													//all good, pass resp back to callback
+				ha.success_peer_position = ha.using_peer_position;		//remember the last good one
+				cb_done(err, resp);
+			}
+		});
 	};
 
 
@@ -58,37 +117,60 @@ module.exports = function (g_options, logger) {
 	// Ledger Functions
 	// ------------------------------------------------------------------------
 	// Get Block Data
-	fcw.query_block = function(obj, options, cb_done){
+	fcw.query_block = function (obj, options, cb_done) {
 		query_peer.query_block(obj, options, cb_done);
 	};
 
 
 	// ------------------------------------------------------------------------
-	// Ledger Functions
+	// Channel Functions
 	// ------------------------------------------------------------------------
-	// Get Block Data
-	fcw.query_channel_members = function(obj, options, cb_done){
+	// Get Members on Channel
+	fcw.query_channel_members = function (obj, options, cb_done) {
 		query_peer.query_channel_members(obj, options, cb_done);
 	};
-	
 
-	// Get Block height
-	fcw.query_channel = function(obj, options, cb_done){
-		query_peer.query_channel(obj, options, cb_done);
+	// Get Block Height of Channel
+	/*
+		obj: {
+			channel: <sdk channel object>
+		}
+		options: {
+					peer_urls: ['array of peer grpc urls'],		<optional> used for HA
+					peer_tls_opts: {							<optional> used for HA
+						pem: 'complete tls certificate',					<required if using ssl>
+						common_name: 'common name used in pem certificate' 	<required if using ssl>
+					},
+		}
+	*/
+	fcw.query_channel = function (obj, options, cb_done) {
+		query_peer.query_channel(obj, options, function (err, resp) {
+			if (err != null) {											//looks like an error with the request
+				if (ha.switch_peer(obj, options) == null) {				//try another peer
+					logger.debug('Retrying query on different peer');
+					fcw.query_channel(obj, options, cb_done);
+				} else {
+					cb_done(err, resp);									//out of peers, give up
+				}
+			} else {													//all good, pass resp back to callback
+				ha.success_peer_position = ha.using_peer_position;		//remember the last good one
+				cb_done(err, resp);
+			}
+		});
 	};
 
 	// Get list of installed cc's
-	fcw.query_installed_cc = function(obj, options, cb_done){
+	fcw.query_installed_cc = function (obj, options, cb_done) {
 		query_peer.query_installed_cc(obj, options, cb_done);
 	};
 
 	// get list of instantiated cc's
-	fcw.query_instantiated_cc = function(obj, options, cb_done){
+	fcw.query_instantiated_cc = function (obj, options, cb_done) {
 		query_peer.query_instantiated_cc(obj, options, cb_done);
 	};
 
 	// get list of channels
-	fcw.query_list_channels = function(obj, options, cb_done){
+	fcw.query_list_channels = function (obj, options, cb_done) {
 		query_peer.query_list_channels(obj, options, cb_done);
 	};
 
