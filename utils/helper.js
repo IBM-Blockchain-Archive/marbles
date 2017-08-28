@@ -1,3 +1,7 @@
+// ============================================================================================================================
+// 													Helper.js
+// This file is to help safely parse the config JSON files found in the "../config/" folder
+// ============================================================================================================================
 var fs = require('fs');
 var path = require('path');
 var os = require('os');
@@ -11,13 +15,13 @@ module.exports = function (config_filename, logger) {
 	}
 
 	var config_path = path.join(__dirname, '../config/' + config_filename);
-	helper.config = require(config_path);
+	helper.config = require(config_path);													//load the config file
 	var creds_path = path.join(__dirname, '../config/' + helper.config.cred_filename);
-	helper.creds = require(creds_path);
-	var package_json = require(path.join(__dirname, '../package.json'));
+	helper.creds = require(creds_path);														//load the credential file
+	var package_json = require(path.join(__dirname, '../package.json'));					//get release version of marbles from package.json
 
-	logger.info('Loaded config file', config_path);
-	logger.info('Loaded creds file', creds_path);
+	logger.info('Loaded config file', config_path);											//path to config file
+	logger.info('Loaded creds file', creds_path);											//path to the blockchain credentials file
 
 	// get network id
 	helper.getNetworkName = function () {
@@ -76,11 +80,13 @@ module.exports = function (config_filename, logger) {
 		}
 	};
 
-	// get all peers' grpc url
-	helper.getAllPeerUrls = function () {
+	// get all peers grpc url on this channel
+	helper.getAllPeerUrls = function (channelId) {
 		let ret = [];
-		for (let i in helper.creds.peers) {
-			ret.push(helper.creds.peers[i].url);
+		if (helper.creds.channels && helper.creds.channels[channelId]) {
+			for (let peerId in helper.creds.channels[channelId].peers) {	//iter on the peers on this channel
+				ret.push(helper.creds.peers[peerId].url);					//get the grpc url for this peer
+			}
 		}
 		return ret;
 	};
@@ -475,7 +481,7 @@ module.exports = function (config_filename, logger) {
 			ca_tls_opts: helper.getCaTlsCertOpts(first_ca),
 			orderer_tls_opts: helper.getOrdererTlsCertOpts(first_orderer),
 			peer_tls_opts: helper.getPeerTlsCertOpts(first_peer),
-			peer_urls: helper.getAllPeerUrls(),
+			peer_urls: helper.getAllPeerUrls(channel),
 		};
 	};
 
@@ -574,8 +580,6 @@ module.exports = function (config_filename, logger) {
 
 		fs.writeFileSync(creds_path, JSON.stringify(creds_file, null, 4), 'utf8');	//save to file
 		helper.creds = creds_file;													//replace old copy
-		//fs.writeFileSync(config_path, JSON.stringify(config_file, null, 4), 'utf8');//save to file
-		//helper.config = config_file;												//replace old copy
 	};
 
 

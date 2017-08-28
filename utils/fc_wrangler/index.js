@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------
-// Fabric Client Wrangler - Wrapper for the Hyperledger Fabric SDK
+// Fabric Client Wrangler - Wrapper library for the Hyperledger Fabric Client SDK
 //-------------------------------------------------------------------
 
 module.exports = function (g_options, logger) {
@@ -54,7 +54,7 @@ module.exports = function (g_options, logger) {
 		invoke_cc.invoke_chaincode(obj, options, function (err, resp) {
 			if (err != null) {											//looks like an error with the request
 				if (ha.switch_peer(obj, options) == null) {				//try another peer
-					logger.debug('Retrying invoke on different peer');
+					logger.info('Retrying invoke on different peer');
 					fcw.invoke_chaincode(obj, options, cb_done);
 				} else {
 					cb_done(err, resp);									//out of peers, give up
@@ -86,7 +86,7 @@ module.exports = function (g_options, logger) {
 		query_cc.query_chaincode(obj, options, function (err, resp) {
 			if (err != null) {											//looks like an error with the request
 				if (ha.switch_peer(obj, options) == null) {				//try another peer
-					logger.debug('Retrying query on different peer');
+					logger.info('Retrying query on different peer');
 					fcw.query_chaincode(obj, options, cb_done);
 				} else {
 					cb_done(err, resp);									//out of peers, give up
@@ -147,7 +147,7 @@ module.exports = function (g_options, logger) {
 		query_peer.query_channel(obj, options, function (err, resp) {
 			if (err != null) {											//looks like an error with the request
 				if (ha.switch_peer(obj, options) == null) {				//try another peer
-					logger.debug('Retrying query on different peer');
+					logger.info('Retrying query on different peer');
 					fcw.query_channel(obj, options, cb_done);
 				} else {
 					cb_done(err, resp);									//out of peers, give up
