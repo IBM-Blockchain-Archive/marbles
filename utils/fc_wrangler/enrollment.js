@@ -182,20 +182,20 @@ module.exports = function (logger) {
 
 		// Make eCert kvs (Key Value Store)
 		FabricClient.newDefaultKeyValueStore({
-			path: path.join(options.kvs_path) 											//get eCert in the kvs directory
+			path: options.kvs_path 													//get eCert in the kvs directory
 		}).then(function (store) {
 			client.setStateStore(store);
-			return getSubmitterWithAdminCert(client, options);							//admin cert is different
+			return getSubmitterWithAdminCert(client, options);						//admin cert is different
 		}).then(function (submitter) {
 
 			channel.addOrderer(new Orderer(options.orderer_url, {
 				pem: options.orderer_tls_opts.pem,
-				'ssl-target-name-override': options.orderer_tls_opts.common_name		//can be null if cert matches hostname
+				'ssl-target-name-override': options.orderer_tls_opts.common_name	//can be null if cert matches hostname
 			}));
 
-			channel.addPeer(new Peer(options.peer_urls[0], {							//add the first peer
+			channel.addPeer(new Peer(options.peer_urls[0], {						//add the first peer
 				pem: options.peer_tls_opts.pem,
-				'ssl-target-name-override': options.peer_tls_opts.common_name			//can be null if cert matches hostname
+				'ssl-target-name-override': options.peer_tls_opts.common_name		//can be null if cert matches hostname
 			}));
 			logger.debug('added peer', options.peer_urls[0]);
 
