@@ -27,7 +27,7 @@ logger.info('Lets install some chaincode -', helper.getChaincodeId(), helper.get
 console.log('---------------------------------------');
 
 logger.info('First we enroll');
-fcw.enrollWithAdminCert(helper.makeEnrollmentOptionsUsingCert(0), function (enrollErr, enrollResp) {
+fcw.enrollWithAdminCert(helper.makeEnrollmentOptionsUsingCert(), function (enrollErr, enrollResp) {
 	if (enrollErr != null) {
 		logger.error('error enrolling', enrollErr, enrollResp);
 	} else {

@@ -39,7 +39,7 @@
 				"fabric-ca"
 			],
 			"adminPrivateKey": {
-				"path": "./crypto/prebaked/5890f0061619c06fb29dea8cb304edecc020fe63f41a6db109f1e227cc1cb2a8-priv"
+				"path": "./crypto/prebaked/cd96d5260ad4757551ed4a5a991e62130f8008a0bf996e4e4b84cd097a747fec-priv"
 			},
 			"signedCert": {
 				"path": "./crypto/prebaked/PeerAdminCert.pem"

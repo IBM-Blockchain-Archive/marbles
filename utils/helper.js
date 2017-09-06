@@ -162,7 +162,7 @@ module.exports = function (config_filename, logger) {
 	// get all the ca http urls
 	helper.getAllCaUrls = function () {
 		let ret = [];
-		for(let id in helper.creds.certificateAuthorities) {
+		for (let id in helper.creds.certificateAuthorities) {
 			ret.push(helper.creds.certificateAuthorities[id].url);
 		}
 		return ret;
@@ -405,8 +405,8 @@ module.exports = function (config_filename, logger) {
 		function copy_keys_over(custom_path) {
 			try {
 				const default_path2 = path.join(os.homedir(), '.hfc-key-store/');
-				const private_key = '5890f0061619c06fb29dea8cb304edecc020fe63f41a6db109f1e227cc1cb2a8-priv';	//todo make this generic
-				const public_key = '5890f0061619c06fb29dea8cb304edecc020fe63f41a6db109f1e227cc1cb2a8-pub';
+				const private_key = 'cd96d5260ad4757551ed4a5a991e62130f8008a0bf996e4e4b84cd097a747fec-priv';	//todo make this generic
+				const public_key = 'cd96d5260ad4757551ed4a5a991e62130f8008a0bf996e4e4b84cd097a747fec-pub';
 				fs.createReadStream(custom_path + private_key).pipe(fs.createWriteStream(default_path2 + private_key));
 				fs.createReadStream(custom_path + public_key).pipe(fs.createWriteStream(default_path2 + public_key));
 			} catch (e) { }

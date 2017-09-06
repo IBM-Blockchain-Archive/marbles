@@ -11,7 +11,6 @@ module.exports = function (logger) {
 	var CaService = require('fabric-ca-client/lib/FabricCAClientImpl.js');
 	var Orderer = require('fabric-client/lib/Orderer.js');
 	var Peer = require('fabric-client/lib/Peer.js');
-	var os = require('os');
 	FabricClient.setConfigSetting('request-timeout', 90000);
 
 	//-----------------------------------------------------------------
@@ -163,7 +162,8 @@ module.exports = function (logger) {
 			peer_tls_opts: {
 				pem: 'complete tls certificate',					<required if using ssl>
 				common_name: 'common name used in pem certificate' 	<required if using ssl>
-			}
+			},
+			kvs_path: '/path/to/the/key/value/store'
 		}
 	*/
 
@@ -182,7 +182,7 @@ module.exports = function (logger) {
 
 		// Make eCert kvs (Key Value Store)
 		FabricClient.newDefaultKeyValueStore({
-			path: path.join(os.homedir(), '.hfc-key-store/' + options.uuid) 			//store eCert in the kvs directory
+			path: path.join(options.kvs_path) 											//get eCert in the kvs directory
 		}).then(function (store) {
 			client.setStateStore(store);
 			return getSubmitterWithAdminCert(client, options);							//admin cert is different

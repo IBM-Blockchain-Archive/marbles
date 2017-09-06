@@ -20,7 +20,7 @@ let msg = `Note: the chaincode "` + helper.getChaincodeId() + `" and version "` 
 logger.warn(msg);
 
 logger.info('First we enroll');
-fcw.enrollWithAdminCert(helper.makeEnrollmentOptionsUsingCert(0), function (enrollErr, enrollResp) {
+fcw.enrollWithAdminCert(helper.makeEnrollmentOptionsUsingCert(), function (enrollErr, enrollResp) {
 	if (enrollErr != null) {
 		logger.error('error enrolling', enrollErr, enrollResp);
 	} else {
