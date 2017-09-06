@@ -111,7 +111,11 @@ console.log('----------------------------------- Server Up - ' + host + ':' + po
 process.on('uncaughtException', function (err) {
 	logger.error('Caught exception: ', err.stack);		//demos never give up
 	if (err.stack.indexOf('EADDRINUSE') >= 0) {			//except for this error
-		logger.error('You already have something running on port 3001! kill it to run marbles.');
+		logger.warn('---------------------------------------------------------------');
+		logger.warn('----------------------------- Ah! -----------------------------');
+		logger.warn('---------------------------------------------------------------');
+		logger.error('You already have something running on port ' + port + '!');
+		logger.error('Kill whatever is running on that port OR change the port setting in your marbles config file: ' + helper.config_path);
 		process.exit();
 	}
 });

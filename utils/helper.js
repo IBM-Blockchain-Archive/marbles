@@ -14,14 +14,14 @@ module.exports = function (config_filename, logger) {
 		config_filename = 'marbles_tls.json';
 	}
 
-	var config_path = path.join(__dirname, '../config/' + config_filename);
-	helper.config = require(config_path);													//load the config file
-	var creds_path = path.join(__dirname, '../config/' + helper.config.cred_filename);
-	helper.creds = require(creds_path);														//load the credential file
+	helper.config_path = path.join(__dirname, '../config/' + config_filename);
+	helper.config = require(helper.config_path);											//load the config file
+	helper.creds_path = path.join(__dirname, '../config/' + helper.config.cred_filename);
+	helper.creds = require(helper.creds_path);												//load the credential file
 	var package_json = require(path.join(__dirname, '../package.json'));					//get release version of marbles from package.json
 
-	logger.info('Loaded config file', config_path);											//path to config file
-	logger.info('Loaded creds file', creds_path);											//path to the blockchain credentials file
+	logger.info('Loaded config file', helper.config_path);									//path to config file
+	logger.info('Loaded creds file', helper.creds_path);									//path to the blockchain credentials file
 
 	// get network id
 	helper.getNetworkName = function () {
@@ -454,12 +454,12 @@ module.exports = function (config_filename, logger) {
 				return helper.config[marbles_field];
 			}
 			else {
-				logger.warn('"' + marbles_field + '" not found in config json: ' + config_path);
+				logger.warn('"' + marbles_field + '" not found in config json: ' + helper.config_path);
 				return null;
 			}
 		}
 		catch (e) {
-			logger.warn('"' + marbles_field + '" not found in config json: ' + config_path);
+			logger.warn('"' + marbles_field + '" not found in config json: ' + helper.config_path);
 			return null;
 		}
 	}
@@ -555,8 +555,8 @@ module.exports = function (config_filename, logger) {
 		const first_ca = helper.getFirstCaName(first_org);
 		const first_orderer = helper.getFirstOrdererName(channel);
 
-		//var config_file = JSON.parse(fs.readFileSync(config_path, 'utf8'));
-		var creds_file = JSON.parse(fs.readFileSync(creds_path, 'utf8'));
+		//var config_file = JSON.parse(fs.readFileSync(helper.config_path, 'utf8'));
+		var creds_file = JSON.parse(fs.readFileSync(helper.creds_path, 'utf8'));
 
 		if (obj.ordererUrl) {
 			creds_file.orderers[first_orderer].url = obj.ordererUrl;
@@ -587,7 +587,7 @@ module.exports = function (config_filename, logger) {
 			};
 		}
 
-		fs.writeFileSync(creds_path, JSON.stringify(creds_file, null, 4), 'utf8');	//save to file
+		fs.writeFileSync(helper.creds_path, JSON.stringify(creds_file, null, 4), 'utf8');	//save to file
 		helper.creds = creds_file;													//replace old copy
 	};
 
