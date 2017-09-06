@@ -14,9 +14,9 @@ npm install
 **Important Step!** The install and instantiate operations require an admin certificate and private key. 
 If these files are not found you will be unable to run either operation.
 
-**Choose 1 option below:**
+**Choose 1 option below to create these files:**
 
-- **Option 1:** :lollipop: Use the prebaked crypto for a locally hosted Hyperledger Fabric Network - These certificates are already created. So you are already done! Skip to the next section. (these files only work on a network built from the `fabric-samples` repo)
+- **Option 1:** :lollipop: Use the prebaked crypto for a locally hosted Hyperledger Fabric Network. These certificates are already created for you. So you are already done! Note that these files only work on a Fabric network built from the `fabric-samples` repo. If that is what you are using, skip to the next section.
 - **Option 2:** Create the certificate and public key files manually - [instructions](https://console.bluemix.net/docs/services/blockchain/v10_application.html#generating-the-client-side-certificates)
 	- You need to add the private key and signed certificate files to this folder: `<marbles root>/config/crypto/`
 
