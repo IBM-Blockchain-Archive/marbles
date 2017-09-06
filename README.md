@@ -111,6 +111,7 @@ You will need to do this step even if you plan on hosting marbles in Bluemix.
 
 	```
 	git clone https://github.com/IBM-Blockchain/marbles.git --depth 1
+	cd marbles
 	git checkout v4.0
 	```
 
