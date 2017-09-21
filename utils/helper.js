@@ -359,15 +359,23 @@ module.exports = function (config_filename, logger) {
 	// get the chaincode id on network
 	helper.getChaincodeId = function () {
 		var channel = helper.getChannelId();
-		var chaincode = Object.keys(helper.creds.channels[channel].chaincodes);
-		return chaincode[0];
+		if (channel && helper.creds.channels[channel] && helper.creds.channels[channel].chaincodes) {
+			var chaincode = Object.keys(helper.creds.channels[channel].chaincodes);
+			return chaincode[0];
+		}
+		logger.warn('No chaincode ID found in credentials file... might be okay if we haven\'t instantiated marbles yet');
+		return null;
 	};
 
 	// get the chaincode version on network
 	helper.getChaincodeVersion = function () {
 		var channel = helper.getChannelId();
-		var chaincode = Object.keys(helper.creds.channels[channel].chaincodes);
-		return helper.creds.channels[channel].chaincodes[chaincode];
+		var chaincodeId = helper.getChaincodeId();
+		if (channel && chaincodeId) {
+			return helper.creds.channels[channel].chaincodes[chaincodeId];
+		}
+		logger.warn('No chaincode version found in credentials file... might be okay if we haven\'t instantiated marbles yet');
+		return null;
 	};
 
 	// get the chaincode id on network

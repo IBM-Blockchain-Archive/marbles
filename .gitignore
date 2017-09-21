@@ -14,3 +14,4 @@ app_state*
 /utils/fc_wrangler/kvs
 /config/blockchain_creds_dev.json
 /config/marbles_dev.json
+/config/crypto/hsbn

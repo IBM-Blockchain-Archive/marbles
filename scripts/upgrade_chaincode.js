@@ -1,21 +1,40 @@
 var winston = require('winston');								//logger module
 var path = require('path');
-
-// --- Set Our Things --- //
 var logger = new (winston.Logger)({
 	level: 'debug',
 	transports: [
 		new (winston.transports.Console)({ colorize: true }),
 	]
 });
-var helper = require(path.join(__dirname, '../utils/helper.js'))('marbles_local.json', logger);			//set the config file name here
+
+// --- Set Details Here --- //
+var config_file = 'marbles_local.json';							//set config file name
+var chaincode_id = 'marbles01';									//use same ID during the PREVIOUS instantiate proposal
+var chaincode_ver = 'v5';										//use same version during the INSTALL proposal
+
+//  --- Use (optional) arguments if passed in --- //
+var args = process.argv.slice(2);
+if (args[0]) {
+	config_file = args[0];
+	logger.debug('Using argument for config file', config_file);
+}
+if (args[1]) {
+	chaincode_id = args[1];
+	logger.debug('Using argument for chaincode id');
+}
+if (args[2]) {
+	chaincode_ver = args[2];
+	logger.debug('Using argument for chaincode version');
+}
+
+var helper = require(path.join(__dirname, '../utils/helper.js'))(config_file, logger);			//set the config file name here
 var fcw = require(path.join(__dirname, '../utils/fc_wrangler/index.js'))({ block_delay: helper.getBlockDelay() }, logger);
 
 console.log('---------------------------------------');
-logger.info('Lets upgrade some chaincode -', helper.getChaincodeId(), helper.getChaincodeVersion());
+logger.info('Lets upgrade some chaincode -', chaincode_id, chaincode_ver);
 console.log('---------------------------------------');
-logger.warn('Note: the chaincode "' + helper.getChaincodeId() + '" should have been installed AND instantiated before running this script');
-let msg = `Note: the chaincode "` + helper.getChaincodeId() + `" and version "` + helper.getChaincodeVersion() + `
+logger.warn('Note: the chaincode "' + chaincode_id + '" should have been installed AND instantiated before running this script');
+let msg = `Note: the chaincode "` + chaincode_id + `" and version "` + chaincode_ver + `
 			should have been installed before running this script`;
 logger.warn(msg);
 
@@ -32,11 +51,11 @@ fcw.enrollWithAdminCert(helper.makeEnrollmentOptionsUsingCert(), function (enrol
 		const first_peer = helper.getFirstPeerName(channel);
 		var opts = {
 			peer_urls: [helper.getPeersUrl(first_peer)],
-			path_2_chaincode: 'marbles',										//same path used to install it
-			channel_id: helper.getChannelId(),									//same ID used that was used in PREVIOUS instantiate
-			chaincode_id: helper.getChaincodeId(),								//same ID used that was used in PREVIOUS instantiate
-			chaincode_version: helper.getChaincodeVersion(),
-			peer_tls_opts: helper.getPeerTlsCertOpts(first_peer)
+			channel_id: helper.getChannelId(),
+			chaincode_id: chaincode_id,
+			chaincode_version: chaincode_ver,
+			peer_tls_opts: helper.getPeerTlsCertOpts(first_peer),
+			cc_args: ['666666'],
 		};
 		fcw.upgrade_chaincode(enrollResp, opts, function (err, resp) {
 			console.log('---------------------------------------');
