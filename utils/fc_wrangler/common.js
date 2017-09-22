@@ -1,6 +1,8 @@
 //-------------------------------------------------------------------
 // Common/Helper Library for Fabric Client Wrangler
 //-------------------------------------------------------------------
+var fs = require('fs');
+var path = require('path');
 
 module.exports = function (logger) {
 	var common = {};
@@ -85,6 +87,25 @@ module.exports = function (logger) {
 	common.decodeb64 = function (b64string) {
 		if (!b64string) throw Error('cannot decode something that isn\'t there');
 		return (Buffer.from(b64string, 'base64')).toString();
+	};
+
+
+	//------------------------------------------------------------
+	// Delete a folder - synchronous
+	//------------------------------------------------------------
+	common.rmdir = function (dir_path) {
+		if (fs.existsSync(dir_path)) {
+			fs.readdirSync(dir_path).forEach(function (entry) {
+				var entry_path = path.join(dir_path, entry);
+				if (fs.lstatSync(entry_path).isDirectory()) {
+					common.rmdir(entry_path);
+				}
+				else {
+					fs.unlinkSync(entry_path);
+				}
+			});
+			fs.rmdirSync(dir_path);
+		}
 	};
 
 	return common;

@@ -100,16 +100,23 @@ module.exports = function (logger) {
 		var member;
 		return client.getUserContext(options.enroll_id, true).then((user) => {
 			if (user && user.isEnrolled()) {
-				logger.info('[fcw] Successfully loaded enrollment from persistence');			//load from KVS if we can
-				return user;
+				if (user._mspId !== options.msp_id) {										//if they don't match, this isn't our user! can't use it
+					logger.warn('[fcw] The msp id in KVS does not match the msp id passed to enroll. Need to clear the KVS.', user._mspId, options.msp_id);
+					common.rmdir(options.kvs_path);											//delete it
+					logger.error('[fcw] MSP in KVS mismatch. KVS has been deleted. Restart the app to try again.');
+					process.exit();															//this is terrible, but can't seem to reset client._userContext
+				} else {
+					logger.info('[fcw] Successfully loaded enrollment from persistence');	//load from KVS if we can
+					return user;
+				}
 			} else {
 
 				// Need to enroll it with the CA
 				var tlsOptions = {
-					trustedRoots: [options.ca_tls_opts.pem],									//pem cert required
+					trustedRoots: [options.ca_tls_opts.pem],								//pem cert required
 					verify: false
 				};
-				var ca_client = new CaService(options.ca_url, tlsOptions, options.ca_name);		//ca_name is important for the bluemix service
+				var ca_client = new CaService(options.ca_url, tlsOptions, options.ca_name);	//ca_name is important for the bluemix service
 				member = new User(options.enroll_id);
 
 				logger.debug('enroll id: "' + options.enroll_id + '", secret: "' + options.enroll_secret + '"');
