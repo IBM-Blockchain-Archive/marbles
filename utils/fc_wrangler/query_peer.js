@@ -79,6 +79,11 @@ module.exports = function (logger) {
 		channel.initialize().then(() => {
 			let orgs = channel.getOrganizationUnits();
 			if (cb) return cb(null, orgs);
+		}).catch(function (err) {
+			var formatted = common.format_error_msg(err);
+			logger.error('failed to get members', formatted);
+			if (cb) return cb(formatted, null);
+			else return;
 		});
 	};
 

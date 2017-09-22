@@ -14,14 +14,14 @@ module.exports = function (logger) {
 			parsed: 'could not format error',
 			raw: error_message
 		};
-		var pos;
 		try {
 			if (typeof error_message === 'object') {
 				temp.parsed = error_message[0].toString();
 			} else {
 				temp.parsed = error_message.toString();
 			}
-			pos = temp.parsed.lastIndexOf(':');
+			let pos = temp.parsed.lastIndexOf('::');
+			if (pos === -1) pos = temp.parsed.lastIndexOf(':');
 			if (pos >= 0) temp.parsed = temp.parsed.substring(pos + 2);
 		}
 		catch (e) {
