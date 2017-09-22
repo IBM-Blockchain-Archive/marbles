@@ -76,6 +76,8 @@ func main() {
 // Marbles does not require initialization, so let's run a simple test instead.
 //
 // Shows off PutState() and how to pass an input argument to chaincode.
+// Shows off GetFunctionAndParameters() and GetStringArgs()
+// Shows off GetTxID() to get the transaction ID of the proposal
 //
 // Inputs - Array of strings
 //  ["314"]
@@ -84,45 +86,54 @@ func main() {
 // ============================================================================================================================
 func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 	fmt.Println("Marbles Is Starting Up")
-	_, args := stub.GetFunctionAndParameters()
-	var Aval int
+	funcName, args := stub.GetFunctionAndParameters()
+	var number int
 	var err error
+	txId := stub.GetTxID()
 	
-	fmt.Println("Init() args count:", len(args))
-	fmt.Println("Init() args found:", args)
+	fmt.Println("Init() is running")
+	fmt.Println("Transaction ID:", txId)
+	fmt.Println("  GetFunctionAndParameters() function:", funcName)
+	fmt.Println("  GetFunctionAndParameters() args count:", len(args))
+	fmt.Println("  GetFunctionAndParameters() args found:", args)
 
 	// expecting 1 arg for instantiate or upgrade
 	if len(args) == 1 {
-		fmt.Println("Init() arg[0] length", len(args[0]))
+		fmt.Println("  GetFunctionAndParameters() arg[0] length", len(args[0]))
 
 		// expecting arg[0] to be length 0 for upgrade
 		if len(args[0]) == 0 {
-			fmt.Println("args[0] is empty... must be upgrading")
+			fmt.Println("  Uh oh, args[0] is empty...")
 		} else {
-			fmt.Println("args[0] is not empty, must be instantiating")
+			fmt.Println("  Great news everyone, args[0] is not empty")
 
 			// convert numeric string to integer
-			Aval, err = strconv.Atoi(args[0])
+			number, err = strconv.Atoi(args[0])
 			if err != nil {
 				return shim.Error("Expecting a numeric string argument to Init() for instantiate")
 			}
 
 			// this is a very simple test. let's write to the ledger and error out on any errors
 			// it's handy to read this right away to verify network is healthy if it wrote the correct value
-			err = stub.PutState("selftest", []byte(strconv.Itoa(Aval)))
+			err = stub.PutState("selftest", []byte(strconv.Itoa(number)))
 			if err != nil {
 				return shim.Error(err.Error())                  //self-test fail
 			}
 		}
 	}
 
-	// store compaitible marbles application version
-	err = stub.PutState("marbles_ui", []byte("4.0.0"))
+	// showing the alternative argument shim function
+	alt := stub.GetStringArgs()
+	fmt.Println("  GetStringArgs() args count:", len(alt))
+	fmt.Println("  GetStringArgs() args found:", alt)
+
+	// store compatible marbles application version
+	err = stub.PutState("marbles_ui", []byte("4.0.1"))
 	if err != nil {
 		return shim.Error(err.Error())
 	}
 
-	fmt.Println(" - ready for action")                          //self-test pass
+	fmt.Println("Ready for action")                          //self-test pass
 	return shim.Success(nil)
 }
 
