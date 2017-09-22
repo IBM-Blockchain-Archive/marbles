@@ -290,6 +290,14 @@ module.exports = function (config_filename, logger) {
 		throw new Error('Orgs not found.');
 	};
 
+	// find the org name in the client field
+	helper.getClientOrg = function () {
+		if (helper.creds.client && helper.creds.client.organization) {
+			return helper.creds.client.organization;
+		}
+		throw new Error('Org not found.');
+	};
+
 	// get this org's msp id
 	helper.getOrgsMSPid = function (key) {
 		if (key === undefined || key == null) {
@@ -485,8 +493,8 @@ module.exports = function (config_filename, logger) {
 	// build the marbles lib module options
 	helper.makeMarblesLibOptions = function () {
 		const channel = helper.getChannelId();
-		const first_org = helper.getFirstOrg();
-		const first_ca = helper.getFirstCaName(first_org);
+		const org_2_use = helper.getClientOrg();
+		const first_ca = helper.getFirstCaName(org_2_use);
 		const first_peer = helper.getFirstPeerName(channel);
 		const first_orderer = helper.getFirstOrdererName(channel);
 		return {
@@ -508,11 +516,11 @@ module.exports = function (config_filename, logger) {
 			throw new Error('User index not passed');
 		} else {
 			const channel = helper.getChannelId();
-			const first_org = helper.getFirstOrg();
-			const first_ca = helper.getFirstCaName(first_org);
+			const org_2_use = helper.getClientOrg();
+			const first_ca = helper.getFirstCaName(org_2_use);
 			const first_peer = helper.getFirstPeerName(channel);
 			const first_orderer = helper.getFirstOrdererName(channel);
-			const org_name = helper.getOrgsMSPid(first_org);				//lets use the first org we find
+			const org_name = helper.getOrgsMSPid(org_2_use);				//lets use the first org we find
 			const user_obj = helper.getEnrollObj(first_ca, userIndex);		//there may be multiple users
 			return {
 				channel_id: channel,
@@ -535,10 +543,10 @@ module.exports = function (config_filename, logger) {
 	// build the enrollment options using an admin cert
 	helper.makeEnrollmentOptionsUsingCert = function () {
 		const channel = helper.getChannelId();
-		const first_org = helper.getFirstOrg();
+		const org_2_use = helper.getClientOrg();
 		const first_peer = helper.getFirstPeerName(channel);
 		const first_orderer = helper.getFirstOrdererName(channel);
-		const org_name = helper.getOrgsMSPid(first_org);		//lets use the first org we find
+		const org_name = helper.getOrgsMSPid(org_2_use);		//lets use the first org we find
 		return {
 			channel_id: channel,
 			uuid: helper.makeUniqueId(),
@@ -558,9 +566,9 @@ module.exports = function (config_filename, logger) {
 		console.log('saving the creds file has been disabled temporarily');
 
 		const channel = helper.getChannelId();
-		const first_org = helper.getFirstOrg();
+		const org_2_use = helper.getClientOrg();
 		const first_peer = helper.getFirstPeerName(channel);
-		const first_ca = helper.getFirstCaName(first_org);
+		const first_ca = helper.getFirstCaName(org_2_use);
 		const first_orderer = helper.getFirstOrdererName(channel);
 
 		//var config_file = JSON.parse(fs.readFileSync(helper.config_path, 'utf8'));
@@ -659,8 +667,8 @@ module.exports = function (config_filename, logger) {
 		if (!channel) {
 			errors.push('There is no channel data in the "channels" field');
 		} else {
-			const first_org = helper.getFirstOrg();
-			const first_ca = helper.getFirstCaName(first_org);
+			const org_2_use = helper.getClientOrg();
+			const first_ca = helper.getFirstCaName(org_2_use);
 			const first_orderer = helper.getFirstOrdererName(channel);
 			const first_peer = helper.getFirstPeerName(channel);
 
@@ -700,8 +708,8 @@ module.exports = function (config_filename, logger) {
 	helper.check_protocols = function () {
 		let errors = [];
 		const channel = helper.getChannelId();
-		const first_org = helper.getFirstOrg();
-		const first_ca = helper.getFirstCaName(first_org);
+		const org_2_use = helper.getClientOrg();
+		const first_ca = helper.getFirstCaName(org_2_use);
 		const first_orderer = helper.getFirstOrdererName(channel);
 		const first_peer = helper.getFirstPeerName(channel);
 
