@@ -66,7 +66,6 @@ module.exports = function (logger) {
 	/*
 		options: {
 					peer_urls: [array of peer urls],
-					path_2_chaincode: "path to chaincode from proj root",
 					chaincode_id: "chaincode id",
 					chaincode_version: "v0",
 					endorsed_hook: function(error, res){},
@@ -151,7 +150,6 @@ module.exports = function (logger) {
 	/*
 		options: {
 					peer_urls: [array of peer urls],
-					path_2_chaincode: "path to chaincode from proj root",
 					chaincode_id: "chaincode id",
 					chaincode_version: "v0",
 					endorsed_hook: function(error, res){},
