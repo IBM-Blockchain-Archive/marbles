@@ -55,23 +55,27 @@ module.exports = function (logger) {
 			logger.error('Missing options for switch_peer()');
 			return { error: 'Missing options for switch_peer()' };
 		}
-
-		try {																	//remove current peer
-			logger.debug('Removing peer from sdk   ', options.peer_urls[ha.using_peer_position]);
-			obj.channel.removePeer(new Peer(options.peer_urls[ha.using_peer_position], options.peer_tls_opts));
-		} catch (e) {
-			logger.error('could not remove peer from sdk client', e);
+		let next_peer_position = ha.using_peer_position + 1;
+		if (next_peer_position >= options.peer_urls.length) {						//wrap around
+			next_peer_position = 0;
 		}
 
-		ha.using_peer_position++;
-		if (ha.using_peer_position >= options.peer_urls.length) {					//wrap around
-			ha.using_peer_position = 0;
-		}
-
-		if (ha.using_peer_position === ha.success_peer_position) {					//we've tried all peers, error out
+		// --- Tried All Peers --- //
+		if (next_peer_position === ha.success_peer_position) {						//we've tried all peers, error out
 			logger.error('Exhausted all peers. There are no more peers to try.');
 			return { error: 'Exhausted all peers.' };
+
 		} else {
+
+			try {																	//remove current peer
+				logger.debug('Removing peer from sdk   ', options.peer_urls[ha.using_peer_position]);
+				obj.channel.removePeer(new Peer(options.peer_urls[ha.using_peer_position], options.peer_tls_opts));
+			} catch (e) {
+				logger.error('could not remove peer from sdk client', e);
+			}
+
+			// --- Use Next Peer --- //
+			ha.using_peer_position = next_peer_position;
 			const temp = {
 				peer_url: options.peer_urls[ha.using_peer_position],
 				peer_tls_opts: options.peer_tls_opts

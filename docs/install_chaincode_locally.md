@@ -28,8 +28,8 @@ There are several files, which is fine since our script will send the directory.
 
 The script we will use is `install_chaincode.js` in the `scripts` folder. 
 It will read in our marbles config file and the blockchain creds file. 
-You can change the marbles chaincode ID or version by editing your creds file. 
-Open the config file readme below if you would like to edit these files and want more information.
+You can change the marbles chaincode ID or version by editing the `install_chaincode.js` file. 
+Open the configuration and credential file readme below if you would like to edit these files and want more information on their contents.
 If you are okay with the defaults, then simply leave these files alone and run the command below.
 
 - [Configuration and Credential File Help](./config_file.md)

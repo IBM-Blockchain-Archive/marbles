@@ -43,6 +43,7 @@ gulp.task('marbles_tls', ['env_tls', 'watch-sass', 'watch-server', 'server']);		
 gulp.task('marbles_local', ['env_local', 'watch-sass', 'watch-server', 'server']);	//run with command `gulp marbles_local` for a local network
 gulp.task('marbles_cs', ['env_cs', 'watch-sass', 'watch-server', 'server']);		//run with command `gulp marbles_cs` for bluemix container service
 gulp.task('marbles_dev', ['env_dev', 'watch-sass', 'watch-server', 'server']);		//run with command `gulp marbles_dev` if you are me
+gulp.task('marbles_dev2', ['env_dev2', 'watch-sass', 'watch-server', 'server']);	//run with command `gulp marbles_dev` if you are me
 gulp.task('build', ['watch-sass']);
 
 // Bluemix IBM Blockchain Service
@@ -63,4 +64,9 @@ gulp.task('env_cs', function () {
 // Dev
 gulp.task('env_dev', function () {
 	env['creds_filename'] = 'marbles_dev.json';
+});
+
+// Dev 2
+gulp.task('env_dev2', function () {
+	env['creds_filename'] = 'marbles_dev2.json';
 });
