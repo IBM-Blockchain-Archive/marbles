@@ -1,16 +1,16 @@
 # Marbles FAQ
 
-1. [Does deleting a marble re-write history? How is this not breaking the blockchain ledger?](./#deleteHistory)
+1. [Does deleting a marble re-write history? How is this not breaking the blockchain ledger?](./faq.md#deleteHistory)
 
-1. [What is with the required input arguments for the marbles chaincode?](./#inputArgs)
+1. [What is with the required input arguments for the marbles chaincode?](./faq.md#inputArgs)
 
-1. [How can I create a HA(high-availability) setup?](./#ha)
+1. [How can I create a HA(high-availability) setup?](./faq.md#ha)
 
-1. [I want to run a local Hyperledger Fabric network... how?](./#localFabric)
+1. [I want to run a local Hyperledger Fabric network... how?](./faq.md#localFabric)
 
-1. [What is this "fcw" aka "fc wrangler" thing?](./#fcw)
+1. [What is this "fcw" aka "fc wrangler" thing?](./faq.md#fcw)
 
-1. [I'm stuck, can you help me?](./#stuck)
+1. [I'm stuck, can you help me?](./faq.md#stuck)
 
 ***
 
