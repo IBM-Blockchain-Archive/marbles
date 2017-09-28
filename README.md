@@ -550,10 +550,24 @@ The admin moved the marble, JS detected the drag/drop, client sends a websocket 
 
 That’s it! Hope you had fun transferring marbles. 
 
-## Marbles Tips
-There are few comments about marbles that don't fit neatly into the instructions above. 
-Here is an assortment of marbles tips and instructions. 
-- coming soon
+# Marbles FAQs
+Do you have questions about _why_ something in marbles is the way it is?  Or _how_ to do something? Check out the [FAQ](./docs/faq.md) .
+
+# Feedback
+I'm very interested in your feedback. 
+This is a demo built for people like you, and it will continue to be shaped for people like you.  
+On a scale of no-anesthetic-root-canal to basket of puppies, how was it? 
+If you have any ideas on how to improve the demo/tutorial, please reach out! 
+Specifically:
+
+- Did the format of the readme work well for you?
+- At which points did you get lost?
+- Is something broken!?
+- Did your knowledge grow by the end of the tutorial?
+- Was something particularly painful?
+- Did it make you have an existential crisis and you are suddenly unsure of what it means to be, you?
+
+Use the [GitHub Issues](https://github.com/IBM-Blockchain/marbles/issues) section to communicate any improvements/bugs and pain points!
 
 # License
 [Apache 2.0](LICENSE)
