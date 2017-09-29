@@ -80,6 +80,7 @@ module.exports = function (g_options, logger) {
 						// Watchdog for no block event
 						var watchdog = setTimeout(() => {
 							logger.error('[fcw] Failed to receive block event within the timeout period');
+							eventHub.disconnect();
 
 							if (cb && !cbCalled) {
 								cbCalled = true;
@@ -93,6 +94,7 @@ module.exports = function (g_options, logger) {
 							var elapsed = Date.now() - startTime + 'ms';
 							logger.info('[fcw] The chaincode transaction event has happened! success?:', code, elapsed);
 							clearTimeout(watchdog);
+							eventHub.disconnect();
 
 							if (code !== 'VALID') {
 								if (cb && !cbCalled) {
@@ -110,6 +112,9 @@ module.exports = function (g_options, logger) {
 						});
 					} catch (e) {
 						logger.error('[fcw] Illusive event error: ', e);//not sure why this happens, seems rare 3/27/2017
+						try {
+							eventHub.disconnect();
+						} catch (e) { }
 						if (cb && !cbCalled) {
 							cbCalled = true;
 							return cb(e);								//all terrible, pass it back

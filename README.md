@@ -555,7 +555,7 @@ Do you have questions about _why_ something in marbles is the way it is?  Or _ho
 
 # Feedback
 I'm very interested in your feedback. 
-This is a demo built for people like you, and it will continue to be shaped for people like you.  
+This is a demo built for people like you, and it will continue to be shaped for people like you. 
 On a scale of no-anesthetic-root-canal to basket of puppies, how was it? 
 If you have any ideas on how to improve the demo/tutorial, please reach out! 
 Specifically:
