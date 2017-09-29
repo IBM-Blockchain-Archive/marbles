@@ -46,7 +46,6 @@ module.exports = function (g_options, logger) {
 
 		// Setup EventHub
 		if (options.event_url) {
-			console.log('------------------ test');
 			logger.debug('[fcw] listening to event url', options.event_url);
 			eventHub = client.newEventHub();
 			eventHub.setPeerAddr(options.event_url, {
@@ -139,6 +138,9 @@ module.exports = function (g_options, logger) {
 			}
 		}).catch(function (err) {
 			logger.error('[fcw] Error in invoke catch block', typeof err, err);
+			if (options.event_url) {
+				eventHub.disconnect();
+			}
 
 			var formatted = common.format_error_msg(err);
 			if (options.ordered_hook) options.ordered_hook('failed', formatted);
