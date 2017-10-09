@@ -257,16 +257,10 @@ enrollment.enroll = function (options, cb) {
     }).then(function (submitter) {
 
 // [Step 4]
-        channel.addOrderer(new Orderer(options.orderer_url, {
-          pem: options.orderer_tls_opts.pem,
-          'ssl-target-name-override': options.orderer_tls_opts.common_name  //can be null if cert matches hostname
-        }));
+        channel.addOrderer(new Orderer(options.orderer_url, options.orderer_tls_opts));
 
 // [Step 5]
-        channel.addPeer(new Peer(options.peer_urls[0], {
-            pem: options.peer_tls_opts.pem,
-            'ssl-target-name-override': options.peer_tls_opts.common_name
-        }));
+        channel.addPeer(new Peer(options.peer_urls[0], options.peer_tls_opts));
         logger.debug('added peer', options.peer_urls[0]);
         
 // [Step 6]

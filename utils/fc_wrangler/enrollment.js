@@ -28,17 +28,23 @@ module.exports = function (logger) {
 			enroll_secret: 'enrollSecret',
 			msp_id: 'string',
 			ca_tls_opts: {
-				pem: 'complete tls certificate',					<required if using ssl>
-				common_name: 'common name used in pem certificate' 	<required if using ssl>
+				pem: 'complete tls certificate',									<required if using ssl>
+				ssl-target-name-override: 'common name used in pem certificate' 	<required if using ssl>
+				grpc.keepalive_time_ms: <integer in milliseconds>,					<optional>
+				grpc.keepalive_timeout_ms: <integer in milliseconds>				<optional>
 			},
 			orderer_tls_opts: {
-				pem: 'complete tls certificate',					<required if using ssl>
-				common_name: 'common name used in pem certificate' 	<required if using ssl>
+				pem: 'complete tls certificate',									<required if using ssl>
+				ssl-target-name-override: 'common name used in pem certificate' 	<required if using ssl>
+				grpc.keepalive_time_ms: <integer in milliseconds>,					<optional>
+				grpc.keepalive_timeout_ms: <integer in milliseconds>				<optional>
 			},
 			peer_tls_opts: {
-				pem: 'complete tls certificate',					<required if using ssl>
-				common_name: 'common name used in pem certificate' 	<required if using ssl>
-			},
+				pem: 'complete tls certificate',									<required if using ssl>
+				ssl-target-name-override: 'common name used in pem certificate' 	<required if using ssl>
+				grpc.keepalive_time_ms: <integer in milliseconds>,					<optional>
+				grpc.keepalive_timeout_ms: <integer in milliseconds>				<optional>
+			}
 			kvs_path: '/path/to/the/key/value/store'
 		}
 	*/
@@ -68,15 +74,9 @@ module.exports = function (logger) {
 			return getSubmitter(client, options);			//do most of the work here
 		}).then(function (submitter) {
 
-			channel.addOrderer(new Orderer(options.orderer_url, {
-				pem: options.orderer_tls_opts.pem,
-				'ssl-target-name-override': options.orderer_tls_opts.common_name		//can be null if cert matches hostname
-			}));
+			channel.addOrderer(new Orderer(options.orderer_url, options.orderer_tls_opts));
 
-			channel.addPeer(new Peer(options.peer_urls[0], {
-				pem: options.peer_tls_opts.pem,
-				'ssl-target-name-override': options.peer_tls_opts.common_name			//can be null if cert matches hostname
-			}));
+			channel.addPeer(new Peer(options.peer_urls[0], options.peer_tls_opts));
 			logger.debug('added peer', options.peer_urls[0]);
 
 			// --- Success --- //
@@ -163,12 +163,16 @@ module.exports = function (logger) {
 			signedCertPEM: '<cert here>',
 			msp_id: 'string',
 			orderer_tls_opts: {
-				pem: 'complete tls certificate',					<required if using ssl>
-				common_name: 'common name used in pem certificate' 	<required if using ssl>
+				pem: 'complete tls certificate',									<required if using ssl>
+				ssl-target-name-override: 'common name used in pem certificate' 	<required if using ssl>
+				grpc.keepalive_time_ms: <integer in milliseconds>,					<optional>
+				grpc.keepalive_timeout_ms: <integer in milliseconds>				<optional>
 			},
 			peer_tls_opts: {
-				pem: 'complete tls certificate',					<required if using ssl>
-				common_name: 'common name used in pem certificate' 	<required if using ssl>
+				pem: 'complete tls certificate',									<required if using ssl>
+				ssl-target-name-override: 'common name used in pem certificate' 	<required if using ssl>
+				grpc.keepalive_time_ms: <integer in milliseconds>,					<optional>
+				grpc.keepalive_timeout_ms: <integer in milliseconds>				<optional>
 			},
 			kvs_path: '/path/to/the/key/value/store'
 		}
@@ -195,15 +199,9 @@ module.exports = function (logger) {
 			return getSubmitterWithAdminCert(client, options);						//admin cert is different
 		}).then(function (submitter) {
 
-			channel.addOrderer(new Orderer(options.orderer_url, {
-				pem: options.orderer_tls_opts.pem,
-				'ssl-target-name-override': options.orderer_tls_opts.common_name	//can be null if cert matches hostname
-			}));
+			channel.addOrderer(new Orderer(options.orderer_url, options.orderer_tls_opts));
 
-			channel.addPeer(new Peer(options.peer_urls[0], {						//add the first peer
-				pem: options.peer_tls_opts.pem,
-				'ssl-target-name-override': options.peer_tls_opts.common_name		//can be null if cert matches hostname
-			}));
+			channel.addPeer(new Peer(options.peer_urls[0], options.peer_tls_opts));	//add the first peer
 			logger.debug('added peer', options.peer_urls[0]);
 
 			// --- Success --- //

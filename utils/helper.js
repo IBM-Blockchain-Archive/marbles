@@ -270,14 +270,22 @@ module.exports = function (config_filename, logger) {
 	function buildTlsOpts(node_obj) {
 		let ret = {
 			'ssl-target-name-override': null,
-			pem: null
+			pem: null,
+			'grpc.http2.keepalive_time': 300,					//grpc 1.2.4
+			'grpc.keepalive_time_ms': 300,						//grpc 1.3.7
+			'grpc.http2.keepalive_timeout': 300000,				//grpc 1.2.4
+			'grpc.keepalive_timeout_ms': 300000,				//grpc 1.3.7
 		};
 		if (node_obj) {
 			if (node_obj.tlsCACerts) {
 				ret.pem = loadPem(node_obj.tlsCACerts);
 			}
 			if (node_obj.grpcOptions) {
-				ret['ssl-target-name-override'] = node_obj.grpcOptions['ssl-target-name-override'];
+				for (var field in ret) {
+					if (node_obj.grpcOptions[field]) {
+						ret[field] = node_obj.grpcOptions[field];
+					}
+				}
 			}
 		}
 		return ret;

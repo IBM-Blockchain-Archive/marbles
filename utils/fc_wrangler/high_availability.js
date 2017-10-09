@@ -19,8 +19,10 @@ module.exports = function (logger) {
 		options: {
 					peer_url: 'peer grpc url',
 					peer_tls_opts: {
-						pem: 'complete tls certificate',					<required if using ssl>
-						common_name: 'common name used in pem certificate' 	<required if using ssl>
+						pem: 'complete tls certificate',									<required if using ssl>
+						ssl-target-name-override: 'common name used in pem certificate' 	<required if using ssl>
+						grpc.keepalive_time_ms: <integer in milliseconds>,					<optional>
+						grpc.keepalive_timeout_ms: <integer in milliseconds>				<optional>
 					},
 		}
 	*/
@@ -28,10 +30,7 @@ module.exports = function (logger) {
 	ha.use_peer = function (obj, options) {
 		try {
 			logger.debug('Adding peer to sdk client', options.peer_url);
-			obj.channel.addPeer(new Peer(options.peer_url, {
-				pem: options.peer_tls_opts.pem,
-				'ssl-target-name-override': options.peer_tls_opts.common_name	//can be null if cert matches hostname
-			}));
+			obj.channel.addPeer(new Peer(options.peer_url, options.peer_tls_opts));
 		}
 		catch (e) {
 			//might error if peer already exists, but we don't care
@@ -45,8 +44,10 @@ module.exports = function (logger) {
 					peer_urls: ['array of peer grpc urls'],
 					event_urls: ['array of peer grpc EVENT urls'],			<optional> only used for invoke
 					peer_tls_opts: {
-						pem: 'complete tls certificate',					<required if using ssl>
-						common_name: 'common name used in pem certificate' 	<required if using ssl>
+						pem: 'complete tls certificate',									<required if using ssl>
+						ssl-target-name-override: 'common name used in pem certificate' 	<required if using ssl>
+						grpc.keepalive_time_ms: <integer in milliseconds>,					<optional>
+						grpc.keepalive_timeout_ms: <integer in milliseconds>				<optional>
 					},
 		}
 	*/
@@ -110,8 +111,10 @@ module.exports = function (logger) {
 		options: {
 					ca_urls: ['array of ca grpc urls'],
 					ca_tls_opts: {
-						pem: 'complete tls certificate',					<required if using ssl>
-						common_name: 'common name used in pem certificate' 	<required if using ssl>
+						pem: 'complete tls certificate',									<required if using ssl>
+						ssl-target-name-override: 'common name used in pem certificate' 	<required if using ssl>
+						grpc.keepalive_time_ms: <integer in milliseconds>,					<optional>
+						grpc.keepalive_timeout_ms: <integer in milliseconds>				<optional>
 					},
 		}
 	*/
@@ -141,8 +144,10 @@ module.exports = function (logger) {
 		options: {
 					ca_urls: ['array of ca grpc urls'],
 					ca_tls_opts: {
-						pem: 'complete tls certificate',					<required if using ssl>
-						common_name: 'common name used in pem certificate' 	<required if using ssl>
+						pem: 'complete tls certificate',									<required if using ssl>
+						ssl-target-name-override: 'common name used in pem certificate' 	<required if using ssl>
+						grpc.keepalive_time_ms: <integer in milliseconds>,					<optional>
+						grpc.keepalive_timeout_ms: <integer in milliseconds>				<optional>
 					},
 		}
 	*/

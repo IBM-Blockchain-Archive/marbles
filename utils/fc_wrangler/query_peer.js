@@ -94,8 +94,10 @@ module.exports = function (logger) {
 		options: {
 			peer_urls: ['array of peer grpc urls'],
 			peer_tls_opts: {
-				pem: 'complete tls certificate',					<optional>
-				common_name: 'common name used in pem certificate' 	<optional>
+				pem: 'complete tls certificate',									<required if using ssl>
+				ssl-target-name-override: 'common name used in pem certificate' 	<required if using ssl>
+				grpc.keepalive_time_ms: <integer in milliseconds>,					<optional>
+				grpc.keepalive_timeout_ms: <integer in milliseconds>				<optional>
 			}
 		}
 	*/
@@ -105,10 +107,9 @@ module.exports = function (logger) {
 		var client = obj.client;
 
 		// send proposal to peer
-		client.queryChannels(new Peer(options.peer_urls[0], {
-			pem: options.peer_tls_opts.pem,
-			'ssl-target-name-override': options.peer_tls_opts.common_name		//can be null if cert matches hostname
-		})).then(function (resp) {
+		client.queryChannels(
+			new Peer(options.peer_urls[0], options.peer_tls_opts)
+		).then(function (resp) {
 			resp.channels = _.sortBy(resp.channels, [channel => channel.channel_id]);
 			if (cb) return cb(null, resp);
 		}).catch(function (err) {
@@ -305,8 +306,10 @@ module.exports = function (logger) {
 		options: {
 					peer_urls: [array of peer urls],
 					peer_tls_opts: {
-						pem: 'complete tls certificate',					<optional>
-						common_name: 'common name used in pem certificate' 	<optional>
+						pem: 'complete tls certificate',									<required if using ssl>
+						ssl-target-name-override: 'common name used in pem certificate' 	<required if using ssl>
+						grpc.keepalive_time_ms: <integer in milliseconds>,					<optional>
+						grpc.keepalive_timeout_ms: <integer in milliseconds>				<optional>
 					}
 		}
 	*/
@@ -315,10 +318,9 @@ module.exports = function (logger) {
 		var channel = obj.channel;
 
 		// send proposal to peer
-		channel.queryInstalledChaincodes(new Peer(options.peer_urls[0], {
-			pem: options.peer_tls_opts.pem,
-			'ssl-target-name-override': options.peer_tls_opts.common_name		//can be null if cert matches hostname
-		})).then(function (resp) {
+		channel.queryInstalledChaincodes(
+			new Peer(options.peer_urls[0], options.peer_tls_opts)
+		).then(function (resp) {
 			if (cb) return cb(null, resp);
 		}).catch(function (err) {
 			logger.error('[fcw] Error in query installed chaincode', typeof err, err);

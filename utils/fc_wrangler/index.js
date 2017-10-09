@@ -43,8 +43,10 @@ module.exports = function (g_options, logger) {
 					peer_urls: ['array of peer grpc urls'],			round robin HA
 					event_urls: ['array of peer grpc EVENT urls'],	<optional> must have matching pair in peer_urls
 					peer_tls_opts: {
-						pem: 'complete tls certificate',					<required if using ssl>
-						common_name: 'common name used in pem certificate' 	<required if using ssl>
+						pem: 'complete tls certificate',									<required if using ssl>
+						ssl-target-name-override: 'common name used in pem certificate' 	<required if using ssl>
+						grpc.keepalive_time_ms: <integer in milliseconds>,					<optional>
+						grpc.keepalive_timeout_ms: <integer in milliseconds>				<optional>
 					},
 					endorsed_hook: function(error, res){},	<optional>
 					ordered_hook: function(error, res){},	<optional>
@@ -78,8 +80,10 @@ module.exports = function (g_options, logger) {
 					cc_args: ["argument 1"],
 					peer_urls: ['array of peer grpc urls'],		<optional> used for HA
 					peer_tls_opts: {							<optional> used for HA
-						pem: 'complete tls certificate',					<required if using ssl>
-						common_name: 'common name used in pem certificate' 	<required if using ssl>
+						pem: 'complete tls certificate',									<required if using ssl>
+						ssl-target-name-override: 'common name used in pem certificate' 	<required if using ssl>
+						grpc.keepalive_time_ms: <integer in milliseconds>,					<optional>
+						grpc.keepalive_timeout_ms: <integer in milliseconds>				<optional>
 					},
 		}
 	*/
@@ -153,8 +157,10 @@ module.exports = function (g_options, logger) {
 		options: {
 					peer_urls: ['array of peer grpc urls'],		<optional> used for HA
 					peer_tls_opts: {							<optional> used for HA
-						pem: 'complete tls certificate',					<required if using ssl>
-						common_name: 'common name used in pem certificate' 	<required if using ssl>
+						pem: 'complete tls certificate',									<required if using ssl>
+						ssl-target-name-override: 'common name used in pem certificate' 	<required if using ssl>
+						grpc.keepalive_time_ms: <integer in milliseconds>,					<optional>
+						grpc.keepalive_timeout_ms: <integer in milliseconds>				<optional>
 					},
 		}
 	*/
