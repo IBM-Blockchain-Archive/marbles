@@ -80,12 +80,28 @@ module.exports = function (logger) {
 			ha.using_peer_position = next_peer_position;
 			const temp = {
 				peer_url: options.peer_urls[ha.using_peer_position],
-				default_event_url: options.event_urls[ha.using_peer_position],
 				peer_tls_opts: options.peer_tls_opts
 			};
 			ha.use_peer(obj, temp);
 			return null;
 		}
+	};
+
+	// ------------------------------------------------------------------------
+	// Get the Event URl to use - returns null if there are NO urls
+	/*
+		options: {
+					event_urls: ['array of peer grpc EVENT urls'],			only used for invoke
+		}
+	*/
+	// ------------------------------------------------------------------------
+	ha.get_event_url = function (options) {
+		let ret = null;
+		if (options && options.event_urls && options.event_urls[ha.using_peer_position]) {
+			ret = options.event_urls[ha.using_peer_position];
+		}
+		logger.debug('[fcw] setting target event url', ret);
+		return ret;
 	};
 
 	// ------------------------------------------------------------------------
