@@ -51,7 +51,7 @@ module.exports = function (g_options, logger) {
 		}
 	*/
 	fcw.invoke_chaincode = function (obj, options, cb_done) {
-		options.default_event_url = ha.get_event_url(options);			//get the desired event url to use		
+		options.target_event_url = ha.get_event_url(options);			//get the desired event url to use		
 		invoke_cc.invoke_chaincode(obj, options, function (err, resp) {
 			if (err != null) {											//looks like an error with the request
 				if (ha.switch_peer(obj, options) == null) {				//try another peer
