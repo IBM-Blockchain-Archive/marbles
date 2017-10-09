@@ -463,7 +463,7 @@ __/utils/marbles_cc_lib.js__
             channel_id: g_options.channel_id,
             chaincode_id: g_options.chaincode_id,
             chaincode_version: g_options.chaincode_version,
-            event_url: g_options.event_url,
+            default_event_url: g_options.default_event_url,
             endorsed_hook: options.endorsed_hook,
             ordered_hook: options.ordered_hook,
             cc_function: 'set_owner',

@@ -43,6 +43,7 @@ module.exports = function (logger) {
 	/*
 		options: {
 					peer_urls: ['array of peer grpc urls'],
+					event_urls: ['array of peer grpc EVENT urls'],			<optional> only used for invoke
 					peer_tls_opts: {
 						pem: 'complete tls certificate',					<required if using ssl>
 						common_name: 'common name used in pem certificate' 	<required if using ssl>
@@ -68,16 +69,18 @@ module.exports = function (logger) {
 		} else {
 
 			try {																	//remove current peer
-				logger.debug('Removing peer from sdk   ', options.peer_urls[ha.using_peer_position]);
+				logger.warn('Switching peers!', ha.using_peer_position, next_peer_position);
+				logger.debug('Removing peer from sdk client', options.peer_urls[ha.using_peer_position]);
 				obj.channel.removePeer(new Peer(options.peer_urls[ha.using_peer_position], options.peer_tls_opts));
 			} catch (e) {
-				logger.error('could not remove peer from sdk client', e);
+				logger.error('Could not remove peer from sdk client', e);
 			}
 
 			// --- Use Next Peer --- //
 			ha.using_peer_position = next_peer_position;
 			const temp = {
 				peer_url: options.peer_urls[ha.using_peer_position],
+				default_event_url: options.event_urls[ha.using_peer_position],
 				peer_tls_opts: options.peer_tls_opts
 			};
 			ha.use_peer(obj, temp);

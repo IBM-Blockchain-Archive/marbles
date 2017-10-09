@@ -38,16 +38,16 @@ module.exports = function (g_options, logger) {
 		}
 		options: {
 					chaincode_id: "chaincode id",
-					event_url: "peers event url",			<optional>
-					endorsed_hook: function(error, res){},	<optional>
-					ordered_hook: function(error, res){},	<optional>
 					cc_function: "function_name",
 					cc_args: ["argument 1"],
-					peer_urls: ['array of peer grpc urls'],		<optional> used for HA
-					peer_tls_opts: {							used for eventHub and HA
+					peer_urls: ['array of peer grpc urls'],			round robin HA
+					event_urls: ['array of peer grpc EVENT urls'],	<optional> must have matching pair in peer_urls
+					peer_tls_opts: {
 						pem: 'complete tls certificate',					<required if using ssl>
 						common_name: 'common name used in pem certificate' 	<required if using ssl>
-					}
+					},
+					endorsed_hook: function(error, res){},	<optional>
+					ordered_hook: function(error, res){},	<optional>
 		}
 	*/
 	fcw.invoke_chaincode = function (obj, options, cb_done) {
