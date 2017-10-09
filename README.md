@@ -460,10 +460,12 @@ __/utils/marbles_cc_lib.js__
         logger.info('Setting marble owner...');
 
         var opts = {
+            peer_urls: g_options.peer_urls,
+            peer_tls_opts: g_options.peer_tls_opts,
             channel_id: g_options.channel_id,
             chaincode_id: g_options.chaincode_id,
             chaincode_version: g_options.chaincode_version,
-            event_url: g_options.event_url,
+            event_urls: g_options.event_urls,
             endorsed_hook: options.endorsed_hook,
             ordered_hook: options.ordered_hook,
             cc_function: 'set_owner',
@@ -472,7 +474,6 @@ __/utils/marbles_cc_lib.js__
                 options.args.owner_id,
                 options.args.auth_company
             ],
-            peer_tls_opts: g_options.peer_tls_opts,
         };
         fcw.invoke_chaincode(enrollObj, opts, cb);
     };

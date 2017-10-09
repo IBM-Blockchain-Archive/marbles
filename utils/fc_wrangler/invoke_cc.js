@@ -16,9 +16,10 @@ module.exports = function (g_options, logger) {
 	/*
 		options: {
 					chaincode_id: "chaincode id",
-					event_url: "peers event url",			<optional>
-					endorsed_hook: function(error, res){},	<optional>
-					ordered_hook: function(error, res){},	<optional>
+					target_event_url: "peer's grpc EVENT url",		<optional>
+					event_urls: ['array of peer grpc EVENT urls'],	<optional>
+					endorsed_hook: function(error, res){},			<optional>
+					ordered_hook: function(error, res){},			<optional>
 					cc_function: "function_name",
 					cc_args: ["argument 1"],
 					peer_tls_opts: {
@@ -45,10 +46,17 @@ module.exports = function (g_options, logger) {
 		logger.debug('[fcw] Sending invoke req', request);
 
 		// Setup EventHub
-		if (options.event_url) {
-			logger.debug('[fcw] listening to event url', options.event_url);
+		if (options.event_urls !== null) {								//iff this is null we are not going to use eventHub
+			if (!options.target_event_url && options.event_urls.length >= 1) {
+				options.target_event_url = options.event_urls[0];		//if target event url not set but array is, pick the first one
+			}
+		} else {
+			options.target_event_url = null; 							//don't use eventHub
+		}
+		if (options.target_event_url) {
+			logger.debug('[fcw] listening to tx event. url:', options.target_event_url);
 			eventHub = client.newEventHub();
-			eventHub.setPeerAddr(options.event_url, {
+			eventHub.setPeerAddr(options.target_event_url, {
 				pem: options.peer_tls_opts.pem,
 				'ssl-target-name-override': options.peer_tls_opts.common_name,		//can be null if cert matches hostname
 				'grpc.http2.keepalive_time': 15
@@ -74,7 +82,7 @@ module.exports = function (g_options, logger) {
 				if (options.ordered_hook) options.ordered_hook(null, request.txId.toString());
 
 				// ------- [A] Use Event for Tx Confirmation ------- // option A
-				if (options.event_url) {
+				if (options.target_event_url) {
 					try {
 						// Watchdog for no block event
 						var watchdog = setTimeout(() => {
@@ -111,9 +119,9 @@ module.exports = function (g_options, logger) {
 						});
 					} catch (e) {
 						logger.error('[fcw] Illusive event error: ', e);//not sure why this happens, seems rare 3/27/2017
-						try {
+						if (options.target_event_url) {				//if using eventHub, disconnect
 							eventHub.disconnect();
-						} catch (e) { }
+						}
 						if (cb && !cbCalled) {
 							cbCalled = true;
 							return cb(e);								//all terrible, pass it back
@@ -138,7 +146,7 @@ module.exports = function (g_options, logger) {
 			}
 		}).catch(function (err) {
 			logger.error('[fcw] Error in invoke catch block', typeof err, err);
-			if (options.event_url) {
+			if (options.target_event_url) {						//if using eventHub, disconnect
 				eventHub.disconnect();
 			}
 

@@ -43,6 +43,7 @@ module.exports = function (logger) {
 	/*
 		options: {
 					peer_urls: ['array of peer grpc urls'],
+					event_urls: ['array of peer grpc EVENT urls'],			<optional> only used for invoke
 					peer_tls_opts: {
 						pem: 'complete tls certificate',					<required if using ssl>
 						common_name: 'common name used in pem certificate' 	<required if using ssl>
@@ -68,10 +69,11 @@ module.exports = function (logger) {
 		} else {
 
 			try {																	//remove current peer
-				logger.debug('Removing peer from sdk   ', options.peer_urls[ha.using_peer_position]);
+				logger.warn('Switching peers!', ha.using_peer_position, next_peer_position);
+				logger.debug('Removing peer from sdk client', options.peer_urls[ha.using_peer_position]);
 				obj.channel.removePeer(new Peer(options.peer_urls[ha.using_peer_position], options.peer_tls_opts));
 			} catch (e) {
-				logger.error('could not remove peer from sdk client', e);
+				logger.error('Could not remove peer from sdk client', e);
 			}
 
 			// --- Use Next Peer --- //
@@ -83,6 +85,23 @@ module.exports = function (logger) {
 			ha.use_peer(obj, temp);
 			return null;
 		}
+	};
+
+	// ------------------------------------------------------------------------
+	// Get the Event URl to use - returns null if there are NO urls
+	/*
+		options: {
+					event_urls: ['array of peer grpc EVENT urls'],			only used for invoke
+		}
+	*/
+	// ------------------------------------------------------------------------
+	ha.get_event_url = function (options) {
+		let ret = null;
+		if (options && options.event_urls && options.event_urls[ha.using_peer_position]) {
+			ret = options.event_urls[ha.using_peer_position];
+		}
+		logger.debug('[fcw] setting target event url', ret);
+		return ret;
 	};
 
 	// ------------------------------------------------------------------------

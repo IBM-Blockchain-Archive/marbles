@@ -80,12 +80,16 @@ module.exports = function (config_filename, logger) {
 		}
 	};
 
-	// get all peers grpc url on this channel
+	// get all peers grpc urls and event urls, on this channel
 	helper.getAllPeerUrls = function (channelId) {
-		let ret = [];
+		let ret = {
+			urls: [],
+			eventUrls: []
+		};
 		if (helper.creds.channels && helper.creds.channels[channelId]) {
 			for (let peerId in helper.creds.channels[channelId].peers) {	//iter on the peers on this channel
-				ret.push(helper.creds.peers[peerId].url);					//get the grpc url for this peer
+				ret.urls.push(helper.creds.peers[peerId].url);				//get the grpc url for this peer
+				ret.eventUrls.push(helper.creds.peers[peerId].eventUrl);	//get the grpc EVENT url for this peer
 			}
 		}
 		return ret;
@@ -501,12 +505,12 @@ module.exports = function (config_filename, logger) {
 			block_delay: helper.getBlockDelay(),
 			channel_id: helper.getChannelId(),
 			chaincode_id: helper.getChaincodeId(),
-			event_url: (helper.getEventsSetting()) ? helper.getPeerEventUrl(first_peer) : null,
+			event_urls: (helper.getEventsSetting()) ? helper.getAllPeerUrls(channel).eventUrls : null,	//null is important
 			chaincode_version: helper.getChaincodeVersion(),
 			ca_tls_opts: helper.getCaTlsCertOpts(first_ca),
 			orderer_tls_opts: helper.getOrdererTlsCertOpts(first_orderer),
 			peer_tls_opts: helper.getPeerTlsCertOpts(first_peer),
-			peer_urls: helper.getAllPeerUrls(channel),
+			peer_urls: helper.getAllPeerUrls(channel).urls,
 		};
 	};
 
