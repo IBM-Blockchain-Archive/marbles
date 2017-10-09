@@ -37,6 +37,7 @@ module.exports = function (g_options, logger) {
 		var client = obj.client;
 		var cbCalled = false;
 		var startTime = Date.now();
+		var watchdog = null;
 
 		// send proposal to endorser
 		var request = {
@@ -47,33 +48,15 @@ module.exports = function (g_options, logger) {
 		};
 		logger.debug('[fcw] Sending invoke req', request);
 
-		// Setup EventHub
-		if (options.event_urls !== null) {								//iff this is null we are not going to use eventHub
-			if (!options.target_event_url && options.event_urls.length >= 1) {
-				options.target_event_url = options.event_urls[0];		//if target event url not set but array is, pick the first one
-			}
-		} else {
-			options.target_event_url = null; 							//don't use eventHub
-		}
-		if (options.target_event_url) {
-			logger.debug('[fcw] listening to tx event. url:', options.target_event_url);
-			eventHub = client.newEventHub();
-			eventHub.setPeerAddr(options.target_event_url, options.peer_tls_opts);
-			eventHub.connect();
-		} else {
-			logger.debug('[fcw] will not use tx event');
-		}
+		// ---------------- Setup EventHub ---------------- //
+		setup_event_hub(options);
 
-		// Send Proposal
+		// ---------------- Send Proposal ---------------- //
 		channel.sendTransactionProposal(request).then(function (results) {
-
-			// Check Response
-			var request = common.check_proposal_res(results, options.endorsed_hook);
+			var request = common.check_proposal_res(results, options.endorsed_hook);//proposal was endorsed
 			return channel.sendTransaction(request);
 		}).then(function (response) {
-
-			// All good
-			if (response.status === 'SUCCESS') {
+			if (response.status === 'SUCCESS') {									//tx was ordered
 				logger.debug('[fcw] Successfully ordered endorsement transaction.');
 
 				// Call optional order hook
@@ -81,58 +64,24 @@ module.exports = function (g_options, logger) {
 
 				// ------- [A] Use Event for Tx Confirmation ------- // option A
 				if (options.target_event_url) {
-					try {
-						// Watchdog for no block event
-						var watchdog = setTimeout(() => {
-							logger.error('[fcw] Failed to receive block event within the timeout period');
-							eventHub.disconnect();
 
-							if (cb && !cbCalled) {
-								cbCalled = true;
-								return cb(null);						//timeout pass it back
-							}
-							else return;
-						}, g_options.block_delay + 2000);
+					// Watchdog for no block event
+					watchdog = setTimeout(() => {
+						logger.error('[fcw] Failed to receive block event within the timeout period');
+						eventHub.disconnect();
 
-						// Wait for tx committed event
-						eventHub.registerTxEvent(request.txId.getTransactionID(), (tx, code) => {
-							var elapsed = Date.now() - startTime + 'ms';
-							logger.info('[fcw] The chaincode transaction event has happened! success?:', code, elapsed);
-							clearTimeout(watchdog);
-							eventHub.disconnect();
-
-							if (code !== 'VALID') {
-								if (cb && !cbCalled) {
-									cbCalled = true;
-									return cb(common.format_error_msg('Commit code: ' + code));//pass error back
-								}
-								else return;
-							} else {
-								if (cb && !cbCalled) {
-									cbCalled = true;
-									return cb(null);					//all good, pass it back
-								}
-								else return;
-							}
-						});
-					} catch (e) {
-						logger.error('[fcw] Illusive event error: ', e);//not sure why this happens, seems rare 3/27/2017
-						if (options.target_event_url) {				//if using eventHub, disconnect
-							eventHub.disconnect();
-						}
 						if (cb && !cbCalled) {
 							cbCalled = true;
-							return cb(e);								//all terrible, pass it back
-						}
-						else return;
-					}
+							return cb(null);						//timeout pass it back
+						} else return;
+					}, g_options.block_delay + 5000);
 
 					// ------- [B] Wait xxxx ms for Block  ------- // option B
 				} else {
 					setTimeout(function () {
 						if (cb) return cb(null);
 						else return;
-					}, g_options.block_delay + 2000);
+					}, g_options.block_delay + 5000);
 				}
 			}
 
@@ -154,6 +103,48 @@ module.exports = function (g_options, logger) {
 			if (cb) return cb(formatted, null);
 			else return;
 		});
+
+		//-------------------------------------------------------------------
+		// Use an event to be notified when the transaction is committed
+		//-------------------------------------------------------------------
+		function setup_event_hub(options) {
+			if (options.event_urls !== null) {								//iff this is null we are not going to use eventHub
+				if (!options.target_event_url && options.event_urls.length >= 1) {
+					options.target_event_url = options.event_urls[0];		//if target event url not set but array is, pick the first one
+				}
+			} else {
+				options.target_event_url = null; 							//don't use eventHub
+			}
+			if (options.target_event_url) {
+				logger.debug('[fcw] listening to tx event. url:', options.target_event_url);
+				eventHub = client.newEventHub();
+				eventHub.setPeerAddr(options.target_event_url, options.peer_tls_opts);
+				eventHub.connect();
+
+				// Wait for tx committed event - this will happen async
+				eventHub.registerTxEvent(request.txId.getTransactionID(), (tx, code) => {
+					var elapsed = Date.now() - startTime + 'ms';
+					logger.info('[fcw] The chaincode transaction event has happened! success?:', code, elapsed);
+					if (watchdog) clearTimeout(watchdog);					//stop watchdog, event happened
+					eventHub.disconnect();
+
+					if (code !== 'VALID') {
+						if (cb && !cbCalled) {
+							cbCalled = true;
+							return cb(common.format_error_msg('Commit code: ' + code));	//pass error back
+						} else return;
+					} else {
+						if (cb && !cbCalled) {
+							cbCalled = true;
+							return cb(null);											//all good, pass it back
+						} else return;
+					}
+				});
+			} else {
+				logger.debug('[fcw] will not use tx event');
+			}
+		}
 	};
+
 	return invoke_cc;
 };
