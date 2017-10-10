@@ -19,8 +19,10 @@ module.exports = function (logger) {
 					chaincode_version: "v0",
 					endorsed_hook: function(error, res){},
 					peer_tls_opts: {
-						pem: 'complete tls certificate',					<optional>
-						common_name: 'common name used in pem certificate' 	<optional>
+						pem: 'complete tls certificate',									<required if using ssl>
+						ssl-target-name-override: 'common name used in pem certificate' 	<required if using ssl>
+						grpc.keepalive_time_ms: <integer in milliseconds>,					<optional>
+						grpc.keepalive_timeout_ms: <integer in milliseconds>				<optional>
 					}
 		}
 	*/
@@ -33,10 +35,7 @@ module.exports = function (logger) {
 
 		// send proposal to endorser
 		var request = {
-			targets: [client.newPeer(options.peer_urls[0], {
-				pem: options.peer_tls_opts.pem,
-				'ssl-target-name-override': options.peer_tls_opts.common_name	//can be null if cert matches hostname
-			})],
+			targets: [client.newPeer(options.peer_urls[0], options.peer_tls_opts)],
 			chaincodePath: options.path_2_chaincode,							//rel path from /server/libs/src/ to chaincode folder ex: './marbles_chaincode'
 			chaincodeId: options.chaincode_id,
 			chaincodeVersion: options.chaincode_version,
@@ -72,8 +71,10 @@ module.exports = function (logger) {
 					ordered_hook: function(error, res){},
 					cc_args: ["argument 1"],
 					peer_tls_opts: {
-						pem: 'complete tls certificate',					<optional>
-						common_name: 'common name used in pem certificate' 	<optional>
+						pem: 'complete tls certificate',									<required if using ssl>
+						ssl-target-name-override: 'common name used in pem certificate' 	<required if using ssl>
+						grpc.keepalive_time_ms: <integer in milliseconds>,					<optional>
+						grpc.keepalive_timeout_ms: <integer in milliseconds>				<optional>
 					}
 		}
 	*/
@@ -88,10 +89,7 @@ module.exports = function (logger) {
 
 		// send proposal to endorser
 		var request = {
-			targets: [client.newPeer(options.peer_urls[0], {
-				pem: options.peer_tls_opts.pem,
-				'ssl-target-name-override': options.peer_tls_opts.common_name	//can be null if cert matches hostname
-			})],
+			targets: [client.newPeer(options.peer_urls[0], options.peer_tls_opts)],
 			chaincodeId: options.chaincode_id,
 			chaincodeVersion: options.chaincode_version,
 			fcn: 'init',
@@ -156,8 +154,10 @@ module.exports = function (logger) {
 					ordered_hook: function(error, res){},
 					cc_args: ["argument 1"],
 					peer_tls_opts: {
-						pem: 'complete tls certificate',					<optional>
-						common_name: 'common name used in pem certificate' 	<optional>
+						pem: 'complete tls certificate',									<required if using ssl>
+						ssl-target-name-override: 'common name used in pem certificate' 	<required if using ssl>
+						grpc.keepalive_time_ms: <integer in milliseconds>,					<optional>
+						grpc.keepalive_timeout_ms: <integer in milliseconds>				<optional>
 					}
 		}
 	*/
@@ -172,10 +172,7 @@ module.exports = function (logger) {
 
 		// send proposal to endorser
 		var request = {
-			targets: [client.newPeer(options.peer_urls[0], {
-				pem: options.peer_tls_opts.pem,
-				'ssl-target-name-override': options.peer_tls_opts.common_name	//can be null if cert matches hostname
-			})],
+			targets: [client.newPeer(options.peer_urls[0], options.peer_tls_opts)],
 			chaincodeId: options.chaincode_id,
 			chaincodeVersion: options.chaincode_version,
 			fcn: 'init',

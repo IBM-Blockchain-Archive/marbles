@@ -23,8 +23,10 @@ module.exports = function (g_options, logger) {
 					cc_function: "function_name",
 					cc_args: ["argument 1"],
 					peer_tls_opts: {
-						pem: 'complete tls certificate',					<required if using ssl>
-						common_name: 'common name used in pem certificate' 	<required if using ssl>
+						pem: 'complete tls certificate',									<required if using ssl>
+						ssl-target-name-override: 'common name used in pem certificate' 	<required if using ssl>
+						grpc.keepalive_time_ms: <integer in milliseconds>,					<optional>
+						grpc.keepalive_timeout_ms: <integer in milliseconds>				<optional>
 					}
 		}
 	*/
@@ -56,11 +58,7 @@ module.exports = function (g_options, logger) {
 		if (options.target_event_url) {
 			logger.debug('[fcw] listening to tx event. url:', options.target_event_url);
 			eventHub = client.newEventHub();
-			eventHub.setPeerAddr(options.target_event_url, {
-				pem: options.peer_tls_opts.pem,
-				'ssl-target-name-override': options.peer_tls_opts.common_name,		//can be null if cert matches hostname
-				'grpc.http2.keepalive_time': 15
-			});
+			eventHub.setPeerAddr(options.target_event_url, options.peer_tls_opts);
 			eventHub.connect();
 		} else {
 			logger.debug('[fcw] will not use tx event');
