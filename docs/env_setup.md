@@ -72,17 +72,19 @@ Any chaincode that you write will need to import the chaincode shim from Hyperle
 Therefore in order to compile chaincode locally you will need to have the fabric code present in your `GOPATH`. 
 If you don't do this step you run the risk of being unable to build your chaincode locally. 
 
-**Choose 1 option below:**
+**Choose 1 option below** (read each before you choose):
 
 - **Option 1:** :lollipop: This option is for those that do not want to modify chaincode.  You will be running marbles as is. 
 	- There are no steps, you are already done! Head back to the [tutorial](../README.md#downloadmarbles).
 
-- **Option 2:**  This option is for those that want to modify chaincode and use a local Fabric network
-	- You are going to use the [master branch of the Hyperledger fabric](https://gerrit.hyperledger.org/r/gitweb?p=fabric.git;a=summary). 
-	- Remember this hash `ae4e37d` and go to the `Continue the Fabric Install Instructions` section below. You will enter the hash there.
+- **Option 2:**  This option is for those that want to modify chaincode and use a local Fabric network with the most recent Fabric version
+	- [Releases of Hyperledger Fabric](https://github.com/hyperledger/fabric/releases). 
+	- You will need to find the commit hash of your release. Click the releases link above and find the most recent release.  Click it and the release's commit hash is below the release version, similar to the picture below. 
+	- Remember this hash and go to the `Continue the Fabric Install Instructions` section below. You will enter the hash there.
+	![](/doc_images/release_hash.png)
 
 - **Option 3:** Choose this option if you want to modify chaincode and use the Blockchain Service for my network
-	- Get the hash from your network or use the hash `ae4e37d`.
+	- Get the commit hash from your network or use the hash `ae4e37d`.
 		- If you have a network on the Bluemix service, then the exact Fabric version can be found in the "Support" tab under the "Release Notes" section of your network's dashboard. 
 	 - Go to the `Continue the Fabric Install Instructions` section below. You will enter the hash there.
 
@@ -103,10 +105,10 @@ The point of all of this is to simply have the same version of Fabric on your lo
 	git clone https://github.com/hyperledger/fabric.git
 	```
 
-3. Match this version to the commit level of your network (1st 7 characters will work)
+3. Match this version to the **commit hash** of your network/Fabric (the first 7 characters will work)
 	```
 	cd fabric
-	git checkout 14055d7
+	git checkout ae4e37d
 	```
 
 4. Confirm the level using git branch. It should show the commit level matching the one you provided.
@@ -119,10 +121,16 @@ The point of all of this is to simply have the same version of Fabric on your lo
 Open a command prompt/terminal and browse to this directory `$GOPATH/src/github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02`
 
 ```
-$ go build -tags nopkcs11 .
+$ go build --tags nopkcs11 ./
 ```
 
-It should return with no errors/warnings.
+It should return with no errors/warnings. 
+You should also see that an executable was created in this directory. 
+
+
+Note that the `nopkcs11` tag is important. 
+PKCS 11 is a Public-Key Cryptography Standard that you are unlikely to have on your system. 
+**Remember to use this flag as you develop/build your chaincode**.
 
 ## 5. IDE Suggestions
 
