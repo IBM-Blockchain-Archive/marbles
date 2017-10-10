@@ -272,9 +272,9 @@ module.exports = function (config_filename, logger) {
 			'ssl-target-name-override': null,
 			pem: null,
 			'grpc.http2.keepalive_time': 300,					//grpc 1.2.4
-			'grpc.keepalive_time_ms': 300,						//grpc 1.3.7
-			'grpc.http2.keepalive_timeout': 300000,				//grpc 1.2.4
-			'grpc.keepalive_timeout_ms': 300000,				//grpc 1.3.7
+			'grpc.keepalive_time_ms': 300000,					//grpc 1.3.7
+			'grpc.http2.keepalive_timeout': 35,					//grpc 1.2.4
+			'grpc.keepalive_timeout_ms': 3500,					//grpc 1.3.7
 		};
 		if (node_obj) {
 			if (node_obj.tlsCACerts) {
