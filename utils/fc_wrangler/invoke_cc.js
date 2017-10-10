@@ -116,7 +116,7 @@ module.exports = function (g_options, logger) {
 				options.target_event_url = null; 							//don't use eventHub
 			}
 			if (options.target_event_url) {
-				logger.debug('[fcw] listening to tx event. url:', options.target_event_url);
+				logger.debug('[fcw] listening to transaction event. url:', options.target_event_url);
 				eventHub = client.newEventHub();
 				eventHub.setPeerAddr(options.target_event_url, options.peer_tls_opts);
 				eventHub.connect();
@@ -139,6 +139,8 @@ module.exports = function (g_options, logger) {
 							return cb(null);											//all good, pass it back
 						} else return;
 					}
+				}, function (disconnectMsg) {											//callback whenever eventHub is disconnected, normal
+					logger.debug('[fcw] transaction event is disconnected');
 				});
 			} else {
 				logger.debug('[fcw] will not use tx event');
