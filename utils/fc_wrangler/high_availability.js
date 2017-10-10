@@ -42,7 +42,7 @@ module.exports = function (logger) {
 	/*
 		options: {
 					peer_urls: ['array of peer grpc urls'],
-					event_urls: ['array of peer grpc EVENT urls'],			<optional> only used for invoke
+					event_urls: ['array of peer grpc EVENT urls'],							<optional> only used for invoke
 					peer_tls_opts: {
 						pem: 'complete tls certificate',									<required if using ssl>
 						ssl-target-name-override: 'common name used in pem certificate' 	<required if using ssl>
