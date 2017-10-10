@@ -163,8 +163,10 @@ if (config_error) {
 					if (err) {
 						startup_unsuccessful();
 					} else {
+						console.log('\n');
 						logger.debug('Detected that we have launched successfully before');
-						logger.debug('Welcome back - Initiating start up\n\n');
+						logger.debug('Welcome back - Marbles is ready');
+						logger.debug('Open your browser to http://' + host + ':' + port + ' and login as "admin"\n\n');
 					}
 				});
 			});
