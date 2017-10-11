@@ -564,6 +564,9 @@ Specifically:
 
 Use the [GitHub Issues](https://github.com/IBM-Blockchain/marbles/issues) section to communicate any improvements/bugs and pain points!
 
+# Contribute
+If you want to help improve the demo check out the [contributing guide](./CONTRIBUTING.md)
+
 # License
 [Apache 2.0](LICENSE)
 
