@@ -13,7 +13,7 @@
 				"fabric-orderer"
 			],
 			"peers": {
-				"fabric-peer-org1": {
+				"blockchain-org1peer1": {
 					"endorsingPeer": true,
 					"chaincodeQuery": true,
 					"ledgerQuery": true,
@@ -50,8 +50,8 @@
 	},
 	"peers": {
 		"blockchain-org1peer1": {
-			"url": "grpc://blockchain-org1peer1:5010",
-			"eventUrl": "grpc://blockchain-org1peer1:5011"
+			"url": "grpc://blockchain-org1peer1:30110",
+			"eventUrl": "grpc://blockchain-org1peer1:30111"
 		}
 	},
 	"certificateAuthorities": {
