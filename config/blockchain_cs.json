@@ -56,7 +56,7 @@
 	},
 	"certificateAuthorities": {
 		"blockchain-ca": {
-			"url": "http://blockchain-ca:30000",
+			"url": "http://blockchain-ca:30054",
 			"httpOptions": {
 				"verify": true
 			},
