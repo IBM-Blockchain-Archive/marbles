@@ -679,10 +679,15 @@ module.exports = function (config_filename, logger) {
 		if (!channel) {
 			errors.push('There is no channel data in the "channels" field');
 		} else {
-			const org_2_use = helper.getClientOrg();
-			const first_ca = helper.getFirstCaName(org_2_use);
-			const first_orderer = helper.getFirstOrdererName(channel);
-			const first_peer = helper.getFirstPeerName(channel);
+			let org_2_use, first_ca, first_orderer, first_peer;
+			try {
+				org_2_use = helper.getClientOrg();
+				first_ca = helper.getFirstCaName(org_2_use);
+				first_orderer = helper.getFirstOrdererName(channel);
+				first_peer = helper.getFirstPeerName(channel);
+			} catch (e) {
+				// errors are logged below
+			}
 
 			if (!helper.getCA(first_ca)) {
 				errors.push('There is no CA data in the "certificateAuthorities" field');
