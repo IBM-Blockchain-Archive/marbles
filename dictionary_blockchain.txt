@@ -69,3 +69,5 @@ fabcar
 hlfv
 prebaked
 repo
+mychannel
+adminpw
