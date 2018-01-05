@@ -47,9 +47,9 @@ Next verify you can build GoLang code with the [hello world](https://golang.org/
 
 ## 3. Node.js
 
-Download and install the latest Node.js LTS version. 
-It should be v6.2.0 - v6.11.1. 
-**Marbles will not work with node.js v7 or v8** 
+Download and install Node.js v6.2.0 - v6.11.1.
+As of 1/4/2018 **Marbles has dependencies that will not work with node.js v7 or v8**.
+
 
 - [Node.js Download Page](https://nodejs.org/en/download/)
 
@@ -68,31 +68,31 @@ $ npm -v
 
 ## 4. Hyperledger Fabric
 
-Any chaincode that you write will need to import the chaincode shim from Hyperledger Fabric. 
-Therefore in order to compile chaincode locally you will need to have the fabric code present in your `GOPATH`. 
-If you don't do this step you run the risk of being unable to build your chaincode locally. 
+Any chaincode that you write will need to import the chaincode shim from Hyperledger Fabric.
+Therefore in order to compile chaincode locally you will need to have the fabric code present in your `GOPATH`.
+If you don't do this step you run the risk of being unable to build your chaincode locally.
 
 **Choose 1 option below** (read each before you choose):
 
-- **Option 1:** :lollipop: This option is for those that do not want to modify chaincode.  You will be running marbles as is. 
+- **Option 1:** :lollipop: This option is for those that do not want to modify chaincode.  You will be running marbles as is.
 	- There are no steps, you are already done! Head back to the [tutorial](../README.md#downloadmarbles).
 
 - **Option 2:**  This option is for those that want to modify chaincode and use a local Fabric network with the most recent Fabric version
-	- [Releases of Hyperledger Fabric](https://github.com/hyperledger/fabric/releases). 
-	- You will need to find the commit hash of your release. Click the releases link above and find the most recent release.  Click it and the release's commit hash is below the release version, similar to the picture below. 
+	- [Releases of Hyperledger Fabric](https://github.com/hyperledger/fabric/releases).
+	- You will need to find the commit hash of your release. Click the releases link above and find the most recent release.  Click it and the release's commit hash is below the release version, similar to the picture below.
 	- Remember this hash and go to the `Continue the Fabric Install Instructions` section below. You will enter the hash there.
 	![](/doc_images/release_hash.png)
 
 - **Option 3:** Choose this option if you want to modify chaincode and use the Blockchain Service for my network
 	- Get the commit hash from your network or use the hash `ae4e37d`.
-		- If you have a network on the Bluemix service, then the exact Fabric version can be found in the "Support" tab under the "Release Notes" section of your network's dashboard. 
+		- If you have a network on the Bluemix service, then the exact Fabric version can be found in the "Support" tab under the "Release Notes" section of your network's dashboard.
 	 - Go to the `Continue the Fabric Install Instructions` section below. You will enter the hash there.
 
 
 ### Continue the Fabric Install Instructions
-The release you are cloning locally should match the Hyperledger Fabric network you are using when you deploy your application. 
-You should apply the choice you made above to the instructions below when doing the `git checkout` step. 
-The point of all of this is to simply have the same version of Fabric on your local computer as the one running your network. 
+The release you are cloning locally should match the Hyperledger Fabric network you are using when you deploy your application.
+You should apply the choice you made above to the instructions below when doing the `git checkout` step.
+The point of all of this is to simply have the same version of Fabric on your local computer as the one running your network.
 
 1. Create the parent directories on your GOPATH
 	```
@@ -124,12 +124,12 @@ Open a command prompt/terminal and browse to this directory `$GOPATH/src/github.
 $ go build --tags nopkcs11 ./
 ```
 
-It should return with no errors/warnings. 
-You should also see that an executable was created in this directory. 
+It should return with no errors/warnings.
+You should also see that an executable was created in this directory.
 
 
-Note that the `nopkcs11` tag is important. 
-PKCS 11 is a Public-Key Cryptography Standard that you are unlikely to have on your system. 
+Note that the `nopkcs11` tag is important.
+PKCS 11 is a Public-Key Cryptography Standard that you are unlikely to have on your system.
 **Remember to use this flag as you develop/build your chaincode**.
 
 ## 5. IDE Suggestions
@@ -141,6 +141,6 @@ Visual Studio Code is a free IDE that supports all the languages in Marbles such
 - [Atom](https://atom.io/)
 
 Like VS Code, Atom has plugins to support any of the languages needed to develop chaincode or modify our examples.
- 
+
 ## 6. Finish Up
 Now that everything is setup, head back to the [tutorial](../README.md#downloadmarbles).
