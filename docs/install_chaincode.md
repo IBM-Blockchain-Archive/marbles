@@ -24,7 +24,7 @@
 ![](/doc_images/11-installed-marbles.PNG)
 
 - Great, so you should see marbles listed in the chaincode table for this peer.
-- All we've done so far is upload the files ont the peer. Next, we need to tell it what channel to run on.
+- All we've done so far is upload the files on to the peer. Next, we need to tell it what channel to run on.
 - Click the 3 dots in the "ACTIONS" column to open the actions menu. Then click "Instantiate".
 
 ![](/doc_images/12-instantiate-marbles.PNG)
