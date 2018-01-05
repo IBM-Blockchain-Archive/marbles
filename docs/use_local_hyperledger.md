@@ -86,7 +86,7 @@ Finally lets test the network before we run marbles.
 Run query via `fabcar` with the commands:
 
 ```bash
-    node enrollAdmins.js
+    node enrollAdmin.js
     node registerUser.js
     node query.js
 ```
