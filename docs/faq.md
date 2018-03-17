@@ -54,7 +54,7 @@ __./utils/fc_wrangler/index.js__
 					logger.info('Retrying invoke on different peer');
 					fcw.invoke_chaincode(obj, options, cb_done);
 				} else {
-					if (cb_done) cb_done(err, resp);           //out of peers, give up, send err
+					if (cb_done) cb_done(err, resp);     //out of peers, give up, send err
 				}
 			} else {                                               //success
 				ha.success_peer_position = ha.using_peer_position; //remember the last good peer

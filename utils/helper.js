@@ -329,7 +329,12 @@ module.exports = function (config_filename, logger) {
 	helper.getAdminPrivateKeyPEM = function (orgName) {
 		if (orgName && helper.creds.organizations && helper.creds.organizations[orgName]) {
 			if (!helper.creds.organizations[orgName].adminPrivateKey) {
-				throw new Error('Admin private key is not found in the creds json file: ' + orgName);
+				if (!helper.creds.organizations[orgName]['x-certJson'] || !helper.creds.organizations[orgName]['x-certJson'].path) {
+					throw new Error('Admin private key is not found in the creds json file: ' + orgName);
+				} else {
+					const obj = getCryptoFromCertJson(helper.creds.organizations[orgName]['x-certJson'].path);
+					return loadPem(obj.adminPrivateKey);
+				}
 			} else {
 				return loadPem(helper.creds.organizations[orgName].adminPrivateKey);
 			}
@@ -343,7 +348,12 @@ module.exports = function (config_filename, logger) {
 	helper.getAdminSignedCertPEM = function (orgName) {
 		if (orgName && helper.creds.organizations && helper.creds.organizations[orgName]) {
 			if (!helper.creds.organizations[orgName].signedCert) {
-				throw new Error('Admin certificate is not found in the creds json file: ' + orgName);
+				if (!helper.creds.organizations[orgName]['x-certJson'] || !helper.creds.organizations[orgName]['x-certJson'].path) {
+					throw new Error('Admin certificate is not found in the creds json file: ' + orgName);
+				} else {
+					const obj = getCryptoFromCertJson(helper.creds.organizations[orgName]['x-certJson'].path);
+					return loadPem(obj.signedCert);
+				}
 			} else {
 				return loadPem(helper.creds.organizations[orgName].signedCert);
 			}
@@ -358,11 +368,42 @@ module.exports = function (config_filename, logger) {
 	function loadPem(obj) {
 		if (obj && obj.path) {											// looks like field is a path to a file
 			var path2cert = path.join(__dirname, '../config/' + obj.path);
+			if (obj.path.indexOf('/') === 0) {
+				path2cert = obj.path;									//its an absolute path
+			}
 			return fs.readFileSync(path2cert, 'utf8') + '\r\n'; 		//read from file, LOOKING IN config FOLDER
 		} else {
 			return obj.pem;												//can be null if network is not using TLS
 		}
 		return null;
+	}
+
+	// return an object with the private key and the admin cert
+	function getCryptoFromCertJson(file_path) {
+		const ret = {
+			adminPrivateKey: {
+				path: null
+			},
+			signedCert: {
+				pem: null
+			}
+		};
+		try {
+			const json = fs.readFileSync(file_path);						//open the crypto file, fabcar generated this
+			const obj = JSON.parse(json);
+			ret.adminPrivateKey.path = path.join(strip_2_folder(file_path), obj.enrollment.signingIdentity + '-priv');	//load it via path
+			ret.signedCert.pem = obj.enrollment.identity.certificate;		//load it directly
+		} catch (e) {
+			logger.error(e);
+			throw new Error('Cannot parse crypto json', file_path);
+		}
+		return ret;
+
+		// take the filename out of the pathname, leave the path to the folder
+		function strip_2_folder(pathname) {
+			const lastPos = pathname.lastIndexOf('/');
+			return pathname.substring(0, lastPos);
+		}
 	}
 
 	// get the channel id on network for marbles
@@ -422,22 +463,13 @@ module.exports = function (config_filename, logger) {
 		// -- Using Custom KVS -- //
 		if (helper.creds.client && helper.creds.client.credentialStore) {
 			const kvs_path = helper.creds.client.credentialStore.path;
-			const ret = path.join(__dirname, '../config/' + kvs_path + '/');
-			copy_keys_over(ret);
+			let ret = path.join(__dirname, '../config/' + kvs_path + '/');
+			if (kvs_path.indexOf('/') === 0) {
+				ret = kvs_path;										//its an absolute path
+			}
 			return ret;												//use the kvs provided in the json
 		} else {
 			return default_path;									//make a new kvs folder in the home dir
-		}
-
-		// copy over private and public keys to the hfc key value store
-		function copy_keys_over(custom_path) {
-			try {
-				const default_path2 = path.join(os.homedir(), '.hfc-key-store/');
-				const private_key = 'cd96d5260ad4757551ed4a5a991e62130f8008a0bf996e4e4b84cd097a747fec-priv';	//todo make this generic
-				const public_key = 'cd96d5260ad4757551ed4a5a991e62130f8008a0bf996e4e4b84cd097a747fec-pub';
-				fs.createReadStream(custom_path + private_key).pipe(fs.createWriteStream(default_path2 + private_key));
-				fs.createReadStream(custom_path + public_key).pipe(fs.createWriteStream(default_path2 + public_key));
-			} catch (e) { }
 		}
 	};
 

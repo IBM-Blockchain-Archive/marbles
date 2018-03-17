@@ -7,7 +7,7 @@
 	"client": {
 		"organization": "Org1MSP",
 		"credentialStore": {
-			"path": "./crypto/prebaked"
+			"path": "/home/ibmadmin/fabric-samples/fabcar/hfc-key-store"
 		}
 	},
 	"channels": {
@@ -38,11 +38,8 @@
 			"certificateAuthorities": [
 				"fabric-ca"
 			],
-			"adminPrivateKey": {
-				"path": "./crypto/prebaked/cd96d5260ad4757551ed4a5a991e62130f8008a0bf996e4e4b84cd097a747fec-priv"
-			},
-			"signedCert": {
-				"path": "./crypto/prebaked/PeerAdminCert.pem"
+			"x-certJson": {
+				"path": "/home/ibmadmin/fabric-samples/fabcar/hfc-key-store/admin"
 			}
 		}
 	},
@@ -65,8 +62,8 @@
 			},
 			"registrar": [
 				{
-					"enrollId": "PeerAdmin",
-					"enrollSecret": "-"
+					"enrollId": "admin",
+					"enrollSecret": "adminpw"
 				}
 			],
 			"caName": null
