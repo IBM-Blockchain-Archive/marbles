@@ -4,6 +4,10 @@
 /*******************************************************************************
  * [Marbles] - a simple Hyperledger Fabric blockchain application
  *
+ * How To Run: Read readme on how to run. Typically it is something like `gulp marbles_tls` or `gulp marbles_local`
+ *
+ * How to Use: Read readme, please.
+ *
  * Copyright (c) 2015 IBM Corp.
  * All rights reserved.
  *
