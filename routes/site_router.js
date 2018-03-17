@@ -8,7 +8,7 @@
  *******************************************************************************/
 var express = require('express');
 
-module.exports = function (logger, helper) {
+module.exports = function (logger, cp) {
 	var app = express();
 
 	// ============================================================================================================================
@@ -70,21 +70,21 @@ module.exports = function (logger, helper) {
 
 	//get cred data
 	function get_credential_data() {
-		const channel = helper.getFirstChannelId();
-		const first_org = helper.getClientOrg();
-		const first_ca = helper.getFirstCaName(first_org);
-		const first_peer = helper.getFirstPeerName(channel);
-		const first_orderer = helper.getFirstOrdererName(channel);
+		const channel = cp.getFirstChannelId();
+		const first_org = cp.getClientOrg();
+		const first_ca = cp.getFirstCaName(first_org);
+		const first_peer = cp.getFirstPeerName(channel);
+		const first_orderer = cp.getFirstOrdererName(channel);
 		var ret = {
-			admin_id: helper.getEnrollObj(first_ca, 0).enrollId,
-			admin_secret: helper.getEnrollObj(first_ca, 0).enrollSecret,
-			orderer: helper.getOrderersUrl(first_orderer),
-			ca: helper.getCasUrl(first_ca),
-			peer: helper.getPeersUrl(first_peer),
-			chaincode_id: helper.getChaincodeId(),
-			channel: helper.getFirstChannelId(),
-			chaincode_version: helper.getChaincodeVersion(),
-			marble_owners: helper.getMarbleUsernames(),
+			admin_id: cp.getEnrollObj(first_ca, 0).enrollId,
+			admin_secret: cp.getEnrollObj(first_ca, 0).enrollSecret,
+			orderer: cp.getOrderersUrl(first_orderer),
+			ca: cp.getCasUrl(first_ca),
+			peer: cp.getPeersUrl(first_peer),
+			chaincode_id: cp.getChaincodeId(),
+			channel: cp.getFirstChannelId(),
+			chaincode_version: cp.getChaincodeVersion(),
+			marble_owners: cp.getMarbleUsernames(),
 		};
 		for (var i in ret) {
 			if (ret[i] == null) ret[i] = '';			//set to blank if not found

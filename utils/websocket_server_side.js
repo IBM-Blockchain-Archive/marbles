@@ -2,7 +2,7 @@
 // Websocket Server Side Code
 // ==================================
 
-module.exports = function (helper, fcw, logger) {
+module.exports = function (cp, fcw, logger) {
 	var ws_server = {};
 	var known_everything = {};
 	var marbles_lib = {};
@@ -26,10 +26,10 @@ module.exports = function (helper, fcw, logger) {
 
 		// --- Keep Alive  --- //
 		clearInterval(enrollInterval);
-		enrollInterval = setInterval(function () {					//to avoid REQUEST_TIMEOUT errors we periodically re-enroll
-			let enroll_options = helper.makeEnrollmentOptions(0);
+		enrollInterval = setInterval(function () {						//to avoid REQUEST_TIMEOUT errors we periodically re-enroll
+			let enroll_options = cp.makeEnrollmentOptions(0);
 			fcw.enroll(enroll_options, function (err, enrollObj2) { });	//this seems to be safe 3/27/2017
-		}, helper.getKeepAliveMs());								//timeout happens at 5 minutes, so this interval should be faster than that
+		}, cp.getKeepAliveMs());										//timeout happens at 5 minutes, so this interval should be faster than that
 	};
 
 	// Message to client to communicate where we are in the start up
@@ -45,7 +45,7 @@ module.exports = function (helper, fcw, logger) {
 	ws_server.broadcast_state = function (change_state, outcome) {
 		try {
 			start_up_states[change_state].state = outcome;
-			wss.broadcast(ws_server.build_state_msg());								//tell client our app state
+			wss.broadcast(ws_server.build_state_msg());						//tell client our app state
 		} catch (e) { }														//this is expected to fail for "checking"
 	};
 
@@ -53,10 +53,10 @@ module.exports = function (helper, fcw, logger) {
 	// Process web socket messages - blockchain code is near. "marbles_lib"
 	//--------------------------------------------------------
 	ws_server.process_msg = function (ws, data) {
-		const channel = helper.getFirstChannelId();
-		const first_peer = helper.getFirstPeerName(channel);
+		const channel = cp.getFirstChannelId();
+		const first_peer = cp.getFirstPeerName(channel);
 		var options = {
-			peer_urls: [helper.getPeersUrl(first_peer)],
+			peer_urls: [cp.getPeersUrl(first_peer)],
 			ws: ws,
 			endorsed_hook: endorse_hook,
 			ordered_hook: orderer_hook
@@ -192,7 +192,7 @@ module.exports = function (helper, fcw, logger) {
 				sch_next_check();
 				ws_server.check_for_updates(null);
 			}
-		}, helper.getBlockDelay() + 2000);
+		}, cp.getBlockDelay() + 2000);
 	}
 
 	// --------------------------------------------------------
@@ -206,7 +206,7 @@ module.exports = function (helper, fcw, logger) {
 					msg: 'error',
 					e: err,
 				};
-				if (ws_client) ws_client.send(JSON.stringify(eObj)); 								//send to a client
+				if (ws_client) ws_client.send(JSON.stringify(eObj)); 									//send to a client
 				else wss.broadcast(eObj);																//send to all clients
 			} else {
 				if (resp && resp.height && resp.height.low) {
@@ -224,9 +224,9 @@ module.exports = function (helper, fcw, logger) {
 								msg: 'block',
 								e: null,
 								block_height: resp.height.low,
-								block_delay: helper.getBlockDelay()
+								block_delay: cp.getBlockDelay()
 							};
-							ws_client.send(JSON.stringify(obj)); 									//send to a client
+							ws_client.send(JSON.stringify(obj)); 										//send to a client
 						}
 					}
 				}
@@ -244,10 +244,10 @@ module.exports = function (helper, fcw, logger) {
 
 	// read complete state of marble world
 	function read_everything(ws_client, cb) {
-		const channel = helper.getFirstChannelId();
-		const first_peer = helper.getFirstPeerName(channel);
+		const channel = cp.getFirstChannelId();
+		const first_peer = cp.getFirstPeerName(channel);
 		var options = {
-			peer_urls: [helper.getPeersUrl(first_peer)],
+			peer_urls: [cp.getPeersUrl(first_peer)],
 		};
 
 		marbles_lib.read_everything(options, function (err, resp) {

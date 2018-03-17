@@ -4,7 +4,7 @@
 // ============================================================================================================================
 var async = require('async');
 
-module.exports = function (logger, helper, fcw, marbles_lib, ws_server) {
+module.exports = function (logger, cp, fcw, marbles_lib, ws_server) {
 	var startup_lib = {};
 	var enrollObj = {};
 	var misc = require('./misc.js')(logger);					//random non-blockchain related functions
@@ -18,13 +18,13 @@ module.exports = function (logger, helper, fcw, marbles_lib, ws_server) {
 		// --- [6] Enroll the admin (repeat if needed)  --- //
 		if (data.configure === 'enrollment') {
 			startup_lib.removeKVS();
-			helper.write(data);													//write new config data to file
+			cp.write(data);																//write new config data to file
 			startup_lib.enroll_admin(1, function (e) {
 				if (e == null) {
 					startup_lib.setup_marbles_lib(function () {
 						startup_lib.detect_prev_startup({ startup: false }, function (err) {
 							if (err) {
-								startup_lib.create_assets(helper.getMarbleUsernames()); 	//builds marbles, then starts webapp
+								startup_lib.create_assets(cp.getMarbleUsernames()); 	//builds marbles, then starts webapp
 							}
 						});
 					});
@@ -34,13 +34,13 @@ module.exports = function (logger, helper, fcw, marbles_lib, ws_server) {
 
 		// --- [7] Find instantiated chaincode --- //
 		else if (data.configure === 'find_chaincode') {
-			helper.write(data);													//write new config data to file
-			startup_lib.enroll_admin(1, function (e) {										//re-enroll b/c we may be using new peer/order urls
+			cp.write(data);																//write new config data to file
+			startup_lib.enroll_admin(1, function (e) {									//re-enroll b/c we may be using new peer/order urls
 				if (e == null) {
 					startup_lib.setup_marbles_lib(function () {
 						startup_lib.detect_prev_startup({ startup: true }, function (err) {
 							if (err) {
-								startup_lib.create_assets(helper.getMarbleUsernames()); 	//builds marbles, then starts webapp
+								startup_lib.create_assets(cp.getMarbleUsernames()); 	//builds marbles, then starts webapp
 							}
 						});
 					});
@@ -67,17 +67,17 @@ module.exports = function (logger, helper, fcw, marbles_lib, ws_server) {
 	// Find if marbles has started up successfully before
 	startup_lib.detect_prev_startup = function (opts, cb) {
 		logger.info('Checking ledger for marble owners listed in the config file');
-		marbles_lib.read_everything(null, function (err, resp) {			//read the ledger for marble owners
+		marbles_lib.read_everything(null, function (err, resp) {					//read the ledger for marble owners
 			if (err != null) {
 				logger.warn('Error reading ledger');
 				if (cb) cb(true);
 			} else {
-				if (startup_lib.find_missing_owners(resp)) {							//check if each user in the settings file has been created in the ledger
-					logger.info('We need to make marble owners');			//there are marble owners that do not exist!
+				if (startup_lib.find_missing_owners(resp)) {						//check if each user in the settings file has been created in the ledger
+					logger.info('We need to make marble owners');					//there are marble owners that do not exist!
 					ws_server.broadcast_state('register_owners', 'waiting');
 					if (cb) cb(true);
 				} else {
-					ws_server.broadcast_state('register_owners', 'success');			//everything is good
+					ws_server.broadcast_state('register_owners', 'success');		//everything is good
 					process.env.app_first_setup = 'no';
 					logger.info('Everything is in place');
 					if (cb) cb(null);
@@ -89,7 +89,7 @@ module.exports = function (logger, helper, fcw, marbles_lib, ws_server) {
 	// Detect if there are marble usernames in the settings doc that are not in the ledger
 	startup_lib.find_missing_owners = function (resp) {
 		let ledger = (resp) ? resp.parsed : [];
-		let user_base = helper.getMarbleUsernames();
+		let user_base = cp.getMarbleUsernames();
 
 		for (let x in user_base) {
 			let found = false;
@@ -110,30 +110,30 @@ module.exports = function (logger, helper, fcw, marbles_lib, ws_server) {
 
 	//setup marbles library and check if cc is instantiated
 	startup_lib.setup_marbles_lib = function (host, port, cb) {
-		var opts = helper.makeMarblesLibOptions();
+		var opts = cp.makeMarblesLibOptions();
 		marbles_lib = require('./marbles_cc_lib.js')(enrollObj, opts, fcw, logger);
 		ws_server.setup(null, marbles_lib);
 
 		logger.debug('Checking if chaincode is already instantiated or not');
-		const channel = helper.getFirstChannelId();
-		const first_peer = helper.getFirstPeerName(channel);
+		const channel = cp.getFirstChannelId();
+		const first_peer = cp.getFirstPeerName(channel);
 		var options = {
-			peer_urls: [helper.getPeersUrl(first_peer)],
+			peer_urls: [cp.getPeersUrl(first_peer)],
 		};
 		marbles_lib.check_if_already_instantiated(options, function (not_instantiated, enrollUser) {
 			if (not_instantiated) {									//if this is truthy we have not yet instantiated.... error
 				console.log('');
-				logger.debug('Chaincode was not detected: "' + helper.getChaincodeId() + '", all stop');
+				logger.debug('Chaincode was not detected: "' + cp.getChaincodeId() + '", all stop');
 				logger.debug('Open your browser to http://' + host + ':' + port + ' and login to tweak settings for startup');
 				process.env.app_first_setup = 'yes';				//overwrite state, bad startup
 				ws_server.broadcast_state('find_chaincode', 'failed');
 			}
 			else {													//else we already instantiated
-				console.log('\n----------------------------- Chaincode found on channel "' + helper.getFirstChannelId() + '" -----------------------------\n');
+				console.log('\n----------------------------- Chaincode found on channel "' + cp.getFirstChannelId() + '" -----------------------------\n');
 
 				// --- Check Chaincode Compatibility  --- //
 				marbles_lib.check_version(options, function (err, resp) {
-					if (helper.errorWithVersions(resp)) {
+					if (cp.errorWithVersions(resp)) {
 						ws_server.broadcast_state('find_chaincode', 'failed');
 					} else {
 						logger.info('Chaincode version is good');
@@ -147,7 +147,7 @@ module.exports = function (logger, helper, fcw, marbles_lib, ws_server) {
 
 	// Enroll an admin with the CA for this peer/channel
 	startup_lib.enroll_admin = function (attempt, cb) {
-		fcw.enroll(helper.makeEnrollmentOptions(0), function (errCode, obj) {
+		fcw.enroll(cp.makeEnrollmentOptions(0), function (errCode, obj) {
 			if (errCode != null) {
 				logger.error('could not enroll...');
 
@@ -204,7 +204,7 @@ module.exports = function (logger, helper, fcw, marbles_lib, ws_server) {
 								startup_lib.all_done();												//delay for peer catch up
 							}
 						});
-					}, helper.getBlockDelay());
+					}, cp.getBlockDelay());
 				}
 			});
 		}
@@ -216,10 +216,10 @@ module.exports = function (logger, helper, fcw, marbles_lib, ws_server) {
 
 	// Create the marble owner
 	startup_lib.create_owners = function (attempt, username, cb) {
-		const channel = helper.getFirstChannelId();
-		const first_peer = helper.getFirstPeerName(channel);
+		const channel = cp.getFirstChannelId();
+		const first_peer = cp.getFirstPeerName(channel);
 		var options = {
-			peer_urls: [helper.getPeersUrl(first_peer)],
+			peer_urls: [cp.getPeersUrl(first_peer)],
 			args: {
 				marble_owner: username,
 				owners_company: process.env.marble_company
@@ -240,13 +240,13 @@ module.exports = function (logger, helper, fcw, marbles_lib, ws_server) {
 	// Create 1 marble
 	startup_lib.create_marbles = function (owner_id, username, cb) {
 		var randOptions = startup_lib.build_marble_options(owner_id, username, process.env.marble_company);
-		const channel = helper.getFirstChannelId();
-		const first_peer = helper.getFirstPeerName(channel);
+		const channel = cp.getFirstChannelId();
+		const first_peer = cp.getFirstPeerName(channel);
 		console.log('');
 		logger.debug('[startup] going to create marble:', randOptions);
 		var options = {
-			chaincode_id: helper.getChaincodeId(),
-			peer_urls: [helper.getPeersUrl(first_peer)],
+			chaincode_id: cp.getChaincodeId(),
+			peer_urls: [cp.getPeersUrl(first_peer)],
 			args: randOptions
 		};
 		marbles_lib.create_a_marble(options, function () {
@@ -272,7 +272,7 @@ module.exports = function (logger, helper, fcw, marbles_lib, ws_server) {
 	startup_lib.removeKVS = function () {
 		try {
 			logger.warn('removing older kvs and trying to enroll again');
-			misc.rmdir(helper.getKvsPath({ going2delete: true }));			//delete old kvs folder
+			misc.rmdir(cp.getKvsPath({ going2delete: true }));			//delete old kvs folder
 			logger.warn('removed older kvs');
 		} catch (e) {
 			logger.error('could not delete old kvs', e);

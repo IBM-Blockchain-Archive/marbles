@@ -2,8 +2,9 @@
 /* global process */
 /* global __dirname */
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corp.
+ * [Marbles] - a simple Hyperledger Fabric blockchain application
  *
+ * Copyright (c) 2015 IBM Corp.
  * All rights reserved.
  *
  *******************************************************************************/
@@ -30,19 +31,19 @@ var logger = new (winston.Logger)({
 });
 var misc = require('./utils/misc.js')(logger);												// mis.js has generic (non-blockchain) related functions
 misc.check_creds_for_valid_json();
-var helper = require(__dirname + '/utils/helper.js')(process.env.creds_filename, logger);	// helper.js parses our blockchain config file
+var cp = require(__dirname + '/utils/connection_profile_lib/index.js')(process.env.creds_filename, logger);	// parses our cp file/data
 var host = 'localhost';
-var port = helper.getMarblesPort();
-process.env.marble_company = helper.getCompanyName();
+var port = cp.getMarblesPort();
+process.env.marble_company = cp.getCompanyName();
 
 // fabric client wrangler wraps the SDK
-var fcw = require('./utils/fc_wrangler/index.js')({ block_delay: helper.getBlockDelay() }, logger);
+var fcw = require('./utils/fc_wrangler/index.js')({ block_delay: cp.getBlockDelay() }, logger);
 
 // websocket logic
-var ws_server = require('./utils/websocket_server_side.js')(helper, fcw, logger);
+var ws_server = require('./utils/websocket_server_side.js')(cp, fcw, logger);
 
 // setup/startup logic
-var startup_lib = require('./utils/startup_lib.js')(logger, helper, fcw, marbles_lib, ws_server);
+var startup_lib = require('./utils/startup_lib.js')(logger, cp, fcw, marbles_lib, ws_server);
 
 // ------------- Bluemix Host Detection ------------- //
 if (process.env.VCAP_APPLICATION) {
@@ -72,7 +73,7 @@ app.use(function (req, res, next) {
 	req.bag.session = req.session;
 	next();
 });
-app.use('/', require('./routes/site_router.js')(logger, helper));					// most routes are in here
+app.use('/', require('./routes/site_router.js')(logger, cp));						// most routes are in here
 
 // ------ Error Handling --------
 app.use(function (req, res, next) {
@@ -105,7 +106,7 @@ process.on('uncaughtException', function (err) {
 		logger.warn('----------------------------- Ah! -----------------------------');
 		logger.warn('---------------------------------------------------------------');
 		logger.error('You already have something running on port ' + port + '!');
-		logger.error('Kill whatever is running on that port OR change the port setting in your marbles config file: ' + helper.config_path);
+		logger.error('Kill whatever is running on that port OR change the port setting in your marbles config file: ' + cp.config_path);
 		process.exit();
 	}
 	if (wss && wss.broadcast) {							// if possible send the error out to the client
@@ -134,7 +135,7 @@ process.on('uncaughtException', function (err) {
 // - these steps will test the ability to communicate with marbles chaincode on your blockchain network
 // ------------------------------------------------------------------------------------------------------------------------------
 process.env.app_first_setup = 'yes';						// init
-let config_error = helper.checkConfig();
+let config_error = cp.checkConfig();
 setupWebSocket();											// http server is already up, make the ws one now
 
 if (config_error) {
@@ -180,7 +181,7 @@ if (config_error) {
 // ============================================================================================================================
 function setupWebSocket() {
 	console.log('------------------------------------------ Websocket Up ------------------------------------------');
-	wss = new ws.Server({ server: server });								// start the websocket now
+	wss = new ws.Server({ server: server });						// start the websocket now
 	wss.on('connection', function connection(ws) {
 
 		// -- Process all websocket messages -- //
@@ -190,18 +191,18 @@ function setupWebSocket() {
 			logger.debug('[ws] received ws msg:', message);
 			var data = null;
 			try {
-				data = JSON.parse(message);									// it better be json
+				data = JSON.parse(message);							// it better be json
 			} catch (e) {
 				logger.debug('[ws] message error', message, e.stack);
 			}
 
 			// --- [5] Process the ws message  --- //
-			if (data && data.type == 'setup') {								// its a setup request, enter the setup code
+			if (data && data.type == 'setup') {						// its a setup request, enter the setup code
 				logger.debug('[ws] setup message', data);
-				startup_lib.setup_ws_steps(data);
+				startup_lib.setup_ws_steps(data);					// <-- open startup_lib.js to view the rest of the start up code
 
-			} else if (data) {												// its a normal marble request, pass it for processing
-				ws_server.process_msg(ws, data);							// <-- the interesting "blockchainy" code is this way
+			} else if (data) {										// its a normal marble request, pass it to the lib for processing
+				ws_server.process_msg(ws, data);					// <-- the interesting "blockchainy" code is this way (websocket_server_side.js)
 			}
 		});
 
