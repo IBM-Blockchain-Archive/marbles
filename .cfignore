@@ -1,7 +1,10 @@
-temp/
-node_modules/
-chaincode/
-doc_images/
-docs/
-scripts/
-scss/
+temp
+node_modules
+chaincode
+doc_images
+docs
+doc_images
+scripts
+scss
+.vscode
+.bluemix

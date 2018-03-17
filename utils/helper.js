@@ -8,20 +8,39 @@ var os = require('os');
 
 module.exports = function (config_filename, logger) {
 	var helper = {};
+	var package_json = require(path.join(__dirname, '../package.json'));		// get release version of marbles from package.json
+	var misc = require(path.join(__dirname, './misc.js'))(logger);
 
-	// default config file name
-	if (!config_filename) {
-		config_filename = 'marbles_tls.json';
+	let cloudy = misc.getConnectionProfileFromEnv();
+	if (cloudy) {																// if we are in bluemix, use vcap
+		helper.config_path = 'there-is-no-file-using-a-cloud';
+		helper.creds_path = 'there-is-no-file-using-a-cloud';
+		helper.config = {
+			'cred_filename': 'there-is-no-file-using-a-cloud',
+			'use_events': true,
+			'keep_alive_secs': 120,
+			'company': 'United Marbles',
+			'usernames': [
+				'amy',
+				'alice',
+				'ava'
+			],
+			'port': 3001
+		};
+		helper.creds = cloudy;
+		logger.info('Loaded creds from a IBM Cloud binding');
+	} else {
+		if (!config_filename) {
+			config_filename = 'marbles_tls.json';												// default config file name
+		}
+		helper.config_path = path.join(__dirname, '../config/' + config_filename);
+		helper.config = require(helper.config_path);											// load the config file
+		helper.creds_path = path.join(__dirname, '../config/' + helper.config.cred_filename);
+		helper.creds = require(helper.creds_path);												// load the credential file
+
+		logger.info('Loaded config file', helper.config_path);									// path to config file
+		logger.info('Loaded creds file', helper.creds_path);									// path to the blockchain credentials file
 	}
-
-	helper.config_path = path.join(__dirname, '../config/' + config_filename);
-	helper.config = require(helper.config_path);											//load the config file
-	helper.creds_path = path.join(__dirname, '../config/' + helper.config.cred_filename);
-	helper.creds = require(helper.creds_path);												//load the credential file
-	var package_json = require(path.join(__dirname, '../package.json'));					//get release version of marbles from package.json
-
-	logger.info('Loaded config file', helper.config_path);									//path to config file
-	logger.info('Loaded creds file', helper.creds_path);									//path to the blockchain credentials file
 
 	// get network id
 	helper.getNetworkName = function () {
@@ -406,43 +425,67 @@ module.exports = function (config_filename, logger) {
 		}
 	}
 
-	// get the channel id on network for marbles
-	helper.getChannelId = function () {
+	// get the very first channel name from creds
+	helper.getFirstChannelId = function () {
 		if (helper.creds && helper.creds.channels) {
 			var channels = Object.keys(helper.creds.channels);
 			if (channels[0]) {
 				return channels[0];
 			}
 		}
-		throw Error('No channels found in credentials file...');
+		throw Error('No channels found in credentials file... this is problematic. A channel needs to be created before marbles can execute.');
 	};
 
-	// get the chaincode id on network
+	// get the first chaincode id on the network
 	helper.getChaincodeId = function () {
-		var channel = helper.getChannelId();
-		if (channel && helper.creds.channels[channel] && helper.creds.channels[channel].chaincodes) {
-			var chaincode = Object.keys(helper.creds.channels[channel].chaincodes);
-			return chaincode[0];
+		if (process.env.CHAINCODE_ID) {														// detected a preferred chaincode id instead of first
+			//console.log('debug: found preferred chaincode id', process.env.CHAINCODE_ID);
+			return process.env.CHAINCODE_ID;
+		} else {																			// else get the first chaincode we see
+			var channel = helper.getFirstChannelId();
+			if (channel && helper.creds.channels[channel] && helper.creds.channels[channel].chaincodes) {
+				if (Array.isArray(helper.creds.channels[channel].chaincodes)) {				// config version 1.0.2 way
+					let chaincode = helper.creds.channels[channel].chaincodes[0];			// first one
+					if (chaincode) {
+						return chaincode.split(':')[0];
+					}
+				} else {
+					let chaincode = Object.keys(helper.creds.channels[channel].chaincodes);	// config version 1.0.0 and 1.0.1 way
+					return chaincode[0];													// first one
+				}
+			}
+			logger.warn('No chaincode ID found in credentials file... might be okay if we haven\'t instantiated marbles yet');
+			return null;
 		}
-		logger.warn('No chaincode ID found in credentials file... might be okay if we haven\'t instantiated marbles yet');
-		return null;
 	};
 
-	// get the chaincode version on network
+	// get the first chaincode version on the network
 	helper.getChaincodeVersion = function () {
-		var channel = helper.getChannelId();
-		var chaincodeId = helper.getChaincodeId();
-		if (channel && chaincodeId) {
-			return helper.creds.channels[channel].chaincodes[chaincodeId];
+		if (process.env.CHAINCODE_VERSION) {												// detected a preferred chaincode version instead of first
+			//console.log('debug: found preferred chaincode version', process.env.CHAINCODE_VERSION);
+			return process.env.CHAINCODE_VERSION;
+		} else {																			// else get the first chaincode we see
+			var channel = helper.getFirstChannelId();
+			var chaincodeId = helper.getChaincodeId();
+			if (channel && chaincodeId) {
+				if (Array.isArray(helper.creds.channels[channel].chaincodes)) {				// config version 1.0.2 way
+					let chaincode = helper.creds.channels[channel].chaincodes[0];			// first one
+					if (chaincode) {
+						return chaincode.split(':')[1];
+					}
+				} else {
+					return helper.creds.channels[channel].chaincodes[chaincodeId];			// config version 1.0.0 and 1.0.1 way
+				}
+			}
+			logger.warn('No chaincode version found in credentials file... might be okay if we haven\'t instantiated marbles yet');
+			return null;
 		}
-		logger.warn('No chaincode version found in credentials file... might be okay if we haven\'t instantiated marbles yet');
-		return null;
 	};
 
 	// get the chaincode id on network
 	helper.getBlockDelay = function () {
 		let ret = 1000;
-		var channel = helper.getChannelId();
+		var channel = helper.getFirstChannelId();
 		if (helper.creds.channels && helper.creds.channels[channel] && helper.creds.channels[channel]['x-blockDelay']) {
 			if (!isNaN(helper.creds.channels[channel]['x-blockDelay'])) {
 				ret = helper.creds.channels[channel]['x-blockDelay'];
@@ -529,21 +572,21 @@ module.exports = function (config_filename, logger) {
 	// Build Options
 	// --------------------------------------------------------------------------------
 	helper.makeUniqueId = function () {
-		const channel = helper.getChannelId();
+		const channel = helper.getFirstChannelId();
 		const first_peer = helper.getFirstPeerName(channel);
 		return 'marbles-' + helper.getNetworkName() + '-' + channel + '-' + first_peer;
 	};
 
 	// build the marbles lib module options
 	helper.makeMarblesLibOptions = function () {
-		const channel = helper.getChannelId();
+		const channel = helper.getFirstChannelId();
 		const org_2_use = helper.getClientOrg();
 		const first_ca = helper.getFirstCaName(org_2_use);
 		const first_peer = helper.getFirstPeerName(channel);
 		const first_orderer = helper.getFirstOrdererName(channel);
 		return {
 			block_delay: helper.getBlockDelay(),
-			channel_id: helper.getChannelId(),
+			channel_id: helper.getFirstChannelId(),
 			chaincode_id: helper.getChaincodeId(),
 			event_urls: (helper.getEventsSetting()) ? helper.getAllPeerUrls(channel).eventUrls : null,	//null is important
 			chaincode_version: helper.getChaincodeVersion(),
@@ -559,7 +602,7 @@ module.exports = function (config_filename, logger) {
 		if (userIndex === undefined || userIndex == null) {
 			throw new Error('User index not passed');
 		} else {
-			const channel = helper.getChannelId();
+			const channel = helper.getFirstChannelId();
 			const org_2_use = helper.getClientOrg();
 			const first_ca = helper.getFirstCaName(org_2_use);
 			const first_peer = helper.getFirstPeerName(channel);
@@ -586,7 +629,7 @@ module.exports = function (config_filename, logger) {
 
 	// build the enrollment options using an admin cert
 	helper.makeEnrollmentOptionsUsingCert = function () {
-		const channel = helper.getChannelId();
+		const channel = helper.getFirstChannelId();
 		const org_2_use = helper.getClientOrg();
 		const first_peer = helper.getFirstPeerName(channel);
 		const first_orderer = helper.getFirstOrdererName(channel);
@@ -609,7 +652,7 @@ module.exports = function (config_filename, logger) {
 	helper.write = function (obj) {
 		console.log('saving the creds file has been disabled temporarily');
 
-		const channel = helper.getChannelId();
+		const channel = helper.getFirstChannelId();
 		const org_2_use = helper.getClientOrg();
 		const first_peer = helper.getFirstPeerName(channel);
 		const first_ca = helper.getFirstCaName(org_2_use);
@@ -628,12 +671,18 @@ module.exports = function (config_filename, logger) {
 			creds_file.certificateAuthorities[first_ca].url = obj.caUrl;
 		}
 		if (obj.chaincodeId) {
-			const version = helper.getChaincodeVersion();
-			creds_file.channels[channel].chaincodes = {};
-			creds_file.channels[channel].chaincodes[obj.chaincodeId] = version;
+			let version = helper.getChaincodeVersion();
+			if (obj.chaincodeVersion) {						// changing both id and version
+				version = obj.chaincodeVersion;
+			}
+			creds_file.channels[channel].chaincodes = [obj.chaincodeId + ':' + version];
 		}
 		if (obj.chaincodeVersion) {
-			creds_file.channels[channel].chaincodes[helper.getChaincodeId()] = obj.chaincodeVersion;
+			let chaincodeId = helper.getChaincodeId();
+			if (obj.chaincodeId) {							// changing both id and version
+				chaincodeId = obj.chaincodeVersion;
+			}
+			creds_file.channels[channel].chaincodes = [chaincodeId + ':' + obj.chaincodeVersion];
 		}
 		if (obj.channelId) {
 			const old_channel_obj = JSON.parse(JSON.stringify(creds_file.channels[channel]));
@@ -695,7 +744,7 @@ module.exports = function (config_filename, logger) {
 			logger.warn('The INTERNAL version of the chaincode found is: v' + v.parsed);
 			logger.warn('But this UI is expecting INTERNAL chaincode version: v' + version[0] + '.x.x');
 			logger.warn('This mismatch won\'t work =(');
-			logger.warn('Install and instantiate the chaincode found in the ./chaincode folder on your channel ' + helper.getChannelId());
+			logger.warn('Install and instantiate the chaincode found in the ./chaincode folder on your channel ' + helper.getFirstChannelId());
 			logger.warn('----------------------------------------------------------------------');
 			console.log('\n\n');
 			return true;
@@ -706,7 +755,7 @@ module.exports = function (config_filename, logger) {
 	// check if config has missing entries
 	helper.check_for_missing = function () {
 		let errors = [];
-		const channel = helper.getChannelId();
+		const channel = helper.getFirstChannelId();
 
 		if (!channel) {
 			errors.push('There is no channel data in the "channels" field');
@@ -756,7 +805,7 @@ module.exports = function (config_filename, logger) {
 	// check if config has protocol errors - returns error array when there is a problem
 	helper.check_protocols = function () {
 		let errors = [];
-		const channel = helper.getChannelId();
+		const channel = helper.getFirstChannelId();
 		const org_2_use = helper.getClientOrg();
 		const first_ca = helper.getFirstCaName(org_2_use);
 		const first_orderer = helper.getFirstOrdererName(channel);

@@ -47,11 +47,11 @@ fcw.enrollWithAdminCert(helper.makeEnrollmentOptionsUsingCert(), function (enrol
 		logger.info('Now we upgrade');
 		console.log('---------------------------------------');
 
-		const channel = helper.getChannelId();
+		const channel = helper.getFirstChannelId();
 		const first_peer = helper.getFirstPeerName(channel);
 		var opts = {
 			peer_urls: [helper.getPeersUrl(first_peer)],
-			channel_id: helper.getChannelId(),
+			channel_id: helper.getFirstChannelId(),
 			chaincode_id: chaincode_id,
 			chaincode_version: chaincode_ver,
 			peer_tls_opts: helper.getPeerTlsCertOpts(first_peer),

@@ -1,3 +1,7 @@
+// ============================================================================================================================
+// 													Instantiate Chaincode
+// This file shows how to instantiate chaincode onto a Hyperledger Fabric Channel via the SDK + FC Wrangler
+// ============================================================================================================================
 var winston = require('winston');								//logger module
 var path = require('path');
 var logger = new (winston.Logger)({
@@ -44,11 +48,11 @@ fcw.enrollWithAdminCert(helper.makeEnrollmentOptionsUsingCert(), function (enrol
 		logger.info('Now we instantiate');
 		console.log('---------------------------------------');
 
-		const channel = helper.getChannelId();
+		const channel = helper.getFirstChannelId();
 		const first_peer = helper.getFirstPeerName(channel);
 		var opts = {
 			peer_urls: [helper.getPeersUrl(first_peer)],
-			channel_id: helper.getChannelId(),
+			channel_id: helper.getFirstChannelId(),
 			chaincode_id: chaincode_id,
 			chaincode_version: chaincode_ver,
 			cc_args: ['12345'],

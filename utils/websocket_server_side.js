@@ -1,41 +1,59 @@
 // ==================================
-// Websocket Server Side Code 
+// Websocket Server Side Code
 // ==================================
-//var async = require('async');
-var path = require('path');
 
-module.exports = function (g_options, fcw, logger) {
-	var helper = require(path.join(__dirname, './helper.js'))(process.env.creds_filename, logger);
+module.exports = function (helper, fcw, logger) {
 	var ws_server = {};
-	var broadcast = null;
 	var known_everything = {};
-	var marbles_lib = null;
+	var marbles_lib = {};
+	var wss = {};
 	var known_height = 0;
 	var checkPeriodically = null;
 	var enrollInterval = null;
+	var start_up_states = {												//Marbles Startup Steps
+		checklist: { state: 'waiting', step: 'step1' },					// Step 1 - check config files for somewhat correctness
+		enrolling: { state: 'waiting', step: 'step2' },					// Step 2 - enroll the admin
+		find_chaincode: { state: 'waiting', step: 'step3' },			// Step 3 - find the chaincode on the channel
+		register_owners: { state: 'waiting', step: 'step4' },			// Step 4 - create the marble owners
+	};
 
 	//--------------------------------------------------------
 	// Setup WS Module
 	//--------------------------------------------------------
-	ws_server.setup = function (l_broadcast, l_marbles_lib) {
-		broadcast = l_broadcast;
-		marbles_lib = l_marbles_lib;
+	ws_server.setup = function (l_wss, l_marbles_lib) {
+		marbles_lib = (l_marbles_lib) ? l_marbles_lib : marbles_lib;
+		wss = (l_wss) ? l_wss : wss;
 
 		// --- Keep Alive  --- //
 		clearInterval(enrollInterval);
 		enrollInterval = setInterval(function () {					//to avoid REQUEST_TIMEOUT errors we periodically re-enroll
 			let enroll_options = helper.makeEnrollmentOptions(0);
-			fcw.enroll(enroll_options, function (err, enrollObj2) {
-				if (err == null) {
-					//marbles_lib = require(path.join(__dirname, './marbles_cc_lib.js'))(enrollObj2, opts, fcw, logger);
-				}
-			});														//this seems to be safe 3/27/2017
+			fcw.enroll(enroll_options, function (err, enrollObj2) { });	//this seems to be safe 3/27/2017
 		}, helper.getKeepAliveMs());								//timeout happens at 5 minutes, so this interval should be faster than that
 	};
 
-	// process web socket messages
+	// Message to client to communicate where we are in the start up
+	ws_server.build_state_msg = function () {
+		return {
+			msg: 'app_state',
+			state: start_up_states,
+			first_setup: process.env.app_first_setup
+		};
+	};
+
+	// Send to all connected clients
+	ws_server.broadcast_state = function (change_state, outcome) {
+		try {
+			start_up_states[change_state].state = outcome;
+			wss.broadcast(ws_server.build_state_msg());								//tell client our app state
+		} catch (e) { }														//this is expected to fail for "checking"
+	};
+
+	//--------------------------------------------------------
+	// Process web socket messages - blockchain code is near. "marbles_lib"
+	//--------------------------------------------------------
 	ws_server.process_msg = function (ws, data) {
-		const channel = helper.getChannelId();
+		const channel = helper.getFirstChannelId();
 		const first_peer = helper.getFirstPeerName(channel);
 		var options = {
 			peer_urls: [helper.getPeersUrl(first_peer)],
@@ -130,7 +148,7 @@ module.exports = function (g_options, fcw, logger) {
 			}
 		}
 
-		// send transaction error msg 
+		// send transaction error msg
 		function send_err(msg, input) {
 			sendMsg({ msg: 'tx_error', e: msg, input: input });
 			sendMsg({ msg: 'tx_step', state: 'committing_failed' });
@@ -161,8 +179,6 @@ module.exports = function (g_options, fcw, logger) {
 		}
 	};
 
-	//------------------------------------------------------------------------------------------
-
 	// sch next periodic check
 	function sch_next_check() {
 		clearTimeout(checkPeriodically);
@@ -176,7 +192,7 @@ module.exports = function (g_options, fcw, logger) {
 				sch_next_check();
 				ws_server.check_for_updates(null);
 			}
-		}, g_options.block_delay + 2000);
+		}, helper.getBlockDelay() + 2000);
 	}
 
 	// --------------------------------------------------------
@@ -191,7 +207,7 @@ module.exports = function (g_options, fcw, logger) {
 					e: err,
 				};
 				if (ws_client) ws_client.send(JSON.stringify(eObj)); 								//send to a client
-				else broadcast(eObj);																//send to all clients
+				else wss.broadcast(eObj);																//send to all clients
 			} else {
 				if (resp && resp.height && resp.height.low) {
 					if (resp.height.low > known_height || ws_client) {
@@ -201,14 +217,14 @@ module.exports = function (g_options, fcw, logger) {
 							known_height = resp.height.low;
 							newBlock = true;
 							logger.debug('[checking] there are new things, sending to all clients');
-							broadcast({ msg: 'block', e: null, block_height: resp.height.low });	//send to all clients
+							wss.broadcast({ msg: 'block', e: null, block_height: resp.height.low });	//send to all clients
 						} else {
 							logger.debug('[checking] on demand req, sending to a client');
 							var obj = {
 								msg: 'block',
 								e: null,
 								block_height: resp.height.low,
-								block_delay: g_options.block_delay
+								block_delay: helper.getBlockDelay()
 							};
 							ws_client.send(JSON.stringify(obj)); 									//send to a client
 						}
@@ -228,7 +244,7 @@ module.exports = function (g_options, fcw, logger) {
 
 	// read complete state of marble world
 	function read_everything(ws_client, cb) {
-		const channel = helper.getChannelId();
+		const channel = helper.getFirstChannelId();
 		const first_peer = helper.getFirstPeerName(channel);
 		var options = {
 			peer_urls: [helper.getPeersUrl(first_peer)],
@@ -243,7 +259,7 @@ module.exports = function (g_options, fcw, logger) {
 					e: err,
 				};
 				if (ws_client) ws_client.send(JSON.stringify(obj)); 								//send to a client
-				else broadcast(obj);																//send to all clients
+				else wss.broadcast(obj);																//send to all clients
 				if (cb) cb();
 			}
 			else {
@@ -269,7 +285,7 @@ module.exports = function (g_options, fcw, logger) {
 				else {															//detected new things, send it out
 					logger.debug('[checking] there are new things, sending to all clients');
 					known_everything = data;
-					broadcast({ msg: 'everything', e: err, everything: data });	//sent to all clients
+					wss.broadcast({ msg: 'everything', e: err, everything: data });	//sent to all clients
 				}
 				if (cb) cb();
 			}

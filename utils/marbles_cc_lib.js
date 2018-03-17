@@ -1,5 +1,10 @@
 //-------------------------------------------------------------------
 // Marbles Chaincode Library
+// - this contains the most interesting code pieces of marbles.
+// - each function is using the FCW library to communicate to the peer/orderer
+// - from here we can interact with our chaincode.
+//   - the cc_function is the chaincode function we will call
+//   - the cc_args are the arguments to pass to your chaincode function
 //-------------------------------------------------------------------
 
 module.exports = function (enrollObj, g_options, fcw, logger) {
@@ -21,7 +26,7 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 			cc_function: 'read',
 			cc_args: ['selftest']
 		};
-		fcw.query_chaincode(enrollObj, opts, function (err, resp) {
+		fcw.query_chaincode(enrollObj, opts, function (err, resp) {  // send a request to our peer
 			if (err != null) {
 				if (cb) return cb(err, resp);
 			}
@@ -98,23 +103,6 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 				cb(err, resp);
 			}
 		});
-	};
-
-	//get list of marbles
-	marbles_chaincode.get_marble_list = function (options, cb) {
-		console.log('');
-		logger.info('Fetching marble index list...');
-
-		var opts = {
-			peer_urls: g_options.peer_urls,
-			peer_tls_opts: g_options.peer_tls_opts,
-			channel_id: g_options.channel_id,
-			chaincode_version: g_options.chaincode_version,
-			chaincode_id: g_options.chaincode_id,
-			cc_function: 'compelte_marble_index',
-			cc_args: [' ']
-		};
-		fcw.query_chaincode(enrollObj, opts, cb);
 	};
 
 	//get marble
@@ -370,4 +358,3 @@ module.exports = function (enrollObj, g_options, fcw, logger) {
 
 	return marbles_chaincode;
 };
-
