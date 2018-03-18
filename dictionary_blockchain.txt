@@ -71,3 +71,7 @@ prebaked
 repo
 mychannel
 adminpw
+blockchainy
+ZZzzzzzZZZzzzzzzzzZZzZZZZZzzzZZZzzz
+jshash
+csshash

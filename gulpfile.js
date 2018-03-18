@@ -64,6 +64,11 @@ gulp.task('env_cs', function () {
 // Dev
 gulp.task('env_dev', function () {
 	env['creds_filename'] = 'marbles_dev.json';
+	/*
+	env.CHAINCODE_ID = 'marbles-20180316235612480';
+	env.CHAINCODE_VERSION = '1521244615';
+	env.CONNECTION_PROFILE = JSON.stringify({});
+	*/
 });
 
 // Dev 2

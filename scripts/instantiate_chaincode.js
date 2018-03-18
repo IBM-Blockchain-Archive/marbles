@@ -31,8 +31,8 @@ if (args[2]) {
 	logger.debug('Using argument for chaincode version');
 }
 
-var helper = require(path.join(__dirname, '../utils/helper.js'))(config_file, logger);			//set the config file name here
-var fcw = require(path.join(__dirname, '../utils/fc_wrangler/index.js'))({ block_delay: helper.getBlockDelay() }, logger);
+var cp = require(path.join(__dirname, '../utils/connection_profile_lib/index.js'))(config_file, logger);			//set the config file name here
+var fcw = require(path.join(__dirname, '../utils/fc_wrangler/index.js'))({ block_delay: cp.getBlockDelay() }, logger);
 
 console.log('---------------------------------------');
 logger.info('Lets instantiate some chaincode -', chaincode_id, chaincode_ver);
@@ -40,7 +40,7 @@ console.log('---------------------------------------');
 logger.warn('Note: the chaincode should have been installed before running this script');
 
 logger.info('First we enroll');
-fcw.enrollWithAdminCert(helper.makeEnrollmentOptionsUsingCert(), function (enrollErr, enrollResp) {
+fcw.enrollWithAdminCert(cp.makeEnrollmentOptionsUsingCert(), function (enrollErr, enrollResp) {
 	if (enrollErr != null) {
 		logger.error('error enrolling', enrollErr, enrollResp);
 	} else {
@@ -48,15 +48,15 @@ fcw.enrollWithAdminCert(helper.makeEnrollmentOptionsUsingCert(), function (enrol
 		logger.info('Now we instantiate');
 		console.log('---------------------------------------');
 
-		const channel = helper.getFirstChannelId();
-		const first_peer = helper.getFirstPeerName(channel);
+		const channel = cp.getFirstChannelId();
+		const first_peer = cp.getFirstPeerName(channel);
 		var opts = {
-			peer_urls: [helper.getPeersUrl(first_peer)],
-			channel_id: helper.getFirstChannelId(),
+			peer_urls: [cp.getPeersUrl(first_peer)],
+			channel_id: cp.getFirstChannelId(),
 			chaincode_id: chaincode_id,
 			chaincode_version: chaincode_ver,
 			cc_args: ['12345'],
-			peer_tls_opts: helper.getPeerTlsCertOpts(first_peer)
+			peer_tls_opts: cp.getPeerTlsCertOpts(first_peer)
 		};
 		fcw.instantiate_chaincode(enrollResp, opts, function (err, resp) {
 			console.log('---------------------------------------');
