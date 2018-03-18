@@ -74,10 +74,12 @@ module.exports = function (logger, cp, fcw, marbles_lib, ws_server) {
 			} else {
 				if (startup_lib.find_missing_owners(resp)) {						//check if each user in the settings file has been created in the ledger
 					logger.info('We need to make marble owners');					//there are marble owners that do not exist!
-					ws_server.broadcast_state('register_owners', 'waiting');
+					ws_server.record_state('register_owners', 'waiting');
+					ws_server.broadcast_state();
 					if (cb) cb(true);
 				} else {
-					ws_server.broadcast_state('register_owners', 'success');		//everything is good
+					ws_server.record_state('register_owners', 'success');		//everything is good
+					ws_server.broadcast_state();
 					process.env.app_first_setup = 'no';
 					logger.info('Everything is in place');
 					if (cb) cb(null);
@@ -126,18 +128,20 @@ module.exports = function (logger, cp, fcw, marbles_lib, ws_server) {
 				logger.debug('Chaincode was not detected: "' + cp.getChaincodeId() + '", all stop');
 				logger.debug('Open your browser to http://' + host + ':' + port + ' and login to tweak settings for startup');
 				process.env.app_first_setup = 'yes';				//overwrite state, bad startup
-				ws_server.broadcast_state('find_chaincode', 'failed');
-			}
-			else {													//else we already instantiated
+				ws_server.record_state('find_chaincode', 'failed');
+				ws_server.broadcast_state();
+			} else {													//else we already instantiated
 				console.log('\n----------------------------- Chaincode found on channel "' + cp.getFirstChannelId() + '" -----------------------------\n');
 
 				// --- Check Chaincode Compatibility  --- //
 				marbles_lib.check_version(options, function (err, resp) {
 					if (cp.errorWithVersions(resp)) {
-						ws_server.broadcast_state('find_chaincode', 'failed');
+						ws_server.record_state('find_chaincode', 'failed');
+						ws_server.broadcast_state();
 					} else {
 						logger.info('Chaincode version is good');
-						ws_server.broadcast_state('find_chaincode', 'success');
+						ws_server.record_state('find_chaincode', 'success');
+						ws_server.broadcast_state();
 						if (cb) cb(null);
 					}
 				});
@@ -282,7 +286,8 @@ module.exports = function (logger, cp, fcw, marbles_lib, ws_server) {
 	// We are done, inform the clients
 	startup_lib.all_done = function () {
 		console.log('\n------------------------------------------ All Done ------------------------------------------\n');
-		ws_server.broadcast_state('register_owners', 'success');
+		ws_server.record_state('register_owners', 'success');
+		ws_server.broadcast_state();
 		process.env.app_first_setup = 'no';
 
 		ws_server.check_for_updates(null);									//call the periodic task to get the state of everything

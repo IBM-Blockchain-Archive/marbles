@@ -143,20 +143,23 @@ let config_error = cp.checkConfig();
 setupWebSocket();											// http server is already up, make the ws one now
 
 if (config_error) {
-	ws_server.broadcast_state('checklist', 'failed');		// checklist step is done
+	ws_server.record_state('checklist', 'failed');			// checklist step is done
+	ws_server.broadcast_state();
 } else {
-	ws_server.broadcast_state('checklist', 'success');		// checklist step is done
+	ws_server.record_state('checklist', 'success');		// checklist step is done
 	console.log('\n');
 
 	// --- [1] Test enrolling with our CA --- //
 	startup_lib.enroll_admin(1, function (e) {
 		if (e != null) {
 			logger.warn('Error enrolling admin');
-			ws_server.broadcast_state('enrolling', 'failed');
+			ws_server.record_state('enrolling', 'failed');
+			ws_server.broadcast_state();
 			startup_lib.startup_unsuccessful(host, port);
 		} else {
 			logger.info('Success enrolling admin');
-			ws_server.broadcast_state('enrolling', 'success');
+			ws_server.record_state('enrolling', 'success');
+			ws_server.broadcast_state();
 
 			// --- [2] Setup Marbles Library --- //
 			startup_lib.setup_marbles_lib(host, port, function () {

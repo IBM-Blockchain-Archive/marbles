@@ -48,15 +48,14 @@ module.exports = function (logger, cp) {
 	});
 
 	function route_me(req, res) {
-		if (!req.session.user || !req.session.user.username) {
-			res.redirect('/login');
-		}
-		else {
+		//if (!req.session.user || !req.session.user.username) {		// no session? send them to login
+		//	res.redirect('/login');
+		//} else {
 			res.render('marbles', { title: 'Marbles - Home', bag: build_bag(req) });
-		}
+		//}
 	}
 
-	//anything in here gets passed to Pug template engine
+	//anything in here gets passed to the Pug template engine
 	function build_bag(req) {
 		return {
 			e: process.error,							//send any setup errors
@@ -64,7 +63,8 @@ module.exports = function (logger, cp) {
 			jshash: process.env.cachebust_js,			//js cache busting hash (not important)
 			csshash: process.env.cachebust_css,			//css cache busting hash (not important)
 			marble_company: process.env.marble_company,
-			creds: get_credential_data()
+			creds: get_credential_data(),
+			using_env: cp.using_env,
 		};
 	}
 

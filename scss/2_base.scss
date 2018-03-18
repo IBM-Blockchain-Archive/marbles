@@ -27,12 +27,12 @@ tr:hover{background:$hi_color1;}
 //tr:nth-child(even):hover{background:$hi_color1; border:0;}
 td{padding:15px 10px; vertical-align: middle;}
 th{
-	padding:10px 5px; 
-	font-weight:normal; 
-	font-size: 12px; 
-	background: $main_bg; 
-	color: $main_color; 
-	text-align:center; 
+	padding:10px 5px;
+	font-weight:normal;
+	font-size: 12px;
+	background: $main_bg;
+	color: $main_color;
+	text-align:center;
 	font-weight: bold;
 }
 thead tr{
@@ -44,29 +44,30 @@ hr{height:1px; border:none; background: $acc_color2;}
 hr:first-of-type{height:2px;}
 pre{padding-left:15px;}
 input[type="submit"],input[type="button"], button, button:disabled:hover{
-	font-size:13px; 
-	cursor:pointer; 
-	padding:5px 10px; 
-	background: $hi_color2; 
+	font-size:13px;
+	cursor:pointer;
+	padding:5px 10px;
+	background: $hi_color2;
 	color: $main_color;
 	transition:background-color 0.2s ease;
-	border-radius:5px;
+	border-radius:3px;
 	min-width:130px;
 	//box-shadow: -1px 4px 2px -2px rgba(0,0,0,0.75);
 	border: 2px transparent solid;
-	transition: all .35s linear;
+	transition: all .2s linear;
 }
 input:focus, select:focus, button:focus{
 	outline: none !important;
 	border-color: $main_color !important;
-	transition: all .35s linear;
+	transition: all .2s linear;
 }
 input[type="submit"]:hover,input[type="button"]:hover, button:hover, button.activeButton, button.activeButton:focus{
 	border-color: $main_color;
+	background: $hi_color2-5;
 }
 input[type="text"], input[type="password"], select{
-	padding:5px 10px; 
-	margin:5px; 
+	padding:5px 10px;
+	margin:5px;
 	color:$main_color;
 	border: 1px solid $acc_color2;
 	border-radius:5px;
@@ -99,4 +100,3 @@ label{text-align:left;}
 .php_error{color:orange; font-weight:bold;}
 .floatFixer{width:100%; clear:both; height:1px;}
 strong{font-weight: 600;}
-

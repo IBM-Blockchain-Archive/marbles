@@ -19,6 +19,7 @@ module.exports = function (config_filename, logger) {
 	// --------------------------------------------------------------------------------
 	let use_env = detect_env.getConnectionProfileFromEnv();
 	if (use_env) {																		// to use env or not to use env
+		cp.using_env = true;
 		cp.config_path = 'there-is-no-file-using-env';
 		cp.creds_path = 'there-is-no-file-using-env';
 		cp.config = {
@@ -36,6 +37,7 @@ module.exports = function (config_filename, logger) {
 		cp.creds = use_env;
 		logger.info('Loaded creds from a environmental variables');
 	} else {																			// not in env, look for the files
+		cp.using_env = false;
 		if (!config_filename) {
 			config_filename = 'marbles_tls.json';										// default config file name
 		}

@@ -136,7 +136,6 @@ function showStepPanel(openStepId) {
 function show_start_up_step(obj) {
 	var state = obj.state;
 
-	//dsh testing - remove this
 	/*state = {
 		checklist: { state: 'success', step: 'step1' },
 		enrolling: { state: 'success', step: 'step2' },

@@ -41,10 +41,14 @@ module.exports = function (cp, fcw, logger) {
 		};
 	};
 
+	// record new app state
+	ws_server.record_state = function (change_state, outcome) {
+		start_up_states[change_state].state = outcome;
+	};
+
 	// Send to all connected clients
-	ws_server.broadcast_state = function (change_state, outcome) {
+	ws_server.broadcast_state = function () {
 		try {
-			start_up_states[change_state].state = outcome;
 			wss.broadcast(ws_server.build_state_msg());						//tell client our app state
 		} catch (e) { }														//this is expected to fail for "checking"
 	};

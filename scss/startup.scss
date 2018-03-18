@@ -26,6 +26,33 @@
 	margin-top: 15px;
 }
 
+#rightSide{
+	display: inline-block;
+	text-align: left;
+	line-height: 25px;
+}
+
+.chooseTxt{
+	text-align: center;
+	width: 100%;
+	display: inline-block;
+	margin-top: 10px;
+	margin-bottom: 5px;
+}
+
+.guideButtons{
+	padding: 20px 60px;
+	font-size: 15px;
+}
+
+.guideHints{
+	position: absolute;
+	margin-top: 15px;
+	margin-left: 12px;
+	width: 175px;
+	line-height: 18px;
+}
+
 .oneStepWrap{
 	display: inline-block;
 	margin: 0;

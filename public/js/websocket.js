@@ -39,10 +39,12 @@ function connect_to_server() {
 	}
 
 	function onClose(evt) {
-		console.log(wsTxt + ' DISCONNECTED', evt);
-		connected = false;
-		addshow_notification(build_notification(true, 'Lost connection to Marbles application'), true);
-		setTimeout(function () { connect(); }, 5000);					//try again one more time, server restarts are quick
+		setTimeout(() => {
+			console.log(wsTxt + ' DISCONNECTED', evt);
+			connected = false;
+			addshow_notification(build_notification(true, 'Lost connection to Marbles application'), true);
+			setTimeout(function () { connect(); }, 5000);					//try again one more time, server restarts are quick
+		}, 1000);
 	}
 
 	function onMessage(msg) {
@@ -80,7 +82,7 @@ function connect_to_server() {
 				console.log(wsTxt + ' rec', msgObj.msg, ': ledger blockheight', msgObj.block_height);
 				if (msgObj.block_delay) block_ui_delay = msgObj.block_delay * 2;				// should be longer than block delay
 				new_block(msgObj.block_height);													// send to blockchain.js
-				
+
 				if ($('#auditContentWrap').is(':visible')) {
 					var obj = {
 						type: 'audit',
@@ -143,18 +145,18 @@ function connect_to_server() {
 				var x = 0;
 				var count = $('.txDetails').length;
 
-				for(x in pendingTxDrawing) clearTimeout(pendingTxDrawing[x]);
+				for (x in pendingTxDrawing) clearTimeout(pendingTxDrawing[x]);
 
 				if (count <= 0) {									//if no tx shown yet, append to back
 					$('.txHistoryWrap').html('');					//clear
-					for (x=msgObj.data.parsed.length-1; x >= 0; x--) {
+					for (x = msgObj.data.parsed.length - 1; x >= 0; x--) {
 						built++;
 						slowBuildtx(msgObj.data.parsed[x], x, built);
 					}
 
 				} else {											//if we already showing tx, prepend to front
 					console.log('skipping tx', count);
-					for (x=msgObj.data.parsed.length-1; x >= count; x--) {
+					for (x = msgObj.data.parsed.length - 1; x >= count; x--) {
 						var html = build_a_tx(msgObj.data.parsed[x], x);
 						$('.txHistoryWrap').prepend(html);
 						$('.txDetails:first').animate({ opacity: 1, left: 0 }, 600, function () {
@@ -295,7 +297,7 @@ function clear_trash() {
 }
 
 // delay build each transaction
-function slowBuildtx(data, txNumber, built){
+function slowBuildtx(data, txNumber, built) {
 	pendingTxDrawing.push(setTimeout(function () {
 		var html = build_a_tx(data, txNumber);
 		$('.txHistoryWrap').append(html);
