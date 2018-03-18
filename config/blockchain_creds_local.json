@@ -23,9 +23,9 @@
 					"eventSource": true
 				}
 			},
-			"chaincodes": {
-				"marbles": "v4"
-			},
+			"chaincodes": [
+				"marbles:v4"
+			],
 			"x-blockDelay": 10000
 		}
 	},

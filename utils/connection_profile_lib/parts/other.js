@@ -35,7 +35,7 @@ module.exports = function (cp, logger) {
 		// -- Using Custom KVS -- //
 		if (cp.creds.client && cp.creds.client.credentialStore) {
 			const kvs_path = cp.creds.client.credentialStore.path;
-			let ret = path.join(__dirname, '../../config/' + kvs_path + '/');
+			let ret = path.join(__dirname, '../../../config/' + kvs_path + '/');
 			if (kvs_path.indexOf('/') === 0) {
 				ret = kvs_path;										//its an absolute path
 			}

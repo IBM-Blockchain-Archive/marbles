@@ -3,7 +3,7 @@ var path = require('path');
 
 module.exports = function (logger) {
 	var misc = {};
-	let creds_path = null;
+	let cp_path = null;
 	var detect_env = require(path.join(__dirname, './connection_profile_lib/parts/detect_env.js'))(logger);
 
 	// Check if blockchain creds files are okay
@@ -16,8 +16,8 @@ module.exports = function (logger) {
 			var config_path = path.join(__dirname, '../config/' + process.env.creds_filename);
 			try {
 				let configFile = require(config_path);
-				creds_path = path.join(__dirname, '../config/' + configFile.cred_filename);
-				let creds = require(creds_path);
+				cp_path = path.join(__dirname, '../config/' + configFile.cred_filename);
+				let creds = require(cp_path);
 				if (creds.name) {
 					logger.info('Checking credentials file is done');
 					return null;
@@ -27,10 +27,10 @@ module.exports = function (logger) {
 			} catch (e) {
 				logger.error('---------------------------------------------------------------');
 				logger.error('----------------------------- Bah -----------------------------');
-				logger.error('------------- The credentials file is malformed ---------------');
+				logger.error('---------- The connection profile file is malformed -----------');
 				logger.error('---------------------------------------------------------------');
-				logger.error('Fix this file: ' + creds_path);
-				logger.warn('It must be valid JSON.  You may have dropped a comma or added one too many.');
+				logger.error('Fix this file: ' + cp_path);
+				logger.warn('It must be valid JSON. You may have dropped a comma or added one too many?');
 				logger.warn('----------------------------------------------------------------------');
 				logger.error(e);
 				process.exit();									//all stop

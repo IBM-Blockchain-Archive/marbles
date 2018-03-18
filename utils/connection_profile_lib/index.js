@@ -13,41 +13,28 @@ var path = require('path');
 module.exports = function (config_filename, logger) {
 	var cp = {};
 	var detect_env = require('./parts/detect_env.js')(logger);
+	if (!config_filename) {
+		config_filename = 'marbles_tls.json';										// default config file name
+	}
+	console.log('?', config_filename);
+	cp.config_path = path.join(__dirname, '../../config/' + config_filename);
+	cp.config = require(cp.config_path);											// load the config file
+	logger.info('Loaded config file', cp.config_path);								// path to config file
 
 	// --------------------------------------------------------------------------------
 	// Detect if connection profile data is in an environmental variable instead of a file
 	// --------------------------------------------------------------------------------
 	let use_env = detect_env.getConnectionProfileFromEnv();
-	if (use_env) {																		// to use env or not to use env
+	if (use_env) {																	// to use env or not to use env
 		cp.using_env = true;
-		cp.config_path = 'there-is-no-file-using-env';
-		cp.creds_path = 'there-is-no-file-using-env';
-		cp.config = {
-			'cred_filename': 'there-is-no-file-using-env',
-			'use_events': true,
-			'keep_alive_secs': 120,
-			'company': 'United Marbles',
-			'usernames': [
-				'amy',
-				'alice',
-				'ava'
-			],
-			'port': 3001
-		};
+		cp.cp_path = 'there-is-no-file-using-env';
 		cp.creds = use_env;
-		logger.info('Loaded creds from a environmental variables');
-	} else {																			// not in env, look for the files
+		logger.info('Loaded connection profile from an environmental variable');
+	} else {																		// not in env, look for the files
 		cp.using_env = false;
-		if (!config_filename) {
-			config_filename = 'marbles_tls.json';										// default config file name
-		}
-		cp.config_path = path.join(__dirname, '../config/' + config_filename);
-		cp.config = require(cp.config_path);											// load the config file
-		cp.creds_path = path.join(__dirname, '../config/' + cp.config.cred_filename);
-		cp.creds = require(cp.creds_path);												// load the credential file
-
-		logger.info('Loaded config file', cp.config_path);								// path to config file
-		logger.info('Loaded creds file', cp.creds_path);								// path to the blockchain credentials file
+		cp.cp_path = path.join(__dirname, '../../config/' + cp.config.cred_filename);
+		cp.creds = require(cp.cp_path);												// load the credential file
+		logger.info('Loaded connection profile file', cp.cp_path);					// path to the blockchain credentials file
 	}
 
 	// --------------------------------------------------------------------------------
@@ -109,7 +96,7 @@ module.exports = function (config_filename, logger) {
 	// load cert from file path OR just pass cert back
 	cp.loadPem = function (obj) {
 		if (obj && obj.path) {											// looks like field is a path to a file
-			var path2cert = path.join(__dirname, '../config/' + obj.path);
+			var path2cert = path.join(__dirname, '../../config/' + obj.path);
 			if (obj.path.indexOf('/') === 0) {
 				path2cert = obj.path;									//its an absolute path
 			}
@@ -224,15 +211,18 @@ module.exports = function (config_filename, logger) {
 	// write new settings to config files
 	cp.write = function (obj) {
 		console.log('saving the creds file has been disabled temporarily');
-
+		var creds_file = cp.creds;
 		const channel = cp.getFirstChannelId();
 		const org_2_use = cp.getClientOrg();
 		const first_peer = cp.getFirstPeerName(channel);
 		const first_ca = cp.getFirstCaName(org_2_use);
 		const first_orderer = cp.getFirstOrdererName(channel);
 
-		//var config_file = JSON.parse(fs.readFileSync(cp.config_path, 'utf8'));
-		var creds_file = JSON.parse(fs.readFileSync(cp.creds_path, 'utf8'));
+		try {
+			creds_file = JSON.parse(fs.readFileSync(cp.cp_path, 'utf8'));
+		} catch (e) {
+			logger.error('file not found', cp.cp_path, e);
+		}
 
 		if (obj.ordererUrl) {
 			creds_file.orderers[first_orderer].url = obj.ordererUrl;
@@ -269,7 +259,11 @@ module.exports = function (config_filename, logger) {
 			};
 		}
 
-		fs.writeFileSync(cp.creds_path, JSON.stringify(creds_file, null, 4), 'utf8');	//save to file
+		try {
+			fs.writeFileSync(cp.cp_path, JSON.stringify(creds_file, null, 4), 'utf8');	//save to file
+		} catch (e) {
+			logger.error('could not write file', cp.cp_path, e);
+		}
 		cp.creds = creds_file;															//replace old copy
 	};
 
