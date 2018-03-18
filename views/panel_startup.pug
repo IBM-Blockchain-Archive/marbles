@@ -58,10 +58,12 @@
 				br
 				if bag.using_env
 					span Your setup is using an environmental variable for the connection profile.
-					span If you need to edit this, you will need to restart the application.
+					span If you need to edit this, you will need to restart Marbles.
 				else
-					span The file that was checked can be found in
-					span.backgroundMe /config/#{bag.creds_filename}
+					span The files that were checked are:&nbsp;
+					span.backgroundMe /config/#{bag.config_filename}
+					span &nbsp;and&nbsp;
+					span.backgroundMe /config/#{bag.cp_filename}
 					span &nbsp;.
 
 				br

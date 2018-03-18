@@ -16,7 +16,6 @@ module.exports = function (config_filename, logger) {
 	if (!config_filename) {
 		config_filename = 'marbles_tls.json';										// default config file name
 	}
-	console.log('?', config_filename);
 	cp.config_path = path.join(__dirname, '../../config/' + config_filename);
 	cp.config = require(cp.config_path);											// load the config file
 	logger.info('Loaded config file', cp.config_path);								// path to config file
@@ -36,6 +35,7 @@ module.exports = function (config_filename, logger) {
 		cp.creds = require(cp.cp_path);												// load the credential file
 		logger.info('Loaded connection profile file', cp.cp_path);					// path to the blockchain credentials file
 	}
+	cp.config_filename = config_filename;
 
 	// --------------------------------------------------------------------------------
 	// Parse connection profile data to get various things:

@@ -7,6 +7,8 @@
  *
  *******************************************************************************/
 var express = require('express');
+var cachebust_js = Date.now();
+var cachebust_css = Date.now();
 
 module.exports = function (logger, cp) {
 	var app = express();
@@ -51,7 +53,7 @@ module.exports = function (logger, cp) {
 		//if (!req.session.user || !req.session.user.username) {		// no session? send them to login
 		//	res.redirect('/login');
 		//} else {
-			res.render('marbles', { title: 'Marbles - Home', bag: build_bag(req) });
+		res.render('marbles', { title: 'Marbles - Home', bag: build_bag(req) });
 		//}
 	}
 
@@ -59,9 +61,10 @@ module.exports = function (logger, cp) {
 	function build_bag(req) {
 		return {
 			e: process.error,							//send any setup errors
-			creds_filename: process.env.creds_filename,
-			jshash: process.env.cachebust_js,			//js cache busting hash (not important)
-			csshash: process.env.cachebust_css,			//css cache busting hash (not important)
+			config_filename: cp.config_filename,
+			cp_filename: cp.config.cred_filename,
+			jshash: cachebust_js,						//js cache busting hash (not important)
+			csshash: cachebust_css,						//css cache busting hash (not important)
 			marble_company: process.env.marble_company,
 			creds: get_credential_data(),
 			using_env: cp.using_env,

@@ -64,8 +64,6 @@ app.use(serve_static(path.join(__dirname, 'public')));
 app.use(session({ secret: 'lostmymarbles', resave: true, saveUninitialized: true }));
 app.options('*', cors());
 app.use(cors());
-process.env.cachebust_js = Date.now();
-process.env.cachebust_css = Date.now();
 
 // ============================================================================================================================
 // 												HTTP Webserver Routing
