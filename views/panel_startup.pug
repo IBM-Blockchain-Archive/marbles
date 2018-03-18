@@ -16,13 +16,16 @@
 				span.hint.guideHints(style="margin-left: -150px;")
 					span Already a fabric expert? Default setup.&nbsp;&nbsp;
 					span.fa.fa-arrow-right
-				button.guideButtons Instantly
+				button.guideButtons#instantSetup Instantly
 				span &nbsp;&nbsp;&nbsp;
 				button.guideButtons#startSteps Guided
 				span.hint.guideHints
 					span.fa.fa-arrow-left
 					span &nbsp;&nbsp;Want to learn about fabric or customize the setup?
 			br
+
+			div.centerText
+				include ./template/loading.pug
 
 	//----------------- Step Navigation
 	#stepsWrap

@@ -51,6 +51,9 @@ $auditSize: 333px;
 	height: 40px;
 	padding-bottom: 20px;
 }
+.centerText{
+	text-align: center;
+}
 
 
 
@@ -105,7 +108,7 @@ $auditSize: 333px;
 	display:inline-block;
 	height: 15px;
 	border-bottom-right-radius: 3px;
-	border-bottom-left-radius: 3px; 
+	border-bottom-left-radius: 3px;
 	text-align: center;
 	position: absolute;
 	bottom: -15px;
@@ -198,7 +201,7 @@ $auditSize: 333px;
 	font-weight: 700;
 }
 #toolbarWrap{
-	margin: 0; 
+	margin: 0;
 	text-align:left;
 	position: relative;
 	height: 100px;
@@ -479,7 +482,7 @@ $auditSize: 333px;
 	font-size: 15px;
 }
 #loginCompany{
-	color:$hi_color1; 
+	color:$hi_color1;
 	text-align:center;
 }
 #adminText{
@@ -831,7 +834,7 @@ $marble_left: 0;
 	line-height: 40px;
 	height: 40px;
 	cursor:pointer;
-	color: $acc_color1-5; 
+	color: $acc_color1-5;
 	font-weight: 100;
 }
 
