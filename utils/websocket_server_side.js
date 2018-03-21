@@ -37,7 +37,6 @@ module.exports = function (cp, fcw, logger) {
 		return {
 			msg: 'app_state',
 			state: start_up_states,
-			first_setup: process.env.app_first_setup
 		};
 	};
 
@@ -57,7 +56,7 @@ module.exports = function (cp, fcw, logger) {
 	// Process web socket messages - blockchain code is near. "marbles_lib"
 	//--------------------------------------------------------
 	ws_server.process_msg = function (ws, data) {
-		const channel = cp.getFirstChannelId();
+		const channel = cp.getChannelId();
 		const first_peer = cp.getFirstPeerName(channel);
 		var options = {
 			peer_urls: [cp.getPeersUrl(first_peer)],
@@ -248,7 +247,7 @@ module.exports = function (cp, fcw, logger) {
 
 	// read complete state of marble world
 	function read_everything(ws_client, cb) {
-		const channel = cp.getFirstChannelId();
+		const channel = cp.getChannelId();
 		const first_peer = cp.getFirstPeerName(channel);
 		var options = {
 			peer_urls: [cp.getPeersUrl(first_peer)],

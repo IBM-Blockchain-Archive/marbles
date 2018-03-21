@@ -9,6 +9,7 @@ module.exports = function (logger, cp, fcw, marbles_lib, ws_server) {
 	var enrollObj = {};
 	var misc = require('./misc.js')(logger);					//random non-blockchain related functions
 	var more_entropy = misc.randStr(32);
+	var cc_detect_attempt = 0;
 
 	// --------------------------------------------------------
 	// Handle WS Setup Messages
@@ -57,10 +58,10 @@ module.exports = function (logger, cp, fcw, marbles_lib, ws_server) {
 
 	// Wait for the user to help correct the config file so we can startup!
 	startup_lib.startup_unsuccessful = function (host, port) {
-		process.env.app_first_setup = 'yes';
-		console.log('');
+		console.log('\n\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -');
 		logger.info('Detected that we have NOT launched successfully yet');
-		logger.debug('Open your browser to http://' + host + ':' + port + ' and login as "admin" to initiate startup\n\n');
+		logger.debug('Open your browser to http://' + host + ':' + port + ' and login as "admin" to initiate startup');
+		console.log('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n');
 		// we wait here for the user to go the browser, then setup_marbles_lib() will be called from WS msg
 	};
 
@@ -72,21 +73,35 @@ module.exports = function (logger, cp, fcw, marbles_lib, ws_server) {
 				logger.warn('Error reading ledger');
 				if (cb) cb(true);
 			} else {
-				if (startup_lib.find_missing_owners(resp)) {						//check if each user in the settings file has been created in the ledger
-					logger.info('We need to make marble owners');					//there are marble owners that do not exist!
+				if (!detectCompany(resp) || startup_lib.find_missing_owners(resp)) {	//check if each user in the settings file has been created in the ledger
+					logger.info('We need to make marble owners');						//there are marble owners that do not exist!
 					ws_server.record_state('register_owners', 'waiting');
 					ws_server.broadcast_state();
 					if (cb) cb(true);
 				} else {
 					ws_server.record_state('register_owners', 'success');		//everything is good
 					ws_server.broadcast_state();
-					process.env.app_first_setup = 'no';
 					logger.info('Everything is in place');
 					if (cb) cb(null);
 				}
 			}
 		});
 	};
+
+	// Detect if we have created users for this company yet
+	function detectCompany(data) {
+		if (data && data.parsed) {
+			for (let i in data.parsed.owners) {
+				if (data.parsed.owners[i].company === process.env.marble_company) {
+					logger.debug('This company has registered marble owners');
+					return true;
+				}
+			}
+		}
+
+		logger.debug('This company has not registered marble owners');
+		return false;
+	}
 
 	// Detect if there are marble usernames in the settings doc that are not in the ledger
 	startup_lib.find_missing_owners = function (resp) {
@@ -110,35 +125,48 @@ module.exports = function (logger, cp, fcw, marbles_lib, ws_server) {
 		return false;
 	};
 
-	//setup marbles library and check if cc is instantiated
+	// setup marbles library and check if cc is instantiated
 	startup_lib.setup_marbles_lib = function (host, port, cb) {
 		var opts = cp.makeMarblesLibOptions();
 		marbles_lib = require('./marbles_cc_lib.js')(enrollObj, opts, fcw, logger);
 		ws_server.setup(null, marbles_lib);
+		cc_detect_attempt++;										// keep track of how many times we've done this
 
-		logger.debug('Checking if chaincode is already instantiated or not');
-		const channel = cp.getFirstChannelId();
+		logger.debug('Checking if chaincode is already instantiated or not', cc_detect_attempt);
+		const channel = cp.getChannelId();
 		const first_peer = cp.getFirstPeerName(channel);
 		var options = {
 			peer_urls: [cp.getPeersUrl(first_peer)],
 		};
+
 		marbles_lib.check_if_already_instantiated(options, function (not_instantiated, enrollUser) {
-			if (not_instantiated) {									//if this is truthy we have not yet instantiated.... error
-				console.log('');
-				logger.debug('Chaincode was not detected: "' + cp.getChaincodeId() + '", all stop');
-				logger.debug('Open your browser to http://' + host + ':' + port + ' and login to tweak settings for startup');
-				process.env.app_first_setup = 'yes';				//overwrite state, bad startup
-				ws_server.record_state('find_chaincode', 'failed');
-				ws_server.broadcast_state();
-			} else {													//else we already instantiated
-				console.log('\n----------------------------- Chaincode found on channel "' + cp.getFirstChannelId() + '" -----------------------------\n');
+			if (not_instantiated) {									// if this is truthy we have not yet instantiated.... error
+				console.log('debug', typeof not_instantiated, not_instantiated);
+				if (cc_detect_attempt <= 40 && typeof not_instantiated === 'string' && not_instantiated.indexOf('premature execution') >= 0) {
+					console.log('');
+					logger.debug('Chaincode is still starting! this can take a minute or two.  I\'ll check again in a moment.', cc_detect_attempt);
+					ws_server.record_state('find_chaincode', 'polling');
+					ws_server.broadcast_state();
+					return setTimeout(function () {					// try again in a few seconds, this loops for awhile so ... beware
+						startup_lib.setup_marbles_lib(host, port, cb);
+					}, 15 * 1000);
+				} else {
+					console.log('');
+					logger.debug('Chaincode was not detected: "' + cp.getChaincodeId() + '", all stop');
+					logger.debug('Open your browser to http://' + host + ':' + port + ' and login to tweak settings for startup');
+					ws_server.record_state('find_chaincode', 'failed');
+					ws_server.broadcast_state();
+				}
+			} else {												// else we already instantiated
+				console.log('\n----------------------------- Chaincode found on channel "' + cp.getChannelId() + '" -----------------------------\n');
+				cc_detect_attempt = 0;			// reset
 
 				// --- Check Chaincode Compatibility  --- //
 				marbles_lib.check_version(options, function (err, resp) {
-					if (cp.errorWithVersions(resp)) {
+					if (cp.errorWithVersions(resp)) {								// incompatible cc w/app
 						ws_server.record_state('find_chaincode', 'failed');
 						ws_server.broadcast_state();
-					} else {
+					} else {														// compatible cc w/app
 						logger.info('Chaincode version is good');
 						ws_server.record_state('find_chaincode', 'success');
 						ws_server.broadcast_state();
@@ -220,7 +248,7 @@ module.exports = function (logger, cp, fcw, marbles_lib, ws_server) {
 
 	// Create the marble owner
 	startup_lib.create_owners = function (attempt, username, cb) {
-		const channel = cp.getFirstChannelId();
+		const channel = cp.getChannelId();
 		const first_peer = cp.getFirstPeerName(channel);
 		var options = {
 			peer_urls: [cp.getPeersUrl(first_peer)],
@@ -244,7 +272,7 @@ module.exports = function (logger, cp, fcw, marbles_lib, ws_server) {
 	// Create 1 marble
 	startup_lib.create_marbles = function (owner_id, username, cb) {
 		var randOptions = startup_lib.build_marble_options(owner_id, username, process.env.marble_company);
-		const channel = cp.getFirstChannelId();
+		const channel = cp.getChannelId();
 		const first_peer = cp.getFirstPeerName(channel);
 		console.log('');
 		logger.debug('[startup] going to create marble:', randOptions);
@@ -288,8 +316,6 @@ module.exports = function (logger, cp, fcw, marbles_lib, ws_server) {
 		console.log('\n------------------------------------------ All Done ------------------------------------------\n');
 		ws_server.record_state('register_owners', 'success');
 		ws_server.broadcast_state();
-		process.env.app_first_setup = 'no';
-
 		ws_server.check_for_updates(null);									//call the periodic task to get the state of everything
 	};
 

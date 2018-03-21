@@ -56,6 +56,9 @@ input[type="submit"],input[type="button"], button, button:disabled:hover{
 	border: 2px transparent solid;
 	transition: all .2s linear;
 }
+button:disabled:hover{
+	cursor: not-allowed;
+}
 input:focus, select:focus, button:focus{
 	outline: none !important;
 	border-color: $main_color !important;

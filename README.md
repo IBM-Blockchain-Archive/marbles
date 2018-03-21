@@ -75,7 +75,7 @@ You will need to do this step even if you plan on hosting marbles in Bluemix.
 	```
 	git clone https://github.com/IBM-Blockchain/marbles.git --depth 1
 	cd marbles
-	git checkout v4.0
+	git checkout master
 	```
 
 - Great I'll meet you at step 2.
@@ -364,7 +364,7 @@ __/utils/websocket_server_side.js__
 ```js
     //process web socket messages
     ws_server.process_msg = function (ws, data) {
-        const channel = cp.getFirstChannelId();
+        const channel = cp.getChannelId();
         const first_peer = cp.getFirstPeerName(channel);
         var options = {
             peer_urls: [cp.getPeersUrl(first_peer)],

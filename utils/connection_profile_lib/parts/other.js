@@ -12,7 +12,7 @@ module.exports = function (cp, logger) {
 	// ----------------------------------------------------------
 	helper.getBlockDelay = function () {
 		let ret = 1000;
-		var channel = cp.getFirstChannelId();
+		var channel = cp.getChannelId();
 		if (cp.creds.channels && cp.creds.channels[channel] && cp.creds.channels[channel]['x-blockDelay']) {
 			if (!isNaN(cp.creds.channels[channel]['x-blockDelay'])) {
 				ret = cp.creds.channels[channel]['x-blockDelay'];

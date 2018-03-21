@@ -48,11 +48,11 @@ fcw.enrollWithAdminCert(cp.makeEnrollmentOptionsUsingCert(), function (enrollErr
 		logger.info('Now we instantiate');
 		console.log('---------------------------------------');
 
-		const channel = cp.getFirstChannelId();
+		const channel = cp.getChannelId();
 		const first_peer = cp.getFirstPeerName(channel);
 		var opts = {
 			peer_urls: [cp.getPeersUrl(first_peer)],
-			channel_id: cp.getFirstChannelId(),
+			channel_id: cp.getChannelId(),
 			chaincode_id: chaincode_id,
 			chaincode_version: chaincode_ver,
 			cc_args: ['12345'],

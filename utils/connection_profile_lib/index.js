@@ -13,6 +13,8 @@ var path = require('path');
 module.exports = function (config_filename, logger) {
 	var cp = {};
 	var detect_env = require('./parts/detect_env.js')(logger);
+	var misc = require('../misc.js')(logger);
+
 	if (!config_filename) {
 		config_filename = 'marbles_tls.json';										// default config file name
 	}
@@ -33,7 +35,7 @@ module.exports = function (config_filename, logger) {
 		cp.using_env = false;
 		cp.cp_path = path.join(__dirname, '../../config/' + cp.config.cred_filename);
 		cp.creds = require(cp.cp_path);												// load the credential file
-		logger.info('Loaded connection profile file', cp.cp_path);					// path to the blockchain credentials file
+		logger.info('Loaded connection profile file', cp.cp_path);					// path to the blockchain connection profile
 	}
 	cp.config_filename = config_filename;
 
@@ -83,14 +85,16 @@ module.exports = function (config_filename, logger) {
 				return channels[0];
 			}
 		}
-		throw Error('No channels found in credentials file... this is problematic. A channel needs to be created before marbles can execute.');
+		throw Error('No channels found in connection profile... this is problematic. A channel needs to be created before marbles can execute.');
 	};
 
-	// make a unique id for the sample & channel & peer
-	cp.makeUniqueId = function () {
-		const channel = cp.getFirstChannelId();
-		const first_peer = cp.getFirstPeerName(channel);
-		return 'marbles-' + cp.getNetworkName() + '-' + channel + '-' + first_peer;
+	// get the very first channel name from creds
+	cp.getChannelId = function () {
+		if (process.env.CHANNEL_ID) {							// if env version is set, use it
+			return process.env.CHANNEL_ID;
+		} else {
+			return cp.getFirstChannelId();						// else just grab the first one we got
+		}
 	};
 
 	// load cert from file path OR just pass cert back
@@ -107,6 +111,20 @@ module.exports = function (config_filename, logger) {
 		return null;
 	};
 
+	// safely retrieve marbles config file fields
+	cp.getMarblesField = function (marbles_field) {
+		try {
+			if (cp.config[marbles_field]) {
+				return cp.config[marbles_field];
+			} else {
+				logger.warn('"' + marbles_field + '" not found in config json: ' + cp.config_path);
+				return null;
+			}
+		} catch (e) {
+			logger.warn('"' + marbles_field + '" not found in config json: ' + cp.config_path);
+			return null;
+		}
+	};
 
 
 	// --------------------------------------------------------------------------------
@@ -116,18 +134,21 @@ module.exports = function (config_filename, logger) {
 	const ca = require('./parts/ca.js')(cp, logger);
 	const peer = require('./parts/peer.js')(cp, logger);
 	const helper = require('./parts/helper.js')(cp, logger);
-	const org = require('./parts/org.js')(cp, logger);
 	const orderer = require('./parts/orderer.js')(cp, logger);
 	const other = require('./parts/other.js')(cp, logger);
 	for (const func in chaincode) cp[func] = chaincode[func];
 	for (const func in ca) cp[func] = ca[func];
 	for (const func in peer) cp[func] = peer[func];
 	for (const func in helper) cp[func] = helper[func];
-	for (const func in org) cp[func] = org[func];
 	for (const func in orderer) cp[func] = orderer[func];
 	for (const func in other) cp[func] = other[func];
+	const org = require('./parts/org.js')(cp, logger);
+	for (const func in org) cp[func] = org[func];
 
-	console.log('Connection Profile Contents: ', cp);
+	console.log('\n\n\nConnection Profile Lib Functions:()');
+	for (let i in cp) {
+		if (typeof cp[i] === 'function') console.log('  ' + i + '()');
+	}
 	const verification = require('./parts/verification.js')(cp, logger);			// do this one last, it needs the others roll in first
 	for (const func in verification) cp[func] = verification[func];
 	// --------------------------------------------------------------------------------
@@ -137,16 +158,25 @@ module.exports = function (config_filename, logger) {
 	// --------------------------------------------------------------------------------
 	// Build CP Options
 	// --------------------------------------------------------------------------------
+	// make a unique id for the sample & channel & org & peer
+	cp.makeUniqueId = function () {
+		const net_name = cp.getNetworkName();
+		const channel = cp.getChannelId();
+		const org = cp.getClientOrg();
+		const first_peer = cp.getFirstPeerName(channel);
+		return misc.saferString('marbles-' + net_name + channel + org + first_peer);
+	};
+
 	// build the marbles lib module options
 	cp.makeMarblesLibOptions = function () {
-		const channel = cp.getFirstChannelId();
+		const channel = cp.getChannelId();
 		const org_2_use = cp.getClientOrg();
 		const first_ca = cp.getFirstCaName(org_2_use);
 		const first_peer = cp.getFirstPeerName(channel);
 		const first_orderer = cp.getFirstOrdererName(channel);
 		return {
 			block_delay: cp.getBlockDelay(),
-			channel_id: cp.getFirstChannelId(),
+			channel_id: cp.getChannelId(),
 			chaincode_id: cp.getChaincodeId(),
 			event_urls: (cp.getEventsSetting()) ? cp.getAllPeerUrls(channel).eventUrls : null,	//null is important
 			chaincode_version: cp.getChaincodeVersion(),
@@ -162,12 +192,12 @@ module.exports = function (config_filename, logger) {
 		if (userIndex === undefined || userIndex == null) {
 			throw new Error('User index not passed');
 		} else {
-			const channel = cp.getFirstChannelId();
+			const channel = cp.getChannelId();
 			const org_2_use = cp.getClientOrg();
 			const first_ca = cp.getFirstCaName(org_2_use);
 			const first_peer = cp.getFirstPeerName(channel);
 			const first_orderer = cp.getFirstOrdererName(channel);
-			const org_name = cp.getOrgsMSPid(org_2_use);				//lets use the first org we find
+			const org_name = cp.getClientOrg();
 			const user_obj = cp.getEnrollObj(first_ca, userIndex);		//there may be multiple users
 			return {
 				channel_id: channel,
@@ -189,11 +219,10 @@ module.exports = function (config_filename, logger) {
 
 	// build the enrollment options using an admin cert
 	cp.makeEnrollmentOptionsUsingCert = function () {
-		const channel = cp.getFirstChannelId();
-		const org_2_use = cp.getClientOrg();
+		const channel = cp.getChannelId();
 		const first_peer = cp.getFirstPeerName(channel);
 		const first_orderer = cp.getFirstOrdererName(channel);
-		const org_name = cp.getOrgsMSPid(org_2_use);		//lets use the first org we find
+		const org_name = cp.getClientOrg();
 		return {
 			channel_id: channel,
 			uuid: cp.makeUniqueId(),
@@ -212,7 +241,7 @@ module.exports = function (config_filename, logger) {
 	cp.write = function (obj) {
 		console.log('saving the creds file has been disabled temporarily');
 		var creds_file = cp.creds;
-		const channel = cp.getFirstChannelId();
+		const channel = cp.getChannelId();
 		const org_2_use = cp.getClientOrg();
 		const first_peer = cp.getFirstPeerName(channel);
 		const first_ca = cp.getFirstCaName(org_2_use);

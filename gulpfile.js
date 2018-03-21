@@ -65,9 +65,11 @@ gulp.task('env_cs', function () {
 gulp.task('env_dev', function () {
 	env['creds_filename'] = 'marbles_dev.json';
 	/*
-	env.CHAINCODE_ID = 'marbles-20180316235612480';
-	env.CHAINCODE_VERSION = '1521244615';
-	env.CONNECTION_PROFILE = JSON.stringify({});
+	env.CHAINCODE_ID = 'marbles-v8';
+	env.CHAINCODE_VERSION = '1521498413';
+	env.MSP_ID = 'org2';
+	const CONNECTION_PROFILE = require('./config/temp.json');
+	env.CONNECTION_PROFILE = JSON.stringify(CONNECTION_PROFILE);
 	*/
 });
 

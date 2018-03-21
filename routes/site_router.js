@@ -73,7 +73,7 @@ module.exports = function (logger, cp) {
 
 	//get cred data
 	function get_credential_data() {
-		const channel = cp.getFirstChannelId();
+		const channel = cp.getChannelId();
 		const first_org = cp.getClientOrg();
 		const first_ca = cp.getFirstCaName(first_org);
 		const first_peer = cp.getFirstPeerName(channel);
@@ -85,7 +85,7 @@ module.exports = function (logger, cp) {
 			ca: cp.getCasUrl(first_ca),
 			peer: cp.getPeersUrl(first_peer),
 			chaincode_id: cp.getChaincodeId(),
-			channel: cp.getFirstChannelId(),
+			channel: cp.getChannelId(),
 			chaincode_version: cp.getChaincodeVersion(),
 			marble_owners: cp.getMarbleUsernames(),
 		};

@@ -17,3 +17,4 @@ app_state*
 /config/crypto/hsbn
 /config/blockchain_creds_dev2.json
 /config/marbles_dev2.json
+/config/temp.json

@@ -206,6 +206,23 @@ function show_start_up_step(obj) {
 		}
 	}
 
+	if (state.find_chaincode.state === 'polling') {				// waiting for chaincode to start or crash
+		$('#instantSetup, #startSteps').prop('disabled', true);
+		$('#stepWelcomeWrap .loadingdiv, #wait4cc, #dateChecked').show();
+		$('#failedSetup').hide();
+		setTimeout(function () {
+			$('#dateChecked').fadeOut(1000);
+		}, 1000);
+	} else if (state.find_chaincode.state === 'failed') {
+		$('#startSteps').prop('disabled', false);					// we can't do instant
+		$('#instantSetup').prop('disabled', true);
+		$('#wait4cc, #dateChecked').hide(1000);
+		$('#failedSetup').fadeIn(500);
+	} else if (state.find_chaincode.state === 'success') {
+		$('#instantSetup, #startSteps').prop('disabled', false);
+		$('#wait4cc, #dateChecked, #failedSetup').hide(1000);
+	}
+
 	if (state.register_owners.state === 'success') {				//last step
 		$('#step5').removeClass('errorStepContent').addClass('success');
 		$('.oneStepWrap[stepid="step5"').removeClass('inactive, errorStepIcon').addClass('successfulStepIcon');

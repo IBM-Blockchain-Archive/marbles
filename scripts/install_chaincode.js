@@ -47,7 +47,7 @@ fcw.enrollWithAdminCert(cp.makeEnrollmentOptionsUsingCert(), function (enrollErr
 		logger.info('Now we install');
 		console.log('---------------------------------------');
 
-		const channel = cp.getFirstChannelId();
+		const channel = cp.getChannelId();
 		const first_peer = cp.getFirstPeerName(channel);
 		var opts = {
 			peer_urls: [cp.getPeersUrl(first_peer)],

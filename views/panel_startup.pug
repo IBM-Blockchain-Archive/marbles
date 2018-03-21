@@ -4,25 +4,44 @@
 
 	#stepWelcomeWrap
 		#rightSide
-			p
+			.headingText
 				span Welcome to the Marbles&nbsp;
 				strong Hyperledger Fabric&nbsp;
 				span demo!
-				br
-				span.chooseTxt How should we start up?
+
+			br
+			p.centerText
+				span.chooseTxt How should we setup?
 
 				br
 
-				span.hint.guideHints(style="margin-left: -150px;")
-					span Already a fabric expert? Default setup.&nbsp;&nbsp;
+				span.hint.guideHints(style="margin-left: -170px;")
+					span Already a fabric expert? Default setup here.&nbsp;&nbsp;
 					span.fa.fa-arrow-right
-				button.guideButtons#instantSetup Instantly
+				button.guideButtons#instantSetup
+					span.fa.fa-rocket &nbsp;&nbsp;&nbsp;
+					span Express
 				span &nbsp;&nbsp;&nbsp;
-				button.guideButtons#startSteps Guided
+				button.guideButtons#startSteps
+					span.fa.fa-gears &nbsp;&nbsp;&nbsp;
+					span Guided
 				span.hint.guideHints
 					span.fa.fa-arrow-left
 					span &nbsp;&nbsp;Want to learn about fabric or customize the setup?
-			br
+				br
+				br
+
+				#wait4cc.warningWrap
+					p Your chaincode is still starting. We need to wait...
+					#dateChecked Checking
+
+				#failedSetup.warningWrap
+					p
+						span.fa.fa-bug &nbsp;&nbsp;&nbsp;
+						span Boo, there is an issue with the configuration or network.&nbsp;
+						span Enter the&nbsp;
+						strong Guided
+						spansetup &nbsp;setup to correct it.
 
 			div.centerText
 				include ./template/loading.pug
@@ -95,7 +114,7 @@
 				span.backgroundMe enrollID
 				span &nbsp;and&nbsp;
 				span.backgroundMe enrollSecret
-				span &nbsp;from your creds file.
+				span &nbsp;from your connection profile.
 				br
 
 			include ./template/loading.pug
@@ -146,7 +165,7 @@
 				span &nbsp;&nbsp;Finding Chaincode
 			.stepDescription
 				span Now we needed to locate the chaincode on your channel.
-				span Your creds file says to check the channel&nbsp;
+				span Your connection profile says to check the channel&nbsp;
 				span.backgroundMe #{bag.creds.channel}
 				span &nbsp;for the chaincode named&nbsp;
 				span.backgroundMe #{bag.creds.chaincode_id}

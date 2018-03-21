@@ -11,10 +11,10 @@
 ***
 
 ##### 版本和支持的平台
-请注意，Marbles 有多个版本。 
-每个 Marbles 分支对应于一个主要的 Hyperledger Fabric 版本。 
-请挑选一个与您的 Fabric 版本兼容的 Marbles 版本。 
-如果您没有任何版本的 Fabric，那么请挑选标为 **latest** 的 Marbles 版本！ 
+请注意，Marbles 有多个版本。
+每个 Marbles 分支对应于一个主要的 Hyperledger Fabric 版本。
+请挑选一个与您的 Fabric 版本兼容的 Marbles 版本。
+如果您没有任何版本的 Fabric，那么请挑选标为 **latest** 的 Marbles 版本！
 
 - Marbles - 分支 v4.0 **(Latest)**（您将看到这个分支！）
 	- 兼容 Hyperledger Fabric `v1.0.1`、`v1.0.0` 和 `v1.0.0-rc1`
@@ -87,12 +87,12 @@ gRPC 协议的细节由一个名为 [Hyperledger Fabric Client](https://www.npmj
 
 # Marbles 设置
 
-我既有好消息也有坏消息。 
-好消息是，可以根据您的偏好，针对不同的配置来设置 Marbles 和区块链网络。 
-坏消息是，这会让操作说明变得很复杂。 
-**如果您不熟悉 Hyperledger Fabric 并想要最简单的设置，请关注 :lollipop: 表情符号。** 
-只要有选项而且您必须做出自己的选择，我就会在最简单的选项上放一个 :lollipop: 表情符号。 
-这是适合您的选项。 
+我既有好消息也有坏消息。
+好消息是，可以根据您的偏好，针对不同的配置来设置 Marbles 和区块链网络。
+坏消息是，这会让操作说明变得很复杂。
+**如果您不熟悉 Hyperledger Fabric 并想要最简单的设置，请关注 :lollipop: 表情符号。**
+只要有选项而且您必须做出自己的选择，我就会在最简单的选项上放一个 :lollipop: 表情符号。
+这是适合您的选项。
 
 ### 0.设置本地环境
 
@@ -103,8 +103,8 @@ gRPC 协议的细节由一个名为 [Hyperledger Fabric Client](https://www.npmj
 <a name="downloadmarbles"></a>
 
 ### 1.下载 Marbles
-我们需要将 Marbles 下载到本地系统。 
-让我们使用 Git 通过克隆此存储库来完成该任务。 
+我们需要将 Marbles 下载到本地系统。
+让我们使用 Git 通过克隆此存储库来完成该任务。
 即使您计划将 Marbles 托管在 Bluemix 中，也需要执行这一步。
 
 - 打开一个命令提示符/终端并浏览到您想要的工作目录
@@ -113,7 +113,7 @@ gRPC 协议的细节由一个名为 [Hyperledger Fabric Client](https://www.npmj
 	```
 	git clone https://github.com/IBM-Blockchain/marbles.git --depth 1
 	cd marbles
-	git checkout v4.0
+	git checkout master
 	```
 
 - 非常棒，第 2 步再见。
@@ -133,12 +133,12 @@ gRPC 协议的细节由一个名为 [Hyperledger Fabric Client](https://www.npmj
 
 ### 3.安装并实例化链代码
 
-很好，就快要完成了！现在，我们需要运行我们的 Marbles 链代码。 
-请记住，链代码是一个关键组件，它最终会在账本上创建我们的 Marbles 事务。 
-该链代码是需要安装在节点上，然后在一个通道上实例化的 GoLang 代码。 
-已为您编写好该代码！ 
-我们只需要运行它。 
-可通过两种方式运行它。 
+很好，就快要完成了！现在，我们需要运行我们的 Marbles 链代码。
+请记住，链代码是一个关键组件，它最终会在账本上创建我们的 Marbles 事务。
+该链代码是需要安装在节点上，然后在一个通道上实例化的 GoLang 代码。
+已为您编写好该代码！
+我们只需要运行它。
+可通过两种方式运行它。
 
 **仅**选择与您的设置相关的选项：
 
@@ -192,14 +192,14 @@ gRPC 协议的细节由一个名为 [Hyperledger Fabric Client](https://www.npmj
 
 
 # 区块链背景
-在介绍 Marbles 的工作原理之前，让我们讨论一下 Hyperledger Fabric 的流和拓扑结构。 
+在介绍 Marbles 的工作原理之前，让我们讨论一下 Hyperledger Fabric 的流和拓扑结构。
 让我们先来了解一些定义。
 
 ### 定义：
 
 **节点** - 节点是区块链的成员，运行着 Hyperledger Fabric。在 Marbles 的上下文中，节点归我的弹珠公司所有和操作。
 
-**CA** - CA（证书颁发机构）负责守卫我们的区块链网络。它将为客户端（比如我们的 Marbles node.js 应用程序）提供交易证书。 
+**CA** - CA（证书颁发机构）负责守卫我们的区块链网络。它将为客户端（比如我们的 Marbles node.js 应用程序）提供交易证书。
 
 **订购者** - 订购者或订购服务是区块链网络的成员，其主要职责是将交易打包到区块中。
 
@@ -213,26 +213,26 @@ gRPC 协议的细节由一个名为 [Hyperledger Fabric Client](https://www.npmj
 
 **链代码** - 链代码是代表智能合约的 Hyperledger Fabric。它定义资产和所有关于资产的规则。
 
-**资产** - 资产是存在于账本中的实体。它是一种键值对。在 Marbles 的上下文中，资产是一颗弹珠或弹珠所有者。 
+**资产** - 资产是存在于账本中的实体。它是一种键值对。在 Marbles 的上下文中，资产是一颗弹珠或弹珠所有者。
 
 让我们看看创建一颗新的弹珠时涉及的操作。
 
-1.Marbles 中发生的第一件事是向网络的 `CA` 注册我们的管理员`用户`。如果成功，`CA` 会向 Marbles 发送注册证书，SDK 将该证书存储在我们的本地文件系统中。 
-2.管理员从用户界面创建一颗新弹珠时，SDK 会创建一个调用事务。 
-3.创建弹珠的事务被构建为一个调用链代码函数 `init_marble()` 的`提案`。 
-4.Marbles（通过 SDK）将此`提案`发送到一个`节点`进行背书。 
-5.`节点`将运行 Go 函数 `init_marble()` 来模拟该事务，并记录它尝试写入账本中的所有更改。 
+1.Marbles 中发生的第一件事是向网络的 `CA` 注册我们的管理员`用户`。如果成功，`CA` 会向 Marbles 发送注册证书，SDK 将该证书存储在我们的本地文件系统中。
+2.管理员从用户界面创建一颗新弹珠时，SDK 会创建一个调用事务。
+3.创建弹珠的事务被构建为一个调用链代码函数 `init_marble()` 的`提案`。
+4.Marbles（通过 SDK）将此`提案`发送到一个`节点`进行背书。
+5.`节点`将运行 Go 函数 `init_marble()` 来模拟该事务，并记录它尝试写入账本中的所有更改。
 6.如果该函数成功返回，`节点`会对该`提案`进行背书并将它发回给 Marbles。如果失败，错误也将发送回来，但不会对`提案`进行背书。
-7.然后，Marbles（通过 SDK）将背书后的`提案`发送给`订购者`。 
+7.然后，Marbles（通过 SDK）将背书后的`提案`发送给`订购者`。
 8.`订购者`将组织来自整个网络的`提案`的序列。它将通过查找相互冲突的交易，检查该交易序列是否有效。任何由于冲突而无法添加到区块中的交易都被标记为错误。`订购者`将新区块广播到网络中的节点。
 9.我们的`节点`将收到新区块，并通过查看各种签名和哈希值来验证它。最终将该区块提交到`节点`的`账本`。
 10.此刻，我们的账本中会出现新的弹珠，并很快会出现在所有节点的账本中。
 
 
 # SDK 深入剖析
-现在让我们看看如何连接到 Fabric Client SDK。 
-大部分配置选项都可以在 `/config/blockchain_creds_tls.json` 中找到。 
-此文件列出了我们的区块链网络中的各种组件的主机名（或 IP）和端口。 
+现在让我们看看如何连接到 Fabric Client SDK。
+大部分配置选项都可以在 `/config/blockchain_creds_tls.json` 中找到。
+此文件列出了我们的区块链网络中的各种组件的主机名（或 IP）和端口。
 `helper` 函数将从该配置文件中检索 IP 和端口。
 
 ### 配置 SDK：
@@ -269,7 +269,7 @@ enrollment.enroll = function (options, cb) {
             'ssl-target-name-override': options.peer_tls_opts.common_name
         }));
         logger.debug('added peer', options.peer_urls[0]);
-        
+
 // [Step 6]
         // --- Success --- //
         logger.debug('[fcw] Successfully got enrollment ' + options.uuid);
@@ -293,17 +293,17 @@ enrollment.enroll = function (options, cb) {
 
 第 2 步.接下来，我们使用 `newDefaultKeyValueStore` 创建一个键值存储来存储我们的注册证书。
 
-第 3 步.接下来注册我们的管理员。我们在执行这一步时使用了我们的注册 ID 和注册密钥向 CA 执行身份验证。CA 将颁发注册证书，SDK 将该证书存储在键值存储中。因为我们使用的是默认的键值存储，所以它会存储在本地文件系统中。 
+第 3 步.接下来注册我们的管理员。我们在执行这一步时使用了我们的注册 ID 和注册密钥向 CA 执行身份验证。CA 将颁发注册证书，SDK 将该证书存储在键值存储中。因为我们使用的是默认的键值存储，所以它会存储在本地文件系统中。
 
-第 4 步.成功注册后，我们将设置订购者 URL。暂时不需要订购者，但在我们尝试调用链代码时需要它。 
+第 4 步.成功注册后，我们将设置订购者 URL。暂时不需要订购者，但在我们尝试调用链代码时需要它。
     - 仅在拥有自签名证书时，才需要包含 `ssl-target-name-override` 的业务。将此字段与您创建 PEM 文件时使用的`常用名`设置为相同。
-    
+
 第 5 步.接下来设置节点 URL。这些 URL 也是暂时不需要的，但我们将会完整设置我们的 SDK 链对象。
 
 第 6 步.此刻，已对 SDK 进行全面配置并准备好与区块链进行交互。
 
 # Marbles 深入剖析
-希望您已在用户之间成功交易了一两颗弹珠。 
+希望您已在用户之间成功交易了一两颗弹珠。
 让我们看看如何完成弹珠的转移，首先看看链代码。
 
 __/chaincode/marbles.go__
@@ -379,15 +379,15 @@ __/chaincode/write_ledger.go__
     }
 ```
 
-这个 `set_owner()` 函数将更改特定弹珠的所有者。 
-它接受一个字符串输入参数数组，如果成功，则返回 `nil`。 
-在该数组内，第一个索引应拥有一颗弹珠的 ID，该 ID 也是键/值对中的键。 
-我们首先需要使用此 ID 检索当前的弹珠构造。 
-这是使用 `stub.GetState(marble_id)` 完成的，然后使用 `json.Unmarshal(marbleAsBytes, &res)` 将它解组为一种弹珠结构。 
-从这里，我们可以使用 `res.Owner.Id` 检索该结构，并使用新所有者 ID 覆盖该弹珠的所有者。 
-接下来，我们将对该结构进行编组，以便可以使用 `stub.PutState()` 通过新属性覆盖该弹珠。 
+这个 `set_owner()` 函数将更改特定弹珠的所有者。
+它接受一个字符串输入参数数组，如果成功，则返回 `nil`。
+在该数组内，第一个索引应拥有一颗弹珠的 ID，该 ID 也是键/值对中的键。
+我们首先需要使用此 ID 检索当前的弹珠构造。
+这是使用 `stub.GetState(marble_id)` 完成的，然后使用 `json.Unmarshal(marbleAsBytes, &res)` 将它解组为一种弹珠结构。
+从这里，我们可以使用 `res.Owner.Id` 检索该结构，并使用新所有者 ID 覆盖该弹珠的所有者。
+接下来，我们将对该结构进行编组，以便可以使用 `stub.PutState()` 通过新属性覆盖该弹珠。
 
-让我们更进一步，看看如何从我们的 node.js 应用程序中调用此链代码。 
+让我们更进一步，看看如何从我们的 node.js 应用程序中调用此链代码。
 
 __/utils/websocket_server_side.js__
 
@@ -442,19 +442,19 @@ __/utils/websocket_server_side.js__
         ...
 ```
 
-这段 `process_msg()` 代码接收所有 Websocket 消息（该代码可在 app.js 中找到）。 
-它将检测发送了何种类型的 ws (websocket) 消息。 
-在我们的示例中，它会检测到一个 `transfer_marble` 类型。 
-查看该代码，我们可以看到它将设置一个 `options` 变量，然后启动 `marbles_lib.set_marble_owner()`。 
-该函数将告诉 SDK 构建提案并处理转移操作。 
+这段 `process_msg()` 代码接收所有 Websocket 消息（该代码可在 app.js 中找到）。
+它将检测发送了何种类型的 ws (websocket) 消息。
+在我们的示例中，它会检测到一个 `transfer_marble` 类型。
+查看该代码，我们可以看到它将设置一个 `options` 变量，然后启动 `marbles_lib.set_marble_owner()`。
+该函数将告诉 SDK 构建提案并处理转移操作。
 
-接下来，让我们看看该函数。 
+接下来，让我们看看该函数。
 
 __/utils/marbles_cc_lib.js__
 
 ```js
     //-------------------------------------------------------------------
-    // Set Marble Owner 
+    // Set Marble Owner
     //-------------------------------------------------------------------
     marbles_chaincode.set_marble_owner = function (options, cb) {
         console.log('');
@@ -480,12 +480,12 @@ __/utils/marbles_cc_lib.js__
         ...
 ```
 
-上面列出了 `set_marble_owner()` 函数。 
-重要的部分是，它通过 `fcn: 'set_owner'` 将提案的调用函数名称设置为 "set_owner"。 
-请注意，我们在注册管理员时已经设置了节点和订购者 URL。 
-默认情况下，SDK 将此交易发送到所有通过 `channel.addPeer` 添加的节点。 
-在我们的示例中，SDK 仅发送到 1 个节点，因为我们只添加了 1 个节点。 
-我记得此节点是在 `enrollment` 这一节中添加的。 
+上面列出了 `set_marble_owner()` 函数。
+重要的部分是，它通过 `fcn: 'set_owner'` 将提案的调用函数名称设置为 "set_owner"。
+请注意，我们在注册管理员时已经设置了节点和订购者 URL。
+默认情况下，SDK 将此交易发送到所有通过 `channel.addPeer` 添加的节点。
+在我们的示例中，SDK 仅发送到 1 个节点，因为我们只添加了 1 个节点。
+我记得此节点是在 `enrollment` 这一节中添加的。
 
 现在让我们更进一步，看看如何从用户界面发送此 Websocket 消息。
 
@@ -533,27 +533,27 @@ __/public/js/ui_building.js__
     }
 ```
 
-在引用 `$('.innerMarbleWrap')` 的第一节中，可以看到我们使用了 jQuery 和 jQuery-UI 来实现拖放功能。 
-通过此代码，我们获得了一个可拖放的事件触发器。 
-我们用了大量代码来解析已拖入的弹珠和它拖放到的用户的细节。 
+在引用 `$('.innerMarbleWrap')` 的第一节中，可以看到我们使用了 jQuery 和 jQuery-UI 来实现拖放功能。
+通过此代码，我们获得了一个可拖放的事件触发器。
+我们用了大量代码来解析已拖入的弹珠和它拖放到的用户的细节。
 
-触发该事件时，我们首先检查这颗弹珠实际上是否已更换了所有者，或者是否只是将它选出又放回去。 
-如果它的所有者改变了，我们将转到 `transfer_marble()` 函数。 
-此函数创建一条包含所有需要的数据的 JSON 消息，并通过 `ws.send()` 使用我们的 Websocket 发送它。 
+触发该事件时，我们首先检查这颗弹珠实际上是否已更换了所有者，或者是否只是将它选出又放回去。
+如果它的所有者改变了，我们将转到 `transfer_marble()` 函数。
+此函数创建一条包含所有需要的数据的 JSON 消息，并通过 `ws.send()` 使用我们的 Websocket 发送它。
 
-最后一个问题是 Marbles 如何认识到转移已完成。 
-Marbles 将定期检查所有弹珠并将它们与最后已知状态进行比较。 
-如果存在差异，则将新弹珠状态广播到所有连接的 JS 客户端。 
-这些客户端会收到此 Websocket 消息并重新绘制该弹珠。 
+最后一个问题是 Marbles 如何认识到转移已完成。
+Marbles 将定期检查所有弹珠并将它们与最后已知状态进行比较。
+如果存在差异，则将新弹珠状态广播到所有连接的 JS 客户端。
+这些客户端会收到此 Websocket 消息并重新绘制该弹珠。
 
-现在您已知道了整个流程。 
+现在您已知道了整个流程。
 管理员转移弹珠，JS 检测到拖/放操作，客户端发送一条 Websocket 消息，Marbles 收到该 Websocket 消息，SDK 构建/发送一个提案，节点对提案进行背书，SDK 将提案发送给订购服务，订购者订购并向节点发送一个区块，我们的节点提交该区块，Marbles node 代码定期获取新的弹珠状态，将弹珠 Websocket 消息发送到客户端，最后客户端会在弹珠的新所有者那里重新绘制它。
 
-大功告成！希望您能愉快地交易弹珠。 
+大功告成！希望您能愉快地交易弹珠。
 
 ## Marbles 技巧
-Marbles 的一些注释无法整洁地放在上述操作说明中。 
-下面给出了各种各样的 Marbles 技巧和操作说明。 
+Marbles 的一些注释无法整洁地放在上述操作说明中。
+下面给出了各种各样的 Marbles 技巧和操作说明。
 - 即将发布
 
 # 许可

@@ -38,7 +38,7 @@ misc.check_creds_for_valid_json();
 var cp = require(__dirname + '/utils/connection_profile_lib/index.js')(process.env.creds_filename, logger);	// parses our cp file/data
 var host = 'localhost';
 var port = cp.getMarblesPort();
-process.env.marble_company = cp.getCompanyName();
+process.env.marble_company = cp.getClientsOrgName();
 
 // fabric client wrangler wraps the SDK
 var fcw = require('./utils/fc_wrangler/index.js')({ block_delay: cp.getBlockDelay() }, logger);
@@ -136,7 +136,6 @@ process.on('uncaughtException', function (err) {
 // - the steps below will run when the application starts, they are mildly interesting
 // - these steps will test the ability to communicate with marbles chaincode on your blockchain network
 // ------------------------------------------------------------------------------------------------------------------------------
-process.env.app_first_setup = 'yes';						// init
 let config_error = cp.checkConfig();
 setupWebSocket();											// http server is already up, make the ws one now
 
@@ -167,10 +166,11 @@ if (config_error) {
 					if (err) {
 						startup_lib.startup_unsuccessful(host, port);
 					} else {
-						console.log('\n');
+						console.log('\n\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -');
 						logger.debug('Detected that we have launched successfully before');
 						logger.debug('Welcome back - Marbles is ready');
-						logger.debug('Open your browser to http://' + host + ':' + port + ' and login as "admin"\n\n');
+						logger.debug('Open your browser to http://' + host + ':' + port + ' and login as "admin"');
+						console.log('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n');
 					}
 				});
 

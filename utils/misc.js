@@ -19,7 +19,7 @@ module.exports = function (logger) {
 				cp_path = path.join(__dirname, '../config/' + configFile.cred_filename);
 				let creds = require(cp_path);
 				if (creds.name) {
-					logger.info('Checking credentials file is done');
+					logger.info('Checking connection profile is done');
 					return null;
 				} else {
 					throw 'missing network id';
@@ -64,10 +64,25 @@ module.exports = function (logger) {
 	misc.saferNames = function (usernames) {
 		var ret = [];
 		for (var i in usernames) {
-			var name = usernames[i].replace(/\W+/g, '');					//names should not contain many things...
+			var name = usernames[i].replace(/\W+/g, '');	// names should not contain many things...
 			if (name !== '') ret.push(name.toLowerCase());
 		}
 		return ret;
+	};
+
+	// Sanitize string for filesystem
+	misc.saferString = function (str) {
+		let ret = '';
+		if (str && typeof str === 'string') {
+			ret = str.replace(/\W+/g, '');
+		}
+		return ret;
+	};
+
+	// Sanitize company names
+	misc.saferCompanyNames = function (companyName) {
+		var name = companyName.replace(/[^A-Za-z0-9_-~!@#$%^&*+=;<>{}\s]/g, '');			// names should not contain many things...
+		return name;
 	};
 
 	// Delete a folder

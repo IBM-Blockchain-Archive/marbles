@@ -31,6 +31,33 @@
 	text-align: left;
 	line-height: 25px;
 }
+.headingText{
+	font-size: 20px;
+}
+.warningWrap{
+	display: none;
+	font-size: 14px;
+	text-align: center;
+	background: $hi_color4;
+	color: #fff;
+	padding: 10px;
+	border-left: #fff 4px solid;
+	position: relative;
+	border-radius:3px;
+	width: 382px;
+	line-height: 18px;
+	margin: auto;
+}
+#dateChecked{
+	display: hidden;
+	font-size: 15px;
+	position: absolute;
+	top: 60px;
+}
+
+#failedSetup{
+	text-align: left;
+}
 
 .chooseTxt{
 	text-align: center;

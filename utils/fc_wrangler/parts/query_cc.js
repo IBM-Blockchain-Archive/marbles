@@ -33,10 +33,10 @@ module.exports = function (logger) {
 
 			// --- response looks bad -- //
 			if (formatted.parsed == null) {
-				logger.debug('[fcw] Query parsed response is empty:', formatted.raw);
+				logger.debug('[fcw] Query parsed response is empty:', formatted.parsed);
 			}
 			if (formatted.error) {
-				logger.debug('[fcw] Query response is an error:', formatted.raw);
+				logger.debug('[fcw] Query response is an error:', formatted.error);
 			}
 
 			// --- response looks good --- //
@@ -80,17 +80,20 @@ module.exports = function (logger) {
 			}
 
 			try {
-				if (as_string === '') {							//if its empty, thats okay... well its not great 
+				if (as_string === '') {							//if its empty, thats okay... well its not great
 					as_obj = '';
 				} else {
 					as_obj = JSON.parse(as_string);				//if we can parse it, its great
 				}
 				logger.debug('[fcw] Peer Query Response - len:', as_string.length, 'type:', typeof as_obj);
 				if (ret.parsed === null) ret.parsed = as_obj;	//store the first one here
-			}
-			catch (e) {
+			} catch (e) {
 				if (known_sdk_errors(as_string)) {
 					logger.error('[fcw] query resp looks like an error:', typeof as_string, as_string);
+					ret.parsed = null;
+					ret.error = as_string;
+				} else if (as_string.indexOf('premature execution') >= 0) {
+					logger.warn('[fcw] query not successful, waiting on chaincode to start:', as_string);
 					ret.parsed = null;
 					ret.error = as_string;
 				} else {
@@ -115,4 +118,3 @@ module.exports = function (logger) {
 
 	return query_cc;
 };
-

@@ -4,7 +4,7 @@
 module.exports = function (cp, logger) {
 	const helper = {};
 
-	// find the first ca in the peers field for this org
+	// find the first peer in the peers field for this org
 	helper.getFirstPeerName = function (ch) {
 		const channel = cp.creds.channels[ch];
 		if (channel && channel.peers) {
@@ -13,7 +13,7 @@ module.exports = function (cp, logger) {
 				return peers[0];
 			}
 		}
-		throw new Error('Orderer not found for this channel', ch);
+		throw new Error('Peer not found on this channel', ch);
 	};
 
 	// get a peer object

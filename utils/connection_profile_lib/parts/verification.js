@@ -22,7 +22,7 @@ module.exports = function (cp, logger) {
 			logger.warn('The INTERNAL version of the chaincode found is: v' + v.parsed);
 			logger.warn('But this UI is expecting INTERNAL chaincode version: v' + version[0] + '.x.x');
 			logger.warn('This mismatch won\'t work =(');
-			logger.warn('Install and instantiate the chaincode found in the ./chaincode folder on your channel ' + cp.getFirstChannelId());
+			logger.warn('Install and instantiate the chaincode found in the ./chaincode folder on your channel ' + cp.getChannelId());
 			logger.warn('----------------------------------------------------------------------');
 			console.log('\n\n');
 			return true;
@@ -35,20 +35,29 @@ module.exports = function (cp, logger) {
 	// --------------------------------------------------------------------------------------------
 	helper.check_for_missing = function () {
 		let errors = [];
-		const channel = cp.getFirstChannelId();
+		const channel = cp.getChannelId();
 
 		if (!channel) {
 			errors.push('There is no channel data in the "channels" field');
 		} else {
 			let org_2_use, first_ca, first_orderer, first_peer;
 			try {
+				console.log('Welcome aboard:\t', process.env.marble_company);
+				console.log('Channel:\t', channel);
 				org_2_use = cp.getClientOrg();
+				console.log('Org:\t\t', org_2_use);
 				first_ca = cp.getFirstCaName(org_2_use);
+				console.log('CA:\t\t', first_ca);
 				first_orderer = cp.getFirstOrdererName(channel);
+				console.log('Orderer:\t', first_orderer);
 				first_peer = cp.getFirstPeerName(channel);
+				console.log('Peer:\t\t', first_peer);
 			} catch (e) {
 				// errors are logged below
 			}
+
+			console.log('Chaincode ID:\t', cp.getChaincodeId());
+			console.log('Chaincode Version: ', cp.getChaincodeVersion());
 
 			if (!org_2_use) {
 				errors.push('There is no org data in the "client" field for provided connection profile');
@@ -56,11 +65,19 @@ module.exports = function (cp, logger) {
 			if (!cp.getCA(first_ca)) {
 				errors.push('There is no CA data in the "certificateAuthorities" field for provided connection profile');
 			}
-			if (!cp.getOrderer(first_orderer)) {
-				errors.push('There is no Orderer data in the "orderers" field for provided connection profile');
+			if (!first_orderer) {
+				errors.push('There is no orderer data in the "orderer" field for provided connection profile');
+			} else {
+				if (!cp.getOrderer(first_orderer)) {
+					errors.push('There is no Orderer data in the "orderers" field for provided connection profile');
+				}
 			}
-			if (!cp.getPeer(first_peer)) {
-				errors.push('There is no Peer data in the "peers" field for provided connection profile');
+			if (!first_peer) {
+				errors.push('There is no org peer in the "peer" field for provided connection profile');
+			} else {
+				if (!cp.getPeer(first_peer)) {
+					errors.push('There is no Peer data in the "peers" field for provided connection profile');
+				}
 			}
 		}
 
@@ -74,7 +91,8 @@ module.exports = function (cp, logger) {
 				logger.error(errors[i]);
 			}
 			logger.warn('----------------------------------------------------------------------');
-			logger.error('Fix this file: ./config/' + cp.getNetworkCredFileName());
+			if (!cp.using_env) logger.error('Fix this file: ./config/' + cp.getNetworkCredFileName());
+			else logger.error('Fix your env variable "CONNECTION_PROFILE"');
 			logger.warn('----------------------------------------------------------------------');
 			logger.warn('See this file for help:');
 			logger.warn('https://github.com/IBM-Blockchain/marbles/blob/v4.0/docs/config_file.md');
@@ -90,7 +108,7 @@ module.exports = function (cp, logger) {
 	// --------------------------------------------------------------------------------------------
 	helper.check_protocols = function () {
 		let errors = [];
-		const channel = cp.getFirstChannelId();
+		const channel = cp.getChannelId();
 		const org_2_use = cp.getClientOrg();
 		const first_ca = cp.getFirstCaName(org_2_use);
 		const first_orderer = cp.getFirstOrdererName(channel);
