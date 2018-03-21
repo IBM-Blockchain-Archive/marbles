@@ -126,7 +126,7 @@ gRPC 协议的细节由一个名为 [Hyperledger Fabric Client](https://www.npmj
 
 **选择下面的一个选项：**
 
-- **选项 1：**使用 Bluemix IBM Blockchain 服务创建一个网络 - [操作说明](./docs/use_bluemix_hyperledger.md)
+- **选项 1：** 使用 Bluemix IBM Blockchain 服务创建一个网络 - [操作说明](./docs/use_bluemix_hyperledger.md)
 - **选项 2：**:lollipop: 使用本地托管的 Hyperledger Fabric 网络 - [操作说明](./docs/use_local_hyperledger.md)
 
 <a name="installchaincode"></a>
@@ -142,7 +142,7 @@ gRPC 协议的细节由一个名为 [Hyperledger Fabric Client](https://www.npmj
 
 **仅**选择与您的设置相关的选项：
 
-- **选项 1：**使用 IBM Blockchain 服务安装并实例化链代码 - [操作说明](./docs/install_chaincode.md)
+- **选项 1：** 使用 IBM Blockchain 服务安装并实例化链代码 - [操作说明](./docs/install_chaincode.md)
 - **选项 2：**:lollipop: 在本地使用 SDK 安装并实例化链代码 - [操作说明](./docs/install_chaincode_locally.md)
 
 <a name="hostmarbles"></a>
@@ -153,7 +153,7 @@ gRPC 协议的细节由一个名为 [Hyperledger Fabric Client](https://www.npmj
 
 **选择下面的一个选项：**
 
-- **选项 1：**将 Marbles 托管在 Bluemix 上 - [操作说明](./docs/host_marbles_bluemix.md)
+- **选项 1：** 将 Marbles 托管在 Bluemix 上 - [操作说明](./docs/host_marbles_bluemix.md)
 - **选项 2：**:lollipop: 在本地托管 Marbles - [操作说明](./docs/host_marbles_locally.md)
 
 ***
@@ -168,7 +168,7 @@ gRPC 协议的细节由一个名为 [Hyperledger Fabric Client](https://www.npmj
 
 3.最后，我们可以测试该应用程序。单击“United Marbles”部分中一个用户上的“+”图标
 
-	![](/doc_images/use_marbles1.png)
+![](/doc_images/use_marbles1.png)
 
 4.填写所有字段，然后单击“CREATE”按钮
 5.几秒过后，您的新 Marbles 应该就会出现。
@@ -177,7 +177,7 @@ gRPC 协议的细节由一个名为 [Hyperledger Fabric Client](https://www.npmj
     如果未看见该弹珠，请刷新页面
 7.现在将一颗弹珠拖放到垃圾桶来删除它。它应该在几秒后消失。
 
-	![](/doc_images/use_marbles2.png)
+![](/doc_images/use_marbles2.png)
 
 8.刷新页面，以便再次确认您的操作“停顿了”。
 9.使用搜索框过滤弹珠所有者或弹珠公司名称。在有许多公司/所有者时，此方法很有帮助。
