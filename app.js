@@ -114,6 +114,7 @@ process.on('uncaughtException', function (err) {
 	if (wss && wss.broadcast) {							// if possible send the error out to the client
 		wss.broadcast({
 			msg: 'error',
+			info: 'this is a backend error!',
 			e: err.stack,
 		});
 	}

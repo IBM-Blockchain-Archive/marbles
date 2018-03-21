@@ -22,7 +22,7 @@ module.exports = function (logger, cp, fcw, marbles_lib, ws_server) {
 			cp.write(data);																//write new config data to file
 			startup_lib.enroll_admin(1, function (e) {
 				if (e == null) {
-					startup_lib.setup_marbles_lib(function () {
+					startup_lib.setup_marbles_lib('localhost', cp.getMarblesPort(), function () {
 						startup_lib.detect_prev_startup({ startup: false }, function (err) {
 							if (err) {
 								startup_lib.create_assets(cp.getMarbleUsernames()); 	//builds marbles, then starts webapp
@@ -38,7 +38,7 @@ module.exports = function (logger, cp, fcw, marbles_lib, ws_server) {
 			cp.write(data);																//write new config data to file
 			startup_lib.enroll_admin(1, function (e) {									//re-enroll b/c we may be using new peer/order urls
 				if (e == null) {
-					startup_lib.setup_marbles_lib(function () {
+					startup_lib.setup_marbles_lib('localhost', cp.getMarblesPort(), function () {
 						startup_lib.detect_prev_startup({ startup: true }, function (err) {
 							if (err) {
 								startup_lib.create_assets(cp.getMarbleUsernames()); 	//builds marbles, then starts webapp
