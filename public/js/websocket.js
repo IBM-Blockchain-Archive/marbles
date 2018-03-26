@@ -169,8 +169,10 @@ function connect_to_server() {
 			//general error
 			else if (msgObj.msg === 'error') {
 				console.log(wsTxt + ' rec', msgObj.msg, msgObj);
-				if (msgObj.e) {
+				if (msgObj.e && msgObj.e.parsed) {
 					addshow_notification(build_notification(true, escapeHtml(msgObj.e.parsed)), true);
+				} else if (msgObj.e) {
+					addshow_notification(build_notification(true, escapeHtml(msgObj.e)), true);
 				}
 			}
 
