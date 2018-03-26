@@ -8,6 +8,9 @@
 
 	![](/doc_images/marbles-peek.gif)
 
+### Versions
+There are multiple versions of marbles. This version is compatible with **Hyperledger Fabric v1.1x**. You can find the other marble versions by checking out other branches.
+
 ***
 
 # Application Background
@@ -75,7 +78,6 @@ You will need to do this step even if you plan on hosting marbles in Bluemix.
 	```
 	git clone https://github.com/IBM-Blockchain/marbles.git --depth 1
 	cd marbles
-	git checkout master
 	```
 
 - Great I'll meet you at step 2.
