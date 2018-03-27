@@ -231,7 +231,7 @@ gRPC 协议的细节由一个名为 [Hyperledger Fabric Client](https://www.npmj
 
 # SDK 深入剖析
 现在让我们看看如何连接到 Fabric Client SDK。
-大部分配置选项都可以在 `/config/blockchain_creds_tls.json` 中找到。
+大部分配置选项都可以在 `/config/connection_profile_tls.json` 中找到。
 此文件列出了我们的区块链网络中的各种组件的主机名（或 IP）和端口。
 `helper` 函数将从该配置文件中检索 IP 和端口。
 

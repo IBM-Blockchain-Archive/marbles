@@ -1,5 +1,5 @@
 {
-    "cred_filename": "blockchain_creds_local.json",
+    "cred_filename": "connection_profile_local.json",
     "use_events": true,
     "keep_alive_secs": 120,
     "company": "United Marbles",

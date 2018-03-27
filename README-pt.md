@@ -21,7 +21,7 @@ Existem diversas versões do Marbles. Uma ramificação do Marbles para cada gra
   - Funciona com Hyperledger Fabric `v0.6.1-preview`
   - Funciona com IBM Blockchain Bluemix Service
   - Plano **Iniciante** ou **HSBN**
-- [Marbles - Ramificação v1.0](https://github.com/ibm-blockchain/marbles/tree/v1.0) **(Descontinuada)**  
+- [Marbles - Ramificação v1.0](https://github.com/ibm-blockchain/marbles/tree/v1.0) **(Descontinuada)**
   - Funciona com Hyperledger Fabric `v0.5-developer-preview`
   - Não recebe mais suporte do IBM Blockchain Bluemix Service ***
 
@@ -157,7 +157,7 @@ Vamos dar uma olhada nas operações envolvidas na criação de uma nova bola de
 1. Neste momento, a nova bola de gude existe em nosso ledger e, em breve, deverá existir nos ledgers de todos os pares.
 
 # Detalhes do SDK
-Agora, vamos ver como é a interface com o Fabric Client SDK. A maioria das opções de configuração está disponível em `/config/blockchain_creds_tls.json`. Esse arquivo mostra o nome do host (ou IP) e a porta de vários componentes da rede de blockchain. As funções `helper` recuperarão IPs e portas do arquivo de configuração.
+Agora, vamos ver como é a interface com o Fabric Client SDK. A maioria das opções de configuração está disponível em `/config/connection_profile_tls.json`. Esse arquivo mostra o nome do host (ou IP) e a porta de vários componentes da rede de blockchain. As funções `helper` recuperarão IPs e portas do arquivo de configuração.
 ### Configure o SDK:
 
 A primeira ação é inscrever o administrador. Observe o fragmento de código a seguir na inscrição. Há comentários/instruções abaixo do código.

@@ -196,7 +196,7 @@ Let’s look at the operations involved when creating a new marble.
 # SDK Deeper Dive
 Now lets see how we interface with the Fabric Client SDK.
 Almost all of the configuration options can be found in our "connection profile" (aka cp).
-Your connection profile might be coming from a file such as`/config/blockchain_creds_tls.json`, or it might be from an environmental variable.
+Your connection profile might be coming from a file such as`/config/connection_profile_tls.json`, or it might be from an environmental variable.
 If you are unsure which, check the logs when marbles starts.
 You will either see `Loaded connection profile from an environmental variable` or `Loaded connection profile file <some name here>`.
 The cp is JSON and it has the hostname (or ip) and port of various components of our blockchain network.

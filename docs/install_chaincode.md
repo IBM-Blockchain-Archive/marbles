@@ -1,7 +1,7 @@
 # Install and Instantiate Chaincode w/Bluemix
 
 1. If you are not currently on the Blockchain "Resources" page... then get there via:
-    1. Login to [Bluemix](https://console.ng.bluemix.net) 
+    1. Login to [Bluemix](https://console.ng.bluemix.net)
     1. Get to your dashboard by clicking the "Menu" icon on the top left and then clicking the "Dashboard" link
     1. Under "All Services" locate your the Blockchain row and click it
     1. Enter your IBM Blockchain Service's dashboard by clicking the "Enter" button
@@ -31,8 +31,8 @@
 
 - The arguments input box is for entering the arguments we want to pass to our chaincode's Init() function.
     - Typically, this is an array of strings.  As you type you can see exactly what will be sent in the lower input named "Chaincode Arguments".
-- Marbles chaincode is expecting a single numeric input argument. Therefore, enter your favorite number. Mines 314. 
-    - Marbles chaincode will store this number to the ledger as a self-test of sorts. It can literally be any number you want. 
+- Marbles chaincode is expecting a single numeric input argument. Therefore, enter your favorite number. Mines 314.
+    - Marbles chaincode will store this number to the ledger as a self-test of sorts. It can literally be any number you want.
 - Next from the "Channel" drop down, select our 1 and only channel
 - Then click the "Submit" button
 - If it went well the chaincode page will refresh
@@ -58,13 +58,12 @@
 
 - The last thing we need to do is grab all the service instance's credentials for our network. We will use this data to inform the marbles node.js application of our blockchain's networking addresses and credentials.
 - Get the service credentials by clicking the "JSON" button under the "App Integration" column (you may need to expand the chaincode row first)
-- **Important:** This will open the JSON in your browser. Copy this data and save/replace the entire contents of the file `<marbles directory>/config/blockchain_creds_tls.json` 
-  - This JSON contains all the details needed to connect to your network. 
+- **Important:** This will open the JSON in your browser. Copy this data and save/replace the entire contents of the file `<marbles directory>/config/connection_profile_tls.json`
+  - This JSON contains all the details needed to connect to your network.
   - Marbles will read this file to connect and transact on your network on this channel.
 
 ### Finish Up
 
-Congrats! The network is all setup and marbles chaincode is running. 
+Congrats! The network is all setup and marbles chaincode is running.
 
 - Continue where you left off in the [tutorial](../README.md#hostmarbles).
-

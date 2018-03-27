@@ -24,7 +24,7 @@ If you are using the files you will likely need to edit them from their default 
 
 ```json
 {
-    "cred_filename": "blockchain_creds_tls.json",
+    "cred_filename": "connection_profile_tls.json",
     "use_events": true,
     "keep_alive_secs": 120,
     "company": "United Marbles",
@@ -53,7 +53,7 @@ There is already an example file in the config folder you can use.
 ### 2. The Connection Profile:
 
 - This data contains the settings for your blockchain network such as IPs, port numbers, and certificates.
-- The file version can be found in `<marbles>/config/blockchain_creds_tls.json`.
+- The file version can be found in `<marbles>/config/connection_profile_tls.json`.
 - If you are using the env version you must set this yourself.
 	- `> export CONNECTION_PROFILE="{JSON GOES IN HERE}"`
 - Tip: Use separate files for separate blockchain networks.
@@ -73,7 +73,7 @@ You should have already downloaded this file from the service during the [instal
 	"client": {
 		"organization": "Org1MSP",
 		"credentialStore": {
-			"path": "./crypto/prebaked"
+			"path": "./crypto/example"
 		}
 	},
 	"channels": {
@@ -105,10 +105,10 @@ You should have already downloaded this file from the service during the [instal
 				"fabric-ca"
 			],
 			"adminPrivateKey": {
-				"path": "./crypto/prebaked/cd96d5260ad4757551ed4a5a991e62130f8008a0bf996e4e4b84cd097a747fec-priv"
+				"path": "./crypto/example/private.pem"
 			},
 			"signedCert": {
-				"path": "./crypto/prebaked/PeerAdminCert.pem"
+				"path": "./crypto/example/cert.pem",
 			}
 		}
 	},
@@ -175,6 +175,6 @@ You should have already downloaded this file from the service during the [instal
 		- `enrollSecret` - A registered user's secret on the CA. Can be found in the CA's yaml file.
 	- `caName` - The CA to use to authenticate the enroll ID.
 
-Once you have edited `blockchain_creds_tls.json` you are ready to install/instantiate Marbles.
+Once you have edited `connection_profile_tls.json` you are ready to install/instantiate Marbles.
 
 1. Continue where you left off in the [tutorial](../README.md#installchaincode).
