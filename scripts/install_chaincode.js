@@ -32,7 +32,7 @@ if (args[2]) {
 }
 
 var cp = require(path.join(__dirname, '../utils/connection_profile_lib/index.js'))(config_file, logger);			//set the config file name here
-var fcw = require(path.join(__dirname, '../utils/connection_profile_lib/index.js'))({ block_delay: cp.getBlockDelay() }, logger);
+var fcw = require(path.join(__dirname, '../utils/fc_wrangler/index.js'))({ block_delay: cp.getBlockDelay() }, logger);
 
 console.log('---------------------------------------');
 logger.info('Lets install some chaincode -', chaincode_id, chaincode_ver);

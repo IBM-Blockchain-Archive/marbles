@@ -31,12 +31,12 @@ module.exports = function (logger) {
 		var client = obj.client;
 
 		// fix GOPATH - does not need to be real!
-		process.env.GOPATH = path.join(__dirname, '../../chaincode');
+		process.env.GOPATH = path.join(__dirname, '../../../chaincode');
 
 		// send proposal to endorser
 		var request = {
 			targets: [client.newPeer(options.peer_urls[0], options.peer_tls_opts)],
-			chaincodePath: options.path_2_chaincode,							//rel path from /server/libs/src/ to chaincode folder ex: './marbles_chaincode'
+			chaincodePath: options.path_2_chaincode,					//path to chaincode from <marbles root>/chaincode/src/
 			chaincodeId: options.chaincode_id,
 			chaincodeVersion: options.chaincode_version,
 		};
@@ -84,8 +84,6 @@ module.exports = function (logger) {
 		var channel = obj.channel;
 		var client = obj.client;
 
-		// fix GOPATH - does not need to be real!
-		process.env.GOPATH = path.join(__dirname, '../');
 
 		// send proposal to endorser
 		var request = {
@@ -167,9 +165,6 @@ module.exports = function (logger) {
 		var channel = obj.channel;
 		var client = obj.client;
 
-		// fix GOPATH - does not need to be real!
-		process.env.GOPATH = path.join(__dirname, '../');
-
 		// send proposal to endorser
 		var request = {
 			targets: [client.newPeer(options.peer_urls[0], options.peer_tls_opts)],
@@ -227,4 +222,3 @@ module.exports = function (logger) {
 
 	return deploy_cc;
 };
-
