@@ -19,9 +19,23 @@ If these files are not found you will be unable to run either operation.
 
 **Choose 1 option below to create these files:**
 
-- **Option 1:** :lollipop: Use crypto files from a **locally hosted Hyperledger Fabric Network**. These certificates will be created with the `fabric-samples` example called `fabcar`. If you have already created the certs you should still re-run this step - [Create Crypto Files with Fabcar](./use_fabcar_crypto.md)
-- **Option 2:** Create the certificate and public key files manually.  Use this option when your Fabric network was not created from `fabric-samples` such as the IBM Cloud service. - [Generate Crypto Manually](https://console.bluemix.net/docs/services/blockchain/v10_application.html#generating-the-client-side-certificates) - Instructions
+- **Option 1:** :lollipop: Use crypto files from a **locally hosted Hyperledger Fabric Network**. These certificates will be created with the `fabric-samples` example called `fabcar`. If you have already created the certs you should still re-run this step. [Create Crypto Files with Fabcar](./use_fabcar_crypto.md)
+- **Option 2:** Create the certificate and public key files manually.  Use this option when your Fabric network was **not** created from `fabric-samples`. [Generate Crypto Manually](https://console.bluemix.net/docs/services/blockchain/v10_application.html#generating-the-client-side-certificates)
 	- Once you are done add the private key and signed certificate files to this folder: `<marbles root>/config/crypto/`
+	- Next append the cert/key path information to your connection profile:
+		1. Open your connection profile file in the `<marbles root>/config/` folder
+		2. In the `organizations` field append these fields:
+		```
+		"adminPrivateKey": {
+			"path": "./crypto/private.pem"
+		},
+		"signedCert": {
+			"path": "./crypto/cert.pem",
+			"x-name": "default"
+		}
+		```
+		3. Double check the `path` fields above. Each field should match the name of the file you created.
+		4. I've left you an example key and cert file in `<marbles root>/config/crypto/example` to reference. These will **not** work with your network, but you can reference them to see the expected PEM format of each file type.
 
 <a name="installChaincode"></a>
 
@@ -32,14 +46,14 @@ For reference the marbles chaincode can be found in this directory `<marbles roo
 There are several files, which is fine since our script will send the directory.
 
 The script we will use is `install_chaincode.js` in the `scripts` folder.
-It will read in our marbles config file and the blockchain creds file.
+It will read in our marbles config file and the connection profile data.
 You can change the marbles chaincode ID or version by editing the `install_chaincode.js` file.
-Open the configuration and credential file readme below if you would like to edit these files and want more information on their contents.
+Open the configuration and connection profile file readme below if you would like to edit these files and want more information on their contents.
 If you are okay with the defaults, then simply leave these files alone and run the command below.
 
-- [Configuration and Credential File Help](./config_file.md)
+- [Configuration and Connection Profile Format Help](./config_file.md)
 
-Install the marbles chaincode source files with the commands below:
+Install the marbles chaincode files with the commands below:
 
 ```bash
 cd ./scripts
