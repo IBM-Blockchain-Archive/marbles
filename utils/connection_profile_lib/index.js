@@ -272,7 +272,7 @@ module.exports = function (config_filename, logger) {
 		if (obj.chaincodeVersion) {
 			let chaincodeId = cp.getChaincodeId();
 			if (obj.chaincodeId) {							// changing both id and version
-				chaincodeId = obj.chaincodeVersion;
+				chaincodeId = obj.chaincodeId;
 			}
 			creds_file.channels[channel].chaincodes = [chaincodeId + ':' + obj.chaincodeVersion];
 		}
