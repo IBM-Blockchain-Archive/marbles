@@ -1,14 +1,14 @@
-# Use Bluemix IBM Blockchain Service:
+# Use IBM Cloud Blockchain Service:
 
-### Creating a Blockchain Network in IBM Bluemix
+### Creating a Blockchain Network in IBM Cloud
 1. Don't fret, this is as simple as clicking on a particular button and filling out a text input field or two, or three.
   Meh it’s about a dozen.
   But that’s not too bad.
-  The Bluemix service will run our peers and orderer, thus forming our blockchain network.
+  The IBM Cloud service will run our peers and orderer, thus forming our blockchain network.
   We also have the ability to join other networks, but let’s focus on creating our own.
 
 1. First [create an IBM ID](https://console.ng.bluemix.net/registration/) if you do not already have one.
-1. Then login to [Bluemix](https://console.ng.bluemix.net)
+1. Then login to [IBM Cloud](https://console.ng.bluemix.net)
 1. Click the "Catalog" link on the top navigation bar
 
 ![](/doc_images/bluemix_ibc1.png)
@@ -23,7 +23,7 @@
 ![](/doc_images/bluemix_ibc3.png)
 
 1. The service will be created in the currently selected space. This is found on the top toolbar near your email address. Click the space if you want to create the Blockchain service in a different space. This will bring up multiple options for Region/Org/Space.
-    - All of this is a Bluemix concept for organizing services/apps. If these terms confuse you then leave the values alone.
+    - All of this is a IBM Cloud concept for organizing services/apps. If these terms confuse you then leave the values alone.
 
 ![](/doc_images/bluemix_ibc4.png)
 

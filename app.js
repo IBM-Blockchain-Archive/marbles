@@ -49,7 +49,7 @@ var ws_server = require('./utils/websocket_server_side.js')(cp, fcw, logger);
 // setup/startup logic
 var startup_lib = require('./utils/startup_lib.js')(logger, cp, fcw, marbles_lib, ws_server);
 
-// ------------- Bluemix Host Detection ------------- //
+// ------------- IBM Cloud Host Detection ------------- //
 if (process.env.VCAP_APPLICATION) {
 	host = '0.0.0.0';												//overwrite defaults
 	port = process.env.PORT;

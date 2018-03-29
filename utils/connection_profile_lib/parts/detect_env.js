@@ -8,7 +8,7 @@ module.exports = function (logger) {
 	detect_env.getConnectionProfileFromEnv = function () {
 
 		// --- Get Service Credentials  --- //
-		if (process.env.VCAP_SERVICES) {												// if we are in bluemix this will be set
+		if (process.env.VCAP_SERVICES) {												// if we are in IBM Cloud this will be set
 			logger.info('Detected that we are in IBM Cloud');
 			let VCAP = null;
 			try {

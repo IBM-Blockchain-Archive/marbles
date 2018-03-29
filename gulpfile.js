@@ -39,14 +39,14 @@ gulp.task('watch-server', function () {
 
 // ---------------- Runnable Gulp Tasks ---------------- //
 gulp.task('default', ['watch-sass', 'watch-server', 'server']);
-gulp.task('marbles_tls', ['env_tls', 'watch-sass', 'watch-server', 'server']);		//run with command `gulp marbles_tls` for bluemix blockchain service
+gulp.task('marbles_tls', ['env_tls', 'watch-sass', 'watch-server', 'server']);		//run with command `gulp marbles_tls` for IBM Cloud blockchain service
 gulp.task('marbles_local', ['env_local', 'watch-sass', 'watch-server', 'server']);	//run with command `gulp marbles_local` for a local network
-gulp.task('marbles_cs', ['env_cs', 'watch-sass', 'watch-server', 'server']);		//run with command `gulp marbles_cs` for bluemix container service
+gulp.task('marbles_cs', ['env_cs', 'watch-sass', 'watch-server', 'server']);		//run with command `gulp marbles_cs` for IBM Cloud container service
 gulp.task('marbles_dev', ['env_dev', 'watch-sass', 'watch-server', 'server']);		//run with command `gulp marbles_dev` if you are me
 gulp.task('marbles_dev2', ['env_dev2', 'watch-sass', 'watch-server', 'server']);	//run with command `gulp marbles_dev` if you are me
 gulp.task('build', ['watch-sass']);
 
-// Bluemix IBM Blockchain Service
+// IBM Cloud Blockchain Service
 gulp.task('env_tls', function () {
 	env['creds_filename'] = 'marbles_tls.json';
 });
@@ -56,7 +56,7 @@ gulp.task('env_local', function () {
 	env['creds_filename'] = 'marbles_local.json';
 });
 
-// Bluemix Container Service
+// IBM Cloud Container Service
 gulp.task('env_cs', function () {
 	env['creds_filename'] = 'marbles_cs.json';
 });

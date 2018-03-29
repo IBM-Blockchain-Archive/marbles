@@ -85,7 +85,7 @@ If you don't do this step you run the risk of being unable to build your chainco
 
 - **Option 3:** Choose this option if you want to modify chaincode and use the Blockchain Service for my network
 	- Get the commit hash from your network or use the hash `ae4e37d`.
-		- If you have a network on the Bluemix service, then the exact Fabric version can be found in the "Support" tab under the "Release Notes" section of your network's dashboard.
+		- If you have a network on the IBM Cloud service, then the exact Fabric version can be found in the "Support" tab under the "Release Notes" section of your network's dashboard.
 	 - Go to the `Continue the Fabric Install Instructions` section below. You will enter the hash there.
 
 

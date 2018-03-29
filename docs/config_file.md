@@ -58,7 +58,7 @@ There is already an example file in the config folder you can use.
 	- `> export CONNECTION_PROFILE="{JSON GOES IN HERE}"`
 - Tip: Use separate files for separate blockchain networks.
 
-**If you are using the Bluemix Blockchain Service you will not need to manually edit these files**.
+**If you are using the IBM Cloud Blockchain Service you will not need to manually edit these files**.
 You should have already downloaded this file from the service during the [install chaincode tutorial](./install_chaincode.md).
 
 **Example JSON**

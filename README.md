@@ -70,7 +70,7 @@ Follow these environment setup [instructions](./docs/env_setup.md) to install **
 ### 1. Download Marbles
 We need to download marbles to your local system.
 Let’s do this with Git by cloning this repository.
-You will need to do this step even if you plan on hosting marbles in Bluemix.
+You will need to do this step even if you plan on hosting marbles in IBM Cloud.
 
 - Open a command prompt/terminal and browse to your desired working directory
 - Run the following command:
@@ -90,7 +90,7 @@ Hello again. Now we need a blockchain network.
 
 **Choose 1 option below:**
 
-- **Option 1:** Create a network with the Bluemix IBM Blockchain Service - [instructions](./docs/use_bluemix_hyperledger.md)
+- **Option 1:** Create a network with the IBM Cloud IBM Blockchain Service - [instructions](./docs/use_bluemix_hyperledger.md)
 - **Option 2:** :lollipop: Use a locally hosted Hyperledger Fabric Network - [instructions](./docs/use_local_hyperledger.md)
 
 <a name="installchaincode"></a>
@@ -117,7 +117,7 @@ Last but not least we need marbles running somewhere.
 
 **Choose 1 option below:**
 
-- **Option 1:** Host marbles on Bluemix - [instructions](./docs/host_marbles_bluemix.md)
+- **Option 1:** Host marbles on IBM Cloud - [instructions](./docs/host_marbles_bluemix.md)
 - **Option 2:** :lollipop: Host marbles locally - [instructions](./docs/host_marbles_locally.md)
 
 ***
@@ -127,7 +127,7 @@ Last but not least we need marbles running somewhere.
 # Use Marbles
 
 1. If you are at this step, you should have your environment setup, blockchain network created, marbles app and chaincode running. Right? If not look up for help (up the page, not literally upwards).
-1. Open up your favorite browser and browse to [http://localhost:3001](http://localhost:3001) or your Bluemix www route.
+1. Open up your favorite browser and browse to [http://localhost:3001](http://localhost:3001) or your IBM Cloud www route.
     - If the site does not load, check your node console logs for the hostname/ip and port marbles is using.
 
 1. Finally we can test the application. Click the "+" icon on one of your users in the "United Marbles" section

@@ -167,7 +167,7 @@ module.exports = function (cp, logger) {
 			logger.warn('----------------------------------------------------------------------');
 			logger.error('Fix this file: ./config/' + cp.getNetworkCredFileName());
 			logger.warn('It must have credentials/hostnames/ports/channels/etc for YOUR network');
-			logger.warn('How/where would I get that info? Are you using the Bluemix service? Then look at these instructions(near the end): ');
+			logger.warn('How/where would I get that info? Are you using the IBM Cloud Blockchain service? Then look at these instructions(near the end): ');
 			logger.warn('https://github.com/IBM-Blockchain/marbles/blob/v4.0/docs/install_chaincode.md');
 			logger.warn('----------------------------------------------------------------------');
 			console.log('\n\n');

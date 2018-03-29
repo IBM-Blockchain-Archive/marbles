@@ -152,7 +152,7 @@ sudo docker logs -f orderer0
 Nice work! The network is all setup. Right? I guess we will find out together.
 If you followed the instructions then your orderer will be batching new blocks every 10 seconds.
 This is a litttttle long for our application.
-If you use the Bluemix service, the batch time is only 1 second and this is the delay the app has been optimized for.
+If you use the IBM Cloud Blockchain service, the batch time is only 1 second and this is the delay the app has been optimized for.
 The application will continue to work with a 10 sec batch time, but you will have excess idle time to contemplate your life choices.
 
 Next up we need to **pass network info (such as IP addresses)** to our marbles application.

@@ -14,7 +14,7 @@
 - **Option 1:** :lollipop: If you are using a local network use this command:
 	> gulp marbles_local
 
-- **Option 2:** If you are using a bluemix network, use this command:
+- **Option 2:** If you are using a IBM Cloud Blockchain network, use this command:
 	> gulp marbles_tls
 
 1. If all goes well you should see this message in the console:

@@ -1,7 +1,7 @@
-# Install and Instantiate Chaincode w/Bluemix
+# Install and Instantiate Chaincode w/IBM Cloud
 
 1. If you are not currently on the Blockchain "Resources" page... then get there via:
-    1. Login to [Bluemix](https://console.ng.bluemix.net)
+    1. Login to [IBM Cloud](https://console.ng.bluemix.net)
     1. Get to your dashboard by clicking the "Menu" icon on the top left and then clicking the "Dashboard" link
     1. Under "All Services" locate your the Blockchain row and click it
     1. Enter your IBM Blockchain Service's dashboard by clicking the "Enter" button

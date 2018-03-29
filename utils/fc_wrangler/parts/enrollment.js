@@ -116,7 +116,7 @@ module.exports = function (logger) {
 					trustedRoots: [options.ca_tls_opts.pem],								//pem cert required
 					verify: false
 				};
-				var ca_client = new CaService(options.ca_url, tlsOptions, options.ca_name);	//ca_name is important for the bluemix service
+				var ca_client = new CaService(options.ca_url, tlsOptions, options.ca_name);	//ca_name is important for the IBM Cloud service
 				member = new User(options.enroll_id);
 
 				logger.debug('enroll id: "' + options.enroll_id + '", secret: "' + options.enroll_secret + '"');
