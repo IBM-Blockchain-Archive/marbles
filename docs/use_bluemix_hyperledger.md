@@ -1,14 +1,14 @@
 # Use Bluemix IBM Blockchain Service:
 
 ### Creating a Blockchain Network in IBM Bluemix
-1. Don't fret, this is as simple as clicking on a particular button and filling out a text input field or two, or three. 
-  Meh it’s about a dozen. 
-  But that’s not too bad. 
-  The Bluemix service will run our peers and orderer, thus forming our blockchain network. 
-  We also have the ability to join other networks, but let’s focus on creating our own. 
+1. Don't fret, this is as simple as clicking on a particular button and filling out a text input field or two, or three.
+  Meh it’s about a dozen.
+  But that’s not too bad.
+  The Bluemix service will run our peers and orderer, thus forming our blockchain network.
+  We also have the ability to join other networks, but let’s focus on creating our own.
 
 1. First [create an IBM ID](https://console.ng.bluemix.net/registration/) if you do not already have one.
-1. Then login to [Bluemix](https://console.ng.bluemix.net)  
+1. Then login to [Bluemix](https://console.ng.bluemix.net)
 1. Click the "Catalog" link on the top navigation bar
 
 ![](/doc_images/bluemix_ibc1.png)
@@ -30,13 +30,13 @@
 1. Leave the "Service Name" alone or you can choose to rename it to something more friendly such as "Awesome Marbles Demo"
 1. Leave the "Credential name" field as its default value
 1. Leave the "Connected To:" field as "Leave unbound"
-1. Scroll to the bottom and change the "Selected Plan" to **IBM Blockchain Platform - Enterprise Plan**
+1. Scroll to the bottom and change the "Selected Plan" to **:lollipop: Starter Membership Plan (Beta)** or **Enterprise Membership Plan**
 1. Click the "Create" button at the bottom right.
 
 ![](/doc_images/1-welcome.PNG)
 
-<a name ="get_credentials" ></a> 
-- If all goes well you should see a similar screen as the image above. Click the "Create Network" button to enter the create wizard. 
+<a name ="get_credentials" ></a>
+- If all goes well you should see a similar screen as the image above. Click the "Create Network" button to enter the create wizard.
 
 ![](/doc_images/2-create-wizard.PNG)
 
@@ -45,18 +45,18 @@
 ![](/doc_images/3-create-summary.PNG)
 
 - Now that we are on the "Review Summary" screen lets look over your choices. When finished click the "Done" button.
-- Next you will see an option to create peers or enter the dashboard.  Select the "Add Peers" button. 
+- Next you will see an option to create peers or enter the dashboard.  Select the "Add Peers" button.
 	- Make sure you add at least 1 peer. If its too late you can still create the peer later on.
 	- Click the "Submit" button
 
 ![](/doc_images/4-resources-no-peers.PNG)
 
 - Congrats, you now have a blockchain network. You are currently eyeballing the list of nodes for you network. This is your "Overview" page.
-- You will need nodes called "Peers" to run marbles chaincode.  You may have peers already.  It depends on if you selected some during the create wizard. If not click the "Add Peer" button and create 1 peer of any size. 
+- You will need nodes called "Peers" to run marbles chaincode.  You may have peers already.  It depends on if you selected some during the create wizard. If not click the "Add Peer" button and create 1 peer of any size.
 
 ![](/doc_images/5-after-added-peer.PNG)
 
-- When you see at least one peer listed in the table, we can move on to making a channel. 
+- When you see at least one peer listed in the table, we can move on to making a channel.
     - Creating a channel is a bit of a process, so bare with me!
     - A channel is used to isolate our blockchain ledger from others on the network.  (Later we will have the opportunity to invite members of our network to our channel) Members on the same channel will be able to validate each others transactions. For now we just want to make a channel for ourself.
 - Click the "Channels" link on the left navigation menu.
@@ -72,7 +72,7 @@
 
 - We need ourself added as an "Operator". So find your email address and check the Operator box next to it.
 	- Operator means we get to vote on changes to this channel.
-- If we wanted to invite others to the channel, we could add them from the drop down and select their roles. For now lets only have ourself on this channel. 
+- If we wanted to invite others to the channel, we could add them from the drop down and select their roles. For now lets only have ourself on this channel.
 - Then click the "Next" button
 
 ![](/doc_images/7c-create-channel.PNG)
@@ -101,6 +101,6 @@
     - If you don't see a date, refresh the page or repeat the join
 
 ### Finish Up
-Congrats! The network is all setup. If you want more detail on the IBM Blockchain service, available plans, or a detailed overview of the IBM Blockchain Dashboard, jump over [here](https://console.ng.bluemix.net/docs/services/blockchain/index.html?pos=2). If not let’s continue the setup. 
+Congrats! The network is all setup. If you want more detail on the IBM Blockchain service, available plans, or a detailed overview of the IBM Blockchain Dashboard, jump over [here](https://console.ng.bluemix.net/docs/services/blockchain/index.html?pos=2). If not let’s continue the setup.
 
 - Continue where you left off in the [tutorial](../README.md#installchaincode).

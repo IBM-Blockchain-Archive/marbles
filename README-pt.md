@@ -13,7 +13,7 @@ Existem diversas versões do Marbles. Uma ramificação do Marbles para cada gra
 - Marbles - Ramificação v4.0 **(Mais recente)** (Você está visualizando esta ramificação!)
   - Funciona com Hyperledger Fabric `v1.0.1`, `v1.0.0` e `v1.0.0-rc1`
   - Funciona com o IBM Blockchain Bluemix Service
-  - Plano **IBM Blockchain Platform - Enterprise**
+  - Plano **Starter Membership Plan (Beta)**
 - [Marbles - Ramificação v3.0](https://github.com/ibm-blockchain/marbles/tree/v3.0) **(Descontinuada)**
   - Funciona com Hyperledger Fabric `v1.0.0-alpha`
   - Não recebe mais suporte do IBM Blockchain Bluemix Service

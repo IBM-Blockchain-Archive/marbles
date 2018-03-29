@@ -18,7 +18,7 @@
 
 - Marbles - 分支 v4.0 **(Latest)**（您将看到这个分支！）
 	- 兼容 Hyperledger Fabric `v1.0.1`、`v1.0.0` 和 `v1.0.0-rc1`
-	- 兼容 IBM Blockchain Bluemix 服务 - **IBM Blockchain Platform - Enterprise** 计划
+	- 兼容 IBM Blockchain Bluemix 服务 - **Starter Membership Plan (Beta)** or **Enterprise Membership Plan** 计划
 
 - [Marbles - 分支 v3.0](https://github.com/ibm-blockchain/marbles/tree/v3.0) **（已弃用）**
 	- 兼容 Hyperledger Fabric `v1.0.0-alpha`
