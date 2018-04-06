@@ -3,7 +3,7 @@
 Okidoki, so
 
 ```bash
-    node enrollAdmins.js
+    node enrollAdmin.js
     node registerUser.js
     node query.js
 ```
