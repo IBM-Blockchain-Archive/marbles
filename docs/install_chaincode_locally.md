@@ -19,7 +19,7 @@ If these files are not found you will be unable to run either operation.
 
 **Choose 1 option below to create these files:**
 
-- **Option 1:** :lollipop: Use crypto files from a **locally hosted Hyperledger Fabric Network**. These certificates will be created with the `fabric-samples` example called `fabcar`. If you have already created the certs you should still re-run this step. [Create Crypto Files with Fabcar](./use_fabcar_crypto.md)
+- **Option 1:** :lollipop: Use crypto files from a **locally hosted Hyperledger Fabric Network**. These certificates will be created with the `fabric-samples` example called `fabcar`. If you have already created the certs you should still re-run this step.
 - **Option 2:** Create the certificate and public key files manually.  Use this option when your Fabric network was **not** created from `fabric-samples`. [Generate Crypto Manually](https://console.bluemix.net/docs/services/blockchain/v10_application.html#generating-the-client-side-certificates)
 	- Once you are done add the private key and signed certificate files to this folder: `<marbles root>/config/crypto/`
 	- Next append the cert/key path information to your connection profile:

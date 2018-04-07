@@ -83,10 +83,7 @@ You should have already downloaded this file from the service during the [instal
 			],
 			"peers": {
 				"fabric-peer-org1": {
-					"endorsingPeer": true,
-					"chaincodeQuery": true,
-					"ledgerQuery": true,
-					"eventSource": true
+					"x-chaincode": {}
 				}
 			},
 			"chaincodes": [
@@ -144,15 +141,17 @@ You should have already downloaded this file from the service during the [instal
 **Field Details**
 
 - `name` - The main purpose of this is to detect when people try to use the default file w/o editing! Set it to anything other than `Place Holder Network Name` to get past the startup check.
+- `x-networkId` - Unique id of the network set by the IBM Blockchain Platform service. Not necessary for a local hyperledger fabric network..
+- `x-type` - Used by Hyperledger Composer to indicate what connector to use. Typically `hlfv1`. Only necessary if using Composer.
 - `client`
-	- `organization` = The name of the org to use for our application. This name will match an entry in the `organizations` object.
+	- `organization` - The name of the org to use for our application. This name will match an entry in the `organizations` object.
 	- `credentialStore` - (Optional)
 		- `path` - The path of a key value store for the SDK to use.  Stores crypto material.
 - `channels`
 	- `orderers` - An array of names of a orderers that have joined this channel. Each name will match an entry in the `orderers` object.
-	- `peers` - An array of names of peers that has joined this channel. Each name will match an entry in the `peers` object.
+	- `peers` - A dictionary of peers that has joined this channel.
 	- `chaincodes` - An array of strings representing instantiated chaincode on this channel. The id and version are separated by a colon.
-	- `x-blockDelay` - Time in ms for a block to be created by the orderer. This is a setting for the channel.
+	- `x-blockDelay` - Time in ms for a block to be created by the orderer. This is a setting for the channel that marbles will use to set timeouts.
 - `organizations`
 	- `peers` - The key name of a peer that is owned by this org. This name will match an entry in the `peers` object.
 	- `certificateAuthorities` - The key name of a ca that is owned by this org. This name will match an entry in the `certificateAuthorities` object.

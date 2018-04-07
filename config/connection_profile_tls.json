@@ -14,14 +14,7 @@
 				"fabric-orderer-12297d",
 				"fabric-orderer-12297e"
 			],
-			"peers": {
-				"fabric-peer-org1-14888a": {
-					"endorsingPeer": true,
-					"chaincodeQuery": true,
-					"ledgerQuery": true,
-					"eventSource": true
-				}
-			},
+			"peers": {},
 			"chaincodes": [
 				"marbles:v4"
 			],

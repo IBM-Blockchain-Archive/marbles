@@ -17,10 +17,7 @@
 			],
 			"peers": {
 				"fabric-peer-org1": {
-					"endorsingPeer": true,
-					"chaincodeQuery": true,
-					"ledgerQuery": true,
-					"eventSource": true
+					"x-chaincode": {}
 				}
 			},
 			"chaincodes": [

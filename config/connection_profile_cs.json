@@ -12,14 +12,7 @@
 			"orderers": [
 				"fabric-orderer"
 			],
-			"peers": {
-				"blockchain-org1peer1": {
-					"endorsingPeer": true,
-					"chaincodeQuery": true,
-					"ledgerQuery": true,
-					"eventSource": true
-				}
-			},
+			"peers": {},
 			"chaincodes": [
 				"marbles:v4"
 			],
