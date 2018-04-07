@@ -9,6 +9,7 @@
 // ============================================================================================================================
 var fs = require('fs');
 var path = require('path');
+var os = require('os');
 
 module.exports = function (config_filename, logger) {
 	var cp = {};
@@ -104,11 +105,16 @@ module.exports = function (config_filename, logger) {
 			if (obj.path.indexOf('/') === 0) {
 				path2cert = obj.path;									//its an absolute path
 			}
+			if (path2cert.indexOf('$HOME') >= 0) {
+				path2cert = path2cert.replace('$HOME', os.homedir()).substr(1);
+			}
+			logger.debug('loading pem from a path: ' + path2cert);
 			return fs.readFileSync(path2cert, 'utf8') + '\r\n'; 		//read from file, LOOKING IN config FOLDER
-		} else {
-			return obj.pem;												//can be null if network is not using TLS
+		} else if (obj.pem) {											// looks like field is the pem we need
+			logger.debug('loading pem from JSON.');
+			return obj.pem;
 		}
-		return null;
+		return null;													//can be null if network is not using TLS
 	};
 
 	// safely retrieve marbles config file fields

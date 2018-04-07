@@ -39,6 +39,9 @@ module.exports = function (cp, logger) {
 			if (kvs_path.indexOf('/') === 0) {
 				ret = kvs_path;										//its an absolute path
 			}
+			if (ret.indexOf('$HOME') >= 0) {
+				ret = ret.replace('$HOME', os.homedir()).substr(1);
+			}
 			return ret;												//use the kvs provided in the json
 		} else {
 			return default_path;									//make a new kvs folder in the home dir

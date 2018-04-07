@@ -2,6 +2,7 @@
 // 													Get org fields from connection profile data
 // ============================================================================================================================
 var fs = require('fs');
+var os = require('os');
 var path = require('path');
 
 module.exports = function (cp, logger) {
@@ -86,67 +87,53 @@ module.exports = function (cp, logger) {
 	helper.getAdminPrivateKeyPEM = function (orgName) {
 		if (orgName && cp.creds.organizations && cp.creds.organizations[orgName]) {
 			if (!cp.creds.organizations[orgName].adminPrivateKey) {
-				if (!cp.creds.organizations[orgName]['x-certJson'] || !cp.creds.organizations[orgName]['x-certJson'].path) {
+				if (!cp.creds.organizations[orgName]['x-adminKeyStore'] || !cp.creds.organizations[orgName]['x-adminKeyStore'].path) {
 					throw new Error('Admin private key is not found in the creds json file: ' + orgName);
 				} else {
-					const obj = getCryptoFromCertJson(cp.creds.organizations[orgName]['x-certJson'].path);
-					return cp.loadPem(obj.adminPrivateKey);
+					const path2key = getCryptoFromCP(cp.creds.organizations[orgName]['x-adminKeyStore'].path);
+					if (path2key) {
+						return cp.loadPem({ path: path2key });
+					}
 				}
 			} else {
 				return cp.loadPem(cp.creds.organizations[orgName].adminPrivateKey);
 			}
 		}
-		else {
-			throw new Error('Cannot find org.', orgName);
-		}
+		throw new Error('Cannot find org.', orgName);
 	};
 
 	// get an admin's signed cert PEM
 	helper.getAdminSignedCertPEM = function (orgName) {
 		if (orgName && cp.creds.organizations && cp.creds.organizations[orgName]) {
 			if (!cp.creds.organizations[orgName].signedCert) {
-				if (!cp.creds.organizations[orgName]['x-certJson'] || !cp.creds.organizations[orgName]['x-certJson'].path) {
+				if (!cp.creds.organizations[orgName]['x-adminCert'] || !cp.creds.organizations[orgName]['x-adminCert'].path) {
 					throw new Error('Admin certificate is not found in the creds json file: ' + orgName);
 				} else {
-					const obj = getCryptoFromCertJson(cp.creds.organizations[orgName]['x-certJson'].path);
-					return cp.loadPem(obj.signedCert);
+					return cp.loadPem({ path: cp.creds.organizations[orgName]['x-adminCert'].path });
 				}
 			} else {
 				return cp.loadPem(cp.creds.organizations[orgName].signedCert);
 			}
 		}
-		else {
-			throw new Error('Cannot find org.', orgName);
-		}
-		return null;
+		throw new Error('Cannot find org.', orgName);
 	};
 
-	// return an object with the private key and the admin cert
-	function getCryptoFromCertJson(file_path) {
-		const ret = {
-			adminPrivateKey: {
-				path: null
-			},
-			signedCert: {
-				pem: null
+	// return path to private key from kvs
+	function getCryptoFromCP(kvsPath, cb) {
+		let kvs_path = kvsPath;
+		if (kvsPath.indexOf('$HOME') >= 0) {
+			kvs_path = kvsPath.replace('$HOME', os.homedir()).substr(1);
+		}
+		if (fs.existsSync(kvs_path)) {							// check if folder exists
+			const entries = fs.readdirSync(kvs_path);
+			for (let i in entries) {
+				const entry_path = path.join(kvs_path, entries[i]);
+				if (fs.lstatSync(entry_path).isFile()) {		// found a file, hope its the key/cert we need
+					return entry_path;
+				}
 			}
-		};
-		try {
-			const json = fs.readFileSync(file_path);						//open the crypto file, fabcar generated this
-			const obj = JSON.parse(json);
-			ret.adminPrivateKey.path = path.join(strip_2_folder(file_path), obj.enrollment.signingIdentity + '-priv');	//load it via path
-			ret.signedCert.pem = obj.enrollment.identity.certificate;		//load it directly
-		} catch (e) {
-			logger.error(e);
-			throw new Error('Cannot parse crypto json', file_path);
 		}
-		return ret;
-
-		// take the filename out of the pathname, leave the path to the folder
-		function strip_2_folder(pathname) {
-			const lastPos = pathname.lastIndexOf('/');
-			return pathname.substring(0, lastPos);
-		}
+		return null;
 	}
 
 	return helper;

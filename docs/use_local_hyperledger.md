@@ -7,9 +7,9 @@ These instructions have been tested on Ubuntu 14 and OSX.  It may work for Windo
 
 * Bash - Bash scripts are needed to setup installation files
 * [GoLang](https://golang.org/) - 1.7.0 or higher
-* [Docker](https://www.docker.com/products/overview) - v1.13 or higher
-* [Docker Compose](https://docs.docker.com/compose/overview/) - v1.8 or higher
-* [Node.js](https://nodejs.org/en/download/) - node v6.2.0 - v6.11.1 **(v7+ not supported)**
+* [Docker CE](https://www.docker.com/get-docker) - v1.13 or higher
+* [Docker Compose](https://docs.docker.com/compose/install/) - v1.8 or higher
+* [Node.js](https://nodejs.org/en/download/) - node v6.2+ or v8.1+ **(v9 is not supported, v7 support is unknown)**
 * [xcode](https://developer.apple.com/xcode/) - only required for **OS X** users
 
 ## 1. Download Fabric Samples
@@ -18,7 +18,7 @@ We are going to hijack the [Hyperledger Fabric samples](http://hyperledger-fabri
 Their code has the setup for a Fabric network as well as example chaincode.
 We will only be using the network setup part.
 
-Download their samples with the command:
+Download their node samples with the command:
 
 ```bash
 git clone https://github.com/hyperledger/fabric-samples.git
@@ -28,7 +28,7 @@ cd fabric-samples
 Once you have cloned the repository start downloading the docker images of the various fabric components.
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/release/scripts/bootstrap-1.0.4.sh -o setup_script.sh
+curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/release-1.1/scripts/bootstrap-1.1.0-preview.sh -o setup_script.sh
 sudo bash setup_script.sh
 ```
 
@@ -45,7 +45,7 @@ Run the script below to get everything going.
 
 ```bash
     cd ./fabcar
-    ./startFabric.sh
+    sudo ./startFabric.sh
 ```
 
 After a minute or two the command prompt will return.
@@ -77,6 +77,8 @@ Before we run `fabcar` we need to install its npm dependencies:
     sudo npm install
 ```
 
+ - If you get a permission error such as `Error: EACCES: permission denied` on a `pkcs11js` folder try running this command `sudo npm install pkcs11js --unsafe-perm=true --allow-root`.  Then re-run `sudo npm install`.
+
 It's important that the install returned with no errors (warnings are fine).
 If you have npm installation errors you will have to decipher those on your own!
 Good luck.
@@ -85,21 +87,14 @@ Good luck.
 Finally lets test the network before we run marbles.
 Run query via `fabcar` with the commands:
 
-```bash
-    node enrollAdmin.js
-    node registerUser.js
-    node query.js
-```
-
-The correct responses will look _similar_ to:
-
-
+Run the command __node enrollAdmin.js__. The response should be _similar_ to:
 ```
 Store path:/home/ibmadmin/fabric-samples/fabcar/hfc-key-store
 Successfully enrolled admin user "admin"
 Assigned the admin user to the fabric client ::{"name":"admin","mspid":"Org1MSP","roles":null,"affiliation":"","enrollmentSecret":"",390e3bbbcfa819e338","identity":{"certificate":"-----BEGIN CERTIFICATE-----\nMIIB8TCCAZegAwIBAgIUENLgPE9seEysP/jBDTdmRCUyR30wCgYIKoZIzcmFuY2lzY28xGTAXBgNVBAoTEG9yZzEuZXhhbXBsZS5jb20xHDAaBgNVBAMT\nE2NhLm9yZzEuZXhhbXBsZS5jb20wHhcNMTcxMjIyMTYxMDAwWhcNMTgxMjIyMTYx\nMDAwWoAFxMrB3wQ98E/bvqi3s2ilWee3p/mkyc98EtzGFDPzuw7\ne+A6kiPjkuaeeRteWqNsjaijbDBqMA4GA1UdDwEB/wQEAwIHgDAMBgNVHRMBAf8E\nAjAAMB0GA1UdDgQWBBRrGpXNl5JfDAKBggqhkjOPQQDAgNIADBF\nAiEAkraZL5xVq/GBysqdcB+yD0T6eMWZoN/DFLbS4W5O+7gCIC675hXxxcfIe4aD\njM8ikcptiP9V4I3nE/RVB8qqtAV7\n---
 ```
 
+Run the command __node registerUser.js__. The response should be _similar_ to:
 ```
  Store path:/home/ibmadmin/fabric-samples/fabcar/hfc-key-store
 Successfully loaded admin from persistence
@@ -108,6 +103,7 @@ Successfully enrolled member user "user1"
 User1 was successfully registered and enrolled and is ready to intreact with the fabric network
 ```
 
+Run the command __node query.js__. The response should be _similar_ to:
 ```
 Store path:/home/ibmadmin/fabric-samples/fabcar/hfc-key-store
 Successfully loaded user1 from persistence
@@ -164,5 +160,5 @@ Select one option below:
 If you plan to run marbles on the **same** machine as the docker containers then this step is already done for you.
 Choose option 1, else choose option 2.
 
-1. **Option 1:** :lollipop: - Fabric and Marbles on same machine -  [next](../README.md#installchaincode)
+1. **Option 1:** :lollipop: - Fabric and Marbles on same machine -  [next](../README.md#3-install-and-instantiate-chaincode)
 2. **Option 2:** - Fabric and Marbles on different machines - [edit config file](./config_file.md)
