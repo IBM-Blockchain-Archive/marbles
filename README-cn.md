@@ -1,36 +1,15 @@
-*阅读本文的其他语言版本：[English](README.md)。*
+*阅读本资料的其他语言版本：[English](README.md)。*
 # Marbles 演示
 
 ## 关于 Marbles
-- 这个应用程序的基础网络是 [Hyperledger Fabric](https://github.com/hyperledger/fabric/tree/master/docs)，后者是一个 Linux Foundation 项目。您可能想查阅以下操作说明来稍微了解一下 Hyperledger Fabric。
+- 这个应用程序的基础网络是 [Hyperledger Fabric](https://github.com/hyperledger/fabric/tree/master/docs)，后者是一个 Linux Foundation 项目。  您可能想查阅以下操作说明来稍微了解一下 Hyperledger Fabric。
 - **本演示旨在帮助开发人员了解链代码的基础知识以及如何使用 Fabric 网络开发应用程序。**
 - 这是一个`非常简单`的资产转移演示。多个用户可以创建并相互转移弹珠。
 
 	![](/doc_images/marbles-peek.gif)
 
-***
-
-##### 版本和支持的平台
-请注意，Marbles 有多个版本。
-每个 Marbles 分支对应于一个主要的 Hyperledger Fabric 版本。
-请挑选一个与您的 Fabric 版本兼容的 Marbles 版本。
-如果您没有任何版本的 Fabric，那么请挑选标为 **latest** 的 Marbles 版本！
-
-- Marbles - 分支 v4.0 **(Latest)**（您将看到这个分支！）
-	- 兼容 Hyperledger Fabric `v1.0.1`、`v1.0.0` 和 `v1.0.0-rc1`
-	- 兼容 IBM Blockchain Bluemix 服务 - **Starter Membership Plan (Beta)** or **Enterprise Membership Plan** 计划
-
-- [Marbles - 分支 v3.0](https://github.com/ibm-blockchain/marbles/tree/v3.0) **（已弃用）**
-	- 兼容 Hyperledger Fabric `v1.0.0-alpha`
-	- 不再受 IBM Blockchain Bluemix 服务支持
-
-- [Marbles - 分支 v2.0](https://github.com/ibm-blockchain/marbles/tree/v2.0) **（已弃用）**
-	- 兼容 Hyperledger Fabric `v0.6.1-preview`
-	- 兼容 IBM Blockchain Bluemix 服务 - **Starter** 或 **HSBN** 计划
-
-- [Marbles - 分支 v1.0](https://github.com/ibm-blockchain/marbles/tree/v1.0) **（已弃用）**
-	- 兼容 Hyperledger Fabric `v0.5-developer-preview`
-	- 不再受 IBM Blockchain Bluemix 服务支持
+### 版本
+各种版本的 marbles 同时存在。 本版本兼容 **Hyperledger Fabric v1.1x**。 你可以通过检出别的分支来获取别的版本的 marble。
 
 ***
 
@@ -39,7 +18,7 @@
 请大家集中注意力，这个应用程序将演示如何利用 Hyperledger Fabric 在许多弹珠所有者之间转移弹珠。
 我们将在 Node.js 中使用一些 GoLang 代码完成此任务。
 该应用程序的后端将是在我们的区块链网络中运行的 GoLang 代码。
-从现在开始，这些 GoLang 代码将称为 '链代码' 或 'cc'。
+从现在开始，这些 GoLang 代码将称为“链代码”或“cc”。
 该链代码本身会创建一颗弹珠，将它存储到链代码状态中。
 该链代码本身可以将数据作为字符串存储在键/值对设置中。
 因此，我们将字符串化 JSON 对象，以便存储更复杂的结构。
@@ -51,10 +30,10 @@
   3. 尺寸（int，以毫米为单位）
   4. 所有者（字符串）
 
-我们将创建一个基于 Web 的用户界面，它可以设置这些值并将它们存储在区块链中。
-这颗弹珠是在区块链存储（也称为账本）中以键值对的形式创建的。
+我们将创建一个用户界面，它可以设置这些值并将它们存储在区块链的账本中。
+弹珠实际上是一个键值对。
 `键`为弹珠 ID，`值`为一个包含（上面列出的）弹珠属性的 JSON 字符串。
-与 cc 的交互是通过对网络上的一个节点使用 gRPC 协议来完成的。
+与 cc 的交互是通过对网络上的一个对等节点使用 gRPC 协议来完成的。
 gRPC 协议的细节由一个名为 [Hyperledger Fabric Client](https://www.npmjs.com/package/fabric-client) SDK 的 SDK 处理。
 请查看下图了解拓扑结构细节。
 
@@ -64,25 +43,11 @@ gRPC 协议的细节由一个名为 [Hyperledger Fabric Client](https://www.npmj
 
 1. 管理员将在他们的浏览器中与我们的 Node.js 应用程序 Marbles 进行交互。
 2. 此客户端 JS 代码将打开一个与后端 Node.js 应用程序的 Websocket 连接。管理员与该站点交互时，客户端 JS 将消息发送到后端。
-3. 读取或写入账本称为提案。这个提案由 Marbles（通过 SDK）构建，然后发送到一个区块链节点。
-4. 该节点将与它的 Marbles 链代码容器进行通信。链代码将运行/模拟该交易。如果没有问题，它会对该交易进行背书，并将其发回我们的 Marbles 程序。
-5. 然后，Marbles（通过 SDK）将背书后的提案发送到订购服务。订购方将来自整个网络的许多提案打包到一个区块中。然后，它将新的区块广播到网络中的节点。
-6. 最后，节点会验证该区块并将它写入自己的账本中。该交易现在已经生效，所有后续读取都会反映此更改。
+3. 读取或写入账本称为提案。这个提案由 Marbles（通过 SDK）构建，然后发送到一个区块链对等节点。
+4. 该对等节点将与它的 Marbles 链代码容器进行通信。链代码将运行/模拟该交易。如果没有问题，它会对该交易进行背书，并将其发回我们的 Marbles 程序。
+5. 然后，Marbles（通过 SDK）将背书后的提案发送到订购服务。  订购方将来自整个网络的许多提案打包到一个区块中。  然后，它将新的区块广播到网络中的对等节点。
+6. 最后，对等节点会验证该区块并将它写入自己的账本中。该交易现在已经生效，所有后续读取都会反映此更改。
 
-### 上下文线索
-您需要理解 3 个不同的部分/领域。
-应该将它们视为相互通信的隔离环境。
-在我们设置和解释每一部分时，本演示会从一部分跳到另一部分。
-一定要确定每部分的具体作用。
-有一些关键词和上下文线索可帮助区分不同部分。
-
-1.链代码部分 - 这是在区块链网络上运行的/包含节点的 GoLang 代码。也称为 `cc`。所有弹珠/区块链交互最终都会在这里进行。这些文件位于 `/chaincode` 中。
-1.客户端 JS 部分 - 这是在用户浏览器中运行的 JavaScript 代码。用户界面交互在这里执行。这些文件位于 `/public/js` 中。
-1.服务器端 JS 部分 - 这是运行应用程序的后端的 JavaScript 代码，即为 Marbles 的核心的 `Node.js` 代码！有时该代码也称为我们的`节点`或`服务器`代码。它充当 Marbles 管理员与我们的区块链之间的连接器。这些文件位于 `/utils` 和 `/routes` 中。
-
-请记住，这 3 部分是相互隔离的。
-它们不共享变量和函数。
-它们将通过 gRPC 或 WebSocket 等网络协议进行通信。
 ***
 
 # Marbles 设置
@@ -105,15 +70,14 @@ gRPC 协议的细节由一个名为 [Hyperledger Fabric Client](https://www.npmj
 ### 1.下载 Marbles
 我们需要将 Marbles 下载到本地系统。
 让我们使用 Git 通过克隆此存储库来完成该任务。
-即使您计划将 Marbles 托管在 Bluemix 中，也需要执行这一步。
+即使您计划将 Marbles 托管在 IBM Cloud 中，也需要执行这一步。
 
 - 打开一个命令提示符/终端并浏览到您想要的工作目录
 - 运行以下命令：
 
 	```
 	git clone https://github.com/IBM-Blockchain/marbles.git --depth 1
-	cd marbles
-	git checkout master
+	cd marbles	
 	```
 
 - 非常棒，第 2 步再见。
@@ -126,7 +90,7 @@ gRPC 协议的细节由一个名为 [Hyperledger Fabric Client](https://www.npmj
 
 **选择下面的一个选项：**
 
-- **选项 1：** 使用 Bluemix IBM Blockchain 服务创建一个网络 - [操作说明](./docs/use_bluemix_hyperledger.md)
+- **选项 1：** 使用 IBM Cloud IBM Blockchain 服务创建一个网络 - [操作说明](./docs/use_bluemix_hyperledger.md)
 - **选项 2：**:lollipop: 使用本地托管的 Hyperledger Fabric 网络 - [操作说明](./docs/use_local_hyperledger.md)
 
 <a name="installchaincode"></a>
@@ -135,7 +99,7 @@ gRPC 协议的细节由一个名为 [Hyperledger Fabric Client](https://www.npmj
 
 很好，就快要完成了！现在，我们需要运行我们的 Marbles 链代码。
 请记住，链代码是一个关键组件，它最终会在账本上创建我们的 Marbles 事务。
-该链代码是需要安装在节点上，然后在一个通道上实例化的 GoLang 代码。
+该链代码是需要安装在对等节点上，然后在一个通道上实例化的 GoLang 代码。
 已为您编写好该代码！
 我们只需要运行它。
 可通过两种方式运行它。
@@ -153,7 +117,7 @@ gRPC 协议的细节由一个名为 [Hyperledger Fabric Client](https://www.npmj
 
 **选择下面的一个选项：**
 
-- **选项 1：** 将 Marbles 托管在 Bluemix 上 - [操作说明](./docs/host_marbles_bluemix.md)
+- **选项 1：** 将 Marbles 托管在 IBM Cloud 上 - [操作说明](./docs/host_marbles_bluemix.md)
 - **选项 2：**:lollipop: 在本地托管 Marbles - [操作说明](./docs/host_marbles_locally.md)
 
 ***
@@ -162,33 +126,33 @@ gRPC 协议的细节由一个名为 [Hyperledger Fabric Client](https://www.npmj
 
 # 使用 Marbles
 
-1.如果您到达这一步，那么您应该已经设置了环境，创建了区块链网络，而且 Marbles 应用程序和链代码正在运行。对吧？如果不对，您可以寻求一些帮助（从网页中寻找，而不是从字面上寻找）。
-2.打开最喜欢的浏览器，浏览到 [http://localhost:3001](http://localhost:3001) 或您的 Bluemix www 路径。
+1. 如果您到达这一步，那么您应该已经设置了环境，创建了区块链网络，而且 Marbles 应用程序和链代码正在运行。对吧？如果不对，您可以寻求一些帮助（从网页中寻找，而不是从字面上寻找）。
+2. 打开最喜欢的浏览器，浏览到 [http://localhost:3001](http://localhost:3001) 或您的 IBM Cloud www 路径。
     - 如果未加载该站点，请检查您的节点控制台日志，查看 Marbles 使用的主机名/IP 和端口。
 
-3.最后，我们可以测试该应用程序。单击“United Marbles”部分中一个用户上的“+”图标
+3. 最后，我们可以测试该应用程序。单击“United Marbles”部分中一个用户上的“+”图标
 
-![](/doc_images/use_marbles1.png)
+	![](/doc_images/use_marbles1.png)
 
-4.填写所有字段，然后单击“CREATE”按钮
-5.几秒过后，您的新 Marbles 应该就会出现。
+4. 填写所有字段，然后单击“CREATE”按钮
+5. 几秒过后，您的新 Marbles 应该就会出现。
     - 如果未出现，请单击浏览器中的 Refresh 按钮或按 F5 来刷新该页面
-6.接下来，让我们来交易一颗弹珠。将一颗弹珠从一位所有者拖到另一位所有者。仅在您拥有多个弹珠公司时，才能与“United Marbles”内的所有者交易它。该弹珠应该会暂时消失，然后在新所有者中重新绘制出来。这意味着交易成功了！
-    如果未看见该弹珠，请刷新页面
-7.现在将一颗弹珠拖放到垃圾桶来删除它。它应该在几秒后消失。
+6. 接下来，让我们来交易一颗弹珠。  将一颗弹珠从一位所有者拖到另一位所有者。仅在您拥有多个弹珠公司时，才能与“United Marbles”内的所有者交易它。该弹珠应该会暂时消失，然后在新所有者中重新绘制出来。这意味着交易成功了！
+    - 如果未看见该弹珠，请刷新页面
+7. 现在将一颗弹珠拖放到垃圾桶来删除它。它应该在几秒后消失。
 
-![](/doc_images/use_marbles2.png)
+	![](/doc_images/use_marbles2.png)
 
-8.刷新页面，以便再次确认您的操作“停顿了”。
-9.使用搜索框过滤弹珠所有者或弹珠公司名称。在有许多公司/所有者时，此方法很有帮助。
+8. 刷新页面，以便再次确认您的操作“停顿了”。
+9. 使用搜索框过滤弹珠所有者或弹珠公司名称。  在有许多公司/所有者时，此方法很有帮助。
     - 别针图标会阻止搜索框过滤掉该用户。
-10.现在让我们来执行具体的演练。单击页面顶部附近的“Settings”按钮。
+10. 现在让我们来执行具体的演练。单击页面顶部附近的“Settings”按钮。
 	- 这将打开一个对话框。
 	- 单击“Enabled”按钮启用 Story Mode
 	- 单击右上角的“x”关闭菜单。
-	- 现在挑选另一颗弹珠，并将它拖到另一个用户。您会看到交易流程的分解结构。希望这能让您更好地了解 Fabric 的工作原理。
+	- 现在挑选另一颗弹珠，并将它拖到另一个用户。  您会看到交易流程的分解结构。希望这能让您更好地了解 Fabric 的工作原理。
 	- 请记住，当故事的剧情不断重复，而且您对自己的过往已失去兴趣时，可以禁用 Story Mode。
-11.恭喜您有了一个工作正常的 Marbles 应用程序 :)！
+11. 恭喜您有了一个工作正常的 Marbles 应用程序 :)！
 
 
 # 区块链背景
@@ -197,7 +161,7 @@ gRPC 协议的细节由一个名为 [Hyperledger Fabric Client](https://www.npmj
 
 ### 定义：
 
-**节点** - 节点是区块链的成员，运行着 Hyperledger Fabric。在 Marbles 的上下文中，节点归我的弹珠公司所有和操作。
+**对等节点** - 对等节点是区块链的成员，运行着 Hyperledger Fabric。在 Marbles 的上下文中，对等节点归我的弹珠公司所有和操作。
 
 **CA** - CA（证书颁发机构）负责守卫我们的区块链网络。它将为客户端（比如我们的 Marbles node.js 应用程序）提供交易证书。
 
@@ -209,7 +173,7 @@ gRPC 协议的细节由一个名为 [Hyperledger Fabric Client](https://www.npmj
 
 **交易**或**提案** - 它们表示与区块链账本的交互。对账本的读取或写入请求是以交易/提案的形式发送的。
 
-**账本** - 这是区块链在一个节点上的存储区。它包含由交易参数和键值对组成的实际的区块数据。它由链代码编写。
+**账本** - 这是区块链在一个对等节点上的存储区。它包含由交易参数和键值对组成的实际的区块数据。它由链代码编写。
 
 **链代码** - 链代码是代表智能合约的 Hyperledger Fabric。它定义资产和所有关于资产的规则。
 
@@ -217,26 +181,29 @@ gRPC 协议的细节由一个名为 [Hyperledger Fabric Client](https://www.npmj
 
 让我们看看创建一颗新的弹珠时涉及的操作。
 
-1.Marbles 中发生的第一件事是向网络的 `CA` 注册我们的管理员`用户`。如果成功，`CA` 会向 Marbles 发送注册证书，SDK 将该证书存储在我们的本地文件系统中。
-2.管理员从用户界面创建一颗新弹珠时，SDK 会创建一个调用事务。
-3.创建弹珠的事务被构建为一个调用链代码函数 `init_marble()` 的`提案`。
-4.Marbles（通过 SDK）将此`提案`发送到一个`节点`进行背书。
-5.`节点`将运行 Go 函数 `init_marble()` 来模拟该事务，并记录它尝试写入账本中的所有更改。
-6.如果该函数成功返回，`节点`会对该`提案`进行背书并将它发回给 Marbles。如果失败，错误也将发送回来，但不会对`提案`进行背书。
-7.然后，Marbles（通过 SDK）将背书后的`提案`发送给`订购者`。
-8.`订购者`将组织来自整个网络的`提案`的序列。它将通过查找相互冲突的交易，检查该交易序列是否有效。任何由于冲突而无法添加到区块中的交易都被标记为错误。`订购者`将新区块广播到网络中的节点。
-9.我们的`节点`将收到新区块，并通过查看各种签名和哈希值来验证它。最终将该区块提交到`节点`的`账本`。
-10.此刻，我们的账本中会出现新的弹珠，并很快会出现在所有节点的账本中。
+1. Marbles 中发生的第一件事是向网络的 `CA` 注册我们的管理员`用户`。如果成功，`CA` 会向 Marbles 发送注册证书，SDK 将该证书存储在我们的本地文件系统中。
+2. 管理员从用户界面创建一颗新弹珠时，SDK 会创建一个调用事务。
+3. 创建弹珠的事务被构建为一个调用链代码函数 `init_marble()` 的`提案`。
+4. Marbles（通过 SDK）将此`提案`发送到一个`对等节点`进行背书。
+5. `对等节点`将运行 Go 函数 `init_marble()` 来模拟该事务，并记录它尝试写入账本中的所有更改。
+6. 如果该函数成功返回，`对等节点`会对该`提案`进行背书并将它发回给 Marbles。如果失败，错误也将发送回来，但不会对`提案`进行背书。
+7. 然后，Marbles（通过 SDK）将背书后的`提案`发送给`订购者`。
+8. `订购者`将组织来自整个网络的`提案`的序列。它将通过查找相互冲突的交易，检查该交易序列是否有效。任何由于冲突而无法添加到区块中的交易都被标记为错误。`订购者`将新区块广播到网络中的对等节点。
+9. 我们的`对等节点`将收到新区块，并通过查看各种签名和哈希值来验证它。最终将该区块提交到`对等节点`的`账本`。
+10. 此刻，我们的账本中会出现新的弹珠，并很快会出现在所有对等节点的账本中。
 
 
 # SDK 深入剖析
 现在让我们看看如何连接到 Fabric Client SDK。
-大部分配置选项都可以在 `/config/connection_profile_tls.json` 中找到。
-此文件列出了我们的区块链网络中的各种组件的主机名（或 IP）和端口。
-`helper` 函数将从该配置文件中检索 IP 和端口。
+几乎所有配置选项都可以在“连接概要文件”（即 cp）中找到。
+您的连接概要文件可能来自诸如 `/config/blockchain_creds_tls.json` 之类的文件，也可能来自一个环境变量。
+如果您不确定它来自何处，可以在弹珠启动时检查日志。
+您会看到 `Loaded connection profile from an environmental variable` 或 `Loaded connection profile file <some name here>`。
+cp 为 JSON，它包含我们的区块链网络中的各种组件的主机名（或 IP）和端口。
+包含在 `./utils` 文件夹中的 `connection_profile_lib` 提供了为 SDK 检索数据的函数。
 
 ### 配置 SDK：
-第一个操作是注册管理员。查看用于注册的以下代码段。代码下方有一些注释/操作说明。
+第一个操作是注册管理员。  查看用于注册的以下代码段。  代码下方有一些注释/操作说明。
 
 ```js
 //enroll admin
@@ -258,16 +225,10 @@ enrollment.enroll = function (options, cb) {
     }).then(function (submitter) {
 
 // [Step 4]
-        channel.addOrderer(new Orderer(options.orderer_url, {
-          pem: options.orderer_tls_opts.pem,
-          'ssl-target-name-override': options.orderer_tls_opts.common_name  //can be null if cert matches hostname
-        }));
+        channel.addOrderer(new Orderer(options.orderer_url, options.orderer_tls_opts));
 
 // [Step 5]
-        channel.addPeer(new Peer(options.peer_urls[0], {
-            pem: options.peer_tls_opts.pem,
-            'ssl-target-name-override': options.peer_tls_opts.common_name
-        }));
+        channel.addPeer(new Peer(options.peer_urls[0], options.peer_tls_opts));
         logger.debug('added peer', options.peer_urls[0]);
 
 // [Step 6]
@@ -295,12 +256,25 @@ enrollment.enroll = function (options, cb) {
 
 第 3 步.接下来注册我们的管理员。我们在执行这一步时使用了我们的注册 ID 和注册密钥向 CA 执行身份验证。CA 将颁发注册证书，SDK 将该证书存储在键值存储中。因为我们使用的是默认的键值存储，所以它会存储在本地文件系统中。
 
-第 4 步.成功注册后，我们将设置订购者 URL。暂时不需要订购者，但在我们尝试调用链代码时需要它。
+第 4 步.成功注册后，我们将设置订购者 URL。  暂时不需要订购者，但在我们尝试调用链代码时需要它。
     - 仅在拥有自签名证书时，才需要包含 `ssl-target-name-override` 的业务。将此字段与您创建 PEM 文件时使用的`常用名`设置为相同。
 
-第 5 步.接下来设置节点 URL。这些 URL 也是暂时不需要的，但我们将会完整设置我们的 SDK 链对象。
+第 5 步.接下来设置对等节点 URL。这些 URL 也是暂时不需要的，但我们将会完整设置我们的 SDK 链对象。
 
 第 6 步.此刻，已对 SDK 进行全面配置并准备好与区块链进行交互。
+
+### 代码结构
+此应用程序有 3 个编码环境需要处理。
+
+1.链代码部分 - 这是在区块链网络上运行的/包含对等节点的 GoLang 代码。也称为 `cc`。所有弹珠/区块链交易最终都会在这里进行。这些文件位于 `/chaincode` 中。
+
+2.**客户端** JS 部分 - 这是在用户浏览器中运行的 JavaScript 代码。用户界面交互在这里执行。这些文件位于 `/public/js` 中。
+
+3.**服务器端** JS 部分 - 这是运行应用程序的后端的 JavaScript 代码，即为 Marbles 的核心的 `Node.js` 代码！有时该代码也称为我们的`节点`或`服务器`代码。它充当弹珠管理员与我们的区块链之间的连接器。这些文件位于 `/utils` 和 `/routes` 中。
+
+请记住，这 3 部分是相互隔离的。
+它们不共享变量和函数。
+它们将通过 gRPC、WebSockets 或 HTTP 等网络协议进行通信。
 
 # Marbles 深入剖析
 希望您已在用户之间成功交易了一两颗弹珠。
@@ -394,10 +368,10 @@ __/utils/websocket_server_side.js__
 ```js
     //process web socket messages
     ws_server.process_msg = function (ws, data) {
-        const channel = helper.getChannelId();
-        const first_peer = helper.getFirstPeerName(channel);
+        const channel = cp.getFirstChannelId();
+        const first_peer = cp.getFirstPeerName(channel);
         var options = {
-            peer_urls: [helper.getPeersUrl(first_peer)],
+            peer_urls: [cp.getPeersUrl(first_peer)],
             ws: ws,
             endorsed_hook: endorse_hook,
             ordered_hook: orderer_hook
@@ -461,10 +435,12 @@ __/utils/marbles_cc_lib.js__
         logger.info('Setting marble owner...');
 
         var opts = {
+            peer_urls: g_options.peer_urls,
+            peer_tls_opts: g_options.peer_tls_opts,
             channel_id: g_options.channel_id,
             chaincode_id: g_options.chaincode_id,
             chaincode_version: g_options.chaincode_version,
-            event_url: g_options.event_url,
+            event_urls: g_options.event_urls,
             endorsed_hook: options.endorsed_hook,
             ordered_hook: options.ordered_hook,
             cc_function: 'set_owner',
@@ -473,7 +449,6 @@ __/utils/marbles_cc_lib.js__
                 options.args.owner_id,
                 options.args.auth_company
             ],
-            peer_tls_opts: g_options.peer_tls_opts,
         };
         fcw.invoke_chaincode(enrollObj, opts, cb);
     };
@@ -481,11 +456,11 @@ __/utils/marbles_cc_lib.js__
 ```
 
 上面列出了 `set_marble_owner()` 函数。
-重要的部分是，它通过 `fcn: 'set_owner'` 将提案的调用函数名称设置为 "set_owner"。
-请注意，我们在注册管理员时已经设置了节点和订购者 URL。
+重要的部分是，它通过 `fcn: 'set_owner'` 行将提案的调用函数名称设置为 "set_owner"。
+请注意，我们在注册管理员时已经设置了对等节点和订购者 URL。
 默认情况下，SDK 将此交易发送到所有通过 `channel.addPeer` 添加的节点。
-在我们的示例中，SDK 仅发送到 1 个节点，因为我们只添加了 1 个节点。
-我记得此节点是在 `enrollment` 这一节中添加的。
+在我们的示例中，SDK 仅发送到 1 个对等节点，因为我们只添加了 1 个对等节点。
+我记得此对等节点是在 `enrollment` 这一节中添加的。
 
 现在让我们更进一步，看看如何从用户界面发送此 Websocket 消息。
 
@@ -547,14 +522,31 @@ Marbles 将定期检查所有弹珠并将它们与最后已知状态进行比较
 这些客户端会收到此 Websocket 消息并重新绘制该弹珠。
 
 现在您已知道了整个流程。
-管理员转移弹珠，JS 检测到拖/放操作，客户端发送一条 Websocket 消息，Marbles 收到该 Websocket 消息，SDK 构建/发送一个提案，节点对提案进行背书，SDK 将提案发送给订购服务，订购者订购并向节点发送一个区块，我们的节点提交该区块，Marbles node 代码定期获取新的弹珠状态，将弹珠 Websocket 消息发送到客户端，最后客户端会在弹珠的新所有者那里重新绘制它。
+管理员转移弹珠，JS 检测到拖/放操作，客户端发送一条 Websocket 消息，Marbles 收到该 Websocket 消息，SDK 构建/发送一个提案，对等节点对提案进行背书，SDK 将提案发送给订购服务，订购者订购并向对等节点发送一个区块，我们的对等节点提交该区块，Marbles node 代码定期获取新的弹珠状态，将弹珠 Websocket 消息发送到客户端，最后客户端会在弹珠的新所有者那里重新绘制它。
 
 大功告成！希望您能愉快地交易弹珠。
 
-## Marbles 技巧
-Marbles 的一些注释无法整洁地放在上述操作说明中。
-下面给出了各种各样的 Marbles 技巧和操作说明。
-- 即将发布
+# Marbles 常见问题
+您是否对 Marbles 中某项功能的运行方式存在疑问？  或者，对如何运行某项功能存在疑问？请查阅[常见问题](./docs/faq.md)。
+
+# 反馈
+非常期待收到您的反馈。
+这个演示专为与您类似的人而构建，而且会继续为了满足读者的需求而不断完善。
+老实说，您对它的评价如何？
+如果您有关于如何改进该演示/教程的想法，请告诉我！
+具体来讲：
+
+- 自述文件的格式是否适合您？
+- 您对哪些地方感到困惑？
+- 某项功能的运行是否中断！？
+- 学完该教程后，您的知识是否得到了扩充？
+- 是否存在特别难懂的地方？
+- 该演示是否给您造成了存在危机，让您突然不确定它的含义？
+
+请在 [GitHub 问题](https://github.com/IBM-Blockchain/marbles/issues) 部分交流任何改进/错误和难点！
+
+# 贡献
+如果您想要帮助改进该演示，请查阅[贡献指南](./CONTRIBUTING.md)
 
 # 许可
 [Apache 2.0](LICENSE)
