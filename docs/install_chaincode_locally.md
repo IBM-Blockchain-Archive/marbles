@@ -19,10 +19,16 @@ If these files are not found you will be unable to run either operation.
 
 **Choose 1 option below to create these files:**
 
-- **Option 1:** :lollipop: Use crypto files from a **locally hosted Hyperledger Fabric Network**. These certificates will be created with the `fabric-samples` example called `fabcar`. If you have already created the certs you should still re-run this step.
+- **Option 1:** :lollipop: Use crypto files from a **locally hosted Hyperledger Fabric Network**. These certificates/keys will be created with the `fabric-samples` example called `fabcar`. If you have already created the certs you can/should still re-run this steps.
+ 	- If you followed the earlier instructions you should already have `fabric-samples` installed. If not go back to [Download Fabric Samples](./use_local_hyperledger.md)
+	- Step 1: In your terminal/command prompt change your path to the `fabric-samples/fabcar` directory: `cd ../fabric-samples/fabcar`
+	- Step 2: Run the command: `node enrollAdmin.js`
+	- Step 3: Run the command: `node registerUser.js`
+	- Step 4: Double check that a few key and cert files were created in the folder `fabric-samples/fabcar/hfc-key-store`
+	- Step 5: You are done! Change your path back to the marbles directory: `cd ../../marbles` and continue with the `Install chaincode` instructions below.
 - **Option 2:** Create the certificate and public key files manually.  Use this option when your Fabric network was **not** created from `fabric-samples`. [Generate Crypto Manually](https://console.bluemix.net/docs/services/blockchain/v10_application.html#generating-the-client-side-certificates)
-	- Once you are done add the private key and signed certificate files to this folder: `<marbles root>/config/crypto/`
-	- Next append the cert/key path information to your connection profile:
+	- Step 1: Once you are done add the private key and signed certificate files to this folder: `<marbles root>/config/crypto/`
+	- Step 2: Next append the cert/key path information to your connection profile:
 		1. Open your connection profile file in the `<marbles root>/config/` folder
 		2. In the `organizations` field append these fields:
 		```
@@ -36,6 +42,8 @@ If these files are not found you will be unable to run either operation.
 		```
 		3. Double check the `path` fields above. Each field should match the name of the file you created.
 		4. I've left you an example key and cert file in `<marbles root>/config/crypto/example` to reference. These will **not** work with your network, but you can reference them to see the expected PEM format of each file type.
+	- Step 3: You are done! Continue with the `Install chaincode` instructions below.
+
 
 <a name="installChaincode"></a>
 
