@@ -8,17 +8,18 @@
 	},
 	"dependencies": {
 		"async": "2.5.*",
-		"compression": "1.6.*",
+		"compression": "1.7.*",
 		"cookie-parser": "1.4.*",
 		"cors": "2.8.*",
 		"express": "4.14.*",
 		"express-session": "1.14.*",
 		"fabric-ca-client": "1.0.5",
 		"fabric-client": "1.0.5",
-		"pug": "2.0.0-beta11",
-		"serve-static": "1.11.*",
-		"winston": "2.2.*",
-		"ws": "1.1.*"
+		"grpc": "1.10.1",
+		"pug": "2.0.3",
+		"serve-static": "1.13.*",
+		"winston": "2.4.*",
+		"ws": "1.1.5"
 	},
 	"engines": {
 		"node": "^6.2.0"
@@ -28,7 +29,7 @@
 		"url": "https://github.com/IBM-Blockchain/marbles.git"
 	},
 	"devDependencies": {
-		"gulp": "^3.9.0",
+		"gulp": "3.9.*",
 		"gulp-sass": "*",
 		"gulp-concat": "*",
 		"gulp-clean-css": "*",
