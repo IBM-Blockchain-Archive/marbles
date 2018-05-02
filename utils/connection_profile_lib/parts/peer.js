@@ -83,7 +83,14 @@ module.exports = function (cp, logger) {
 			throw new Error('Peer\'s key not passed');
 		} else {
 			let peer = helper.getPeer(key);
-			return cp.buildTlsOpts(peer);
+			var peer_opts = cp.buildTlsOpts(peer);
+			var org = cp.getClientOrg();
+			var client_tls = cp.getClientTLSCerts(org);
+			if (client_tls) {
+				peer_opts.clientKey = client_tls.clientKey;
+				peer_opts.clientCert = client_tls.clientCert;
+			}
+			return peer_opts;
 		}
 	};
 

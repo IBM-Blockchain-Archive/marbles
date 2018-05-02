@@ -78,6 +78,27 @@ module.exports = function (config_filename, logger) {
 		return ret;
 	};
 
+	cp.getClientTLSCerts = function (msp_id) {
+		var clientKey = '';
+		var clientCert = '';
+		var path2cert = path.join(__dirname, '../../config/crypto/' + msp_id);
+		try {
+			if (fs.lstatSync(path2cert).isDirectory()) {
+				var keystorePath = path2cert + '/keystore/';
+				var signCertsPath = path2cert + '/signcerts/cert.pem';
+				if (fs.lstatSync(keystorePath).isDirectory()) {
+					const priv_cert = fs.readdirSync(keystorePath);
+					clientKey = fs.readFileSync(keystorePath+priv_cert[0], 'utf8') + '\r\n';
+					clientCert = fs.readFileSync(signCertsPath, 'utf8') + '\r\n';
+				}
+			}
+		} catch(e) {
+			console.log('Could not find Client TLS folder for ', msp_id, ' not using Client TLS');
+			return null;
+		}
+		return {clientKey, clientCert};
+	};
+
 	// get the very first channel name from creds
 	cp.getFirstChannelId = function () {
 		if (cp.creds && cp.creds.channels) {

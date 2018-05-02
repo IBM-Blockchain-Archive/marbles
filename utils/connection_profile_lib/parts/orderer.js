@@ -48,7 +48,14 @@ module.exports = function (cp, logger) {
 			throw new Error('Orderer\'s key not passed');
 		} else {
 			let orderer = helper.getOrderer(key);
-			return cp.buildTlsOpts(orderer);
+			var orderer_opts = cp.buildTlsOpts(orderer);
+			var org = cp.getClientOrg();
+			var client_tls = cp.getClientTLSCerts(org);
+			if (client_tls) {
+				orderer_opts.clientKey = client_tls.clientKey;
+				orderer_opts.clientCert = client_tls.clientCert;
+			}
+			return orderer_opts;
 		}
 	};
 
