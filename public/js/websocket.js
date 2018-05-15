@@ -13,6 +13,7 @@ var pendingTxDrawing = [];
 // =================================================================================
 function connect_to_server() {
 	var connected = false;
+	var ws_keep_alive = null;
 	connect();
 
 	function connect() {
@@ -36,9 +37,16 @@ function connect_to_server() {
 		console.log(wsTxt + ' CONNECTED');
 		addshow_notification(build_notification(false, 'Connected to Marbles application'), false);
 		connected = true;
+
+		clearInterval(ws_keep_alive);
+		ws_keep_alive = setInterval(function () {
+			ws.send(JSON.stringify({ type: 'ping' }));
+			console.log(wsTxt + ' ping sent');								// send a keep alive faster than 2 minutes
+		}, 90 * 1000);
 	}
 
 	function onClose(evt) {
+		clearInterval(ws_keep_alive);
 		setTimeout(() => {
 			console.log(wsTxt + ' DISCONNECTED', evt);
 			connected = false;
