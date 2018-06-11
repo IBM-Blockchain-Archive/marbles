@@ -59,7 +59,7 @@ By the end of it you will be a hyperledger fabric pro, and have the setup to dev
 If you want to skip all of that and simply try marbles on a IBP ([IBM Blockchain Platform](https://console.bluemix.net/developer/blockchain/dashboard)) network then follow the [Toolchain setup flow](./.bluemix/README.md).
 If you really want to impress your friends, do both.
 
-If you already used the Toolchain setup then [skip down to the Use Marbles](../README.md#use) section.
+If you already used the Toolchain setup then [skip down to the Use Marbles](./README.md#use) section.
 If you are choosing the dev setup, then keep reading.
 The good news is marbles and the blockchain network can be setup for different configurations depending on your preference.
 The bad news is this makes the instructions complicated.
