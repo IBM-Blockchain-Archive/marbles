@@ -15,7 +15,7 @@ template:
     git url: >-
       [https://github.com/IBM-Blockchain/marbles](https://github.com/IBM-Blockchain/marbles)
     git branch: >-
-      [v5.0](https://github.com/IBM-Blockchain/marbles/tree/experiment)
+      [master](https://github.com/IBM-Blockchain/marbles/tree/master)
 toolchain:
   name: 'marbles-tc-{{timestamp}}'
   template:
