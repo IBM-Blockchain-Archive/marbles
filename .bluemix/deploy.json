@@ -15,15 +15,15 @@
 	"type": "object",
 	"properties": {
 		"cf-region": {
-			"description": "The bluemix region",
+			"description": "The IBM Cloud region",
 			"type": "string"
 		},
 		"cf-organization": {
-			"description": "The bluemix org",
+			"description": "The IBM Cloud org",
 			"type": "string"
 		},
 		"cf-space": {
-			"description": "The bluemix space",
+			"description": "The IBM Cloud space",
 			"type": "string"
 		},
 		"cf-app-name": {

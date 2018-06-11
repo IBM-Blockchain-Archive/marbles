@@ -11,9 +11,6 @@ stages:
   - name: SAMPLE_REPO
     value: '{{SAMPLE_REPO}}'
     type: text
-  - name: CLOUD_REGION_ID
-    value: '{{REGION_ID}}'
-    type: text
 
   jobs:
   - name: deploy-marbles-app
@@ -28,7 +25,7 @@ stages:
       trap 'detect_exit' 0 1 2 3 6
 
       export TIMESTAMP=$(date +%s)
-      export SERVICE_INSTANCE_NAME =  "marbles-via-tc-$TIMESTAMP" # the cosmetic name of our blockchain service instance
+      export SERVICE_INSTANCE_NAME="marbles-via-tc-$TIMESTAMP" # the cosmetic name of our blockchain service instance
       export VCAP_KEY_NAME="marbles_tc_creds"         # cloud foundry needs a name for the service creds (not important)
       export CHANNEL_ID="defaultchannel"              # the channel marbles should use
       export CHAINCODE_ID="marbles_sample"            # the chaincode id we will install/instantiate
@@ -104,7 +101,6 @@ stages:
         exit 1
       else
         echo "Using service instance name: '${SERVICE_INSTANCE_NAME}'"
-        echo "Deploying Marbles in region: ${CLOUD_REGION_ID}"
         echo "Deploying Marbles as msp id: ${MSP_ID}"
         echo "Deploying Marbles commit level: ${GIT_HASH}"
         printf "\nAll good\n\n"
