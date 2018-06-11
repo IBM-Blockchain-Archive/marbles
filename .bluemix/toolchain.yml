@@ -1,0 +1,66 @@
+version: '2'
+messages:
+  $i18n: locales.yml
+template:
+  name:
+    $ref: "#/messages/template.name"
+  description:
+    $ref: "#/messages/template.description"
+  header: '![](toolchain.png)'
+  icon: "./marbles-36.png"
+  required:
+    - marbles-build
+    - marbles-repo
+  info:
+    git url: >-
+      [https://github.com/IBM-Blockchain/marbles](https://github.com/IBM-Blockchain/marbles)
+    git branch: >-
+      [master](https://github.com/IBM-Blockchain/marbles/tree/master)
+toolchain:
+  name: 'marbles-tc-{{timestamp}}'
+  template:
+    getting_started:
+      $ref: "#/messages/template.gettingStarted"
+services:
+  marbles-repo:
+    service_id: githubpublic
+    parameters:
+      repo_name: 'marbles-{{timestamp}}'
+      repo_url: 'https://github.com/IBM-Blockchain/marbles'
+      type: clone
+      has_issues: false
+      enable_traceability: true
+  marbles-build:
+    service_id: pipeline
+    parameters:
+      services:
+        - marbles-repo
+      name: '{{services.marbles-repo.parameters.repo_name}}'
+      ui-pipeline: false
+      configuration:
+        content:
+          $text: pipeline.yml
+        env:
+          SAMPLE_REPO: marbles-repo
+          CF_APP_NAME: '{{form.pipeline.parameters.cf-app-name}}'
+          CF_SPACE_NAME: '{{form.pipeline.parameters.cf-space}}'
+          CF_ORG_NAME: '{{form.pipeline.parameters.cf-organization}}'
+          REGION_ID: '{{form.pipeline.parameters.cf-region}}'
+        execute: true
+  marbles-app:
+    service_id: customtool
+    parameters:
+      type: 'Marbles'
+      lifecyclePhase: 'RUN'
+      imageUrl: 'https://github.com/IBM-Blockchain/toolchain-sample-marbles/raw/master/.bluemix/marbles-36.png'
+      documentationUrl: 'https://github.com/IBM-Blockchain/marbles'
+      name: 'Node.js Applicaiton'
+      dashboard_url: 'https://{{form.pipeline.parameters.cf-app-name}}.mybluemix.net/login'
+      description: 'This is your Marbles node.js application. You do not need to modify anything.'
+      additional-properties: 'n/a'
+form:
+  pipeline:
+    parameters:
+      cf-app-name: '{{services.marbles-repo.parameters.repo_name}}'
+    schema:
+      $ref: deploy.json
