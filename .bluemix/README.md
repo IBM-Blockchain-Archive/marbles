@@ -9,6 +9,6 @@ To see this code in action click the "Get Marbles" button below.
 (It will take between 5 - 8 minutes)
 
 ### Information
-- [Marbles's GitHub Repo](https://github.com/ibm-blockchain/marbles)
+- [Marbles' GitHub Repo](https://github.com/ibm-blockchain/marbles)
 - [Toolchain's GitHub Repo](https://github.com/open-toolchain/sdk/wiki)
 - [IBM Blockchain Platform Info](https://console.bluemix.net/developer/blockchain/dashboard)
