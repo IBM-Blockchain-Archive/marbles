@@ -112,7 +112,7 @@ stages:
       printf "\n--- Cleaning up any old service instances of the IBM Blockchain Platform (its okay if the command belows fails) ---\n"
       cf delete-service "${SERVICE_INSTANCE_NAME}" -f || true                         # delete existing network (if there is one)
       printf "\n--- Creating a new service instance of the IBM Blockchain Platform service ---\n"
-      cf create-service ibm-blockchain-5-prod ibm-blockchain-plan-v1-starter-prod "${SERVICE_INSTANCE_NAME}" # create the network
+      cf create-service ibm-blockchain-5-prod ibm-blockchain-plan-v1-ga1-starter-prod "${SERVICE_INSTANCE_NAME}" # create the network
       sleep 15                             # give her a second to warm up
 
       # -----------------------------------------------------------
