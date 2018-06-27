@@ -8,41 +8,48 @@
 
 1. If you are on the "Resources" page already, then click the "Chaincode" link on the left navigation
 
-![](/doc_images/9-chaincode.PNG)
+![](/doc_images/ibc_deploy1.png)
 
 - Select 1 of your peers in the drop down
 - Now click the "Install Chaincode" button
 
-![](/doc_images/10-install-marbles.PNG)
+![](/doc_images/ibc_deploy2.png)
 
-- Fill out the chaincode name as "marbles"
-- Fill out the chaincode version as "v0"
+- Fill out the chaincode name as "marbles" (note this could be whatever you want to use to identify the chaincode)
+- Fill out the chaincode version as "v5" (note this could be whatever you want to identify which chaincode version)
 - Select the "Choose Files" button and select **all** the files found in `<marbles directory>/chaincode/src/marbles`
     - Alternatively you can zip up the .go files and submit a single zip file
 - Click "Submit"
 
-![](/doc_images/11-installed-marbles.PNG)
+![](/doc_images/ibc_deploy3.png)
 
 - Great, so you should see marbles listed in the chaincode table for this peer.
 - All we've done so far is upload the files on to the peer. Next, we need to tell it what channel to run on.
 - Click the 3 dots in the "ACTIONS" column to open the actions menu. Then click "Instantiate".
 
-![](/doc_images/12-instantiate-marbles.PNG)
+![](/doc_images/ibc_deploy4.png)
 
 - The arguments input box is for entering the arguments we want to pass to our chaincode's Init() function.
     - Typically, this is an array of strings.  As you type you can see exactly what will be sent in the lower input named "Chaincode Arguments".
 - Marbles chaincode is expecting a single numeric input argument. Therefore, enter your favorite number. Mines 314.
     - Marbles chaincode will store this number to the ledger as a self-test of sorts. It can literally be any number you want.
-- Next from the "Channel" drop down, select our 1 and only channel
+- Next from the "Channel" drop down, select our 1 and only channel `defaultchannel`
 - Then click the "Submit" button
-- If it went well the chaincode page will refresh
 
-![](/doc_images/13-instantiated-marbles.PNG)
+![](/doc_images/ibc_deploy5.png)
+- Next up is the chaincode policy. The "Simple Policy" allows us to set the number of endorsements for a chaincode invocation. If we choose the simple policy and set the signatures to 2 then we would need 2 members to sign every invocation. Only have 1 signature would would fail. However if we set the signatures to 1 then any member's signature will do. This is the policy type we should use. (The advanced policy allows us to write the policy using fabric syntax/notation. This is beyond the scope of marbles, but it would allow us to dictate _who_ can endorse chaincode invocations)
+	- Select the "Simple Policy"
+	- Set the "Endorsement Policy" number to 1 (this is the number of required signatures)
+	- Click the "Submit" button
+- If it went well the chaincode page will refresh
 
 - Now that the chaincode has been instantiated on the channel, let's look at it
 - Click the "Channels" link on the left navigation
 - Click the channel you instantiated marbles on
 - Click the "Chaincode" sub-tab
+
+![](/doc_images/ibc_deploy6.png)
+
 - On this panel, you should see something similar to the picture above.  Marbles is instantiated on at least one peer
 - Expand the row to see which peer
 - Click the log button to see if marbles started up. You should log messages like:
@@ -50,7 +57,7 @@
 ```
     Marbles Is Starting Up
     Init() args count: 1
-    Init() args found: [101]
+    Init() args found: [314]
     Init() arg[0] length 3
     args[0] is not empty, must be instantiating
      - ready for action
