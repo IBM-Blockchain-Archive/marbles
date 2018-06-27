@@ -6,7 +6,7 @@
     1. Under "All Services" locate your the Blockchain row and click it
     1. Enter your IBM Blockchain Service's dashboard by clicking the "Enter" button
 
-1. If you are on the "Resources" page already, then click the "Chaincode" link on the left navigation
+1. If you are on the "Overview" page already, then click the "Install code" link on the left navigation
 
 ![](/doc_images/ibc_deploy1.png)
 
