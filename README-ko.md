@@ -149,7 +149,6 @@ IBM Cloud에서 Marbles을 호스팅 하려는 경우에도 이 단계를 수행
 1. 페이지를 새로 고쳐 작업이 적용되었는지 다시 확인합니다.
 1. 구슬 소유자나 구슬 회사명을 필터링 할 때 검색 상자를 사용합니다. 이것은 회사나 소유자가 많을 때 유용합니다.
     - 핀(pin) 아이콘을 사용하면 해당 사용자가 검색 상자에서 필터링 되지 않습니다.
-1. Now lets turn on the special walk through. Click the "Settings" button near the top of the page.
 1. 이제 특별한 기능을 안내 하겠습니다. 페이지 상단의 설정("Settings")버튼을 클릭합니다.
 	- 메뉴 상자가 열립니다.
 	- "Enabled" 버튼을 클릭하여 스토리 모드를 활성화합니다.
@@ -187,16 +186,12 @@ Marbles의 작동 방식에 대해 이야기하기 전에 Hyperleder Fabric의 �
 
 1. Marbles에서 가장 먼저 일어나는 일은 관리자인 `사용자(user)`를 네트워크의 `CA`에 등록하는 것입니다. 만약 성공한다면, `CA`는 SDK가 로컬 파일 시스템에 저장하도록 Marbles 등록 인증서(certificates)를 보낼 것입니다.
 1. 관리자가 UI에서 새 구슬을 생성한다면, SDK에서 구술 생성 호출 트랜잭션이 생성됩니다.
-1. The create marble transaction gets built as a `proposal` to invoke the chaincode function `init_marble()`.
 1. 구슬 생성 트랜잭션은 기존에 작성된 체인코드 기능인 `init_marble()`을 호출하기 위한 `제안(proposal)`을 만듭니다.
 1. (SDK를 통해) Marbles 애플리케이션은 이 `제안(proposal)`의 승인을 받기 위해 `peer` 에게 전달합니다.
-1. The `peer` will simulate the transaction by running the Go function `init_marble()` and record any changes it attempted to write to the `ledger`.
 1. `peer`는 체인코드(GoLang) 기능인 `init_marble()` 가 실행될때 `ledger`에 쓸 내용에 대해 어떤 변화가 있는지 트랜잭션을 시뮬레이션 할 것입니다.
-1. If the function returns successfully the `peer` will endorse the `proposal` and send it back to Marbles. Errors will also be sent back, but the `proposal` will not be endorsed.
 1. 만약 함수가 성공적으로 리턴된다면 `peer`는 `proposal`을 승인하고, 결과(제안)를 Marbles 애플리케이션으로 전달합니다. 오류 또한 전달될 수 있지만, 이 경우 `proposal`은 승인되지 않습니다.
 1. Marbles (via the SDK), will then send the endorsed `proposal` to the `orderer`.
 1. Marbles는 (SDK를 통해) 승인된 `proposal` 를 `orderer` 에게 보낼 것입니다.
-1. The `orderer` will organize a sequence of `proposals` from the whole network. It will check the sequence of transactions is valid by looking for transactions that conflict with each other. Any transactions that cannot be added to the block because of conflicts will be marked as errors. The `orderer` will broadcast the new block to the peers of the network.
 1. `orderer`는 네트워크 전체에서 일련의 `proposals`를 취합합니다. 이 작업은 서로 충돌하는 거래 내용(트랜잭션)을 찾음으로써 트랜잭션 순서가 유효한지 확인합니다. 충돌로 인해 블록에 추가할 수 없는 모든 트랜잭션은 오류로 표시됩니다. `orderer`는 이렇게 생성된 새로운 블록을 브로드캐스트(broadcast)로 네트워크에 있는 peer에게 전달합니다.
 1. `peer`들은 새로운 블록을 받아 다양한 서명과 해시 내용을 검증할 것입니다. 검증이 완료되면 `peer's` `ledger`에 블록 내용이 기록(committed)됩니다.
 1.  이 시점에서 새로운 구슬은 자신의 원장(ledger)에 존재하며, 곧 모든 peer의 원장에 존재해야 합니다.
