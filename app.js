@@ -30,7 +30,7 @@ var marbles_lib = null;
 var logger = new (winston.Logger)({
 	level: 'debug',
 	transports: [
-		new (winston.transports.Console)({ colorize: true }),
+		new (winston.transports.Console)({ colorize: true, stderrLevels: ['error'] }),
 	]
 });
 var misc = require('./utils/misc.js')(logger);												// mis.js has generic (non-blockchain) related functions
