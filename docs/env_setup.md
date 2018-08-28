@@ -47,8 +47,8 @@ Next verify you can build GoLang code with the [hello world](https://golang.org/
 
 ## 3. Node.js
 
-Download and install Node.js v6.2.0 - v6.11.1.
-As of 1/4/2018 **Marbles has dependencies that will not work with node.js v7 or v8**.
+Download and install Node.js v6, or v8
+As of 1/4/2018 **Marbles has dependencies that will not work with node.js v9 or v10**.
 
 
 - [Node.js Download Page](https://nodejs.org/en/download/)
