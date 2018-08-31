@@ -85,7 +85,7 @@ Good luck.
 
 ## 4. Test Network with Fabcar
 Finally lets test the network before we run marbles.
-Run query via `fabcar` with the commands:
+Run query from the `fabcar` directory with the following commands:
 
 Run the command __node enrollAdmin.js__. The response should be _similar_ to:
 ```
