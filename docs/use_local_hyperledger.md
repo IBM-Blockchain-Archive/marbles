@@ -18,21 +18,21 @@ We are going to hijack the [Hyperledger Fabric samples](http://hyperledger-fabri
 Their code has the setup for a Fabric network as well as example chaincode.
 We will only be using the network setup part.
 
-Download their node samples with the command:
+Download their node samples with the command and navigate to the new directory:
 
 ```bash
 git clone https://github.com/hyperledger/fabric-samples.git
 cd fabric-samples
 ```
 
-Once you have cloned the repository start downloading the docker images of the various fabric components.
+Once you have cloned the repository start downloading the docker images of the various fabric components (the files arrive in the Git folder).
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/release-1.1/scripts/bootstrap-1.1.0-preview.sh -o setup_script.sh
 sudo bash setup_script.sh
 ```
 
-Be sure to add these binaries to your PATH variable by running the following command or pasting it into you .profile file.
+Be sure to add the bin directory with these binaries to your PATH variable by running the following command or pasting it into you .profile file with the 'current directory' shortcut $PWD replaced by a qualified path (for macOS, the file to be edited is .bash_profile file in the user directory).
 
 ```bash
 export PATH=$PWD/bin:$PATH
