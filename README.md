@@ -154,7 +154,7 @@ Last but not least we need marbles running somewhere.
 1. Refresh the page to double check that your actions "stuck".
 1. Use the search box to filter on marble owners or marble company names.  This is helpful when there are many companies/owners.
     - The pin icon will prevent that user from being filtered out by the search box.
-1. Now lets turn on the special walk through. Click the "Settings" button near the top of the page.
+1. Now let's turn on the special walkthrough. Click the "Settings" button near the top of the page.
 	- A dialog box will open.
 	- Click the "Enabled" button to enabled Story Mode
 	- Click the "x" in the top right to close the menu.
@@ -165,7 +165,7 @@ Last but not least we need marbles running somewhere.
 
 # Blockchain Background
 Before we talk about how Marbles works let’s discuss the flow and topology of Hyperledger Fabric.
-Lets get some definitions out of the way first.
+Let's get some definitions out of the way first.
 
 ### Definitions:
 
@@ -202,7 +202,7 @@ Let’s look at the operations involved when creating a new marble.
 
 
 # SDK Deeper Dive
-Now lets see how we interface with the Fabric Client SDK.
+Now let's see how we interface with the Fabric Client SDK.
 Almost all of the configuration options can be found in our "connection profile" (aka cp).
 Your connection profile might be coming from a file such as`/config/connection_profile_tls.json`, or it might be from an environmental variable.
 If you are unsure which, check the logs when marbles starts.
@@ -267,7 +267,7 @@ Step 3. Next we enroll our admin. This is when we authenticate to the CA with ou
 Step 4. After successful enrollment we set the orderer URL.  The orderer is not needed yet, but will be when we try to invoke chaincode.
     - The business with `ssl-target-name-override` is only needed if you have self signed certificates. Set this field equal to the `common name` you used to create the PEM file.
 
-Step 5. Next we set the Peer URLs. These are also not needed yet, but we are going to setup our SDK chain object fully.
+Step 5. Next we set the Peer URLs. These are also not needed yet, but we are going to set up our SDK chain object fully.
 
 Step 6. At this point the SDK is fully configured and ready to interact with the blockchain.
 
