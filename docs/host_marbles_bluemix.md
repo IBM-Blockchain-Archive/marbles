@@ -3,7 +3,7 @@
 ### Run Marbles on IBM Cloud (command line)
 
 1. Well to do this correctly you first need to [run marbles locally](./host_marbles_locally.md).
-1. Seriously make sure marbles on your local machine starts up and you have traded a marble successfully before you continue. You do not want to troubleshoot config settings with the IBM Cloud flow. It will take forever and you may lose your mind.
+1. Seriously make sure marbles on your local machine starts up and you have traded a marble successfully before you continue. You do not want to troubleshoot config settings with the IBM Cloud flow. It will take forever and you may lose your ~~marbles~~ mind.
 1. Edit `manifest.yml`.  This file is in the root of your marbles directory.
 	- We need to change the application **name** in this file since "marbles" is taken. Try to pick a unique name (or else the next steps will fail, and you will have to try again).
 
