@@ -7,7 +7,7 @@
 	"client": {
 		"organization": "Org1MSP",
 		"credentialStore": {
-			"path": "/$HOME/fabric-samples/fabcar/hfc-key-store"
+			"path": "/$HOME/fabric-samples/fabcar/javascript/wallet"
 		}
 	},
 	"channels": {
