@@ -1,0 +1,161 @@
+Skip to content
+Your account has been flagged.
+Because of that, your profile is hidden from the public. If you believe this is a mistake, contact support to have your account status reviewed.
+
+ibm
+Repositories28K
+Code81M+
+Commits52M+
+Issues101K
+Marketplace0
+Topics186
+Wikis12K
+Users4K
+Language
+
+Sort
+
+Showing 77,551,640 available code results 
+@LineageOS
+LineageOS/android_kernel_motorola_titan – ibmmpeg2.h
+Showing the top four matches
+Last indexed on Jul 6, 2018
+C
+/* ibmmpeg2.h - IBM MPEGCD21 definitions */
+
+#ifndef __IBM_MPEG2__
+#define __IBM_MPEG2__
+
+/* Define all MPEG Decoder registers */
+/* Chip Control and Status */
+#define IBM_MP2_CHIP_CONTROL	0x200*2
+@LineageOS
+LineageOS/sony-kernel-u8500 – ibmmpeg2.h
+Showing the top four matches
+Last indexed on Jul 6, 2018
+C
+/* ibmmpeg2.h - IBM MPEGCD21 definitions */
+
+#ifndef __IBM_MPEG2__
+#define __IBM_MPEG2__
+
+/* Define all MPEG Decoder registers */
+/* Chip Control and Status */
+#define IBM_MP2_CHIP_CONTROL	0x200*2
+@INT3NSE07
+INT3NSE07/kernel_oneplus_msm8974 – ibmmpeg2.h
+Showing the top four matches
+Last indexed on Jul 5, 2018
+C
+/* ibmmpeg2.h - IBM MPEGCD21 definitions */
+
+#ifndef __IBM_MPEG2__
+#define __IBM_MPEG2__
+
+/* Define all MPEG Decoder registers */
+/* Chip Control and Status */
+#define IBM_MP2_CHIP_CONTROL	0x200*2
+@CrazyGamerGR
+CrazyGamerGR/CrazySuperKernel-CM14.1-hammerhead – ibmmpeg2.h
+Showing the top four matches
+Last indexed on Jul 6, 2018
+C
+/* ibmmpeg2.h - IBM MPEGCD21 definitions */
+
+#ifndef __IBM_MPEG2__
+#define __IBM_MPEG2__
+
+/* Define all MPEG Decoder registers */
+/* Chip Control and Status */
+#define IBM_MP2_CHIP_CONTROL	0x200*2
+@vadixidav
+vadixidav/chronos-linux – ibmmpeg2.h
+Showing the top four matches
+Last indexed on Jul 7, 2018
+C
+/* ibmmpeg2.h - IBM MPEGCD21 definitions */
+
+#ifndef __IBM_MPEG2__
+#define __IBM_MPEG2__
+
+/* Define all MPEG Decoder registers */
+/* Chip Control and Status */
+#define IBM_MP2_CHIP_CONTROL	0x200*2
+@chautruongthinh
+chautruongthinh/android_kernel_pantech_apq8064 – ibmmpeg2.h
+Showing the top four matches
+Last indexed on Jul 7, 2018
+C
+/* ibmmpeg2.h - IBM MPEGCD21 definitions */
+
+#ifndef __IBM_MPEG2__
+#define __IBM_MPEG2__
+
+/* Define all MPEG Decoder registers */
+/* Chip Control and Status */
+#define IBM_MP2_CHIP_CONTROL	0x200*2
+@chenxiwu
+chenxiwu/tiny4412-kernel-3.5.0 – ibmmpeg2.h
+Showing the top four matches
+Last indexed on Jul 8, 2018
+C
+/* ibmmpeg2.h - IBM MPEGCD21 definitions */
+
+#ifndef __IBM_MPEG2__
+#define __IBM_MPEG2__
+
+/* Define all MPEG Decoder registers */
+/* Chip Control and Status */
+#define IBM_MP2_CHIP_CONTROL	0x200*2
+@haggertk
+haggertk/android_kernel_samsung_hlte – ibmmpeg2.h
+Showing the top four matches
+Last indexed on Jul 8, 2018
+C
+/* ibmmpeg2.h - IBM MPEGCD21 definitions */
+
+#ifndef __IBM_MPEG2__
+#define __IBM_MPEG2__
+
+/* Define all MPEG Decoder registers */
+/* Chip Control and Status */
+#define IBM_MP2_CHIP_CONTROL	0x200*2
+@GabrielBerberian
+GabrielBerberian/GT-I9305-ModKernel – ibmmpeg2.h
+Showing the top four matches
+Last indexed on Jul 8, 2018
+C
+/* ibmmpeg2.h - IBM MPEGCD21 definitions */
+
+#ifndef __IBM_MPEG2__
+#define __IBM_MPEG2__
+
+/* Define all MPEG Decoder registers */
+/* Chip Control and Status */
+#define IBM_MP2_CHIP_CONTROL	0x200*2
+@imec-idlab
+imec-idlab/Multipath-TCP-Android6.0-Marshmallow – ibmmpeg2.h
+Showing the top four matches
+Last indexed on Jul 9, 2018
+C
+/* ibmmpeg2.h - IBM MPEGCD21 definitions */
+
+#ifndef __IBM_MPEG2__
+#define __IBM_MPEG2__
+
+/* Define all MPEG Decoder registers */
+/* Chip Control and Status */
+#define IBM_MP2_CHIP_CONTROL	0x200*2
+© 2019 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Help
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
+Press h to open a hovercard with more details.
